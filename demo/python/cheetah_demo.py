@@ -13,7 +13,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../../binding/python'))
 from cheetah import Cheetah
 
 
-if __name__ == '__main__':
+def init_argparser() :
+    """Define arguments and parse them"""
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
@@ -46,13 +47,24 @@ if __name__ == '__main__':
         type=str,
         required=True)
 
-    args = parser.parse_args()
+    return parser.parse_args()
 
-    cheetah = Cheetah(
+
+
+def init_cheetah (args):
+    """Create an instance of Cheetah and return it"""
+    return Cheetah(
         library_path=args.library_path,
         acoustic_model_file_path=args.acoustic_model_file_path,
         language_model_file_path=args.language_model_file_path,
         license_file_path=args.license_file_path)
+
+
+
+
+if __name__ == '__main__':
+    args = init_argparser()
+    cheetah = init_cheetah(args)
 
     for audio_path in [os.path.expanduser(x.strip()) for x in args.audio_paths.split(',')]:
         audio, sample_rate = soundfile.read(audio_path, dtype='int16')
