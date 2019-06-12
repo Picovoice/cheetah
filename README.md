@@ -31,9 +31,7 @@ This repository is provided for **non-commercial** use only. Please refer to [LI
 The [license file](/resources/license) in this repository is time-limited. Picovoice assures that the license is valid
 for at least 30 days at any given time.
 
-If you wish to use Cheetah in a commercial product please send an email to sales@picovoice.ai with a brief description
-of your use-case. The following table depicts the feature comparison between the free and commercial version of the
-engine.
+If you wish to use Cheetah in a commercial product, please [contact us](https://picovoice.ai/contact.html). The following table depicts the feature comparison between the free and commercial versions.
 
 | License Type | Free | Commercial |
 :---: | :---: | :---:
