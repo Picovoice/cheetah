@@ -9,8 +9,8 @@ Cheetah is an on-device **speech-to-text** engine. It is
 * compact and computationally-efficient making it suitable for **IoT** applications.
 * **highly-accurate**.
 * **cross-platform**. Currently **Raspberry Pi**, **Android**, **iOS**,
-**Linux**, **Mac**, and **Windows** are supported. 
-* **customizable**. Allows adding new words and adapting to different contexts.
+**Linux**, **Mac**, and **Windows** are supported (**LINUX** IS ONLY AVAILABLE HERE FOR **FREE EVALUATION**. OTHER PLATFORMS REQUIRE A DEVELOPMENT LICENSE.)  
+* **customizable**. Allows adding new words and adapting to different contexts (AVAILABLE ONLY UNDER DEVELOPMENT LICENSE).
 
 
 ## Table of Contents
