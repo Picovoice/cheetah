@@ -3,7 +3,7 @@
 
 Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
-Cheetah is an on-device **speech-to-text** engine. It is
+Cheetah is an on-device **speech-to-text** engine. Cheetah is:
 
 * offline and runs locally without an internet connection. Nothing is sent to cloud to fully protect users' **privacy**. 
 * compact and computationally-efficient making it suitable for **IoT** applications.
@@ -32,17 +32,17 @@ The [license file](/resources/license) in this repository is time-limited. Picov
 for at least 30 days at any given time.
 
 If you wish to use Cheetah in a commercial product, please [contact us](https://picovoice.ai/contact.html). The following
-table depicts the feature comparison between the free and commercial versions.
+table depicts the feature comparison between the free and commercial versions:
 
-| License Type | Free | Commercial |
-:---: | :---: | :---:
-Non-Commercial Use | Yes | Yes |
-Commercial Use | No | Yes |
-Supported Platforms | Linux | Linux, Mac, Windows, iOS, Android, Raspberry Pi, and Web Browsers.
-Custom Language Models | No | Yes |
-Compact Language Models | No | Yes |
-Support | Community Support | Enterprise Support
-Time Limit | 100 seconds | None
+|  | Free Version | Commercial License |
+--- | :---: | :---:
+**Non-Commercial Use** | Yes | Yes |
+**Commercial Use** | No | Yes |
+**Supported Platforms** | Linux | Linux, Mac, Windows, iOS, Android, Raspberry Pi, and Web Browsers.
+**Custom Language Models** | No | Yes |
+**Compact Language Models** | No | Yes |
+**Support** | Community Support | Enterprise Support
+**Time Limit** | 100 seconds | None
 
 ## Performance
 
@@ -80,12 +80,14 @@ python demo/python/cheetah_demo.py --audio_paths PATH_TO_AUDIO_FILE_1,PATH_TO_AU
 
 ### Realtime Demo
 
-This demo records audio from the microphone and transcribes speech in real-time. Note that you need to have a working
-microphone and it needs to be set as the default audio capture device on your computer.
+This Cheetah demo records audio from the microphone and transcribes it to speech, in real-time:
 
 ```bash
 python demo/python/cheetah_demo_realtime.py
 ```
+
+Note: you need to have a working
+microphone and it needs to be set as the default audio capture device on your computer for the demo to function correctly.
 
 ### C Demo Application
 
@@ -117,7 +119,7 @@ Then it can be used as follows
 ./resources/audio_samples/test.wav
 ```
 
-In order to transcribe multiple files append the absolute path to each additional file to the list of command line arguments as follows
+In order to transcribe multiple files, append the absolute path to each additional file to the list of command line arguments as follows:
 
 ```bash
 ./cheetah_demo \
@@ -130,9 +132,7 @@ PATH_TO_AUDIO_FILE_1 PATH_TO_AUDIO_FILE_2 PATH_TO_AUDIO_FILE_3
 
 #### Realtime Demo
 
-This demo records the input audio from microphone and transcribes speech in real-time. Note that you need to have a working
-microphone. Running the command file from root of the repository the demo can be built
-using `gcc` as below.
+This demo records the input audio from a microphone and transcribes to speech in real-time. Running the command file from root of the repository, the demo can be built using `gcc`:
 
 ```bash
 gcc -I include/ -O3 demo/c/cheetah_demo_realtime.c -ldl -lasound -o cheetah_demo_realtime
@@ -149,11 +149,13 @@ lib/common/language_model.pv \
 resources/license/cheetah_eval_linux_public.lic
 ```
 
-`AUDIO_DEVICE_NAME` for microphone can be found using
+The `AUDIO_DEVICE_NAME` parameter for the microphone can be found using
 
 ```bash
 arecord -L
 ```
+
+Note: you need to have a working microphone.
 
 ## Integration
 
@@ -252,7 +254,7 @@ for i in range(num_frames):
 transcript += handle.flush()
 ```
 
-When done release the acquired resources.
+When finished, release the acquired resources.
 
 ```python
 handle.delete()
@@ -260,12 +262,12 @@ handle.delete()
 
 ## Releases
 
-### V1.1.0 September 3rd, 2019
+### V1.1.0 — September 3rd, 2019
 
 * Real-time decoding
 * Improved accuracy
 * Runtime optimizations
 
-### v1.0.0 - October 30th, 2018
+### v1.0.0 — October 30th, 2018
 
 * Initial release.
