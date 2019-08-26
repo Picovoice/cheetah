@@ -4,69 +4,61 @@
 
 #include "pv_cheetah.h"
 
-static const char *pv_status_to_string(pv_status_t status) {
-    static const char *const strings[] = {
-            "SUCCESS",
-            "OUT_OF_MEMORY",
-            "IO_ERROR",
-            "INVALID_ARGUMENT",
-            "PV_STATUS_STOP_ITERATION",
-            "PV_STATUS_KEY_ERROR",
-    };
-
-    return strings[status];
-}
-
 int main(int argc, char **argv) {
     if (argc < 6) {
-        printf(
-                "[ERROR] usage: cheetah_demo library_path acoustic_model_path language_model_path license_path "
-                "audio_file_1 audio_file_2 ...\n");
+        fprintf(
+                stderr,
+                "usage: %s dynamic_library_path acoustic_model_path language_model_path license_path "
+                "audio_file_1 audio_file_2 ...\n",
+                argv[0]);
         exit(1);
     }
 
     const char *library_path = argv[1];
 
-    void *handle = dlopen(library_path, RTLD_NOW);
-    if (!handle) {
-        printf("[ERROR] Failed to load Cheetah's library at '%s'.\n", library_path);
+    void *dl_handle = dlopen(library_path, RTLD_NOW);
+    if (!dl_handle) {
+        fprintf(stderr, "failed to load dynamic library at '%s'.\n", library_path);
         exit(1);
     }
 
     char *error;
 
-    pv_status_t (*pv_cheetah_init)(const char*, const char*, const char*, pv_cheetah_object_t**);
-    pv_cheetah_init = dlsym(handle, "pv_cheetah_init");
+    const char *(*pv_status_to_string)(pv_status_t) = dlsym(dl_handle, "pv_status_to_string");
     if ((error = dlerror()) != NULL) {
-        printf("[ERROR] Failed to load init symbol with '%s'.\n", error);
+        fprintf(stderr, "failed to load 'pv_status_to_string' with '%s'.\n", error);
         exit(1);
     }
 
-    void (*pv_cheetah_delete)(pv_cheetah_object_t*);
-    pv_cheetah_delete = dlsym(handle, "pv_cheetah_delete");
+    pv_status_t (*pv_cheetah_init)(const char *, const char *, const char *, int32_t, pv_cheetah_object_t **) =
+    dlsym(dl_handle, "pv_cheetah_init");
     if ((error = dlerror()) != NULL) {
-        printf("[ERROR] Failed to load delete symbol with '%s'.\n", error);
+        fprintf(stderr, "failed to load 'pv_cheetah_init' with '%s'.\n", error);
         exit(1);
     }
 
-    pv_status_t (*pv_cheetah_process)(pv_cheetah_object_t*, const int16_t*);
-    pv_cheetah_process = dlsym(handle, "pv_cheetah_process");
+    void (*pv_cheetah_delete)(pv_cheetah_object_t *) = dlsym(dl_handle, "pv_cheetah_delete");
     if ((error = dlerror()) != NULL) {
-        printf("[ERROR] Failed to load process symbol with '%s'.\n", error);
+        fprintf(stderr, "failed to load 'pv_cheetah_delete' with '%s'.\n", error);
         exit(1);
     }
 
-    pv_status_t (*pv_cheetah_transcribe)(pv_cheetah_object_t*, char**);
-    pv_cheetah_transcribe = dlsym(handle, "pv_cheetah_transcribe");
+    pv_status_t (*pv_cheetah_process)(pv_cheetah_object_t *, const int16_t *, char **, bool *) =
+    dlsym(dl_handle, "pv_cheetah_process");
     if ((error = dlerror()) != NULL) {
-        printf("[ERROR] Failed to load transcribe symbol with '%s'.\n", error);
+        fprintf(stderr, "failed to load 'pv_cheetah_process' with '%s'.\n", error);
         exit(1);
     }
 
-    pv_status_t (*pv_cheetah_frame_length)();
-    pv_cheetah_frame_length = dlsym(handle, "pv_cheetah_frame_length");
+    pv_status_t (*pv_cheetah_flush)(pv_cheetah_object_t *, char **) = dlsym(dl_handle, "pv_cheetah_flush");
     if ((error = dlerror()) != NULL) {
-        printf("[ERROR] Failed to load frame length symbol with '%s'.\n", error);
+        fprintf(stderr, "failed to load 'pv_cheetah_flush' with '%s'.\n", error);
+        exit(1);
+    }
+
+    int32_t (*pv_cheetah_frame_length)() = dlsym(dl_handle, "pv_cheetah_frame_length");
+    if ((error = dlerror()) != NULL) {
+        fprintf(stderr, "failed to load 'pv_cheetah_frame_length' with '%s'.\n", error);
         exit(1);
     }
 
@@ -75,9 +67,9 @@ int main(int argc, char **argv) {
     const char *license_path = argv[4];
 
     pv_cheetah_object_t *cheetah;
-    pv_status_t status = pv_cheetah_init(acoustic_model_path, language_model_path, license_path, &cheetah);
+    pv_status_t status = pv_cheetah_init(acoustic_model_path, language_model_path, license_path, -1, &cheetah);
     if (status != PV_STATUS_SUCCESS) {
-        printf("[ERROR] Failed to init with '%s'.", pv_status_to_string(status));
+        fprintf(stderr, "failed to init with '%s'.\n", pv_status_to_string(status));
         exit(1);
     }
 
@@ -85,46 +77,54 @@ int main(int argc, char **argv) {
 
     int16_t *pcm = malloc(sizeof(int16_t) * frame_length);
     if (!pcm) {
-        printf("[ERROR] Failed to allocate memory for audio buffer.\n");
+        fprintf(stderr, "failed to allocate memory for audio buffer.\n");
         exit(1);
     }
 
     for (int i = 5; i < argc; i++) {
         const char *wav_path = argv[i];
-        FILE *wav = fopen(wav_path, "rb");
-        if (!wav) {
-            printf("[ERROR] Failed to open wav file located at '%s'.\n", wav_path);
+        FILE *wav_handle = fopen(wav_path, "rb");
+        if (!wav_handle) {
+            fprintf(stderr, "failed to open wav file located at '%s'.\n", wav_path);
             exit(1);
         }
 
-        static const int WAV_HEADER_SIZE_BYTES = 44;
+        static const int WAV_HEADER_LENGTH_BYTE = 44;
 
-        if (fseek(wav, WAV_HEADER_SIZE_BYTES, SEEK_SET) != 0) {
-            printf("[ERROR] Failed to skip the wav header.\n");
+        if (fseek(wav_handle, WAV_HEADER_LENGTH_BYTE, SEEK_SET) != 0) {
+            fprintf(stderr, "failed to skip the wav header.\n");
             exit(1);
         }
 
-        while(fread(pcm, sizeof(int16_t), frame_length, wav) == frame_length) {
-            status = pv_cheetah_process(cheetah, pcm);
+        while (fread(pcm, sizeof(int16_t), frame_length, wav_handle) == frame_length) {
+            char *partial_transcript;
+            status = pv_cheetah_process(cheetah, pcm, &partial_transcript, NULL);
             if (status != PV_STATUS_SUCCESS) {
-                printf("[ERROR] Failed to process audio.\n");
+                fprintf(stderr, "failed to process with '%s'.\n", pv_status_to_string(status));
                 exit(1);
             }
+
+            fprintf(stdout, "%s", partial_transcript);
+            fflush(stdout);
+
+            free(partial_transcript);
         }
 
-        char *transcript;
-        status = pv_cheetah_transcribe(cheetah, &transcript);
+        char *final_transcript;
+        status = pv_cheetah_flush(cheetah, &final_transcript);
         if (status != PV_STATUS_SUCCESS) {
-            printf("[ERROR] Failed to transcribe audio\n");
+            fprintf(stderr, "failed to flush with '%s'.\n", pv_status_to_string(status));
             exit(1);
         }
 
-        printf("%s\n", transcript);
-        free(transcript);
+        fprintf(stdout, "%s\n", final_transcript);
+        fflush(stdout);
+
+        free(final_transcript);
     }
 
-    free(pcm);
     pv_cheetah_delete(cheetah);
+    free(pcm);
 
     return 0;
 }
