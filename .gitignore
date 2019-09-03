@@ -1,3 +1,4 @@
 .idea/
 cheetah_demo
-binding/python/__pycache__/
+cheetah_demo_realtime
+**/__pycache__/
