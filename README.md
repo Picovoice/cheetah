@@ -33,11 +33,11 @@ for at least 30 days at any given time.
 If you wish to use Cheetah in a commercial product request access [here](https://picovoice.ai/contact.html). The
 following table depicts the feature comparison between the free and commercial versions:
 
-|  | Non-Commercial License | Commercial License |
+|  | Free | Commercial |
 --- | :---: | :---:
 **Non-Commercial Use** | Yes | Yes |
 **Commercial Use** | No | Yes |
-**Supported Platforms** | Linux (x86_64) | Linux (x86_64), Mac, Windows (x86_64), iOS, Android, Raspberry Pi, Beagle Bone, and Web Browsers.
+**Supported Platforms** | Linux (x86_64) | Linux (x86_64), Mac, Windows (x86_64), iOS, Android, Raspberry Pi, Beagle Bone, and modern Web Browsers.
 **Custom Language Models** | No | Yes |
 **Compact Language Models** | No | Yes |
 **Support** | Community Support | Enterprise Support
@@ -63,7 +63,7 @@ data used by various applications within the repository.
 #### File-Based Demo
 
 The demo transcribes a set of audio files provided as command line arguments. The demo has been tested using Python 3.6.
-Note that the files need to be single-channel, 16KHz, and 16-bit linearly encoded. For more information about audio
+Note that the files need to be single-channel, 16KHz, and 16-bit linearly-encoded. For more information about audio
 requirements refer to [pv_cheetah.h](/include/pv_cheetah.h). The following transcribes the WAV file located in the
 resource directory.
 
@@ -79,7 +79,7 @@ python demo/python/cheetah_demo.py --audio_paths PATH_TO_AUDIO_FILE_1,PATH_TO_AU
 
 ### Realtime Demo
 
-This Cheetah demo records audio from the microphone and transcribes it to speech, in real-time:
+This Cheetah demo records audio from the microphone and transcribes it in real-time:
 
 ```bash
 python demo/python/cheetah_demo_realtime.py
@@ -132,7 +132,7 @@ PATH_TO_AUDIO_FILE_1 PATH_TO_AUDIO_FILE_2 PATH_TO_AUDIO_FILE_3
 
 #### Realtime Demo
 
-This demo records the input audio from a microphone and transcribes to speech in real-time. Running the command from
+This demo records the input audio from a microphone and transcribes in real-time. Running the command from
 root of the repository, the demo can be built using `gcc`:
 
 ```bash
