@@ -31,7 +31,7 @@ class CheetahTestCase(unittest.TestCase):
         transcript += final_transcript
         self.assertEqual(
             transcript,
-            "MR CARTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE'RE GLAD TO WELCOME HIS GOSPEL")
+            "MISTER COULTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE'RE GLAD TO WELCOME HIS GOSPEL")
 
 
 if __name__ == '__main__':
