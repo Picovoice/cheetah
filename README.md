@@ -37,7 +37,7 @@ following table depicts the feature comparison between the free and commercial v
 --- | :---: | :---:
 **Non-Commercial Use** | Yes | Yes |
 **Commercial Use** | No | Yes |
-**Supported Platforms** | Linux (x86_64) | Linux (x86_64), Mac, Windows (x86_64), iOS, Android, Raspberry Pi, Beagle Bone, and modern Web Browsers.
+**Supported Platforms** | Ubuntu (x86_64) | Linux (x86_64), Mac, Windows (x86_64), iOS, Android, Raspberry Pi, Beagle Bone, and modern Web Browsers.
 **Custom Language Models** | No | Yes |
 **Compact Language Models** | No | Yes |
 **Support** | Community Support | Enterprise Support
