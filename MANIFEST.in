@@ -1,0 +1,12 @@
+include LICENSE
+
+include binding/python/cheetah.py
+include demo/python/cheetah_demo.py
+include demo/python/cheetah_demo_realtime.py
+include lib/common/acoustic_model.pv
+include lib/common/language_model.pv
+include lib/linux/x86_64/libpv_cheetah.so
+
+recursive-include resources/util/python *
+
+global-exclude README.md
