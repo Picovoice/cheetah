@@ -78,4 +78,5 @@ setuptools.setup(
             'pvcheetah_file=pvcheetah.demo.python.cheetah_demo:main'
         ],
     ),
+    python_requires='>=3',
 )
