@@ -5,7 +5,7 @@ import os
 LONG_DESCRIPTION = \
     """
     #[Cheetah](https://github.com/Picovoice/cheetah).   
-    It supports Linux (x86_64), Mac, Raspberry Pi (Zero, 1, 2, 3), and BeagleBone.
+    It supports Linux (x86_64).
     ## Installation
     ```bash
     pip install pvcheetah
@@ -25,9 +25,12 @@ LONG_DESCRIPTION = \
     ### Realtime Demo
     Make sure you have a working microphone connected to your device first. From commandline type the following
     ```bash
-    pvcheetah_mic
+    pvcheetah_mic --license_path ${LICENSE_PATH}
     ```
-    Then say anything. The demo records audio steam from microphone and transcribes it in real-time.
+    Replace ${LICENSE_PATH} with the absolute path to the license file. A non-commercial use license can be downloaded
+    from the Cheetah GitHub page [here](https://github.com/Picovoice/cheetah/tree/master/resources/license).  
+    Inquire about a commerical license [here](https://picovoice.ai/).  
+    The demo records audio stream from microphone and transcribes it in real-time.
     ### File-Based Demo
     ```bash
     pvcheetah_file --audio_paths ${AUDIO_PATHS}
@@ -36,12 +39,16 @@ LONG_DESCRIPTION = \
     In order to get more information about using demos, run them with '--help' argument or look into their GitHub page
     [here](https://github.com/Picovoice/cheetah/tree/master/demo/python).
     ### Cheetah Class
-    
+
     You can create an instance of Cheetah engine for use within your application using the factory method provided below.
     ```python
     import pvcheetah
-    pvcheetah.create()
+    license_path = ... # The file is available under resources/license/cheetah_eval_linux_public.lic
+    pvcheetah.create(license_path)
     ```
+    The non-commercial use license file is available for download on the Cheetah GitHub page
+    [here](https://github.com/Picovoice/cheetah/tree/master/resources/license).  
+    Inquire about a commerical license [here](https://picovoice.ai/).
     """
 
 for x in ('build', 'dist', 'pvcheetah.egg-info'):

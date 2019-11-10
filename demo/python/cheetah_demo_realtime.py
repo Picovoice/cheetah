@@ -97,7 +97,7 @@ class CheetahRealtimeDemo(Thread):
         pa.terminate()
 
 
-if __name__ == '__main__':
+def main():
     def _abs_path(rel_path):
         return os.path.join(os.path.dirname(__file__), '../..', rel_path)
 
@@ -134,3 +134,7 @@ if __name__ == '__main__':
         acoustic_model_path=args.acoustic_model_path,
         language_model_path=args.language_model_path,
         license_path=args.license_path).run()
+
+
+if __name__ == '__main__':
+    main()

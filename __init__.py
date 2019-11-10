@@ -2,7 +2,7 @@ from .binding.python.cheetah import Cheetah
 from .resources.util.python import *
 
 
-def create(library_path=None, acoustic_model_path=None, language_model_path=None, license_path=None):
+def create(license_path, library_path=None, acoustic_model_path=None, language_model_path=None):
 	"""
 	Factory method for Cheetah
 
@@ -24,9 +24,6 @@ def create(library_path=None, acoustic_model_path=None, language_model_path=None
 
 	if language_model_path is None:
 		language_model_path = LANGUAGE_MODEL_PATH
-
-	if license_path is None:
-		license_path = LICENSE_PATH
 
 	return Cheetah(
 	    library_path=library_path,

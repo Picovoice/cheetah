@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../../binding/python'))
 from cheetah import Cheetah
 
 
-if __name__ == '__main__':
+def main():
     def _abs_path(rel_path):
         return os.path.join(os.path.dirname(__file__), '../..', rel_path)
 
@@ -68,3 +68,7 @@ if __name__ == '__main__':
         transcript += cheetah.flush()
 
         print(transcript)
+
+
+if __name__ == '__main__':
+    main()
