@@ -2,19 +2,18 @@
 
 Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
-Cheetah is an on-device **speech-to-text** engine. Cheetah is:
+Cheetah is an on-device streaming Speech-to-Text engine. Cheetah is:
 
-* offline and runs locally without an internet connection. Nothing is sent to cloud to fully protect users' **privacy**. 
-* compact and computationally-efficient making it suitable for **IoT** applications.
-* **[highly-accurate](https://github.com/Picovoice/stt-benchmark#results)**.
-* **cross-platform**. **Raspberry Pi**, **Beagle Bone**, **Android**, **iOS**, **Linux (x86_64)**, **Mac**,
-**Windows (x86_64)**, and **Web Browsers** (**WebAssembly**) are supported. **Linux (x86_64)** is available for
-non-commercial use free of charge. Other platforms are only available under commercial license.
-* **customizable**. Allows adding new words and adapting to different contexts (Available only under commercial license).
+* offline and runs locally without an internet connection.
+* highly-accurate [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results).
+* compact and computationally-efficient [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results).
+* cross-platform. Linux (x86_64), Mac (x86_64), Windows (x86_64), web browsers, Android, iOS, Raspberry Pi, and
+Beagle Bone are supported. Linux (x86_64) is available for personal and non-commercial use free of charge. Other
+platforms are only available under the commercial license.
+* customizable. Allows adding new words and adapting to different contexts (Available only under the commercial license).
 
 ## Table of Contents
 * [License](#license)
-* [Performance](#performance)
 * [Structure of Repository](#structure-of-repository)
 * [Running Demo Applications](#running-demo-applications)
     * [Python Demo Application](#python-demo-application)
@@ -26,27 +25,8 @@ non-commercial use free of charge. Other platforms are only available under comm
 
 ## License
 
-This repository is provided for **non-commercial** use only. Please refer to [LICENSE](/LICENSE) for details.
-The [license file](/resources/license) in this repository is time-limited. Picovoice assures that the license is valid
-for at least 30 days at any given time.
-
-If you wish to use Cheetah in a commercial product request access [here](https://picovoice.ai/contact.html). The
-following table depicts the feature comparison between the free and commercial versions:
-
-|  | Free | Commercial |
---- | :---: | :---:
-**Non-Commercial Use** | Yes | Yes |
-**Commercial Use** | No | Yes |
-**Supported Platforms** | Ubuntu (x86_64) | Linux (x86_64), Mac, Windows (x86_64), iOS, Android, Raspberry Pi, Beagle Bone, and modern Web Browsers.
-**Custom Language Models** | No | Yes |
-**Compact Language Models** | No | Yes |
-**Support** | Community Support | Enterprise Support
-**Time Limit** | 100 seconds | None
-
-## Performance
-
-A comparison between accuracy and runtime metrics of Cheetah and a few other widely-used engines is provided
-[here](https://github.com/Picovoice/stt-benchmark).
+This repository is provided for **personal & non-commercial** use only. Refer to [LICENSE](/LICENSE) for details. If you
+wish to use Cheetah in a commercial product request access [here](https://picovoice.ai/contact.html).
 
 ## Structure of Repository
 
@@ -271,6 +251,11 @@ pv_cheetah_delete(handle);
 ```
 
 ## Releases
+
+### V1.2.0 — January 14th, 2020
+
+* Improved accuracy
+* Runtime optimizations
 
 ### V1.1.0 — September 2nd, 2019
 

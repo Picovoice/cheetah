@@ -1,3 +1,14 @@
+/*
+    Copyright 2018 Picovoice Inc.
+
+    You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
+    file accompanying this source.
+
+    Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+    an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+    specific language governing permissions and limitations under the License.
+*/
+
 #include <alsa/asoundlib.h>
 #include <dlfcn.h>
 #include <signal.h>
@@ -45,27 +56,27 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    pv_status_t (*pv_cheetah_init)(const char *, const char *, const char *, int32_t, pv_cheetah_object_t **) =
+    pv_status_t (*pv_cheetah_init)(const char *, const char *, const char *, int32_t, pv_cheetah_t **) =
     dlsym(dl_handle, "pv_cheetah_init");
     if ((error = dlerror()) != NULL) {
         fprintf(stderr, "failed to load 'pv_cheetah_init' with '%s'.\n", error);
         exit(1);
     }
 
-    void (*pv_cheetah_delete)(pv_cheetah_object_t *) = dlsym(dl_handle, "pv_cheetah_delete");
+    void (*pv_cheetah_delete)(pv_cheetah_t *) = dlsym(dl_handle, "pv_cheetah_delete");
     if ((error = dlerror()) != NULL) {
         fprintf(stderr, "failed to load 'pv_cheetah_delete' with '%s'.\n", error);
         exit(1);
     }
 
-    pv_status_t (*pv_cheetah_process)(pv_cheetah_object_t *, const int16_t *, char **, bool *) =
+    pv_status_t (*pv_cheetah_process)(pv_cheetah_t *, const int16_t *, char **, bool *) =
     dlsym(dl_handle, "pv_cheetah_process");
     if ((error = dlerror()) != NULL) {
         fprintf(stderr, "failed to load 'pv_cheetah_process' with '%s'.\n", error);
         exit(1);
     }
 
-    pv_status_t (*pv_cheetah_flush)(pv_cheetah_object_t *, char **) = dlsym(dl_handle, "pv_cheetah_flush");
+    pv_status_t (*pv_cheetah_flush)(pv_cheetah_t *, char **) = dlsym(dl_handle, "pv_cheetah_flush");
     if ((error = dlerror()) != NULL) {
         fprintf(stderr, "failed to load 'pv_cheetah_flush' with '%s'.\n", error);
         exit(1);
@@ -141,7 +152,7 @@ int main(int argc, char *argv[]) {
     const char *language_model_path = argv[4];
     const char *license_path = argv[5];
 
-    pv_cheetah_object_t *cheetah;
+    pv_cheetah_t *cheetah;
     pv_status_t status = pv_cheetah_init(acoustic_model_path, language_model_path, license_path, 1, &cheetah);
     if (status != PV_STATUS_SUCCESS) {
         fprintf(stderr, "failed to init with '%s'.\n", pv_status_to_string(status));

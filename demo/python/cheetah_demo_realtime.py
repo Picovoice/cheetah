@@ -1,3 +1,14 @@
+#
+#    Copyright 2018 Picovoice Inc.
+#
+#    You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
+#    file accompanying this source.
+#
+#    Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+#    an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+#    specific language governing permissions and limitations under the License.
+#
+
 import argparse
 import os
 import struct
@@ -98,7 +109,7 @@ class CheetahRealtimeDemo(Thread):
 
 
 if __name__ == '__main__':
-    def _abs_path(rel_path):
+    def abs_path(rel_path):
         return os.path.join(os.path.dirname(__file__), '../..', rel_path)
 
     parser = argparse.ArgumentParser()
@@ -106,26 +117,22 @@ if __name__ == '__main__':
     parser.add_argument(
         '--library_path',
         help="absolute path to Cheetah's dynamic library",
-        type=str,
-        default=_abs_path('lib/linux/x86_64/libpv_cheetah.so'))
+        default=abs_path('lib/linux/x86_64/libpv_cheetah.so'))
 
     parser.add_argument(
         '--acoustic_model_path',
         help='absolute path to acoustic model parameter file',
-        type=str,
-        default=_abs_path('lib/common/acoustic_model.pv'))
+        default=abs_path('lib/common/acoustic_model.pv'))
 
     parser.add_argument(
         '--language_model_path',
         help='absolute path to language model parameter file',
-        type=str,
-        default=_abs_path('lib/common/language_model.pv'))
+        default=abs_path('lib/common/language_model.pv'))
 
     parser.add_argument(
         '--license_path',
         help='absolute path to license file',
-        type=str,
-        default=_abs_path('resources/license/cheetah_eval_linux_public.lic'))
+        default=abs_path('resources/license/cheetah_eval_linux_public.lic'))
 
     args = parser.parse_args()
 

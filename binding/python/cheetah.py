@@ -1,3 +1,14 @@
+#
+#    Copyright 2018 Picovoice Inc.
+#
+#    You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
+#    file accompanying this source.
+#
+#    Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+#    an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+#    specific language governing permissions and limitations under the License.
+#
+
 import os
 from ctypes import *
 from ctypes.util import find_library
@@ -5,7 +16,7 @@ from enum import Enum
 
 
 class Cheetah(object):
-    """Python binding for Picovoice's speech-to-text (a.k.a Cheetah) library."""
+    """Python binding for Picovoice's streaming Speech-to-Text engine."""
 
     class PicovoiceStatuses(Enum):
         """Status codes corresponding to 'pv_status_t' defined in 'include/picovoice.h'"""
@@ -23,7 +34,8 @@ class Cheetah(object):
         PicovoiceStatuses.IO_ERROR: IOError,
         PicovoiceStatuses.INVALID_ARGUMENT: ValueError,
         PicovoiceStatuses.STOP_ITERATION: StopIteration,
-        PicovoiceStatuses.KEY_ERROR: KeyError
+        PicovoiceStatuses.KEY_ERROR: KeyError,
+        PicovoiceStatuses.INVALID_STATE: ValueError,
     }
 
     class CCheetah(Structure):
