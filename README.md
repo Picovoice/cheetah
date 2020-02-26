@@ -14,6 +14,7 @@ platforms are only available under the commercial license.
 
 ## Table of Contents
 * [License](#license)
+* [Use Cases](#use-cases)
 * [Structure of Repository](#structure-of-repository)
 * [Running Demo Applications](#running-demo-applications)
     * [Python Demo Application](#python-demo-application)
@@ -27,6 +28,19 @@ platforms are only available under the commercial license.
 
 This repository is provided for **personal & non-commercial** use only. Refer to [LICENSE](/LICENSE) for details. If you
 wish to use Cheetah in a commercial product request access [here](https://picovoice.ai/contact.html).
+
+## Use Cases
+
+Cheetah is meant to be used for open-domain transcription applications that require live user feedback (incremental
+transcription results). Open-Domain question answering, voice typing, and meeting note-taking are a few examples.
+
+* If real-time feedback (incremental transcription results) are not needed, you should check out
+[Leopard](https://github.com/Picovoice/leopard).
+* If you need to understand naturally-spoken (complex) commands within a specific domain you should check out
+[Rhino](https://github.com/Picovoice/rhino).
+* If you need to recognize a few simple voice commands or activate a device using voice you should check out 
+[Porcupine](https://github.com/Picovoice/porcupine).
+
 
 ## Structure of Repository
 
