@@ -38,7 +38,7 @@ transcription results). Open-Domain question answering, voice typing, and meetin
 [Leopard](https://github.com/Picovoice/leopard).
 * If you need to understand naturally-spoken (complex) commands within a specific domain you should check out
 [Rhino](https://github.com/Picovoice/rhino).
-* If you need to recognize a few simple voice commands or activate a device using voice you should check out 
+* If you need to recognize a few simple voice commands or activate a device using voice you should check out
 [Porcupine](https://github.com/Picovoice/porcupine).
 
 
@@ -53,6 +53,15 @@ data used by various applications within the repository.
 ## Running Demo Applications
 
 ### Python Demo Application
+
+First, make sure you have Python 3 installed along with the necessary packages included in the requirement.txt file:
+
+```bash
+python --version
+Python 3.6.8
+
+pip3 install -r requirements.txt
+```
 
 #### File-Based Demo
 
@@ -188,7 +197,7 @@ for i in range(num_frames):
     frame = [i * handle.frame_length:(i + 1) * handle.frame_length]
     partial_transcript, _ = handle.process(frame)
     transcript += partial_transcript
-    
+
 transcript += handle.flush()
 ```
 
@@ -236,14 +245,14 @@ char *transcript = ... // buffer for storing transcription.
 
 for (int i = 0; i < num_frames; i++) {
     const int16_t *frame = &audio[i * pv_cheetah_frame_length()];
-    
+
     char *partial_transcript;
     bool is_endpoint; // is updated only if endpoint detection is enabled at construction time.
     const pv_status_t status = pv_cheetah_process(handle, frame, &partial_transcript, &is_endpoint);
     if (status != PV_STATUS_SUCCESS) {
         // error handling logic
     }
-    
+
     strcat(transcript, partial_transcript);
     free(partial_transcript);
 }
