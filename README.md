@@ -54,13 +54,13 @@ data used by various applications within the repository.
 
 ### Python Demo Application
 
-First, make sure you have Python 3.6 installed along with the necessary packages included in the requirement.txt file:
+First, make sure you have Python 3 installed along with the necessary packages included in the requirement.txt file:
 
 ```bash
 python --version
 Python 3.6.8
 
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 #### File-Based Demo
