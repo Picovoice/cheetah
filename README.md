@@ -13,16 +13,26 @@ platforms are only available under the commercial license.
 * customizable. Allows adding new words and adapting to different contexts (Available only under the commercial license).
 
 ## Table of Contents
-* [License](#license)
-* [Use Cases](#use-cases)
-* [Structure of Repository](#structure-of-repository)
-* [Running Demo Applications](#running-demo-applications)
-    * [Python Demo Application](#python-demo-application)
-    * [C Demo Application](#c-demo-application)
-* [Integration](#integration)
-    * [Python](#python)
-    * [C](#c)
-* [Releases](#releases)
+- [Cheetah](#cheetah)
+  - [Table of Contents](#table-of-contents)
+  - [License](#license)
+  - [Use Cases](#use-cases)
+  - [Structure of Repository](#structure-of-repository)
+  - [Picovoice Console and License File](#picovoice-console-and-license-file)
+  - [Running Demo Applications](#running-demo-applications)
+    - [Python Demo Application](#python-demo-application)
+      - [File-Based Demo](#file-based-demo)
+    - [Realtime Demo](#realtime-demo)
+    - [C Demo Application](#c-demo-application)
+      - [File-Based Demo](#file-based-demo-1)
+      - [Realtime Demo](#realtime-demo-1)
+  - [Integration](#integration)
+    - [Python](#python)
+    - [C](#c)
+  - [Releases](#releases)
+    - [V1.2.0 — January 14th, 2020](#v120--january-14th-2020)
+    - [V1.1.0 — September 2nd, 2019](#v110--september-2nd-2019)
+    - [V1.0.0 — October 30th, 2018](#v100--october-30th-2018)
 
 ## License
 
@@ -50,6 +60,10 @@ usage from higher-level languages/platforms. Demo applications are at [demo](/de
 applications as a starting point for your own implementation. Finally, [resources](/resources) is a placeholder for
 data used by various applications within the repository.
 
+## Picovoice Console and License File
+
+In order to run, Cheetah requires a valid license file ('.lic' extension). To obtain a time-limited evaluation license file, visit [Picovoice Console](https://console.picovoice.ai). To obtain a commercial license, [contact Picovoice](https://picovoice.ai/contact/).
+
 ## Running Demo Applications
 
 ### Python Demo Application
@@ -71,13 +85,13 @@ requirements refer to [pv_cheetah.h](/include/pv_cheetah.h). The following trans
 resource directory.
 
 ```bash
-python demo/python/cheetah_demo.py --audio_paths resources/audio_samples/test.wav
+python demo/python/cheetah_demo.py --audio_paths resources/audio_samples/test.wav --license_path ABSOLUTE_PATH_TO_CHEETAH_LICENSE_FILE
 ```
 
 In order to transcribe multiple files concatenate their paths using comma as below.
 
 ```bash
-python demo/python/cheetah_demo.py --audio_paths PATH_TO_AUDIO_FILE_1,PATH_TO_AUDIO_FILE_2,PATH_TO_AUDIO_FILE_3
+python demo/python/cheetah_demo.py --audio_paths PATH_TO_AUDIO_FILE_1,PATH_TO_AUDIO_FILE_2,PATH_TO_AUDIO_FILE_3 --license_path ABSOLUTE_PATH_TO_CHEETAH_LICENSE_FILE
 ```
 
 ### Realtime Demo
@@ -85,7 +99,7 @@ python demo/python/cheetah_demo.py --audio_paths PATH_TO_AUDIO_FILE_1,PATH_TO_AU
 This Cheetah demo records audio from the microphone and transcribes it in real-time:
 
 ```bash
-python demo/python/cheetah_demo_realtime.py
+python demo/python/cheetah_demo_realtime.py --license_path ABSOLUTE_PATH_TO_CHEETAH_LICENSE_FILE
 ```
 
 Note: you need to have a working microphone and it needs to be set as the default audio capture device on your computer
@@ -118,7 +132,7 @@ Then it can be used as follows:
 ./lib/linux/x86_64/libpv_cheetah.so \
 ./lib/common/acoustic_model.pv \
 ./lib/common/language_model.pv \
-./resources/license/cheetah_eval_linux_public.lic \
+./PATH_TO_YOUR_CHEETAH_LICENSE_FILE \
 ./resources/audio_samples/test.wav
 ```
 
@@ -130,7 +144,7 @@ arguments as follows:
 ./lib/linux/x86_64/libpv_cheetah.so \
 ./lib/common/acoustic_model.pv \
 ./lib/common/language_model.pv \
-./resources/license/cheetah_eval_linux_public.lic \
+./PATH_TO_YOUR_CHEETAH_LICENSE_FILE \
 PATH_TO_AUDIO_FILE_1 PATH_TO_AUDIO_FILE_2 PATH_TO_AUDIO_FILE_3
 ```
 
@@ -157,7 +171,7 @@ lib/linux/x86_64/libpv_cheetah.so \
 AUDIO_DEVICE_NAME \
 lib/common/acoustic_model.pv \
 lib/common/language_model.pv \
-resources/license/cheetah_eval_linux_public.lic
+PATH_TO_YOUR_CHEETAH_LICENSE_FILE
 ```
 
 The `AUDIO_DEVICE_NAME` parameter for the microphone can be found using
@@ -179,7 +193,7 @@ of how to construct an instance of it.
 library_path = ... # The file is available under lib/linux/x86_64/libpv_cheetah.so
 acoustic_model_path = ... # The file is available under lib/common/acoustic_model.pv
 language_model_path = ... # The file is available under lib/common/language_model.pv
-license_path = ... # The file is available under resources/license/cheetah_eval_linux_public.lic
+license_path = ... # The .lic file is available from Picovoice Console (https://console.picovoice.ai)
 
 handle = Cheetah(library_path, acoustic_model_path, language_model_path, license_path)
 ```
@@ -217,7 +231,7 @@ constructed as follows:
 ```c
 const char *acoustic_model_path = ... // The file is available under lib/common/acoustic_model.pv
 const char *language_model_path = ... // The file is available under lib/common/language_model.pv
-const char *license_path = ... // The file is available under resources/license/cheetah_eval_linux_public.lic
+const char *license_path = ... // The .lic file is available from Picovoice Console (https://console.picovoice.ai)
 const int32_t endpoint_duration_sec = ... // endpoint duration in seconds. set to '-1' to disable endpointing
 
 pv_cheetah_t *handle;
