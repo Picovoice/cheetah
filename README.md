@@ -4,11 +4,11 @@ Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
 Cheetah is an on-device streaming Speech-to-Text engine. Cheetah is:
 
-* offline and runs locally without an internet connection.
+* offline: runs locally without an Internet connection.
 * highly-accurate [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results).
 * compact and computationally-efficient [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results).
 * cross-platform. Linux (x86_64), Mac (x86_64), Windows (x86_64), web browsers, Android, iOS, Raspberry Pi, and
-Beagle Bone are supported. Linux (x86_64) is available for personal and non-commercial use free of charge. Other
+BeagleBone are supported. Linux (x86_64) is available for personal and non-commercial use free of charge. Other
 platforms are only available under the commercial license.
 * customizable. Allows adding new words and adapting to different contexts (Available only under the commercial license).
 
@@ -27,18 +27,18 @@ platforms are only available under the commercial license.
 ## License
 
 This repository is provided for **personal & non-commercial** use only. Refer to [LICENSE](/LICENSE) for details. If you
-wish to use Cheetah in a commercial product request access [here](https://picovoice.ai/contact.html).
+wish to use Cheetah in a commercial product, [contact Picovoice](https://picovoice.ai/contact/).
 
 ## Use Cases
 
 Cheetah is meant to be used for open-domain transcription applications that require live user feedback (incremental
 transcription results). Open-Domain question answering, voice typing, and meeting note-taking are a few examples.
 
-* If real-time feedback (incremental transcription results) are not needed, you should check out
+* If real-time feedback (incremental transcription results) is not needed, see
 [Leopard](https://github.com/Picovoice/leopard).
-* If you need to understand naturally-spoken (complex) commands within a specific domain you should check out
+* If you need to understand naturally-spoken (complex) commands within a specific domain, see
 [Rhino](https://github.com/Picovoice/rhino).
-* If you need to recognize a few simple voice commands or activate a device using voice you should check out
+* If you need to recognize a fixed set of simple voice commands, or activate a device using voice, see
 [Porcupine](https://github.com/Picovoice/porcupine).
 
 
@@ -54,7 +54,7 @@ data used by various applications within the repository.
 
 ### Python Demo Application
 
-First, make sure you have Python 3 installed along with the necessary packages included in the requirement.txt file:
+First, make sure you have Python 3 installed along with the necessary packages included in the requirements.txt file:
 
 ```bash
 python --version
@@ -98,19 +98,20 @@ for the demo to function correctly.
 This demo application accepts a set of WAV files as input and returns their transcripts. Note that the demo expects the
 audio files to be WAV, 16KHz, and 16-bit linearly-encoded. It does not perform any verification to assure the
 compatibility or correctness of the input audio files. Set the current working directory to the root of the repository.
+
 The demo can be built using `gcc` as below.
 
 ```bash
 gcc -I include/ -O3 demo/c/cheetah_demo.c -ldl -o cheetah_demo
 ```
 
-The usage can be attained by
+The usage can be attained by:
 
 ```bash
 ./cheetah_demo
 ```
 
-Then it can be used as follows
+Then it can be used as follows:
 
 ```bash
 ./cheetah_demo \
@@ -210,8 +211,8 @@ handle.delete()
 ### C
 
 Cheetah is implemented in ANSI C and therefore can be directly linked to C applications.
-[pv_cheetah.h](/include/pv_cheetah.h) header file contains relevant information. An instance of Cheetah object can be
-constructed as follows.
+[pv_cheetah.h](/include/pv_cheetah.h) header file contains relevant information. An instance of the Cheetah object can be
+constructed as follows:
 
 ```c
 const char *acoustic_model_path = ... // The file is available under lib/common/acoustic_model.pv
@@ -233,7 +234,7 @@ if (status != PV_STATUS_SUCCESS) {
 
 Now the `handle` can be used to process incoming audio stream. Cheetah accepts single-channel 16-bit PCM audio.
 The sample rate can be retrieved using `pv_sample_rate()`. Finally, Cheetah accepts input audio in consecutive chunks
-(aka frames) the length of each frame can be retrieved using `pv_cheetah_frame_length()`.
+(aka frames); the length of each frame can be retrieved using `pv_cheetah_frame_length()`.
 
 ```C
 const int16_t *audio = ... // audio data to be transcribed
