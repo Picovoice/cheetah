@@ -85,13 +85,13 @@ requirements refer to [pv_cheetah.h](/include/pv_cheetah.h). The following trans
 resource directory.
 
 ```bash
-python demo/python/cheetah_demo.py --audio_paths resources/audio_samples/test.wav --license_path ABSOLUTE_PATH_TO_CHEETAH_LICENSE_FILE
+python demo/python/cheetah_demo.py --audio_paths resources/audio_samples/test.wav --license_path PATH_TO_YOUR_CHEETAH_LICENSE_FILE
 ```
 
 In order to transcribe multiple files concatenate their paths using comma as below.
 
 ```bash
-python demo/python/cheetah_demo.py --audio_paths PATH_TO_AUDIO_FILE_1,PATH_TO_AUDIO_FILE_2,PATH_TO_AUDIO_FILE_3 --license_path ABSOLUTE_PATH_TO_CHEETAH_LICENSE_FILE
+python demo/python/cheetah_demo.py --audio_paths PATH_TO_AUDIO_FILE_1,PATH_TO_AUDIO_FILE_2,PATH_TO_AUDIO_FILE_3 --license_path PATH_TO_YOUR_CHEETAH_LICENSE_FILE
 ```
 
 ### Realtime Demo
@@ -99,7 +99,7 @@ python demo/python/cheetah_demo.py --audio_paths PATH_TO_AUDIO_FILE_1,PATH_TO_AU
 This Cheetah demo records audio from the microphone and transcribes it in real-time:
 
 ```bash
-python demo/python/cheetah_demo_realtime.py --license_path ABSOLUTE_PATH_TO_CHEETAH_LICENSE_FILE
+python demo/python/cheetah_demo_realtime.py --license_path PATH_TO_YOUR_CHEETAH_LICENSE_FILE
 ```
 
 Note: you need to have a working microphone and it needs to be set as the default audio capture device on your computer
