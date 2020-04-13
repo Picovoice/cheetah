@@ -43,8 +43,8 @@ if __name__ == '__main__':
 
     parser.add_argument(
         '--license_path',
-        help='absolute path to license file',
-        default=abs_path('resources/license/cheetah_eval_linux_public.lic'))
+        help='absolute path to license file (license files can be obtained from Picovoice Console, https://console.picovoice.ai)',
+        required=True)
 
     parser.add_argument(
         '--audio_paths',
