@@ -62,7 +62,7 @@ data used by various applications within the repository.
 
 ## Picovoice Console and License File
 
-In order to run, Cheetah requires a valid license file ('.lic' extension). To obtain a time-limited evaluation license file, visit [Picovoice Console](https://console.picovoice.ai). To obtain a commercial license, [contact Picovoice](https://picovoice.ai/contact/).
+In order to run, Cheetah requires a valid license file ('.lic' extension). To obtain a time-limited evaluation license file, visit [Picovoice Console](https://picovoice.ai/console/). To obtain a commercial license, [contact Picovoice](https://picovoice.ai/contact/).
 
 ## Running Demo Applications
 
@@ -193,7 +193,7 @@ of how to construct an instance of it.
 library_path = ... # The file is available under lib/linux/x86_64/libpv_cheetah.so
 acoustic_model_path = ... # The file is available under lib/common/acoustic_model.pv
 language_model_path = ... # The file is available under lib/common/language_model.pv
-license_path = ... # The .lic file is available from Picovoice Console (https://console.picovoice.ai)
+license_path = ... # The .lic file is available from Picovoice Console (https://picovoice.ai/console/)
 
 handle = Cheetah(library_path, acoustic_model_path, language_model_path, license_path)
 ```
@@ -231,7 +231,7 @@ constructed as follows:
 ```c
 const char *acoustic_model_path = ... // The file is available under lib/common/acoustic_model.pv
 const char *language_model_path = ... // The file is available under lib/common/language_model.pv
-const char *license_path = ... // The .lic file is available from Picovoice Console (https://console.picovoice.ai)
+const char *license_path = ... // The .lic file is available from Picovoice Console (https://picovoice.ai/console/)
 const int32_t endpoint_duration_sec = ... // endpoint duration in seconds. set to '-1' to disable endpointing
 
 pv_cheetah_t *handle;
