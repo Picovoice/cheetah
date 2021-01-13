@@ -114,6 +114,9 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
 
+    parser.add_argument(    
+        'ls',
+        help="List you audio devices")
     parser.add_argument(
         '--library_path',
         help="absolute path to Cheetah's dynamic library",
@@ -135,9 +138,12 @@ if __name__ == '__main__':
         required=True)
 
     args = parser.parse_args()
-
-    CheetahRealtimeDemo(
+    demo = CheetahRealtimeDemo(
         library_path=args.library_path,
         acoustic_model_path=args.acoustic_model_path,
         language_model_path=args.language_model_path,
-        license_path=args.license_path).run()
+        license_path=args.license_path)
+    if(args.ls):
+        demo.show_audio_devices_info()
+    else:
+        demo.run()
