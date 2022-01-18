@@ -155,25 +155,28 @@ class Cheetah(object):
         self._flush_func.argtypes = [POINTER(self.CCheetah), POINTER(c_char_p)]
         self._flush_func.restype = self.PicovoiceStatuses
 
+        self._version = library.pv_leopard_version()
+
         self._sample_rate = library.pv_sample_rate()
 
         self._frame_length = library.pv_cheetah_frame_length()
 
     def process(self, pcm: Sequence[int]) -> Tuple[str, bool]:
         """
-        Processes a frame of audio and returns newly-transcribed text (if any) and a flag indicating if an endpoint has
-        been detected. Upon detection of an endpoint, the client should invoke 'pv_cheetah_flush()' to retrieve any
-        remaining transcription.
+        Processes a frame of audio and returns newly-transcribed text and a flag indicating if an endpoint has been
+        detected. Upon detection of an endpoint, the client may invoke `.`flush()` to retrieve any remaining
+        transcription.
 
-        :param pcm: A frame of audio samples. The number of samples per frame can be attained by calling '.frame_length'.
-        The incoming audio needs to have a sample rate equal to '.sample_rate' and be 16-bit linearly-encoded.
-        Furthermore, cheetah operates on single-channel audio.
+        :param pcm: A frame of audio samples. The number of samples per frame can be attained by calling
+        `.frame_length`. The incoming audio needs to have a sample rate equal to `.sample_rate` and be 16-bit
+        linearly-encoded. Furthermore, Cheetah operates on single-channel audio.
 
         :return: tuple of Any newly-transcribed speech (if none is available then an empty string is returned) and a
         flag indicating if an endpoint has been detected.
         """
 
-        assert len(pcm) == self.frame_length
+        if len(pcm) != self.frame_length:
+            raise CheetahInvalidArgumentError()
 
         c_partial_transcript = c_char_p()
         is_endpoint = c_bool()
@@ -182,13 +185,10 @@ class Cheetah(object):
             (c_short * len(pcm))(*pcm),
             byref(c_partial_transcript),
             byref(is_endpoint))
-
         if status is not self.PicovoiceStatuses.SUCCESS:
-            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status]('Processing failed')
+            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status]()
 
-        partial_transcript = c_partial_transcript.value.decode('utf-8')
-
-        return partial_transcript, is_endpoint
+        return c_partial_transcript.value.decode('utf-8'), is_endpoint
 
     def flush(self) -> str:
         """
@@ -200,13 +200,10 @@ class Cheetah(object):
 
         c_final_transcript = c_char_p()
         status = self._flush_func(self._handle, byref(c_final_transcript))
-
         if status is not self.PicovoiceStatuses.SUCCESS:
-            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status]('Flush failed')
+            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status]()
 
-        final_transcript = c_final_transcript.value.decode('utf-8')
-
-        return final_transcript
+        return c_final_transcript.value.decode('utf-8')
 
     def delete(self) -> None:
         """Releases resources acquired by Cheetah."""
