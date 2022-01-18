@@ -155,7 +155,10 @@ class Cheetah(object):
         self._flush_func.argtypes = [POINTER(self.CCheetah), POINTER(c_char_p)]
         self._flush_func.restype = self.PicovoiceStatuses
 
-        self._version = library.pv_leopard_version()
+        version_func = library.pv_cheetah_version
+        version_func.argtypes = []
+        version_func.restype = c_char_p
+        self._version = version_func().decode('utf-8')
 
         self._sample_rate = library.pv_sample_rate()
 
