@@ -64,13 +64,13 @@ requirements refer to [pv_cheetah.h](/include/pv_cheetah.h). The following trans
 resource directory.
 
 ```bash
-python demo/python/cheetah_demo.py --audio_paths resources/audio_samples/test.wav --license_path ${PATH_TO_YOUR_CHEETAH_LICENSE_FILE}
+python demo/python/cheetah_demo_file.py --audio_paths resources/audio_samples/test.wav --license_path ${PATH_TO_YOUR_CHEETAH_LICENSE_FILE}
 ```
 
 In order to transcribe multiple files concatenate their paths using comma as below.
 
 ```bash
-python demo/python/cheetah_demo.py --audio_paths ${PATH_TO_AUDIO_FILE_1},${PATH_TO_AUDIO_FILE_2},${PATH_TO_AUDIO_FILE_3} --license_path ${PATH_TO_YOUR_CHEETAH_LICENSE_FILE}
+python demo/python/cheetah_demo_file.py --audio_paths ${PATH_TO_AUDIO_FILE_1},${PATH_TO_AUDIO_FILE_2},${PATH_TO_AUDIO_FILE_3} --license_path ${PATH_TO_YOUR_CHEETAH_LICENSE_FILE}
 ```
 
 ### Realtime Demo
