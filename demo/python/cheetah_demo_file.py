@@ -10,7 +10,6 @@
 #
 
 import argparse
-import sys
 
 import soundfile
 from pvcheetah import *
@@ -24,7 +23,7 @@ def main():
     parser.add_argument('--audio_paths', nargs='+', required=True)
     args = parser.parse_args()
 
-    o = create(access_key=args.access_key)
+    o = create(access_key=args.access_key, library_path=args.library_path, model_path=args.model_path)
 
     try:
         for audio_path in args.audio_paths:
@@ -37,12 +36,10 @@ def main():
             for i in range(num_frames):
                 frame = audio[i * o.frame_length:(i + 1) * o.frame_length]
                 partial_transcript, _ = o.process(frame)
-                sys.stdout.write(partial_transcript)
-                sys.stdout.flush()
+                print(partial_transcript, end='', flush=True)
                 transcript += partial_transcript
             final_transcript = o.flush()
-            sys.stdout.write(f"{final_transcript}\n")
-            sys.stdout.flush()
+            print(final_transcript)
     except CheetahActivationLimitError:
         print(f"AccessKey `{args.access_key}` has reached it's processing limit.")
 

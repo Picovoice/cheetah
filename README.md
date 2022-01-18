@@ -78,7 +78,7 @@ python demo/python/cheetah_demo_file.py --audio_paths ${PATH_TO_AUDIO_FILE_1},${
 This Cheetah demo records audio from the microphone and transcribes it in real-time:
 
 ```bash
-python demo/python/cheetah_demo_realtime.py --license_path ${PATH_TO_YOUR_CHEETAH_LICENSE_FILE}
+python demo/python/cheetah_demo_mic.py --license_path ${PATH_TO_YOUR_CHEETAH_LICENSE_FILE}
 ```
 
 Note: you need to have a working microphone and it needs to be set as the default audio capture device on your computer
