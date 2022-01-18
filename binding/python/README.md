@@ -1,18 +1,20 @@
-# Leopard Speech-to-Text Engine
+# Cheetah Speech-to-Text Engine
 
 Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
-Leopard is an on-device speech-to-text engine. Leopard is:
+Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
-- Private; All voice processing runs locally. 
+- Private; All voice processing runs locally.
 - Accurate [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results)
 - Compact and Computationally-Efficient [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results)
 - Cross-Platform:
-  - Linux (x86_64)
-  - macOS (x86_64, arm64)
-  - Windows (x86_64)
-  - Raspberry Pi (4, 3)
-  - NVIDIA Jetson Nano
+    - Linux (x86_64)
+    - macOS (x86_64, arm64)
+    - Windows (x86_64)
+    - Android
+    - iOS
+    - Raspberry Pi (4, 3)
+    - NVIDIA Jetson Nano
 
 ## Compatibility
 
@@ -22,12 +24,12 @@ Leopard is an on-device speech-to-text engine. Leopard is:
 ## Installation
 
 ```console
-pip3 install pvleopard
+pip3 install pvcheetah
 ```
 
 ## AccessKey
 
-AccessKey is your authentication and authorization token for deploying Picovoice SDKs, including Leopard. Anyone who is
+AccessKey is your authentication and authorization token for deploying Picovoice SDKs, including Cheetah. Anyone who is
 using Picovoice needs to have a valid AccessKey. You must keep your AccessKey secret. You would need internet
 connectivity to validate your AccessKey with Picovoice license servers even though the voice recognition is running 100%
 offline.
@@ -38,21 +40,26 @@ AccessKey also verifies that your usage is within the limits of your account. Ev
 
 ### Usage
 
-Create an instance of the engine and transcribe an audio file:
+Create an instance of the engine and transcribe audio:
 
 ```python
-import pvleopard
+import pvcheetah
 
-handle = pvleopard.create(access_key='${ACCESS_KEY}')
+handle = pvcheetah.create(access_key='${ACCESS_KEY}')
 
-print(handle.process_file('${AUDIO_PATH}'))
+def get_next_audio_frame():
+    pass
+
+while True:
+    partial_transcript, is_endpoint = handle.process(get_next_audio_frame())
+    if is_endpoint:
+        final_transcript = handle.flush()
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)) and
-`${AUDIO_PATH}` to the path an audio file. Finally, when done be sure to explicitly release the resources using
-`handle.delete()`.
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)). When done be sure
+to explicitly release the resources using `handle.delete()`.
 
 ## Demos
 
-[pvleoparddemo](https://pypi.org/project/pvleoparddemo/) provides command-line utilities for processing audio using
-Leopard.
+[pvcheetahdemo](https://pypi.org/project/pvcheetahdemo/) provides command-line utilities for processing audio using
+Cheetah.
