@@ -1,5 +1,5 @@
 #
-#    Copyright 2018 Picovoice Inc.
+#    Copyright 2018-2022 Picovoice Inc.
 #
 #    You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 #    file accompanying this source.
@@ -10,9 +10,11 @@
 #
 
 import os
+import sys
 import unittest
 
 import soundfile
+
 from cheetah import Cheetah
 
 
@@ -45,4 +47,4 @@ class CheetahTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(argv=sys.argv[:1])
