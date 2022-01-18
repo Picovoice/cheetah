@@ -10,11 +10,11 @@ set(MIC_LIBS pthread m)
 
 include_directories("${PROJECT_SOURCE_DIR}/../../include")
 
-add_executable(
-        cheetah_demo_mic
-        cheetah_demo_mic.c
-        $<TARGET_OBJECTS:pv_recorder_object>)
-target_include_directories(cheetah_demo_mic PRIVATE pvrecorder/include)
+#add_executable(
+#        cheetah_demo_mic
+#        cheetah_demo_mic.c
+#        $<TARGET_OBJECTS:pv_recorder_object>)
+#target_include_directories(cheetah_demo_mic PRIVATE pvrecorder/include)
 
 add_executable(
         cheetah_demo_file
@@ -22,6 +22,6 @@ add_executable(
 target_include_directories(cheetah_demo_file PRIVATE dr_libs)
 
 if (NOT WIN32)
-    target_link_libraries(cheetah_demo_mic ${COMMON_LIBS} ${MIC_LIBS})
+#    target_link_libraries(cheetah_demo_mic ${COMMON_LIBS} ${MIC_LIBS})
     target_link_libraries(cheetah_demo_file ${COMMON_LIBS})
 endif()
