@@ -10,40 +10,52 @@
 #
 
 import os
+import struct
 import sys
 import unittest
-
-import soundfile
+import wave
 
 from cheetah import Cheetah
+from util import *
 
 
 class CheetahTestCase(unittest.TestCase):
+    _AUDIO_PATH = os.path.join(os.path.dirname(__file__), '../../resources/audio_samples/test.wav')
+    _TRANSCRIPT = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL"
+
+    _o = None
+
+    @classmethod
+    def setUpClass(cls):
+        cls._o = Cheetah(
+            access_key=sys.argv[1],
+            library_path=default_library_path('../..'),
+            model_path=default_model_path('../..')
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._o.delete()
+
     def test_transcribe(self):
-        def abs_path(rel_path):
-            return os.path.join(os.path.dirname(__file__), '../..', rel_path)
-
-        cheetah = Cheetah(
-            library_path=abs_path('lib/linux/x86_64/libpv_cheetah.so'),
-            acoustic_model_path=abs_path('lib/common/acoustic_model.pv'),
-            language_model_path=abs_path('lib/common/language_model.pv'),
-            license_path=abs_path('resources/license/cheetah_eval_linux_public.lic'))
-
-        audio, sample_rate = soundfile.read(abs_path('resources/audio_samples/test.wav'), dtype='int16')
-        assert sample_rate == cheetah.sample_rate
+        with wave.open(self._AUDIO_PATH, 'rb') as f:
+            buffer = f.readframes(f.getnframes())
+            pcm = struct.unpack('%dh' % (len(buffer) / struct.calcsize('h')), buffer)
 
         transcript = ''
-        num_frames = len(audio) // cheetah.frame_length
+        num_frames = len(pcm) // self._o.frame_length
         for i in range(num_frames):
-            frame = audio[i * cheetah.frame_length:(i + 1) * cheetah.frame_length]
-            partial_transcript, _ = cheetah.process(frame)
+            frame = pcm[i * self._o.frame_length:(i + 1) * self._o.frame_length]
+            partial_transcript, _ = self._o.process(frame)
             transcript += partial_transcript
 
-        final_transcript = cheetah.flush()
+        final_transcript = self._o.flush()
         transcript += final_transcript
-        self.assertEqual(
-            transcript,
-            "MISTER QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL")
+        self.assertEqual(transcript, self._TRANSCRIPT)
+
+    def test_version(self):
+        self.assertIsInstance(self._o.version, str)
+        self.assertGreater(len(self._o.version), 0)
 
 
 if __name__ == '__main__':
