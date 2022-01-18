@@ -1,20 +1,22 @@
-# Leopard Speech-to-Text Demos
+# Cheetah Speech-to-Text Demos
 
 Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
-## Leopard
+## Cheetah
 
-Leopard is an on-device speech-to-text engine. Leopard is:
+Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
-- Private; All voice processing runs locally. 
+- Private; All voice processing runs locally.
 - Accurate [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results)
 - Compact and Computationally-Efficient [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results)
 - Cross-Platform:
-  - Linux (x86_64)
-  - macOS (x86_64, arm64)
-  - Windows (x86_64)
-  - Raspberry Pi (4, 3)
-  - NVIDIA Jetson Nano
+    - Linux (x86_64)
+    - macOS (x86_64, arm64)
+    - Windows (x86_64)
+    - Android
+    - iOS
+    - Raspberry Pi (4, 3)
+    - NVIDIA Jetson Nano
 
 ## Compatibility
 
@@ -24,12 +26,12 @@ Leopard is an on-device speech-to-text engine. Leopard is:
 ## Installation
 
 ```console
-pip3 install pvleoparddemo
+pip3 install pvcheetahdemo
 ```
 
 ## AccessKey
 
-AccessKey is your authentication and authorization token for deploying Picovoice SDKs, including Leopard. Anyone who is
+AccessKey is your authentication and authorization token for deploying Picovoice SDKs, including Cheetah. Anyone who is
 using Picovoice needs to have a valid AccessKey. You must keep your AccessKey secret. You would need internet
 connectivity to validate your AccessKey with Picovoice license servers even though the voice recognition is running 100%
 offline.
@@ -45,7 +47,7 @@ AccessKey also verifies that your usage is within the limits of your account. Ev
 Run the following in the terminal:
 
 ```console
-leopard_demo_file --access_key ${ACCESS_KEY} --audio_paths ${AUIDO_PATH}
+cheetah_demo_file --access_key ${ACCESS_KEY} --audio_paths ${AUIDO_PATH}
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${AUDIO_PATH}` with a path to an audio file you
@@ -56,19 +58,7 @@ wish to transcribe.
 You need a working microphone connected to your machine for this demo. Run the following in the terminal:
 
 ```console
-leopard_demo_mic --access_key ${ACCESS_KEY}
+cheetah_demo_mic --access_key ${ACCESS_KEY}
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console. Once running, the demo prints:
-
-```console
->>> Press `ENTER` to start: 
-```
-
-Press `ENTER` key and wait for the following message in the terminal:
-
-```console
->>> Recording ... Press `ENTER` to stop:
-```
-
-Now start recording and when done press `ENTER` key to get the transcription.
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
