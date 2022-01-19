@@ -1,0 +1,63 @@
+name: Python
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - 'binding/python/**'
+      - '!binding/python/README.md'
+      - 'lib/common/**'
+      - 'lib/linux/**'
+      - 'lib/jetson/**'
+      - 'lib/mac/**'
+      - 'lib/raspberry-pi/**'
+      - 'lib/windows/**'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'binding/python/**'
+      - '!binding/python/README.md'
+      - 'lib/common/**'
+      - 'lib/linux/**'
+      - 'lib/jetson/**'
+      - 'lib/mac/**'
+      - 'lib/raspberry-pi/**'
+      - 'lib/windows/**'
+
+defaults:
+  run:
+    working-directory: binding/python
+
+jobs:
+  build-github-hosted:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: [3.6, 3.7, 3.8, 3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Test
+      run: python test_cheetah.py ${{secrets.PV_VALID_ACCESS_KEY}}
+
+  build-self-hosted:
+    runs-on: ${{ matrix.machine }}
+
+    strategy:
+      matrix:
+        machine: [rpi3, rpi4, jetson]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Test
+      run: python3 test_cheetah.py ${{secrets.PV_VALID_ACCESS_KEY}}
