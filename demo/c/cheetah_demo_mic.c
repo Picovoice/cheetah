@@ -139,12 +139,14 @@ int main(int argc, char *argv[]) {
                             "endpoint duration should be either a positive floating-point number or `-1.f` to disable endpointing\n");
                     exit(1);
                 }
+                break;
             case 'i':
                 device_index = (int32_t) strtol(optarg, NULL, 10);
                 if (device_index < -1) {
                     fprintf(stderr, "device index should be either `-1` (default) or a non-negative index\n");
                     exit(1);
                 }
+                break;
             case 's':
                 show_audio_devices();
                 exit(0);
@@ -153,8 +155,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if (!(access_key && library_path && model_path && (optind < argc))) {
-        fprintf(stderr, "usage: -a ACCESS_KEY -l LIBRARY_PATH -m MODEL_PATH -i DEVICE_INDEX\n-s (show audio device indices)\n");
+    if (!(access_key && library_path && model_path)) {
+        fprintf(stderr, "usage: -a ACCESS_KEY -l LIBRARY_PATH -m MODEL_PATH [-i DEVICE_INDEX]\n-s (show audio device indices)\n");
         exit(1);
     }
 
