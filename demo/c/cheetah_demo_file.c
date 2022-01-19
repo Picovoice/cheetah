@@ -167,7 +167,7 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    int32_t (*pv_cheetah_version_func)() = load_symbol(dl_handle, "pv_cheetah_version");
+    const char *(*pv_cheetah_version_func)() = load_symbol(dl_handle, "pv_cheetah_version");
     if (!pv_cheetah_version_func) {
         print_dl_error("failed to load `pv_cheetah_version_func`\n");
         exit(1);
@@ -189,6 +189,8 @@ int main(int argc, char **argv) {
     double init_sec = ((double) (after.tv_sec - before.tv_sec) + ((double) (after.tv_usec - before.tv_usec)) * 1e-6);
     fprintf(stdout, "init took %.1f sec\n", init_sec);
 
+    fprintf(stdout, "Cheetah V%s\n\n", pv_cheetah_version_func());
+
     const size_t frame_length = (size_t) pv_cheetah_frame_length_func();
 
     int16_t *pcm = malloc(sizeof(int16_t) * frame_length);
@@ -197,49 +199,72 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
+    double audio_sec = 0.;
     double proc_sec = 0.;
 
     for (int32_t i = optind; i < argc; i++) {
-        const char *wav_path = argv[i];
-        FILE *wav_handle = fopen(wav_path, "rb");
-        if (!wav_handle) {
-            fprintf(stderr, "failed to open wav file located at '%s'.\n", wav_path);
+        drwav f;
+
+        if (!drwav_init_file(&f, argv[i], NULL)) {
+            fprintf(stderr, "failed to open wav file at `%s`.", argv[i]);
             exit(1);
         }
 
-        static const int WAV_HEADER_LENGTH_BYTE = 44;
-
-        if (fseek(wav_handle, WAV_HEADER_LENGTH_BYTE, SEEK_SET) != 0) {
-            fprintf(stderr, "failed to skip the wav header.\n");
+        if (f.sampleRate != (uint32_t) pv_sample_rate_func()) {
+            fprintf(stderr, "audio sample rate should be %d\n.", pv_sample_rate_func());
             exit(1);
         }
 
-        while (fread(pcm, sizeof(int16_t), frame_length, wav_handle) == frame_length) {
-            char *partial_transcript;
-            status = pv_cheetah_process_func(cheetah, pcm, &partial_transcript, NULL);
+        if (f.bitsPerSample != 16) {
+            fprintf(stderr, "audio format should be 16-bit\n.");
+            exit(1);
+        }
+
+        if (f.channels != 1) {
+            fprintf(stderr, "audio should be single-channel.\n");
+            exit(1);
+        }
+
+        while ((int32_t) drwav_read_pcm_frames_s16(&f, frame_length, pcm) == frame_length) {
+            gettimeofday(&before, NULL);
+
+            char *partial_transcript = NULL;
+            bool _ = false;
+            status = pv_cheetah_process_func(cheetah, pcm, &partial_transcript, &_);
             if (status != PV_STATUS_SUCCESS) {
-                fprintf(stderr, "failed to process with '%s'.\n", pv_status_to_string_func(status));
+                fprintf(stderr, "`pv_cheetah_process` failed with `%s`\n", pv_status_to_string_func(status));
                 exit(1);
             }
 
+            gettimeofday(&after, NULL);
+
+            proc_sec += ((double) (after.tv_sec - before.tv_sec)) + (((double) (after.tv_usec - before.tv_usec)) * 1e-6);
+            audio_sec += (double) frame_length / (double) pv_sample_rate_func();
+
             fprintf(stdout, "%s", partial_transcript);
             fflush(stdout);
-
             free(partial_transcript);
         }
 
-        char *final_transcript;
+
+        gettimeofday(&before, NULL);
+
+        char *final_transcript = NULL;
         status = pv_cheetah_flush_func(cheetah, &final_transcript);
         if (status != PV_STATUS_SUCCESS) {
-            fprintf(stderr, "failed to flush with '%s'.\n", pv_status_to_string_func(status));
+            fprintf(stderr, "`pv_cheetah_flush` failed with `%s`.\n", pv_status_to_string_func(status));
             exit(1);
         }
 
-        fprintf(stdout, "%s\n", final_transcript);
-        fflush(stdout);
+        gettimeofday(&after, NULL);
 
+        fprintf(stdout, "%s\n", final_transcript);
         free(final_transcript);
+
+        drwav_uninit(&f);
     }
+
+    fprintf(stdout, "RTF: %.3f\n", proc_sec / audio_sec);
 
     free(pcm);
     pv_cheetah_delete_func(cheetah);
