@@ -125,51 +125,51 @@ int main(int argc, char **argv) {
 
     const char *(*pv_status_to_string_func)(pv_status_t) = load_symbol(dl_handle, "pv_status_to_string");
     if (!pv_status_to_string_func) {
-        print_dl_error("failed to load `pv_status_to_string`\n");
+        print_dl_error("failed to load `pv_status_to_string`");
         exit(1);
     }
 
     pv_status_t (*pv_cheetah_init_func)(const char *, const char *, float, pv_cheetah_t **) =
     load_symbol(dl_handle, "pv_cheetah_init");
     if (!pv_cheetah_init_func) {
-        print_dl_error("failed to load `pv_cheetah_init`\n");
+        print_dl_error("failed to load `pv_cheetah_init`");
         exit(1);
     }
 
     void (*pv_cheetah_delete_func)(pv_cheetah_t *) = load_symbol(dl_handle, "pv_cheetah_delete");
     if (!pv_cheetah_delete_func) {
-        print_dl_error("failed to load `pv_cheetah_delete`\n");
+        print_dl_error("failed to load `pv_cheetah_delete`");
         exit(1);
     }
 
     pv_status_t (*pv_cheetah_process_func)(pv_cheetah_t *, const int16_t *, char **, bool *) =
     load_symbol(dl_handle, "pv_cheetah_process");
     if (!pv_cheetah_process_func) {
-        print_dl_error("failed to load `pv_cheetah_process`\n");
+        print_dl_error("failed to load `pv_cheetah_process`");
         exit(1);
     }
 
     pv_status_t (*pv_cheetah_flush_func)(pv_cheetah_t *, char **) = load_symbol(dl_handle, "pv_cheetah_flush");
     if (!pv_cheetah_flush_func) {
-        print_dl_error("failed to load `pv_cheetah_flush`\n");
+        print_dl_error("failed to load `pv_cheetah_flush`");
         exit(1);
     }
 
     int32_t (*pv_cheetah_frame_length_func)() = load_symbol(dl_handle, "pv_cheetah_frame_length");
     if (!pv_cheetah_frame_length_func) {
-        print_dl_error("failed to load `pv_cheetah_frame_length`\n");
+        print_dl_error("failed to load `pv_cheetah_frame_length`");
         exit(1);
     }
 
     int32_t (*pv_sample_rate_func)() = load_symbol(dl_handle, "pv_sample_rate");
     if (!pv_sample_rate_func) {
-        print_dl_error("failed to load `pv_sample_rate_func`\n");
+        print_dl_error("failed to load `pv_sample_rate_func`");
         exit(1);
     }
 
     const char *(*pv_cheetah_version_func)() = load_symbol(dl_handle, "pv_cheetah_version");
     if (!pv_cheetah_version_func) {
-        print_dl_error("failed to load `pv_cheetah_version_func`\n");
+        print_dl_error("failed to load `pv_cheetah_version_func`");
         exit(1);
     }
 
