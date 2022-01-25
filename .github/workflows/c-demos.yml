@@ -1,0 +1,220 @@
+name: C Demos
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/c-demos.yml'
+      - 'demo/c/**'
+      - '!demo/c/README.md'
+      - 'include/**'
+      - 'lib/common/**'
+      - 'lib/linux/**'
+      - 'lib/jetson/**'
+      - 'lib/mac/**'
+      - 'lib/raspberry-pi/**'
+      - 'lib/windows/**'
+  pull_request:
+    branches: [master]
+    paths:
+      - '.github/workflows/c-demos.yml'
+      - 'demo/c/**'
+      - '!demo/c/README.md'
+      - 'include/**'
+      - 'lib/common/**'
+      - 'lib/linux/**'
+      - 'lib/jetson/**'
+      - 'lib/mac/**'
+      - 'lib/raspberry-pi/**'
+      - 'lib/windows/**'
+
+defaults:
+  run:
+    working-directory: .
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: CMake
+      run: cmake -S demo/c/ -B demo/c/build
+
+    - name: Build
+      run: cmake --build demo/c/build
+
+    - name: Test
+      run: |
+        ./demo/c/build/cheetah_demo_file \
+        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
+        -l lib/linux/x86_64/libpv_cheetah.so \
+        -m lib/common/cheetah_params.pv \
+        resources/audio_samples/test.wav
+
+  macos:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: CMake
+      run: cmake -S demo/c/ -B demo/c/build
+
+    - name: Build
+      run: cmake --build demo/c/build
+
+    - name: Test
+      run: |
+        ./demo/c/build/cheetah_demo_file \
+        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
+        -l lib/mac/x86_64/libpv_cheetah.dylib \
+        -m lib/common/cheetah_params.pv \
+        resources/audio_samples/test.wav
+
+  windows:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: cmd
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Set up MinGW
+      uses: egor-tensin/setup-mingw@v2
+      with:
+        platform: x64
+
+    - name: CMake
+      run: cmake -S demo/c/ -B demo/c/build -G "MinGW Makefiles"
+
+    - name: Build
+      run: cmake --build demo/c/build
+
+    - name: Test
+      run: |
+        demo\\c\\build\\cheetah_demo_file.exe ^
+        -a ${{secrets.PV_VALID_ACCESS_KEY}} ^
+        -l lib\\windows\\amd64\\libpv_cheetah.dll ^
+        -m lib\\common\\cheetah_params.pv ^
+        resources\\audio_samples\\test.wav
+
+  jetson:
+    runs-on: jetson
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: CMake
+      run: cmake -S demo/c/ -B demo/c/build
+
+    - name: Build
+      run: cmake --build demo/c/build
+
+    - name: Test
+      run: |
+        ./demo/c/build/cheetah_demo_file \
+        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
+        -l lib/jetson/cortex-a57-aarch64/libpv_cheetah.so \
+        -m lib/common/cheetah_params.pv \
+        resources/audio_samples/test.wav
+
+  rpi4-32:
+    runs-on: rpi4-32
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: CMake
+      run: cmake -S demo/c/ -B demo/c/build
+
+    - name: Build
+      run: cmake --build demo/c/build
+
+    - name: Test
+      run: |
+        ./demo/c/build/cheetah_demo_file \
+        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
+        -l lib/raspberry-pi/cortex-a72/libpv_cheetah.so \
+        -m lib/common/cheetah_params.pv \
+        resources/audio_samples/test.wav
+
+  rpi4-64:
+    runs-on: rpi4-64
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: CMake
+      run: cmake -S demo/c/ -B demo/c/build
+
+    - name: Build
+      run: cmake --build demo/c/build
+
+    - name: Test
+      run: |
+        ./demo/c/build/cheetah_demo_file \
+        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
+        -l lib/raspberry-pi/cortex-a72-aarch64/libpv_cheetah.so \
+        -m lib/common/cheetah_params.pv \
+        resources/audio_samples/test.wav
+
+  rpi3-32:
+    runs-on: rpi3-32
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: CMake
+      run: cmake -S demo/c/ -B demo/c/build
+
+    - name: Build
+      run: cmake --build demo/c/build
+
+    - name: Test
+      run: |
+        ./demo/c/build/cheetah_demo_file \
+        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
+        -l lib/raspberry-pi/cortex-a53/libpv_cheetah.so \
+        -m lib/common/cheetah_params.pv \
+        resources/audio_samples/test.wav
+
+  rpi3-64:
+    runs-on: rpi3-64
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: CMake
+      run: cmake -S demo/c/ -B demo/c/build
+
+    - name: Build
+      run: cmake --build demo/c/build
+
+    - name: Test
+      run: |
+        ./demo/c/build/cheetah_demo_file \
+        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
+        -l lib/raspberry-pi/cortex-a53-aarch64/libpv_cheetah.so \
+        -m lib/common/cheetah_params.pv \
+        resources/audio_samples/test.wav
