@@ -21,6 +21,18 @@ AccessKey also verifies that your usage is within the limits of your account. Ev
 
 ## Usage
 
+If using SSH, clone the repository with:
+
+```console
+git clone --recurse-submodules git@github.com:Picovoice/cheetah.git
+```
+
+If using HTTPS, clone the repository with:
+
+```console
+git clone --recurse-submodules https://github.com/Picovoice/cheetah.git
+```
+
 ### Build
 
 Build the demos by running this from the root of the repository:

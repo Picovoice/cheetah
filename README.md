@@ -61,6 +61,18 @@ Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
 
 ### C Demos
 
+If using SSH, clone the repository with:
+
+```console
+git clone --recurse-submodules git@github.com:Picovoice/cheetah.git
+```
+
+If using HTTPS, clone the repository with:
+
+```console
+git clone --recurse-submodules https://github.com/Picovoice/cheetah.git
+```
+
 Build the demo:
 
 ```console
