@@ -113,7 +113,7 @@ class ViewModel: ObservableObject {
         }
 
         do {
-            var (transcription, endpoint) = try cheetah!.process(pcm: pcm)
+            var (transcription, endpoint) = try cheetah!.process(pcm)
             if endpoint {
                 transcription += "\(try cheetah!.flush()) "
             }
