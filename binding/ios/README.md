@@ -42,25 +42,30 @@ Create an instance of the engine:
 import Cheetah
 
 let accessKey = "${ACCESS_KEY}" // AccessKey obtained from https://console.picovoice.ai/access_key
-let cheetah = Cheetah(accessKey: accessKey)
+let cheetah = Cheetah(accessKey: accessKey, endpointDuration: 1.0)
 ```
 
-Transcribe an audio file either by passing the absolute path or a url to the file:
+Transcribe an audio:
 
 ```swift
+func getNextAudioFrame() -> [Int16] {
+  // .. get audioFrame
+  return audioFrame;
+}
 
-let audioPath = Bundle(for: type(of: self)).path(forResource: "${AUDIO_FILE_NAME}", ofType: "${AUDIO_FILE_EXTENSION}")
-print(cheetah.process(audioPath: audioPath))
-
-let audioURL = Bundle(for: type(of: self)).url(forResource: "${AUDIO_FILE_NAME}", withExtension: "${AUDIO_FILE_EXTENSION}")
-print(cheetah.process(audioURL: audioURL))
+while true {
+  do {
+    let partialTranscript, isEndpoint = try cheetah.process(getNetAudioFrame())
+    if isEndpoint {
+      let finalTranscript = try cheetah.flush()
+    }
+  } catch { }
+}
 
 ```
 
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)),
-`${AUDIO_FILE_NAME}` to the name of an audio file and `${AUDIO_FILE_EXTENSION}` with the extension of 
-the file. Finally, when done be sure to explicitly release the resources using `cheetah.delete()`.
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)). Finally, when done be sure to explicitly release the resources using `cheetah.delete()`.
 
 ## Demo App
 

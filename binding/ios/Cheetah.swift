@@ -26,7 +26,7 @@ public class Cheetah {
     }()
 
     private var handle: OpaquePointer?
-    public static let frameLength = UInt32(pv_porcupine_frame_length())
+    public static let frameLength = UInt32(pv_cheetah_frame_length())
     public static let sampleRate = UInt32(pv_sample_rate())
     public static let version = String(cString: pv_cheetah_version())
 
@@ -36,8 +36,8 @@ public class Cheetah {
     ///   - accessKey: The AccessKey obtained from Picovoice Console (https://console.picovoice.ai).
     ///   - modelPath: Absolute path to file containing model parameters.
     ///   - endpointDuration: Duration of endpoint in seconds. A speech endpoint is detected when there is a
-    ///         chunk of audio (with a duration specified herein) after an utterance without any speech in it. Default
-    ///         is 1 second.
+    ///     chunk of audio (with a duration specified herein) after an utterance without any speech in it.
+    ///     Set duration to 0 to disable this. Default is 1 second.
     /// - Throws: CheetahError
     public init(accessKey: String, modelPath: String? = nil, endpointDuration: Float = 1.0) throws {
 
@@ -87,12 +87,12 @@ public class Cheetah {
     ///
     /// - Parameters:
     ///   - pcm: A frame of audio samples. The number of samples per frame can be attained by calling
-    ///        `Cheetah.frame_length`. The incoming audio needs to have a sample rate equal to `Cheetah.sample_rate`
-    ///         and be 16-bit linearly-encoded. Furthermore, Cheetah operates on single-channel audio.
+    ///     `Cheetah.frame_length`. The incoming audio needs to have a sample rate equal to `Cheetah.sample_rate`
+    ///      and be 16-bit linearly-encoded. Furthermore, Cheetah operates on single-channel audio.
     /// - Throws: CheetahError
     /// - Returns: Tuple of any newly-transcribed speech (if none is available then an empty string is returned) and a
-    ///        flag indicating if an endpoint has been detected.
-    public func process(pcm:[Int16]) throws -> (String, Boolean) {
+    ///   flag indicating if an endpoint has been detected.
+    public func process(_ pcm:[Int16]) throws -> (String, Bool) {
         if handle == nil {
             throw CheetahInvalidStateError("Cheetah must be initialized before processing")
         }
@@ -122,11 +122,11 @@ public class Cheetah {
         }
 
         var cFinalTranscript: UnsafeMutablePointer<Int8>?
-        let status = pv_cheetah_flush(self.handle, &cPartialTranscript)
+        let status = pv_cheetah_flush(self.handle, &cFinalTranscript)
         try checkStatus(status, "Cheetah flush failed")
 
         let transcript = String(cString: cFinalTranscript!)
-        cPartialTranscript?.deallocate()
+        cFinalTranscript?.deallocate()
 
         return transcript
     }

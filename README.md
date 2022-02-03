@@ -27,9 +27,11 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
     - [Demos](#demos)
         - [Python](#python-demos)
         - [C](#c-demos)
+        - [iOS](#ios-demos)
     - [SDKs](#sdks)
         - [Python](#python)
         - [C](#c)
+        - [iOS](#ios)
     - [Releases](#releases)
 
 ## AccessKey
@@ -88,6 +90,18 @@ Run the demo:
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console, `${LIBRARY_PATH}` with the path to appropriate
 library under [lib](/lib), and `${MODEL_PATH}` to path to [default model file](/lib/common/cheetah_params.pv)
 (or your custom one).
+
+### iOS Demos
+
+To run the demo, go to [demo/ios/CheetahDemo](/demo/ios/CheetahDemo) and run:
+
+```console
+pod install
+```
+
+Replace `let accessKey = "${YOUR_ACCESS_KEY_HERE}"` in the file [ViewModel.swift](/demo/ios/CheetahDemo/CheetahDemo/ViewModel.swift) with your `AccessKey`.
+
+Then, using [Xcode](https://developer.apple.com/xcode/), open the generated `CheetahDemo.xcworkspace` and run the application.
 
 ## SDKs
 
@@ -163,6 +177,38 @@ while (true) {
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_PATH}` to path to 
 [default model file](/lib/common/cheetah_params.pv) (or your custom one). Finally, when done be sure to release
 resources acquired using `pv_cheetah_delete(handle)`.
+
+### iOS
+
+The Cheetah iOS binding is available via [Cocoapods](https://cocoapods.org/pods/Rhino-iOS). To import it into your iOS project, add the following line to your Podfile and run `pod install`: 
+
+```ruby
+pod 'Cheetah-iOS'
+```
+
+Create an instance of the engine and transcribe audio in real-time:
+
+```swift
+import Cheetah
+
+cheetah = Cheetah(accessKey: "${ACCESS_KEY}")
+
+func getNextAudioFrame() -> [Int16] {
+  // .. get audioFrame
+  return audioFrame;
+}
+
+while true {
+  do {
+    let partialTranscript, isEndpoint = try cheetah.process(getNetAudioFrame())
+    if isEndpoint {
+      let finalTranscript = try cheetah.flush()
+    }
+  } catch { }
+}
+```
+
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
 
 ## Releases
 
