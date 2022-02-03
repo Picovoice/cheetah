@@ -180,7 +180,7 @@ resources acquired using `pv_cheetah_delete(handle)`.
 
 ### iOS
 
-The Cheetah iOS binding is available via [Cocoapods](https://cocoapods.org/pods/Rhino-iOS). To import it into your iOS project, add the following line to your Podfile and run `pod install`: 
+The Cheetah iOS binding is available via [Cocoapods](https://cocoapods.org/pods/Cheetah-iOS). To import it into your iOS project, add the following line to your Podfile and run `pod install`: 
 
 ```ruby
 pod 'Cheetah-iOS'
