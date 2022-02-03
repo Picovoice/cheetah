@@ -43,7 +43,7 @@ class CheetahDemoUITests: XCTestCase {
         var res = ""
         while (index + frameLengthBytes < data.count) {
             _ = pcmBuffer.withUnsafeMutableBytes { data.copyBytes(to: $0, from: index..<(index + frameLengthBytes)) }
-            var (partial, _) = try cheetah!.process(pcm: pcmBuffer)
+            var (partial, _) = try cheetah!.process(pcmBuffer)
             res += partial
             index += frameLengthBytes
         }
