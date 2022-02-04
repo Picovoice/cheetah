@@ -16,7 +16,8 @@ Pod::Spec.new do |s|
       - Linux (x86_64)
       - macOS (x86_64, arm64)
       - Windows (x86_64)
-      - Android and iOS
+      - Android
+      - iOS
       - Raspberry Pi (4, 3)
       - NVIDIA Jetson Nano
   DESC
@@ -26,10 +27,5 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '9.0'
   s.swift_version = '5.0'
   s.vendored_frameworks = 'lib/ios/PvCheetah.xcframework'
-  s.resource_bundles = {
-    'CheetahResources' => [
-      'lib/common/cheetah_params.pv'
-    ]
-  }
   s.source_files = 'binding/ios/*.{swift}'
 end

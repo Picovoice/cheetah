@@ -19,7 +19,8 @@ class CheetahDemoUITests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        cheetah = try? Cheetah(accessKey: accessKey)
+        let modelURL = Bundle(for: type(of: self)).url(forResource: "cheetah_params", withExtension: "pv")!
+        cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL)
     }
 
     override func tearDown() {
@@ -37,7 +38,7 @@ class CheetahDemoUITests: XCTestCase {
         let data = try Data(contentsOf: fileURL)
         let frameLengthBytes = Int(Cheetah.frameLength) * 2
 
-        var pcmBuffer = Array<Int16>(repeating: 0, count: (data.count / MemoryLayout<Int16>.size))
+        var pcmBuffer = Array<Int16>(repeating: 0, count: Int(Cheetah.frameLength))
 
         var index = 0
         var res = ""

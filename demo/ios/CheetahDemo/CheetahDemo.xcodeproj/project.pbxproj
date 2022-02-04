@@ -10,8 +10,10 @@
 		32769079E5BC2BA141FA659F /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327695EA9D71F6A29C6D079A /* ViewModel.swift */; };
 		327693608DEE169684123990 /* test.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3276944A97818A612ED1D2C0 /* test.wav */; };
 		3276967434C9CEBD0AF09237 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 327694975368499C3B7946DD /* Assets.xcassets */; };
+		3276987F619555E46005C438 /* cheetah_params.pv in Resources */ = {isa = PBXBuildFile; fileRef = 327698B2EA8A4DD88C527110 /* cheetah_params.pv */; };
 		327698EADFD16D8F70823520 /* CheetahDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327697358B823E5B2EF0FA8C /* CheetahDemoApp.swift */; };
 		32769B2E1B2C5A2A897FFB10 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32769F3923C69C8C0C435CCF /* ContentView.swift */; };
+		32769C58D7E56BA187567FE6 /* cheetah_params.pv in Resources */ = {isa = PBXBuildFile; fileRef = 327698B2EA8A4DD88C527110 /* cheetah_params.pv */; };
 		32769D436A1FD396FF5710C7 /* CheetahDemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3276967194B02CE009D52D3A /* CheetahDemoUITests.swift */; };
 		A5231861CA241F9F87807269 /* libPods-CheetahDemoUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6317D5AC3BB798341835D07F /* libPods-CheetahDemoUITests.a */; };
 		AF10BC13B27DBA6B733B192A /* libPods-CheetahDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB997F06C7C673F9F2446D95 /* libPods-CheetahDemo.a */; };
@@ -33,6 +35,7 @@
 		327695EA9D71F6A29C6D079A /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		3276967194B02CE009D52D3A /* CheetahDemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheetahDemoUITests.swift; sourceTree = "<group>"; };
 		327697358B823E5B2EF0FA8C /* CheetahDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheetahDemoApp.swift; sourceTree = "<group>"; };
+		327698B2EA8A4DD88C527110 /* cheetah_params.pv */ = {isa = PBXFileReference; lastKnownFileType = file.pv; name = cheetah_params.pv; path = ../../../../lib/common/cheetah_params.pv; sourceTree = "<group>"; };
 		327699927E572962C40A7A04 /* CheetahDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheetahDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32769B28B14D2E3D61B4F202 /* CheetahDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CheetahDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		32769CFD1A229B5B30E40E82 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
@@ -111,6 +114,7 @@
 				32769F3923C69C8C0C435CCF /* ContentView.swift */,
 				327695EA9D71F6A29C6D079A /* ViewModel.swift */,
 				32769E49F724E169E0E13E27 /* Info.plist */,
+				327698B2EA8A4DD88C527110 /* cheetah_params.pv */,
 			);
 			path = CheetahDemo;
 			sourceTree = "<group>";
@@ -231,6 +235,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3276967434C9CEBD0AF09237 /* Assets.xcassets in Resources */,
+				32769C58D7E56BA187567FE6 /* cheetah_params.pv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,6 +244,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				327693608DEE169684123990 /* test.wav in Resources */,
+				3276987F619555E46005C438 /* cheetah_params.pv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

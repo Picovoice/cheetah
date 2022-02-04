@@ -9,21 +9,8 @@
 
 import PvCheetah
 
-/// iOS binding for Cheetah wake word engine. Provides a Swift interface to the Cheetah library.
+/// iOS binding for Cheetah speech-to-text engine. Provides a Swift interface to the Cheetah library.
 public class Cheetah {
-
-    static let resourceBundle: Bundle = {
-        let myBundle = Bundle(for: Cheetah.self)
-
-        guard let resourceBundleURL = myBundle.url(
-                forResource: "CheetahResources", withExtension: "bundle")
-                else { fatalError("CheetahResources.bundle not found") }
-
-        guard let resourceBundle = Bundle(url: resourceBundleURL)
-                else { fatalError("Could not open CheetahResources.bundle") }
-
-        return resourceBundle
-    }()
 
     private var handle: OpaquePointer?
     public static let frameLength = UInt32(pv_cheetah_frame_length())
@@ -39,31 +26,23 @@ public class Cheetah {
     ///     chunk of audio (with a duration specified herein) after an utterance without any speech in it.
     ///     Set duration to 0 to disable this. Default is 1 second.
     /// - Throws: CheetahError
-    public init(accessKey: String, modelPath: String? = nil, endpointDuration: Float = 1.0) throws {
-
-        var modelPathArg = modelPath
-        if (modelPath == nil){
-            modelPathArg  = Cheetah.resourceBundle.path(forResource: "cheetah_params", ofType: "pv")
-            if modelPathArg == nil {
-                throw CheetahIOError("Unable to find the default model path")
-            }
-        }
+    public init(accessKey: String, modelPath: String, endpointDuration: Float = 1.0) throws {
 
         if accessKey.count == 0 {
             throw CheetahInvalidArgumentError("AccessKey is required for Cheetah initialization")
         }
 
-        if !FileManager().fileExists(atPath: modelPathArg!) {
-            throw CheetahInvalidArgumentError("Model file at does not exist at '\(modelPathArg!)'")
+        if !FileManager().fileExists(atPath: modelPath) {
+            throw CheetahInvalidArgumentError("Model file at does not exist at '\(modelPath)'")
         }
 
-        if endpointDuration <= 0 {
+        if endpointDuration < 0 {
             throw CheetahInvalidArgumentError("EndpointDuration must be a number greater than 0")
         }
 
         let status = pv_cheetah_init(
                 accessKey,
-                modelPathArg,
+                modelPath,
                 endpointDuration,
                 &handle)
         try checkStatus(status, "Cheetah init failed")
@@ -71,6 +50,19 @@ public class Cheetah {
 
     deinit {
         self.delete()
+    }
+
+    /// Constructor.
+    ///
+    /// - Parameters:
+    ///   - accessKey: The AccessKey obtained from Picovoice Console (https://console.picovoice.ai).
+    ///   - modelURL: URL to file containing model parameters.
+    ///   - endpointDuration: Duration of endpoint in seconds. A speech endpoint is detected when there is a
+    ///     chunk of audio (with a duration specified herein) after an utterance without any speech in it.
+    ///     Set duration to 0 to disable this. Default is 1 second.
+    /// - Throws: CheetahError
+    public convenience init(accessKey: String, modelURL: URL, endpointDuration: Float = 1.0) throws {
+        try self.init(accessKey: accessKey, modelPath: modelURL.path, endpointDuration: endpointDuration)
     }
 
     /// Releases native resources that were allocated to Cheetah
@@ -97,8 +89,8 @@ public class Cheetah {
             throw CheetahInvalidStateError("Cheetah must be initialized before processing")
         }
 
-        if pcm.count == 0 {
-            throw CheetahInvalidArgumentError("pcm must not be empty")
+        if pcm.count != Cheetah.frameLength {
+            throw CheetahInvalidArgumentError("Frame of audio data must contain \(Cheetah.frameLength) samples - given frame contained \(pcm.count)")
         }
 
         var cPartialTranscript: UnsafeMutablePointer<Int8>?

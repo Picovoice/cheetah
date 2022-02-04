@@ -38,7 +38,7 @@ typedef struct pv_cheetah pv_cheetah_t;
  * @param access_key AccessKey obtained from Picovoice Console (https://picovoice.ai/console/)
  * @param model_path Absolute path to the file containing model parameters.
  * @param endpoint_duration_sec Duration of endpoint in seconds. A speech endpoint is detected when there is a segment
- * of audio (with a duration specified herein) after an utterance without any speech in it. Set to `-1.0` to disable
+ * of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0` to disable
  * endpoint detection.
  * @param[out] object Constructed instance of Cheetah.
  * @return Status code. Returns `PV_STATUS_INVALID_ARGUMENT`, `PV_STATUS_IO_ERROR`, `PV_STATUS_OUT_OF_MEMORY`,

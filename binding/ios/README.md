@@ -13,13 +13,14 @@ Cheetah is a streaming on-device speech-to-text engine. Cheetah is:
     - Linux (x86_64)
     - macOS (x86_64, arm64)
     - Windows (x86_64)
+    - Android
+    - iOS
     - Raspberry Pi (4, 3)
     - NVIDIA Jetson Nano
-    - Android and iOS
 
 ## Installation
 
-The Cheetah iOS binding is available via [Cocoapods](https://cocoapods.org/pods/Cheetah-iOS). To import it into your iOS project, add the following line to your Podfile: 
+The Cheetah iOS binding is available via [CocoaPods](https://cocoapods.org/pods/Cheetah-iOS). To import it into your iOS project, add the following line to your Podfile: 
 
 ```ruby
 pod 'Cheetah-iOS'
@@ -36,13 +37,22 @@ To obtain your `AccessKey`:
 
 ## Usage
 
+Add the Cheetah model file in `Xcode` by:
+
+1. Either creating a model in [Picovoice CAT Console](https://picovoice.ai/cat/) or get the default model in [/lib/common/cheetah_params.pv](/lib/common/cheetah_params.pv).
+2. Add the model as a bundled resource by selecting Build Phases and adding it to Copy Bundle Resources step.
+
 Create an instance of the engine:
 
 ```swift
 import Cheetah
 
+let modelPath = Bundle(for: type(of: self)).path(
+        forResource: "${MODEL_FILE}", // Name of the model file name for Cheetah
+        ofType: "pv")!
+
 let accessKey = "${ACCESS_KEY}" // AccessKey obtained from https://console.picovoice.ai/access_key
-let cheetah = Cheetah(accessKey: accessKey, endpointDuration: 1.0)
+let cheetah = Cheetah(accessKey: accessKey, modelPath: modelPath, endpointDuration: 1.0)
 ```
 
 Transcribe an audio:
@@ -59,13 +69,15 @@ while true {
     if isEndpoint {
       let finalTranscript = try cheetah.flush()
     }
+  } catch let error as CheetahError { 
+      // handle error
   } catch { }
 }
 
 ```
 
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)). Finally, when done be sure to explicitly release the resources using `cheetah.delete()`.
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)) and `${MODEL_FILE}` with the name of the Cheetah model file name. Finally, when done be sure to explicitly release the resources using `cheetah.delete()`.
 
 ## Demo App
 

@@ -180,7 +180,7 @@ resources acquired using `pv_cheetah_delete(handle)`.
 
 ### iOS
 
-The Cheetah iOS binding is available via [Cocoapods](https://cocoapods.org/pods/Cheetah-iOS). To import it into your iOS project, add the following line to your Podfile and run `pod install`: 
+The Cheetah iOS binding is available via [CocoaPods](https://cocoapods.org/pods/Cheetah-iOS). To import it into your iOS project, add the following line to your Podfile and run `pod install`: 
 
 ```ruby
 pod 'Cheetah-iOS'
@@ -191,7 +191,11 @@ Create an instance of the engine and transcribe audio in real-time:
 ```swift
 import Cheetah
 
-cheetah = Cheetah(accessKey: "${ACCESS_KEY}")
+let modelPath = Bundle(for: type(of: self)).path(
+        forResource: "${MODEL_FILE}", // Name of the model file name for Cheetah
+        ofType: "pv")!
+
+let cheetah = Cheetah(accessKey: "${ACCESS_KEY}", modelPath: modelPath)
 
 func getNextAudioFrame() -> [Int16] {
   // .. get audioFrame
@@ -204,11 +208,13 @@ while true {
     if isEndpoint {
       let finalTranscript = try cheetah.flush()
     }
+  } catch let error as CheetahError { 
+      // handle error
   } catch { }
 }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with the default or custom trained model from [console](https://console.picovoice.ai/cat).
 
 ## Releases
 
