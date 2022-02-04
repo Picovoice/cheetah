@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
     const char *access_key = NULL;
     const char *library_path = NULL;
     const char *model_path = NULL;
-    float endpoint_duration_sec = 1.f;
+    float endpoint_duration_sec = 0.f;
     int32_t device_index = -1;
 
     int opt;
@@ -132,10 +132,10 @@ int main(int argc, char *argv[]) {
                 break;
             case 'e':
                 endpoint_duration_sec = (float) strtod(optarg, NULL);
-                if ((endpoint_duration_sec <= 0.f) && (endpoint_duration_sec != -1.f)) {
+                if (endpoint_duration_sec < 0.f) {
                     fprintf(
                             stderr,
-                            "endpoint duration should be either a positive floating-point number or `-1.f` to disable endpointing\n");
+                            "endpoint duration should be either a positive floating-point number or `0` to disable endpointing\n");
                     exit(1);
                 }
                 break;
