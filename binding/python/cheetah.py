@@ -125,7 +125,7 @@ class Cheetah(object):
         if not os.path.exists(model_path):
             raise CheetahIOError("Could not find model file at `%s`." % model_path)
 
-        if endpoint_duration_sec is not None and not endpoint_duration_sec > 0:
+        if endpoint_duration_sec is not None and not endpoint_duration_sec > 0.:
             raise CheetahInvalidArgumentError("`endpoint_duration_sec` must be either `None` or a positive number")
 
         init_func = library.pv_cheetah_init
@@ -137,7 +137,7 @@ class Cheetah(object):
         status = init_func(
             access_key.encode(),
             model_path.encode(),
-            float(endpoint_duration_sec) if endpoint_duration_sec is not None else 0,
+            float(endpoint_duration_sec) if endpoint_duration_sec is not None else 0.,
             byref(self._handle))
         if status is not self.PicovoiceStatuses.SUCCESS:
             raise self._PICOVOICE_STATUS_TO_EXCEPTION[status]()

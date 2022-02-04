@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
     const char *access_key = NULL;
     const char *library_path = NULL;
     const char *model_path = NULL;
-    float endpoint_duration_sec = 0;
+    float endpoint_duration_sec = 0.f;
     int32_t device_index = -1;
 
     int opt;

@@ -49,7 +49,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md'), 'r') as f:
 
 setuptools.setup(
     name="pvcheetah",
-    version="0.9.0",
+    version="1.0.0",
     author="Picovoice",
     author_email="hello@picovoice.ai",
     description="Cheetah Speech-to-Text Engine.",

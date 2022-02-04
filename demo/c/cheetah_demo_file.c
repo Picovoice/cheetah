@@ -177,7 +177,7 @@ int main(int argc, char **argv) {
     gettimeofday(&before, NULL);
 
     pv_cheetah_t *cheetah = NULL;
-    pv_status_t status = pv_cheetah_init_func(access_key, model_path, 0, &cheetah);
+    pv_status_t status = pv_cheetah_init_func(access_key, model_path, 0.f, &cheetah);
     if (status != PV_STATUS_SUCCESS) {
         fprintf(stderr, "failed to init with `%s`.\n", pv_status_to_string_func(status));
         exit(1);
