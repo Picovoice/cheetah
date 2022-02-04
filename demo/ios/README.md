@@ -18,7 +18,7 @@ Before building the demo app, run the following from `CheetahDemo` directory to 
 ```ruby
 pod install
 ```
-Open [CheetahDemo.xcworkspace`](/demo/ios/CheetahDemo/CheetahDemo.xcworkspace) and run the demo.
+Open [CheetahDemo.xcworkspace](/demo/ios/CheetahDemo/CheetahDemo.xcworkspace) and run the demo.
 
 ## Running the On-Device Unit Tests
 
