@@ -37,7 +37,7 @@ public class Cheetah {
         }
 
         if endpointDuration < 0 {
-            throw CheetahInvalidArgumentError("EndpointDuration must be a number greater than 0")
+            throw CheetahInvalidArgumentError("EndpointDuration must be a non-negative number.")
         }
 
         let status = pv_cheetah_init(
