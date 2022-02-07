@@ -160,7 +160,6 @@
 				32769C64A8AF05CC4C733278 /* Frameworks */,
 				3276991C0EFBE7A2F1D6222B /* Resources */,
 				A3162763673B9B2CDDCA9699 /* [CP] Embed Pods Frameworks */,
-				AC08DF01704B73E333501BA8 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -181,7 +180,6 @@
 				32769FD78B69EE3D028A9BD8 /* Frameworks */,
 				327698D80053ADD919041906 /* Resources */,
 				6B8F74027D329047EE376040 /* [CP] Embed Pods Frameworks */,
-				03B02E179B057EF3C88A416C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -251,24 +249,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		03B02E179B057EF3C88A416C /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CheetahDemo/Pods-CheetahDemo-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/Cheetah-iOS/CheetahResources.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/CheetahResources.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CheetahDemo/Pods-CheetahDemo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		2172BB6D2000DA4DE3DE7F19 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -325,24 +305,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CheetahDemoUITests/Pods-CheetahDemoUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AC08DF01704B73E333501BA8 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CheetahDemoUITests/Pods-CheetahDemoUITests-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/Cheetah-iOS/CheetahResources.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/CheetahResources.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CheetahDemoUITests/Pods-CheetahDemoUITests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		EEEBC400C3F382C9ADB47297 /* [CP] Check Pods Manifest.lock */ = {

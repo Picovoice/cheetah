@@ -3,26 +3,18 @@ PODS:
   - ios-voice-processor (1.0.3)
 
 DEPENDENCIES:
-  - Cheetah-iOS (from `https://raw.githubusercontent.com/Picovoice/cheetah/ios-binding/binding/ios/Cheetah-iOS.podspec`)
+  - Cheetah-iOS (~> 1.0.0)
   - ios-voice-processor (~> 1.0.2)
 
 SPEC REPOS:
   trunk:
+    - Cheetah-iOS
     - ios-voice-processor
 
-EXTERNAL SOURCES:
-  Cheetah-iOS:
-    :podspec: https://raw.githubusercontent.com/Picovoice/cheetah/ios-binding/binding/ios/Cheetah-iOS.podspec
-
-CHECKOUT OPTIONS:
-  Cheetah-iOS:
-    :commit: bf785bf4d807e89849e1e2568ab054157efc3454
-    :git: https://github.com/Picovoice/cheetah.git
-
 SPEC CHECKSUMS:
-  Cheetah-iOS: ca5ea55cdc4b926096c9fdcd1cadae69a33aba67
+  Cheetah-iOS: 8ce51660745e5b493123b022a480bd05a454626c
   ios-voice-processor: 65b25a8db69ea25ffba0eeef37bae71a982f34cc
 
-PODFILE CHECKSUM: e0efe8a196db073d1a981c91726275e964fcf3dd
+PODFILE CHECKSUM: cd7a66e3e6883cbdb7faa483f829fc8e926f3154
 
 COCOAPODS: 1.11.2
