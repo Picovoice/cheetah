@@ -1,0 +1,1 @@
+-keep class ai.picovoice.cheetah.*Exception { <init>(...); }
