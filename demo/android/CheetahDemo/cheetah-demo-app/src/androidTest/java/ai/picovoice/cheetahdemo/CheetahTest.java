@@ -105,6 +105,9 @@ public class CheetahTest {
             }
         }
 
+        CheetahTranscript transcriptObj = cheetah.flush();
+        result += transcriptObj.getTranscript();
+
         assertTrue(result.equals(transcript));
 
         cheetah.delete();
