@@ -42,8 +42,8 @@ public class Cheetah {
      * @param modelPath Absolute path to the file containing Cheetah model parameters.
      * @throws CheetahException if there is an error while initializing Cheetah.
      */
-    public Cheetah(String accessKey, String modelPath) throws CheetahException {
-        handle = init(accessKey, modelPath);
+    public Cheetah(String accessKey, String modelPath, float endpointDuration) throws CheetahException {
+        handle = init(accessKey, modelPath, endpointDuration);
     }
 
     private static String extractResource(Context context, InputStream srcFileStream, String dstFilename) throws IOException {
@@ -112,7 +112,7 @@ public class Cheetah {
      */
     public native String getVersion();
 
-    private native long init(String accessKey, String modelPath);
+    private native long init(String accessKey, String modelPath, float endpointDuration);
 
     private native void delete(long object);
 
@@ -124,6 +124,7 @@ public class Cheetah {
 
         private String accessKey = null;
         private String modelPath = null;
+        private float endpointDuration = 0f;
 
         public Builder(String accessKey) {
             this.accessKey = accessKey;
@@ -136,6 +137,11 @@ public class Cheetah {
 
         public Builder setModelPath(String modelPath) {
             this.modelPath = modelPath;
+            return this;
+        }
+
+        public Builder setEndpointDuration(float endpointDuration) {
+            this.endpointDuration = endpointDuration;
             return this;
         }
 
@@ -161,7 +167,11 @@ public class Cheetah {
                 throw new CheetahInvalidArgumentException("AccessKey must not be null");
             }
 
-            return new Cheetah(accessKey, modelPath);
+            if (endpointDuration < 0f) {
+                throw new CheetahInvalidArgumentException("endpointDuration must be greater than or equal to 0.0");
+            }
+
+            return new Cheetah(accessKey, modelPath, endpointDuration);
         }
     }
 }

@@ -50,7 +50,10 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             String modelPath = "cheetah_params.pv";
-            cheetah = new Cheetah.Builder(ACCESS_KEY).setModelPath(modelPath).build(getApplicationContext());
+            cheetah = new Cheetah.Builder(ACCESS_KEY)
+                    .setModelPath(modelPath)
+                    .setEndpointDuration(1f)
+                    .build(getApplicationContext());
         } catch (CheetahInvalidArgumentException e) {
             displayError(String.format("(%s)\n Ensure your AccessKey '%s' is valid", e.getMessage(), ACCESS_KEY));
         } catch (CheetahActivationException e) {
@@ -208,6 +211,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
+                final CheetahTranscript transcriptObj = cheetah.flush();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateTranscriptView(transcriptObj);
+                    }
+                });
+
                 audioRecord.stop();
             } catch (IllegalArgumentException | IllegalStateException | SecurityException e) {
                 throw new CheetahException(e);
@@ -218,14 +229,6 @@ public class MainActivity extends AppCompatActivity {
 
                 stopped.set(true);
                 stopped.notifyAll();
-
-                final CheetahTranscript transcriptObj = cheetah.flush();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateTranscriptView(transcriptObj);
-                    }
-                });
             }
         }
     }
