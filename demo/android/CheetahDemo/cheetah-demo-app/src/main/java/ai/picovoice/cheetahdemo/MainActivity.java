@@ -131,13 +131,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateTranscriptView(CheetahTranscript transcriptObj) {
-        if (transcriptObj.getTranscript().length() != 0) {
-            TextView transcriptTextView = findViewById(R.id.transcriptTextView);
-            String fullTranscript = transcriptTextView.getText() + transcriptObj.getTranscript();
-            transcriptTextView.setText(fullTranscript);
-            transcriptTextView.setMovementMethod(new ScrollingMovementMethod());
-        }
+    private void updateTranscriptView(String transcript) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (transcript.length() != 0) {
+                    TextView transcriptTextView = findViewById(R.id.transcriptTextView);
+                    String fullTranscript = transcriptTextView.getText() + transcript;
+                    transcriptTextView.setText(fullTranscript);
+                    transcriptTextView.setMovementMethod(new ScrollingMovementMethod());
+                }
+            }
+        });
     }
 
     private class MicrophoneReader {
@@ -201,23 +206,18 @@ public class MainActivity extends AppCompatActivity {
 
                 while (!stop.get()) {
                     if (audioRecord.read(buffer, 0, buffer.length) == buffer.length) {
-                        final CheetahTranscript transcriptObj = cheetah.process(buffer);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                updateTranscriptView(transcriptObj);
-                            }
-                        });
+                        CheetahTranscript transcriptObj = cheetah.process(buffer);
+                        updateTranscriptView(transcriptObj.getTranscript());
+
+                        if (transcriptObj.getIsEndpoint()) {
+                            transcriptObj = cheetah.flush();
+                            updateTranscriptView(transcriptObj.getTranscript() + " ");
+                        }
                     }
                 }
 
                 final CheetahTranscript transcriptObj = cheetah.flush();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateTranscriptView(transcriptObj);
-                    }
-                });
+                updateTranscriptView(transcriptObj.getTranscript());
 
                 audioRecord.stop();
             } catch (IllegalArgumentException | IllegalStateException | SecurityException e) {
