@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                     TextView transcriptTextView = findViewById(R.id.transcriptTextView);
                     transcriptTextView.append(transcript);
 
-                    final int scrollAmount = transcriptTextView.getLayout().getLineTop(transcriptTextView.getLineCount()) - transcriptTextView.getHeight();
+                    final int scrollAmount = transcriptTextView.getLayout().getLineTop(transcriptTextView.getLineCount()) - transcriptTextView.getHeight() + transcriptTextView.getLineHeight();
 
                     if (scrollAmount > 0) {
                         transcriptTextView.scrollTo(0, scrollAmount);
