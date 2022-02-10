@@ -48,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cheetah_demo);
 
+        TextView transcriptTextView = findViewById(R.id.transcriptTextView);
+        transcriptTextView.setMovementMethod(new ScrollingMovementMethod());
+
         try {
             String modelPath = "cheetah_params.pv";
             cheetah = new Cheetah.Builder(ACCESS_KEY)
@@ -137,9 +140,13 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 if (transcript.length() != 0) {
                     TextView transcriptTextView = findViewById(R.id.transcriptTextView);
-                    String fullTranscript = transcriptTextView.getText() + transcript;
-                    transcriptTextView.setText(fullTranscript);
-                    transcriptTextView.setMovementMethod(new ScrollingMovementMethod());
+                    transcriptTextView.append(transcript);
+
+                    final int scrollAmount = transcriptTextView.getLayout().getLineTop(transcriptTextView.getLineCount()) - transcriptTextView.getHeight();
+                    if (scrollAmount > 0)
+                        transcriptTextView.scrollTo(0, scrollAmount);
+                    else
+                        transcriptTextView.scrollTo(0, 0);
                 }
             }
         });
