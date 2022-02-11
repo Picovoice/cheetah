@@ -28,10 +28,12 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [Python](#python-demos)
         - [C](#c-demos)
         - [iOS](#ios-demos)
+        - [Android](#android-demo)
     - [SDKs](#sdks)
         - [Python](#python)
         - [C](#c)
         - [iOS](#ios)
+        - [Android](#android)
     - [Releases](#releases)
 
 ## AccessKey
@@ -102,6 +104,13 @@ pod install
 Replace `let accessKey = "${YOUR_ACCESS_KEY_HERE}"` in the file [ViewModel.swift](/demo/ios/CheetahDemo/CheetahDemo/ViewModel.swift) with your `AccessKey`.
 
 Then, using [Xcode](https://developer.apple.com/xcode/), open the generated `CheetahDemo.xcworkspace` and run the application.
+
+### Android Demo
+
+Using Android Studio, open [demo/android/CheetahDemo](/demo/android/CheetahDemo) as an Android project and then run the application. 
+
+Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [MainActivity.java](/demo/android/cheetah-demo-app/src/main/java/ai/picovoice/cheetahdemo/MainActivity.java) with your `AccessKey`.
+
 
 ## SDKs
 
@@ -212,6 +221,49 @@ while true {
       // handle error
   } catch { }
 }
+```
+
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with the default or custom trained model from [console](https://console.picovoice.ai/).
+
+### Android
+
+To include the package in your Android project, ensure you have included `mavenCentral()` in your top-level `build.gradle` file and then add the following to your app's `build.gradle`:
+
+```groovy
+dependencies {    
+    implementation 'ai.picovoice:cheetah-android:${LATEST_VERSION}'
+}
+```
+
+Create an instance of the engine and transcribe audio in real-time:
+
+```java
+import ai.picovoice.cheetah.*;
+
+final String accessKey = "${ACCESS_KEY}"; // AccessKey obtained from Picovoice Console (https://picovoice.ai/console/)
+final String modelPath = "${MODEL_FILE}";
+
+short[] getNextAudioFrame() {
+    // .. get audioFrame
+    return audioFrame;
+}
+
+try {
+    Cheetah cheetah = new Cheetah.Builder(accessKey).setModelPath(modelPath).build(appContext);
+
+    String transcript = "";
+
+    while true {
+        CheetahTranscript transcriptObj = cheetah.process(getNextAudioFrame());
+        transcript += transcriptObj.getTranscript();
+
+        if (transcriptObj.getIsEndpoint()) {
+            CheetahTranscript finalTranscriptObj = cheetah.flush();
+            transcript += finalTranscriptObj.getTranscript();
+        }
+    };
+
+} catch (CheetahException ex) { }
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with the default or custom trained model from [console](https://console.picovoice.ai/).
