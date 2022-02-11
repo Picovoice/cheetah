@@ -40,6 +40,9 @@ public class Cheetah {
      *
      * @param accessKey AccessKey obtained from Picovoice Console
      * @param modelPath Absolute path to the file containing Cheetah model parameters.
+     * @param endpointDuration Duration of endpoint in seconds. A speech endpoint is detected when there is a
+     *                         chunk of audio (with a duration specified herein) after an utterance without
+     *                         any speech in it. Set duration to 0 to disable this. Default is 1 second.
      * @throws CheetahException if there is an error while initializing Cheetah.
      */
     public Cheetah(String accessKey, String modelPath, float endpointDuration) throws CheetahException {
