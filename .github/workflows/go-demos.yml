@@ -1,0 +1,65 @@
+name: Go Demos
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - 'demo/go/**'
+      - '!demo/go/README.md'
+      - '.github/workflows/go-demos.yml'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'demo/go/**'
+      - '!demo/go/README.md'
+      - '.github/workflows/go-demos.yml'
+
+defaults:
+  run:
+    working-directory: demo/go
+
+jobs:
+  build-github-hoster:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        go: [ '1.16', '1.17' ]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup go
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+
+    - name: Build micdemo
+      run: go build micdemo/cheetah_mic_demo.go
+
+    - name: Build filedemo
+      run: go build filedemo/cheetah_file_demo.go
+
+    - name: Test filedemo
+      run: ./cheetah_file_demo -access_key ${{secrets.PV_VALID_ACCESS_KEY}} -input_audio_path ../../resources/audio_samples/test.wav
+
+  build-self-hoster:
+    runs-on: ${{ matrix.machine }}
+
+    strategy:
+      matrix:
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build micdemo
+      run: go build micdemo/cheetah_mic_demo.go
+
+    - name: Build filedemo
+      run: go build filedemo/cheetah_file_demo.go
+
+    - name: Test filedemo
+      run: ./cheetah_file_demo -access_key ${{secrets.PV_VALID_ACCESS_KEY}} -input_audio_path ../../resources/audio_samples/test.wav
