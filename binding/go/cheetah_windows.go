@@ -39,7 +39,6 @@ func (nc nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
 	var (
 		accessKeyC  		= C.CString(cheetah.AccessKey)
 		modelPathC  		= C.CString(cheetah.ModelPath)
-		endpointDurationC 	= cheetah.EndpointDuration
 	)
 	defer C.free(unsafe.Pointer(accessKeyC))
 	defer C.free(unsafe.Pointer(modelPathC))
@@ -47,7 +46,7 @@ func (nc nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
 	ret, _, _ := init_func.Call(
 		uintptr(unsafe.Pointer(accessKeyC)),
 		uintptr(unsafe.Pointer(modelPathC)),
-		uintptr(endpointDurationC),
+		uintptr(cheetah.EndpointDuration),
 		uintptr(unsafe.Pointer(&cheetah.handle)))
 
 	return PvStatus(ret)
