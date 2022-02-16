@@ -69,7 +69,7 @@ func (nc nativeCheetahType) nativeProcess(cheetah *Cheetah, pcm []int16) (status
 	transcript = C.GoString((*C.char)(unsafe.Pointer(transcriptPtr)))
 	C.free(unsafe.Pointer(transcriptPtr))
 
-	return PvStatus(ret), transcript
+	return PvStatus(ret), transcript, isEndpoint
 }
 
 func (nc nativeCheetahType) nativeFlush(cheetah *Cheetah) (status PvStatus, transcript string) {
