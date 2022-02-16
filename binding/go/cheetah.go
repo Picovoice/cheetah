@@ -152,8 +152,8 @@ func (cheetah *Cheetah) Delete() error {
 }
 
 // Processes a frame of audio and returns newly-transcribed text and a flag indicating if an endpoint has been
-// detected. Upon detection of an endpoint, the client may invoke `.Flush()` to retrieve any remaining transcription. 
-// Returns Any newly-transcribed speech (if none is available then an empty string is returned) and a 
+// detected. Upon detection of an endpoint, the client may invoke `.Flush()` to retrieve any remaining transcription.
+// Returns Any newly-transcribed speech (if none is available then an empty string is returned) and a
 // flag indicating if an endpoint has been detected.
 func (cheetah *Cheetah) Process(pcm []int16) (string, bool, error) {
 	if cheetah.handle == 0 {

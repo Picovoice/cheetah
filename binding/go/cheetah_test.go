@@ -26,10 +26,10 @@ import (
 )
 
 var (
-	testAccessKey 	string
-	cheetah       	Cheetah
-	testAudioPath 	string
-	transcript 		string
+	testAccessKey string
+	cheetah       Cheetah
+	testAudioPath string
+	transcript    string
 )
 
 func TestMain(m *testing.M) {
@@ -38,9 +38,9 @@ func TestMain(m *testing.M) {
 	flag.Parse()
 
 	_, filename, _, _ := runtime.Caller(0)
-    dir := filepath.Dir(filename)
+	dir := filepath.Dir(filename)
 
-	cheetah = Cheetah{AccessKey: testAccessKey}
+	cheetah = Cheetah{AccessKey: testAccessKey, EndpointDuration: 1.0}
 	err := cheetah.Init()
 	if err != nil {
 		log.Fatalf("Failed to init cheetah with: %v", err)
@@ -78,7 +78,7 @@ func TestProcess(t *testing.T) {
 	for i := 0; i < numFrames; i++ {
 		for j := 0; j < FrameLength; j++ {
 			offset := (i * frameLengthInBytes) + (j * 2)
-			pcm[j] = int16(binary.LittleEndian.Uint16(data[offset: offset+2]))
+			pcm[j] = int16(binary.LittleEndian.Uint16(data[offset : offset+2]))
 		}
 
 		partial, _, err := cheetah.Process(pcm)

@@ -11,16 +11,54 @@
 
 // Go binding for Cheetah Speech-to-Text engine.
 
-// +build linux darwin
-
 package cheetah
 
 /*
-#cgo LDFLAGS: -ldl
-#include <dlfcn.h>
+#cgo linux LDFLAGS: -ldl
+#cgo darwin LDFLAGS: -ldl
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
+
+#if defined(_WIN32) || defined(_WIN64)
+
+	#include <windows.h>
+
+#else
+
+	#include <dlfcn.h>
+
+#endif
+
+static void *open_dl(const char *dl_path) {
+
+#if defined(_WIN32) || defined(_WIN64)
+
+    return LoadLibrary((LPCSTR) dl_path);
+
+#else
+
+    return dlopen(dl_path, RTLD_NOW);
+
+#endif
+
+}
+
+static void *load_symbol(void *handle, const char *symbol) {
+
+#if defined(_WIN32) || defined(_WIN64)
+
+    return GetProcAddress((HMODULE) handle, symbol);
+
+#else
+
+    return dlsym(handle, symbol);
+
+#endif
+
+}
 
 typedef int32_t (*pv_cheetah_sample_rate_func)();
 
@@ -104,23 +142,23 @@ import (
 
 // private vars
 var (
-	lib = C.dlopen(C.CString(libName), C.RTLD_NOW)
+	lib = C.open_dl(C.CString(libName))
 
-	pv_cheetah_init_ptr         = C.dlsym(lib, C.CString("pv_cheetah_init"))
-	pv_cheetah_process_ptr      = C.dlsym(lib, C.CString("pv_cheetah_process"))
-	pv_cheetah_flush_ptr        = C.dlsym(lib, C.CString("pv_cheetah_flush"))
-	pv_cheetah_delete_ptr       = C.dlsym(lib, C.CString("pv_cheetah_delete"))
-	pv_cheetah_version_ptr      = C.dlsym(lib, C.CString("pv_cheetah_version"))
-	pv_cheetah_frame_length_ptr = C.dlsym(lib, C.CString("pv_cheetah_frame_length"))
-	pv_sample_rate_ptr          = C.dlsym(lib, C.CString("pv_sample_rate"))
+	pv_cheetah_init_ptr         = C.load_symbol(lib, C.CString("pv_cheetah_init"))
+	pv_cheetah_process_ptr      = C.load_symbol(lib, C.CString("pv_cheetah_process"))
+	pv_cheetah_flush_ptr        = C.load_symbol(lib, C.CString("pv_cheetah_flush"))
+	pv_cheetah_delete_ptr       = C.load_symbol(lib, C.CString("pv_cheetah_delete"))
+	pv_cheetah_version_ptr      = C.load_symbol(lib, C.CString("pv_cheetah_version"))
+	pv_cheetah_frame_length_ptr = C.load_symbol(lib, C.CString("pv_cheetah_frame_length"))
+	pv_sample_rate_ptr          = C.load_symbol(lib, C.CString("pv_sample_rate"))
 )
 
 func (nc nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
 	var (
-		accessKeyC			= C.CString(cheetah.AccessKey)
-		modelPathC 			= C.CString(cheetah.ModelPath)
-		endpointDurationC 	= C.float(cheetah.EndpointDuration)
-		ptrC       			= make([]unsafe.Pointer, 1)
+		accessKeyC        = C.CString(cheetah.AccessKey)
+		modelPathC        = C.CString(cheetah.ModelPath)
+		endpointDurationC = C.float(cheetah.EndpointDuration)
+		ptrC              = make([]unsafe.Pointer, 1)
 	)
 	defer C.free(unsafe.Pointer(accessKeyC))
 	defer C.free(unsafe.Pointer(modelPathC))
