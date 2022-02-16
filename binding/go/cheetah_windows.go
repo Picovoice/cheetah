@@ -29,6 +29,7 @@ var (
 	init_func         = lib.NewProc("pv_cheetah_init")
 	process_func      = lib.NewProc("pv_cheetah_process")
 	flush_func        = lib.NewProc("pv_cheetah_flush")
+	frame_length_func = lib.NewProc("pv_cheetah_frame_length")
 	sample_rate_func  = lib.NewProc("pv_sample_rate")
 	version_func      = lib.NewProc("pv_cheetah_version")
 	delete_func       = lib.NewProc("pv_cheetah_delete")
