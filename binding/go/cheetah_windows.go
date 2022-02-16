@@ -58,18 +58,21 @@ func (nc nativeCheetahType) nativeDelete(cheetah *Cheetah) {
 }
 
 func (nc nativeCheetahType) nativeProcess(cheetah *Cheetah, pcm []int16) (status PvStatus, transcript string, isEndpoint bool) {
-	var transcriptPtr uintptr
+	var (
+		transcriptPtr uintptr
+		endpoint	  bool
+	)
 
 	ret, _, _ := process_func.Call(
 		cheetah.handle,
 		uintptr(unsafe.Pointer(&pcm[0])),
 		uintptr(unsafe.Pointer(&transcriptPtr)),
-		uintptr(unsafe.Pointer(&isEndpoint)))
+		uintptr(unsafe.Pointer(&endpoint)))
 
 	transcript = C.GoString((*C.char)(unsafe.Pointer(transcriptPtr)))
 	C.free(unsafe.Pointer(transcriptPtr))
 
-	return PvStatus(ret), transcript, isEndpoint
+	return PvStatus(ret), transcript, endpoint
 }
 
 func (nc nativeCheetahType) nativeFlush(cheetah *Cheetah) (status PvStatus, transcript string) {
