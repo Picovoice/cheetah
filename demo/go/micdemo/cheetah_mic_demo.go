@@ -61,10 +61,9 @@ func main() {
 	}
 	defer c.Delete()
 
-	frameLength := 512
 	recorder := pvrecorder.PvRecorder{
 		DeviceIndex:    *audioDeviceIndex,
-		FrameLength: 	frameLength,
+		FrameLength: 	cheetah.FrameLength,
 		BufferSizeMSec: 1000,
 		LogOverflow:    0,
 	}
