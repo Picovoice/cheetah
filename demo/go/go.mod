@@ -3,7 +3,7 @@ module cheetahdemo
 go 1.16
 
 require (
-	github.com/Picovoice/cheetah/binding/go v0.0.0-20220216004239-2116be7f26c1
+	github.com/Picovoice/cheetah/binding/go v0.0.0-20220216004559-c2d8833ac15a
 	github.com/Picovoice/pvrecorder/sdk/go v1.0.2
 	github.com/go-audio/audio v1.0.0
 	github.com/go-audio/wav v1.0.0

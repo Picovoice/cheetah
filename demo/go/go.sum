@@ -2,6 +2,8 @@ github.com/Picovoice/cheetah/binding/go v0.0.0-20220215235627-a8d9e7cccf27 h1:/1
 github.com/Picovoice/cheetah/binding/go v0.0.0-20220215235627-a8d9e7cccf27/go.mod h1:N4BtPVCSbEw+MFNd/sdJ0tShv/HcoosTwI2WiHNscsc=
 github.com/Picovoice/cheetah/binding/go v0.0.0-20220216004239-2116be7f26c1 h1:WpU+t+3MMUPgrsJyZwpE7TUWNqwui6HYss9i9ihWpWc=
 github.com/Picovoice/cheetah/binding/go v0.0.0-20220216004239-2116be7f26c1/go.mod h1:N4BtPVCSbEw+MFNd/sdJ0tShv/HcoosTwI2WiHNscsc=
+github.com/Picovoice/cheetah/binding/go v0.0.0-20220216004559-c2d8833ac15a h1:6nIAyVCKL00OIO5Z0BwkIXhTXn6SOoao7G7vP9gTqdU=
+github.com/Picovoice/cheetah/binding/go v0.0.0-20220216004559-c2d8833ac15a/go.mod h1:N4BtPVCSbEw+MFNd/sdJ0tShv/HcoosTwI2WiHNscsc=
 github.com/Picovoice/pvrecorder/sdk/go v1.0.2 h1:UMgGSRjT5ro3DmncOYu6aiCikQp9pZlR3MPQa6QatEo=
 github.com/Picovoice/pvrecorder/sdk/go v1.0.2/go.mod h1:vkNmQAJCFgKBhSfqdff3OuxvXVpIuwv48odGc3ki83M=
 github.com/go-audio/audio v1.0.0 h1:zS9vebldgbQqktK4H0lUqWrG8P0NxCJVqcj7ZpNnwd4=
