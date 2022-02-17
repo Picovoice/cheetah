@@ -40,7 +40,7 @@ func TestMain(m *testing.M) {
 	_, filename, _, _ := runtime.Caller(0)
 	dir := filepath.Dir(filename)
 
-	cheetah = Cheetah{AccessKey: testAccessKey, EndpointDuration: 1.0}
+	cheetah = NewCheetah(testAccessKey, "")
 	err := cheetah.Init()
 	if err != nil {
 		log.Fatalf("Failed to init cheetah with: %v", err)

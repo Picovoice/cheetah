@@ -24,7 +24,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 ## Installation
 
 ```console
-go get github.com/Picovoice/leopard/binding/go
+go get github.com/Picovoice/cheetah/binding/go
 ```
 
 ## AccessKey
@@ -43,10 +43,10 @@ AccessKey also verifies that your usage is within the limits of your account. Ev
 Create an instance of the engine and transcribe audio:
 
 ```go
-import . "github.com/Picovoice/leopard/binding/go"
+import . "github.com/Picovoice/cheetah/binding/go"
 
 cheetah = Cheetah{AccessKey: "${ACCESS_KEY}", EndpointDuration: 1.0}
-err := leopard.Init()
+err := cheetah.Init()
 if err != nil {
     // handle err init
 }

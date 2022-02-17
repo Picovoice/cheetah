@@ -105,6 +105,15 @@ var (
 	Version = nativeCheetah.nativeVersion()
 )
 
+// Returns a Cheetah struct with the given modelPath with default parameters
+func NewCheetah(accessKey string, modelPath string) Cheetah {
+	return Cheetah{
+		AccessKey:        accessKey,
+		ModelPath:        modelPath,
+		EndpointDuration: 1.0,
+	}
+}
+
 // Init function for Cheetah. Must be called before attempting process
 func (cheetah *Cheetah) Init() error {
 	if cheetah.AccessKey == "" {

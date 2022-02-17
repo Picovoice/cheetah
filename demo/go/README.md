@@ -60,7 +60,7 @@ wish to transcribe.
 You need a working microphone connected to your machine for this demo. Run the following in the terminal:
 
 ```console
-go run filedemo/cheetah_file_demo.go -access_key "${ACCESS_KEY}"
+go run micdemo/cheetah_mic_demo.go -access_key "${ACCESS_KEY}"
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console. Once running, the demo prints:
