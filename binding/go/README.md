@@ -45,7 +45,7 @@ Create an instance of the engine and transcribe audio:
 ```go
 import . "github.com/Picovoice/cheetah/binding/go"
 
-cheetah = Cheetah{AccessKey: "${ACCESS_KEY}", EndpointDuration: 1.0}
+cheetah = NewCheetah{AccessKey: "${ACCESS_KEY}"}
 err := cheetah.Init()
 if err != nil {
     // handle err init

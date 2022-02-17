@@ -105,11 +105,11 @@ var (
 	Version = nativeCheetah.nativeVersion()
 )
 
-// Returns a Cheetah struct with the given modelPath with default parameters
-func NewCheetah(accessKey string, modelPath string) Cheetah {
+// Returns a Cheetah struct with defualt parameters
+func NewCheetah(accessKey string) Cheetah {
 	return Cheetah{
 		AccessKey:        accessKey,
-		ModelPath:        modelPath,
+		ModelPath:        defaultModelFile,
 		EndpointDuration: 1.0,
 	}
 }
