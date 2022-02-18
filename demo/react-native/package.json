@@ -1,0 +1,43 @@
+{
+  "name": "cheetah-react-native-demo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint .",
+    "android-run": "react-native run-android",
+    "android-install": "yarn",
+    "ios-run": "react-native run-ios",
+    "ios-link": "cd ios && pod install && cd ..",
+    "ios-install": "yarn && yarn ios-link",
+    "postinstall": "node copy.js"
+  },
+  "dependencies": {
+    "@picovoice/cheetah-react-native": "file:../../binding/react-native/pkg/picovoice-cheetah-react-native-1.0.0.tgz",
+    "@picovoice/react-native-voice-processor": "^1.0.4",
+    "@react-native-picker/picker": "^1.9.2",
+    "react": "16.13.1",
+    "react-native": "0.63.3",
+    "react-native-fs": "^2.18.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/runtime": "^7.12.5",
+    "@react-native-community/eslint-config": "^2.0.0",
+    "@types/react": "^17.0.33",
+    "@types/react-native": "^0.66.5",
+    "@typescript-eslint/parser": "^5.12.0",
+    "babel-jest": "^26.6.3",
+    "eslint": "^7.13.0",
+    "jest": "^26.6.3",
+    "metro-react-native-babel-preset": "^0.64.0",
+    "mkdirp": "^1.0.4",
+    "ncp": "^2.0.0",
+    "react-test-renderer": "16.13.1",
+    "typescript": "^4.5.5"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
