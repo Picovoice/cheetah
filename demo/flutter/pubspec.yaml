@@ -1,0 +1,27 @@
+name: cheetah_demo
+description: Demonstrates how to use the cheetah plugin.
+
+publish_to: 'none'
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  flutter_voice_processor: ^1.0.6
+
+  cheetah_flutter:
+    path: ../../binding/flutter
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^1.0.1
+
+flutter:  
+  uses-material-design: true
+  assets:
+    - assets/contexts/android/cheetah_params.pv
+    - assets/contexts/ios/cheetah_params.pv

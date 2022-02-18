@@ -28,7 +28,8 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [Python](#python-demos)
         - [C](#c-demos)
         - [iOS](#ios-demos)
-        - [Android](#android-demos)
+        - [Android](#android-demo)
+        - [Flutter](#flutter-demo)
         - [Go](#go-demo)
         - [React Native](#react-native-demo)
         - [Java](#java-demos)
@@ -38,6 +39,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [C](#c)
         - [iOS](#ios)
         - [Android](#android)
+        - [Flutter](#flutter)
         - [Go](#go)
         - [React Native](#react-native)
         - [Node.js](#nodejs)
@@ -113,11 +115,25 @@ Replace `let accessKey = "${YOUR_ACCESS_KEY_HERE}"` in the file [ViewModel.swift
 
 Then, using [Xcode](https://developer.apple.com/xcode/), open the generated `CheetahDemo.xcworkspace` and run the application.
 
-### Android Demos
+### Android Demo
 
 Using Android Studio, open [demo/android/CheetahDemo](/demo/android/CheetahDemo) as an Android project and then run the application. 
 
 Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [MainActivity.java](/demo/android/cheetah-demo-app/src/main/java/ai/picovoice/cheetahdemo/MainActivity.java) with your `AccessKey`.
+
+### Flutter Demo
+
+To run the Cheetah demo on Android or iOS with Flutter, you must have the [Flutter SDK](https://flutter.dev/docs/get-started/install) installed on your system. Once installed, you can run `flutter doctor` to determine any other missing requirements for your relevant platform. Once your environment has been set up, launch a simulator or connect an Android/iOS device.
+
+Before launching the app, use the [copy_assets.sh](/demo/flutter/copy_assets.sh) script to copy the cheetah demo model file into the demo project. (**NOTE**: on Windows, Git Bash or another bash shell is required, or you will have to manually copy the context into the project.).
+
+Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [main.dart](/demo/flutter/lib/main.dart) with your `AccessKey`.
+
+Run the following command from [demo/flutter](/demo/flutter) to build and deploy the demo to your device:
+
+```console
+flutter run
+```
 
 ### Go Demo
 
@@ -167,7 +183,6 @@ cheetah-mic-demo --access_key ${ACCESS_KEY}
 ```
 
 For more information about Node.js demos go to [demo/nodejs](/demo/nodejs).
-
 
 ### Java Demos
 
@@ -336,6 +351,44 @@ try {
     };
 
 } catch (CheetahException ex) { }
+```
+
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with the default or custom trained model from [console](https://console.picovoice.ai/).
+
+### Flutter
+
+Add the [Cheetah Flutter plugin](https://pub.dev/packages/cheetah) to your pub.yaml.
+
+```yaml
+dependencies:
+  cheetah_flutter: ^<version>
+```
+
+Create an instance of the engine and transcribe audio in real-time:
+
+```dart
+import 'package:cheetah/cheetah.dart';
+
+const accessKey = "{ACCESS_KEY}"  // AccessKey obtained from Picovoice Console (https://picovoice.ai/console/)
+
+List<int> buffer = getAudioFrame();
+
+try{
+    Cheetah _cheetah = await Cheetah.create(accessKey, '{CHEETAH_MODEL_PATH}');
+
+    String transcript = "";
+
+    while true {
+        CheetahTranscript transcriptObj = await _cheetah.process(getAudioFrame());
+        transcript += transcriptObj.transcript;
+
+        if (transcriptObj.isEndpoint) {
+            CheetahTranscript endpointTranscriptObj = await _cheetah.flush();
+            transcript += endpointTranscriptObj.transcript;
+        }
+    }
+
+} on CheetahException catch (err) { }
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with the default or custom trained model from [console](https://console.picovoice.ai/).
