@@ -105,7 +105,7 @@ var (
 	Version = nativeCheetah.nativeVersion()
 )
 
-// Returns a Cheetah struct with defualt parameters
+// Returns a Cheetah struct with default parameters
 func NewCheetah(accessKey string) Cheetah {
 	return Cheetah{
 		AccessKey:        accessKey,
