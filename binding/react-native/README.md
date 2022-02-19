@@ -74,7 +74,7 @@ Open [`Cheetah.xcodeproj`](./ios/Cheetah.xcodeproj) in `Xcode` and add the Cheet
 
 ## Usage
 
-Transcribe an audio:
+Transcribe audio:
 
 ```typescript
 import {Cheetah, CheetahErrors} from '@picovoice/cheetah-react-native';

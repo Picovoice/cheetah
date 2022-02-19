@@ -30,12 +30,14 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [iOS](#ios-demos)
         - [Android](#android-demo)
         - [Go](#go-demo)
+        - [React Native](#react-native-demo)
     - [SDKs](#sdks)
         - [Python](#python)
         - [C](#c)
         - [iOS](#ios)
         - [Android](#android)
         - [Go](#go)
+        - [React Native](#react-native)
     - [Releases](#releases)
 
 ## AccessKey
@@ -126,6 +128,25 @@ go run micdemo/cheetah_mic_demo.go -access_key "${ACCESS_KEY}"
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
 
 For more information about Go demos go to [demo/go](/demo/go).
+### React Native Demo
+
+To run the React Native Porcupine demo app you will first need to set up your React Native environment. For this,
+please refer to [React Native's documentation](https://reactnative.dev/docs/environment-setup). Once your environment has
+been set up, navigate to [demo/react-native](/demo/react-native) to run the following commands:
+
+For Android:
+
+```console
+yarn android-install    # sets up environment
+yarn android-run        # builds and deploys to Android
+```
+
+For iOS:
+
+```console
+yarn ios-install        # sets up environment
+yarn ios-run 
+```
 
 ## SDKs
 
@@ -311,11 +332,45 @@ for {
   partialTranscript, isEndpoint, err = cheetah.Process(getNextFrameAudio())
   if isEndpoint {
     finalTranscript, err = cheetah.Flush()
-  }
+    }
 }
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console. When done be sure to explicitly release the resources using `cheetah.Delete()`.
+
+### React Native
+
+The Cheetah React Native binding is available via [NPM](https://www.npmjs.com/package/@picovoice/cheetah-react-native). Add it via the following command:
+
+```console
+yarn add @picovoice/cheetah-react-native
+```
+
+Create an instance of the engine and transcribe an audio file:
+
+```typescript
+import {Cheetah, CheetahErrors} from '@picovoice/cheetah-react-native';
+
+const getAudioFrame = () => {
+  // get audio frames
+}
+
+try {
+  while (1) {
+    const cheetah = await Cheetah.create("${ACCESS_KEY}", "${MODEL_FILE}")
+    const [partialTranscript, isEndpoint] = await cheetah.process(getAudioFrame())
+    if (isEndpoint) {
+      const finalTranscript = await cheetah.flush()
+    }
+  }
+} catch (err: any) {
+  if (err instanceof CheetahErrors) {
+    // handle error
+  }
+}
+```
+
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with the default or custom trained model from [console](https://console.picovoice.ai/). When done be sure to explicitly release the resources using `cheetah.delete()`.
 
 ## Releases
 
