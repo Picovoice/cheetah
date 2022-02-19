@@ -62,13 +62,19 @@ export default class App extends Component<Props, State> {
       transcription: '',
       isBottom: false,
     };
+  }
 
+  componentDidMount() {
     this.init();
   }
 
   componentWillUnmount() {
     if (this.state.appState === UIState.recording) {
       this._stopProcessing();
+    }
+    if (this._cheetah !== undefined) {
+      this._cheetah.delete();
+      this._cheetah = undefined;
     }
   }
 
