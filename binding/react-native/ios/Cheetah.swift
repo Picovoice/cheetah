@@ -14,14 +14,14 @@ import Cheetah
 class PvCheetah: NSObject {
     private var cheetahPool:Dictionary<String, Cheetah> = [:]
 
-    @objc(create:modelPath:endpointDuration,resolver:rejecter:)
-    func create(accessKey: String, modelPath: String, endpointDuration: float,
+    @objc(create:modelPath:endpointDuration:resolver:rejecter:)
+    func create(accessKey: String, modelPath: String, endpointDuration: Float32,
         resolver resolve:RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
 
         do {
             let cheetah = try Cheetah(
                 accessKey: accessKey,
-                modelPath: try getResourcePath(modelPath)
+                modelPath: try getResourcePath(modelPath),
                 endpointDuration: endpointDuration)
 
             let handle: String = String(describing: cheetah)
@@ -55,7 +55,7 @@ class PvCheetah: NSObject {
         resolver resolve:RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
         do {
             if let cheetah = cheetahPool[handle] {
-                let transcript, isEndpoint = try cheetah.process(pcm)
+                let (transcript, isEndpoint) = try cheetah.process(pcm)
 
                 var param: [String: Any] = [:]
                 param["transcript"] = transcript
@@ -79,7 +79,7 @@ class PvCheetah: NSObject {
         func flush(handle:String, resolver resolve:RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
             do {
                 if let cheetah = cheetahPool[handle] {
-                    let result = try cheetah.flush(pcm)
+                    let result = try cheetah.flush()
                     resolve(result)
                 } else {
                     let (code, message) = errorToCodeAndMessage(CheetahRuntimeError("Invalid handle provided to Cheetah 'process'"))

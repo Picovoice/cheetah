@@ -16,7 +16,9 @@ import {
   NativeScrollEvent,
   PermissionsAndroid,
   Platform,
+  SafeAreaView,
   ScrollView,
+  StatusBar,
   TouchableOpacity,
 } from 'react-native';
 import {StyleSheet, Text, View} from 'react-native';
@@ -233,7 +235,8 @@ export default class App extends Component<Props, State> {
       this.state.appState === UIState.stopping;
 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor="#377DFF" />
         <View style={styles.statusBar}>
           <Text style={styles.statusBarText}>Cheetah</Text>
         </View>
@@ -285,7 +288,7 @@ export default class App extends Component<Props, State> {
             Made in Vancouver, Canada by Picovoice
           </Text>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }

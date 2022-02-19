@@ -74,7 +74,7 @@ Open [`Cheetah.xcodeproj`](./ios/Cheetah.xcodeproj) in `Xcode` and add the Cheet
 
 ## Usage
 
-Transcribe an audio file either by passing the absolute path or an url to the file:
+Transcribe an audio:
 
 ```typescript
 import {Cheetah, CheetahErrors} from '@picovoice/cheetah-react-native';
@@ -84,10 +84,13 @@ const getAudioFrame = () => {
 }
 
 try {
-  const cheetah = Cheetah.create("${ACCESS_KEY}", "${MODEL_FILE}")
-  console.log(cheetah.process(getAudioFrame()))
-
-  console.log(cheetah.processFile("${AUDIO_FILE_NAME}"))
+  while (1) {
+    const cheetah = await Cheetah.create("${ACCESS_KEY}", "${MODEL_FILE}")
+    const [partialTranscript, isEndpoint] = await cheetah.process(getAudioFrame())
+    if (isEndpoint) {
+      const finalTranscript = await cheetah.flush()
+    }
+  }
 } catch (err: any) {
   if (err instanceof CheetahErrors) {
     // handle error
@@ -95,8 +98,8 @@ try {
 }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)), `${MODEL_FILE}`
-with the name of the Cheetah model file name and `${AUDIO_FILE_NAME}` with the name of the audio file.
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)) and `${MODEL_FILE}`
+with the name of the Cheetah model file name.
 Finally, when done be sure to explicitly release the resources using `cheetah.delete()`.
 
 ## Demo App
