@@ -29,11 +29,13 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [C](#c-demos)
         - [iOS](#ios-demos)
         - [Android](#android-demo)
+        - [Go](#go-demo)
     - [SDKs](#sdks)
         - [Python](#python)
         - [C](#c)
         - [iOS](#ios)
         - [Android](#android)
+        - [Go](#go)
     - [Releases](#releases)
 
 ## AccessKey
@@ -111,6 +113,19 @@ Using Android Studio, open [demo/android/CheetahDemo](/demo/android/CheetahDemo)
 
 Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [MainActivity.java](/demo/android/cheetah-demo-app/src/main/java/ai/picovoice/cheetahdemo/MainActivity.java) with your `AccessKey`.
 
+### Go Demo
+
+The demo requires `cgo`, which on Windows may mean that you need to install a gcc compiler like [Mingw](http://mingw-w64.org/doku.php) to build it properly. 
+
+From [demo/go](/demo/go) run the following command from the terminal to build and run the file demo:
+
+```console
+go run micdemo/cheetah_mic_demo.go -access_key "${ACCESS_KEY}"
+```
+
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
+
+For more information about Go demos go to [demo/go](/demo/go).
 
 ## SDKs
 
@@ -267,6 +282,39 @@ try {
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with the default or custom trained model from [console](https://console.picovoice.ai/).
+
+### Go
+
+Install the Go binding:
+
+```console
+go get github.com/Picovoice/cheetah/binding/go
+```
+
+Create an instance of the engine and transcribe audio in real-time:
+
+```go
+import . "github.com/Picovoice/cheetah/binding/go"
+
+cheetah = NewCheetah{AccessKey: "${ACCESS_KEY}"}
+err := cheetah.Init()
+if err != nil {
+    // handle err init
+}
+
+func getNextFrameAudio() []int16{
+    // get audio frame
+}
+
+for {
+  partialTranscript, isEndpoint, err = cheetah.Process(getNextFrameAudio())
+  if isEndpoint {
+    finalTranscript, err = cheetah.Flush()
+  }
+}
+```
+
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
 
 ## Releases
 
