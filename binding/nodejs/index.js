@@ -131,7 +131,7 @@ class Cheetah {
    * Upon detection of an endpoint, the client may invoke `Cheetah.flush()` to retrieve any remaining transcription.
    *
    * @param {Int16Array} pcm Audio data. The audio needs to have a sample rate equal to `Cheetah.sampleRate` and be 16-bit linearly-encoded.
-   * This function operates on single-channel audio.
+   * The specific array length can be attained by calling `Cheetah.frameLength`. This function operates on single-channel audio.
    * @returns {string, bool} Inferred transcription, and a flag indicating if an endpoint has been detected.
    */
   process(pcm) {
@@ -149,8 +149,10 @@ class Cheetah {
       throw new PvArgumentError(
         `PCM array provided to 'Cheetah.process()' is undefined or null`
       );
-    } else if (pcm.length === 0) {
-      throw new PvArgumentError(`PCM array provided to 'Cheetah.process()' is empty`);
+    } else if (frame.length !== this.frameLength) {
+      throw new PvArgumentError(
+        `Size of frame array provided to 'Cheetah.process()' (${frame.length}) does not match the engine 'Cheetah.frameLength' (${this.frameLength})`
+      );
     }
 
     let partialTranscriptAndStatus = null;
