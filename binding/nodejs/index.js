@@ -12,6 +12,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const assert = require('assert');
 
 const PV_STATUS_T = require("./pv_status_t");
 const {
@@ -22,10 +23,10 @@ const {
 
 const { getSystemLibraryPath } = require("./platforms");
 
-const MODEL_PATH_DEFAULT = "lib/common/cheetah_params.pv";
+const DEFAULT_MODEL_PATH = "lib/common/cheetah_params.pv";
 
 /**
- * Wraps the Cheetah engine.
+ * Node.js binding for Cheetah streaming speech-to-text engine
  *
  * Performs the calls to the Cheetah node library. Does some basic parameter validation to prevent
  * errors occurring in the library layer. Provides clearer error messages in native JavaScript.
@@ -36,10 +37,12 @@ class Cheetah {
    * @param {string} accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
    * @param {number} endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio 
    * (with a duration specified herein) after an utterance without any speech in it. Set to `0` to disable endpoint detection.
-   * @param {string} manualModelPath the path to the Cheetah model (.pv extension)
-   * @param {string} manualLibraryPath the path to the Cheetah dynamic library (platform-dependent extension)
+   * @param {string} modelPath the path to the Cheetah model (.pv extension)
+   * @param {string} libraryPath the path to the Cheetah dynamic library (.node extension)
    */
-  constructor(accessKey, endpointDurationSec, manualModelPath, manualLibraryPath) {
+  constructor(accessKey, endpointDurationSec, modelPath, libraryPath) {
+    assert(typeof accessKey === 'string');
+    
     if (
       accessKey === null ||
       accessKey === undefined ||
@@ -61,12 +64,10 @@ class Cheetah {
       endpointDurationSec = 1.0;
     }
 
-    let modelPath = manualModelPath;
     if (modelPath === undefined || modelPath === null) {
-      modelPath = path.resolve(__dirname, MODEL_PATH_DEFAULT);
+      modelPath = path.resolve(__dirname, DEFAULT_MODEL_PATH);
     }
 
-    let libraryPath = manualLibraryPath;
     if (libraryPath === undefined || modelPath === null) {
       libraryPath = getSystemLibraryPath();
     }
@@ -127,13 +128,15 @@ class Cheetah {
 
   /**
    * Processes a frame of audio and returns newly-transcribed text and a flag indicating if an endpoint has been detected.
-   * Upon detection of an endpoint, the client may invoke `.flush()` to retrieve any remaining transcription.
+   * Upon detection of an endpoint, the client may invoke `Cheetah.flush()` to retrieve any remaining transcription.
    *
-   * @param {Array} pcm Audio data. The audio needs to have a sample rate equal to `.sampleRate` and be 16-bit linearly-encoded.
+   * @param {Int16Array} pcm Audio data. The audio needs to have a sample rate equal to `Cheetah.sampleRate` and be 16-bit linearly-encoded.
    * This function operates on single-channel audio.
    * @returns {string, bool} Inferred transcription, and a flag indicating if an endpoint has been detected.
    */
   process(pcm) {
+    assert(pcm instanceof Int16Array);
+
     if (
       this._handle === 0 ||
       this._handle === null ||
@@ -144,10 +147,10 @@ class Cheetah {
 
     if (pcm === undefined || pcm === null) {
       throw new PvArgumentError(
-        `PCM array provided to process() is undefined or null`
+        `PCM array provided to 'Cheetah.process()' is undefined or null`
       );
     } else if (pcm.length === 0) {
-      throw new PvArgumentError(`PCM array provided to process() is empty`);
+      throw new PvArgumentError(`PCM array provided to 'Cheetah.process()' is empty`);
     }
 
     let partialTranscriptAndStatus = null;
@@ -168,9 +171,6 @@ class Cheetah {
   /**
    * Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcript.
    *
-   * @param {Array} pcm Audio data. The audio needs to have a sample rate equal to `.sampleRate` and be 16-bit linearly-encoded.
-   * This function operates on single-channel audio. If you wish to process data in a different
-   * sample rate or format consider using `.processFile`.
    * @returns {string} Inferred transcription.
    */
   flush() {

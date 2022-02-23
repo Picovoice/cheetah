@@ -16,6 +16,8 @@ const readline = require("readline");
 const Cheetah = require("@picovoice/cheetah-node");
 const PvRecorder = require("@picovoice/pvrecorder-node");
 
+const { PvStatusActivationLimitReached } = require("@picovoice/cheetah-node/errors");
+
 program
   .option(
     "-a, --access_key <string>",
@@ -85,18 +87,27 @@ async function micDemo() {
   process.stdin.setRawMode(true);
 
   process.stdin.on("keypress", (key, str) => {
-    if (str.name === 'return') {
+    if (str.sequence === '\r' || str.sequence === '\n') {
       isInterrupted = true;
     }
   });
 
   while (!isInterrupted) {
     const pcm = await recorder.read();
-    const [partialTranscript, isEndpoint] = engineInstance.process(pcm);
-    process.stdout.write(partialTranscript);
-    if (isEndpoint === true) {
-      const finalTranscript = engineInstance.flush();
-      process.stdout.write(`${finalTranscript} `);
+    try {
+      const [partialTranscript, isEndpoint] = engineInstance.process(pcm);
+      process.stdout.write(partialTranscript);
+      if (isEndpoint === true) {
+        const finalTranscript = engineInstance.flush();
+        process.stdout.write(`${finalTranscript} `);
+      }
+    } catch (err) {
+      if (err instanceof PvStatusActivationLimitReached) {
+        console.error(`AccessKey '${access_key}' has reached it's processing limit.`);
+      } else {
+        console.error(err);
+      }
+      isInterrupted = true;
     }
   }
 
