@@ -8,7 +8,7 @@ Cheetah is an on-device speech-to-text engine. Cheetah is:
 
 - Private; All voice processing runs locally.
 - Accurate [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results)
-- Compact and Computationally-Efficient [[2]](https://github.com/Picovoice/speech-to-text-benchmark#results)
+- Compact and Computationally-Efficient [[2]](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
 - Cross-Platform:
   - Linux (x86_64)
   - macOS (x86_64, arm64)
@@ -27,7 +27,7 @@ This binding is for running Cheetah on **React Native 0.62.2+** on the following
 
 ## Installation
 
-To start install be sure you have installed yarn and cocoapods. Then add these two native modules to your react-native project.
+To start install be sure you have installed yarn and CocoaPods. Then add these two native modules to your react-native project.
 
 ```console
 yarn add @picovoice/cheetah-react-native
