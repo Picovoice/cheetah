@@ -32,7 +32,7 @@ const MODEL_PATH_DEFAULT = "lib/common/cheetah_params.pv";
  */
 class Cheetah {
   /**
-   * Creates an instance of Leopard.
+   * Creates an instance of Cheetah.
    * @param {string} accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
    * @param {number} endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio 
    * (with a duration specified herein) after an utterance without any speech in it. Set to `0` to disable endpoint detection.
@@ -45,7 +45,7 @@ class Cheetah {
       accessKey === undefined ||
       accessKey.length === 0
     ) {
-      throw new PvArgumentError(`No AccessKey provided to Leopard`);
+      throw new PvArgumentError(`No AccessKey provided to Cheetah`);
     }
 
     if (endpointDurationSec < 0 || isNaN(endpointDurationSec)) {
@@ -112,7 +112,7 @@ class Cheetah {
   }
 
   /**
-   * @returns the version of the Leopard engine
+   * @returns the version of the Cheetah engine
    */
   get version() {
     return this._version;

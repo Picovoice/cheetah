@@ -23,9 +23,9 @@ program
   )
   .option(
     "-l, --library_file_path <string>",
-    "absolute path to leopard dynamic library"
+    "absolute path to cheetah dynamic library"
   )
-  .option("-m, --model_file_path <string>", "absolute path to leopard model")
+  .option("-m, --model_file_path <string>", "absolute path to cheetah model")
   .option(
     "-i, --audio_device_index <number>",
     "index of audio device to use to record audio",
