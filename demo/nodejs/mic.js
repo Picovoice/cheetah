@@ -36,7 +36,7 @@ program
     "-e, --endpoint_duration_sec <number>",
     "Duration of endpoint in seconds",
     Number,
-    2
+    1
   )
   .option("-d, --show_audio_devices", "show the list of available devices");
 

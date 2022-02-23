@@ -48,10 +48,17 @@ class Cheetah {
       throw new PvArgumentError(`No AccessKey provided to Cheetah`);
     }
 
-    if (endpointDurationSec < 0 || isNaN(endpointDurationSec)) {
+    if (endpointDurationSec < 0) {
       throw new RangeError(
         `Duration of endpoint value in 'endpointDurationSec' must be a positive number: ${endpointDurationSec}`
       );
+    }
+
+    if (
+      endpointDurationSec === null ||
+      endpointDurationSec === undefined
+    ) {
+      endpointDurationSec = 1.0;
     }
 
     let modelPath = manualModelPath;
@@ -120,11 +127,10 @@ class Cheetah {
 
   /**
    * Processes a frame of audio and returns newly-transcribed text and a flag indicating if an endpoint has been detected.
-   * Upon detection of an endpoint, the client may invoke `.flush` to retrieve any remaining transcription.
+   * Upon detection of an endpoint, the client may invoke `.flush()` to retrieve any remaining transcription.
    *
    * @param {Array} pcm Audio data. The audio needs to have a sample rate equal to `.sampleRate` and be 16-bit linearly-encoded.
-   * This function operates on single-channel audio. If you wish to process data in a different
-   * sample rate or format consider using `.processFile`.
+   * This function operates on single-channel audio.
    * @returns {string, bool} Inferred transcription, and a flag indicating if an endpoint has been detected.
    */
   process(pcm) {
@@ -160,8 +166,7 @@ class Cheetah {
   }
 
   /**
-   * Processes a frame of audio and returns newly-transcribed text and a flag indicating if an endpoint has been detected.
-   * Upon detection of an endpoint, the client may invoke `.flush` to retrieve any remaining transcription.
+   * Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcript.
    *
    * @param {Array} pcm Audio data. The audio needs to have a sample rate equal to `.sampleRate` and be 16-bit linearly-encoded.
    * This function operates on single-channel audio. If you wish to process data in a different
