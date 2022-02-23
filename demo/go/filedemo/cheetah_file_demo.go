@@ -42,8 +42,8 @@ func main() {
 	defer f.Close()
 
 	c := cheetah.Cheetah{
-		AccessKey: *accessKeyArg,
-		ModelPath: *modelPathArg,
+		AccessKey:        *accessKeyArg,
+		ModelPath:        *modelPathArg,
 		EndpointDuration: float32(*endpointDurationArg),
 	}
 	defer c.Delete()
@@ -72,7 +72,6 @@ func main() {
 	shortBuf := make([]int16, cheetah.FrameLength)
 	totalRead := 0
 	start := time.Now()
-	var transcript string
 
 	for err == nil {
 		n, err := wavFile.PCMBuffer(buf)
@@ -88,24 +87,32 @@ func main() {
 			shortBuf[i] = int16(buf.Data[i])
 		}
 
-		partial, _, err := c.Process(shortBuf)
+		partial, isEndpoint, err := c.Process(shortBuf)
 		if err != nil {
 			log.Fatalf("Failed to process: %v\n", err)
 		}
-
-		transcript += partial
+		fmt.Printf(partial)
+		if isEndpoint {
+			final, err := c.Flush()
+			if err != nil {
+				log.Fatalf("Failed to flush: %v\n", err)
+			}
+			if len(final) > 0 {
+				fmt.Println(final)
+			}
+		}
 	}
 
 	final, err := c.Flush()
 	if err != nil {
 		log.Fatalf("Failed to flush: %v\n", err)
 	}
-	transcript += final
-
-	log.Println(transcript)
+	if len(final) > 0 {
+		fmt.Println(final)
+	}
 
 	audioLen := float64(totalRead) / float64(cheetah.SampleRate)
 	elapsed := time.Since(start)
 	realtimeFactor := audioLen / elapsed.Seconds()
-	fmt.Printf("Realtime factor: %fx\n", realtimeFactor)
+	fmt.Printf("\nRealtime factor: %fx\n", realtimeFactor)
 }

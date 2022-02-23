@@ -12,6 +12,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -50,8 +51,8 @@ func main() {
 	}
 
 	c := cheetah.Cheetah{
-		AccessKey: *accessKeyArg,
-		ModelPath: *modelPathArg,
+		AccessKey:        *accessKeyArg,
+		ModelPath:        *modelPathArg,
 		EndpointDuration: float32(*endpointDurationArg),
 	}
 
@@ -63,7 +64,7 @@ func main() {
 
 	recorder := pvrecorder.PvRecorder{
 		DeviceIndex:    *audioDeviceIndex,
-		FrameLength: 	cheetah.FrameLength,
+		FrameLength:    cheetah.FrameLength,
 		BufferSizeMSec: 1000,
 		LogOverflow:    0,
 	}
@@ -106,16 +107,18 @@ waitLoop:
 			if err != nil {
 				log.Fatalf("Process error: %v\n", err)
 			}
-			print(partial)
+			fmt.Print(partial)
 
 			if isEndpoint {
 				final, err := c.Flush()
 				if err != nil {
 					log.Fatalf("Flush error: %v\n", err)
 				}
-				println(final)
+				if len(final) > 0 {
+					fmt.Println(final)
+				}
 			}
-			
+
 			// write to debug file
 			if outputWav != nil {
 				for outputBufIndex := range pcm {

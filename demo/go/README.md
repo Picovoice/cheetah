@@ -8,7 +8,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
 - Private; All voice processing runs locally.
 - Accurate [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results)
-- Compact and Computationally-Efficient [[2]](https://github.com/Picovoice/speech-to-text-benchmark#results)
+- Compact and Computationally-Efficient [[2]](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
 - Cross-Platform:
     - Linux (x86_64)
     - macOS (x86_64, arm64)
@@ -52,8 +52,8 @@ go run filedemo/cheetah_file_demo.go \
 -access_key "${ACCESS_KEY}"
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${AUDIO_PATH}` with a path to an audio file you
-wish to transcribe.
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${AUDIO_PATH}` with a path to an audio file (`.wav` extension)
+you wish to transcribe.
 
 ### Microphone Demo
 

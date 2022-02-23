@@ -115,7 +115,7 @@ Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [MainActivity.java](/demo/androi
 
 ### Go Demo
 
-The demo requires `cgo`, which on Windows may mean that you need to install a gcc compiler like [Mingw](http://mingw-w64.org/doku.php) to build it properly. 
+The demo requires `cgo`, which on Windows may mean that you need to install a gcc compiler like [MinGW](http://mingw-w64.org/doku.php) to build it properly. 
 
 From [demo/go](/demo/go) run the following command from the terminal to build and run the file demo:
 
@@ -301,6 +301,7 @@ err := cheetah.Init()
 if err != nil {
     // handle err init
 }
+defer cheetah.Delete()
 
 func getNextFrameAudio() []int16{
     // get audio frame
@@ -314,7 +315,7 @@ for {
 }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console. When done be sure to explicitly release the resources using `cheetah.Delete()`.
 
 ## Releases
 

@@ -1,13 +1,3 @@
-github.com/Picovoice/cheetah/binding/go v0.0.0-20220215235627-a8d9e7cccf27 h1:/1UWGk3v5zow0xAaSVqpm1xyfi37VjuaG1eDFz9fw4U=
-github.com/Picovoice/cheetah/binding/go v0.0.0-20220215235627-a8d9e7cccf27/go.mod h1:N4BtPVCSbEw+MFNd/sdJ0tShv/HcoosTwI2WiHNscsc=
-github.com/Picovoice/cheetah/binding/go v0.0.0-20220216004239-2116be7f26c1 h1:WpU+t+3MMUPgrsJyZwpE7TUWNqwui6HYss9i9ihWpWc=
-github.com/Picovoice/cheetah/binding/go v0.0.0-20220216004239-2116be7f26c1/go.mod h1:N4BtPVCSbEw+MFNd/sdJ0tShv/HcoosTwI2WiHNscsc=
-github.com/Picovoice/cheetah/binding/go v0.0.0-20220216004559-c2d8833ac15a h1:6nIAyVCKL00OIO5Z0BwkIXhTXn6SOoao7G7vP9gTqdU=
-github.com/Picovoice/cheetah/binding/go v0.0.0-20220216004559-c2d8833ac15a/go.mod h1:N4BtPVCSbEw+MFNd/sdJ0tShv/HcoosTwI2WiHNscsc=
-github.com/Picovoice/cheetah/binding/go v0.0.0-20220216005945-38bb26df4a1d h1:4Ij7nr8AnPxrQUZ2RaIYYiWT8i1bphiWg7cIWptuZZU=
-github.com/Picovoice/cheetah/binding/go v0.0.0-20220216005945-38bb26df4a1d/go.mod h1:N4BtPVCSbEw+MFNd/sdJ0tShv/HcoosTwI2WiHNscsc=
-github.com/Picovoice/cheetah/binding/go v0.0.0-20220216010303-b8664d908ec5 h1:vfmwENH6tibjU424dHQ7/ERr/RH1P+CwnxzQNbSpNi0=
-github.com/Picovoice/cheetah/binding/go v0.0.0-20220216010303-b8664d908ec5/go.mod h1:N4BtPVCSbEw+MFNd/sdJ0tShv/HcoosTwI2WiHNscsc=
 github.com/Picovoice/cheetah/binding/go v0.0.0-20220216213719-ae24c66d2722 h1:eGypB3PWWa8xbWfv5bqoXSyox/KOIzedT3YPL7ZM+bk=
 github.com/Picovoice/cheetah/binding/go v0.0.0-20220216213719-ae24c66d2722/go.mod h1:N4BtPVCSbEw+MFNd/sdJ0tShv/HcoosTwI2WiHNscsc=
 github.com/Picovoice/pvrecorder/sdk/go v1.0.2 h1:UMgGSRjT5ro3DmncOYu6aiCikQp9pZlR3MPQa6QatEo=
