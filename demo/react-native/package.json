@@ -14,7 +14,7 @@
     "postinstall": "node copy.js"
   },
   "dependencies": {
-    "@picovoice/cheetah-react-native": "file:../../binding/react-native/pkg/picovoice-cheetah-react-native-1.0.0.tgz",
+    "@picovoice/cheetah-react-native": "^1.0.0",
     "@picovoice/react-native-voice-processor": "^1.0.4",
     "@react-native-picker/picker": "^1.9.2",
     "react": "16.13.1",
