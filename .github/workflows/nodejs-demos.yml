@@ -60,7 +60,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Pre-build dependencies
-      run: run: cd ../../binding/nodejs && npm install --global yarn
+      run: cd ../../binding/nodejs && npm install --global yarn
 
     - name: Build binding
       run: cd ../../binding/nodejs && yarn install
