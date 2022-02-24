@@ -38,7 +38,7 @@ program
     "-e, --endpoint_duration_sec <number>",
     "Duration of endpoint in seconds",
     Number,
-    1
+    3
   )
   .option("-d, --show_audio_devices", "show the list of available devices");
 
@@ -99,7 +99,7 @@ async function micDemo() {
       process.stdout.write(partialTranscript);
       if (isEndpoint === true) {
         const finalTranscript = engineInstance.flush();
-        process.stdout.write(`${finalTranscript} `);
+        process.stdout.write(`${finalTranscript}\n`);
       }
     } catch (err) {
       if (err instanceof PvStatusActivationLimitReached) {
