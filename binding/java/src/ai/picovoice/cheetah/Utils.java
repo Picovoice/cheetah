@@ -209,7 +209,7 @@ class Utils {
     public static String getPackagedLibraryPath() {
         switch (ENVIRONMENT_NAME) {
             case "windows":
-                return RESOURCE_DIRECTORY.resolve("lib/java/windows/amd64/pv_cheetah_jni.dll").toString();
+                return RESOURCE_DIRECTORY.resolve("lib/java/windows/amd64/libpv_cheetah_jni.dll").toString();
             case "mac":
                 return RESOURCE_DIRECTORY.resolve("lib/java/mac")
                                          .resolve(ARCHITECTURE)
