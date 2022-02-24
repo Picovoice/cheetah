@@ -46,7 +46,7 @@ Create an instance of the engine and transcribe audio :
 const Cheetah = require("@picovoice/cheetah-node");
 
 const accessKey = "${ACCESS_KEY}"; // Obtained from the Picovoice Console (https://console.picovoice.ai/)
-const endpointDurationSec = 0.2;
+const endpointDurationSec = 2.0;
 const handle = new Cheetah(accessKey);
 
 function getNextAudioFrame() {
