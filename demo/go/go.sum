@@ -1,5 +1,5 @@
-github.com/Picovoice/cheetah/binding/go v0.0.0-20220216213719-ae24c66d2722 h1:eGypB3PWWa8xbWfv5bqoXSyox/KOIzedT3YPL7ZM+bk=
-github.com/Picovoice/cheetah/binding/go v0.0.0-20220216213719-ae24c66d2722/go.mod h1:N4BtPVCSbEw+MFNd/sdJ0tShv/HcoosTwI2WiHNscsc=
+github.com/Picovoice/cheetah/binding/go v1.0.0 h1:VavdFf7Y8CMUlA3Bzh+qdqVpwAcCgdB22Zw9ydzJRTA=
+github.com/Picovoice/cheetah/binding/go v1.0.0/go.mod h1:+7UFRMp3uyXYt/wZ0bFCqifjue7p4O7A0+LP09FWN+o=
 github.com/Picovoice/pvrecorder/sdk/go v1.0.2 h1:UMgGSRjT5ro3DmncOYu6aiCikQp9pZlR3MPQa6QatEo=
 github.com/Picovoice/pvrecorder/sdk/go v1.0.2/go.mod h1:vkNmQAJCFgKBhSfqdff3OuxvXVpIuwv48odGc3ki83M=
 github.com/go-audio/audio v1.0.0 h1:zS9vebldgbQqktK4H0lUqWrG8P0NxCJVqcj7ZpNnwd4=
@@ -8,7 +8,6 @@ github.com/go-audio/riff v1.0.0 h1:d8iCGbDvox9BfLagY94fBynxSPHO80LmZCaOsmKxokA=
 github.com/go-audio/riff v1.0.0/go.mod h1:l3cQwc85y79NQFCRB7TiPoNiaijp6q8Z0Uv38rVG498=
 github.com/go-audio/wav v1.0.0 h1:WdSGLhtyud6bof6XHL28xKeCQRzCV06pOFo3LZsFdyE=
 github.com/go-audio/wav v1.0.0/go.mod h1:3yoReyQOsiARkvPl3ERCi8JFjihzG6WhjYpZCf5zAWE=
-golang.org/x/sys v0.0.0-20210514084401-e8d321eab015/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20220209214540-3681064d5158 h1:rm+CHSpPEEW2IsXUib1ThaHIjuBVZjxNgSKmBLFfD4c=
 golang.org/x/sys v0.0.0-20220209214540-3681064d5158/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
