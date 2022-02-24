@@ -388,6 +388,8 @@ try{
         }
     }
 
+    _cheetah.delete()
+
 } on CheetahException catch (err) { }
 ```
 
