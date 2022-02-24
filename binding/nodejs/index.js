@@ -149,7 +149,7 @@ class Cheetah {
       throw new PvArgumentError(
         `PCM array provided to 'Cheetah.process()' is undefined or null`
       );
-    } else if (frame.length !== this.frameLength) {
+    } else if (pcm.length !== this.frameLength) {
       throw new PvArgumentError(
         `Size of frame array provided to 'Cheetah.process()' (${frame.length}) does not match the engine 'Cheetah.frameLength' (${this.frameLength})`
       );
