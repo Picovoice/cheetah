@@ -60,8 +60,6 @@ On Android, open your AndroidManifest.xml and add the following line:
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-**NOTE:** When archiving for release on iOS, you may have to change the build settings of your project in order to prevent stripping of the Cheetaaah library. To do this open the Runner project in XCode and change build setting Deployment -> Strip Style to 'Non-Global Symbols'.
-
 ## Cheetah Model File Integration
 
 Add the Cheetah model file to your Flutter application by:
