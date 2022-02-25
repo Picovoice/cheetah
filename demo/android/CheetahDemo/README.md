@@ -10,9 +10,7 @@ with your AccessKey obtained from [Picovoice Console](https://picovoice.ai/conso
 Launch the demo on your phone using Android Studio.
 
 1. Press the record button.
-2. Start talking. Record some phrases or whatever audio you would like to transcribe.
-3. Press stop. Wait for the info box to display "Transcribed...". This may take a few seconds.
-4. The transcription will appear in the textbox above.
+2. Start talking. The transcription will appear in the textbox above.
 
 ## Running the Instrumented Unit Tests
 

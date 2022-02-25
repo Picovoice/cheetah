@@ -1,0 +1,41 @@
+PODS:
+  - Cheetah-iOS (1.0.0)
+  - cheetah_flutter (1.0.0):
+    - Cheetah-iOS (~> 1.0.0)
+    - Flutter
+  - Flutter (1.0.0)
+  - flutter_voice_processor (1.0.6):
+    - Flutter
+  - path_provider_ios (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - cheetah_flutter (from `.symlinks/plugins/cheetah_flutter/ios`)
+  - Flutter (from `Flutter`)
+  - flutter_voice_processor (from `.symlinks/plugins/flutter_voice_processor/ios`)
+  - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Cheetah-iOS
+
+EXTERNAL SOURCES:
+  cheetah_flutter:
+    :path: ".symlinks/plugins/cheetah_flutter/ios"
+  Flutter:
+    :path: Flutter
+  flutter_voice_processor:
+    :path: ".symlinks/plugins/flutter_voice_processor/ios"
+  path_provider_ios:
+    :path: ".symlinks/plugins/path_provider_ios/ios"
+
+SPEC CHECKSUMS:
+  Cheetah-iOS: 8ce51660745e5b493123b022a480bd05a454626c
+  cheetah_flutter: e52ce497d249829664b67415df8881a8ba0f45bb
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  flutter_voice_processor: afb59b604d99397a1ccf15c935ac8f2c2327f09f
+  path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
+
+PODFILE CHECKSUM: a75497545d4391e2d394c3668e20cfb1c2bbd4aa
+
+COCOAPODS: 1.11.2
