@@ -31,6 +31,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [Android](#android-demo)
         - [Go](#go-demo)
         - [React Native](#react-native-demo)
+        - [Node.js](#nodejs-demo)
     - [SDKs](#sdks)
         - [Python](#python)
         - [C](#c)
@@ -38,6 +39,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [Android](#android)
         - [Go](#go)
         - [React Native](#react-native)
+        - [Node.js](#nodejs)
     - [Releases](#releases)
 
 ## AccessKey
@@ -147,6 +149,22 @@ For iOS:
 yarn ios-install        # sets up environment
 yarn ios-run 
 ```
+### Node.js Demo
+
+Install the demo package:
+
+```console
+yarn global add @picovoice/cheetah-node-demo
+```
+
+With a working microphone connected to your device, run the following in the terminal:
+
+```console
+cheetah-mic-demo --access_key ${ACCESS_KEY}
+```
+
+For more information about Node.js demos go to [demo/nodejs](/demo/nodejs).
+
 
 ## SDKs
 
@@ -371,6 +389,45 @@ try {
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with the default or custom trained model from [console](https://console.picovoice.ai/). When done be sure to explicitly release the resources using `cheetah.delete()`.
+
+### Node.js
+
+Install the Node.js SDK:
+
+```console
+yarn add @picovoice/cheetah-node
+```
+
+Create instances of the Cheetah class:
+
+```javascript
+const Cheetah = require("@picovoice/cheetah-node");
+
+const accessKey = "${ACCESS_KEY}"; // Obtained from the Picovoice Console (https://console.picovoice.ai/)
+const endpointDurationSec = 0.2;
+const handle = new Cheetah(accessKey);
+
+function getNextAudioFrame() {
+  // ...
+  return audioFrame;
+}
+
+while (true) {
+  const audioFrame = getNextAudioFrame();
+  const [partialTranscript, isEndpoint] = handle.process(audioFrame);
+  if (isEndpoint) {
+    finalTranscript = handle.flush()
+  }
+}
+```
+
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)).
+
+When done, be sure to release resources using `release()`:
+
+```javascript
+handle.release();
+```
 
 ## Releases
 

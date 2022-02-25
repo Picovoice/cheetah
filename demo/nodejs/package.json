@@ -1,0 +1,41 @@
+{
+  "name": "@picovoice/cheetah-node-demo",
+  "version": "1.0.0",
+  "description": "Picovoice Cheetah Node.js file-based and microphone demos",
+  "scripts": {
+    "file": "node file.js",
+    "mic": "node mic.js"
+  },
+  "bin": {
+    "cheetah-file-demo": "./file.js",
+    "cheetah-mic-demo": "./mic.js"
+  },
+  "keywords": [
+    "cheetah, picovoice, nlu, offline, private, voice ai, speech recognition, microphone, mic, realtime"
+  ],
+  "author": "Picovoice Inc.",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@picovoice/cheetah-node": "file:../../binding/nodejs",
+    "@picovoice/pvrecorder-node": "^1.0.2",
+    "commander": "^6.1.0",
+    "readline": "^1.3.0",
+    "wavefile": "^11.0.0"
+  },
+  "devDependencies": {},
+  "homepage": "https://picovoice.ai/products/cheetah/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Picovoice/cheetah.git",
+    "directory": "demo/nodejs"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "cpu": [
+    "!ia32",
+    "!mips",
+    "!ppc",
+    "!ppc64"
+  ]
+}
