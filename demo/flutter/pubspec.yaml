@@ -23,5 +23,5 @@ dev_dependencies:
 flutter:  
   uses-material-design: true
   assets:
-    - assets/contexts/android/cheetah_params.pv
-    - assets/contexts/ios/cheetah_params.pv
+    - assets/models/android/cheetah_params.pv
+    - assets/models/ios/cheetah_params.pv

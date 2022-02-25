@@ -19,20 +19,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:cheetah_flutter/cheetah_error.dart';
 
 class CheetahTranscript {
-  final String _transcript;
+  final String? _transcript;
   final bool? _isEndpoint;
 
-  /// private constructor + basic checks
-  CheetahTranscript(this._transcript, this._isEndpoint) {
-    if (_transcript == null) {
-      throw CheetahInvalidStateException(
-          "field 'transcript' must be present.");
-    }
-  }
+  CheetahTranscript(this._transcript, this._isEndpoint) {}
 
-  String get transcript => _transcript;
+  String get transcript => _transcript ?? "";
 
-  bool? get isEndpoint => _isEndpoint;
+  bool get isEndpoint => _isEndpoint ?? false;
 }
 
 class Cheetah {

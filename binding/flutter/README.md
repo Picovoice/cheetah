@@ -62,7 +62,7 @@ On Android, open your AndroidManifest.xml and add the following line:
 
 **NOTE:** When archiving for release on iOS, you may have to change the build settings of your project in order to prevent stripping of the Cheetaaah library. To do this open the Runner project in XCode and change build setting Deployment -> Strip Style to 'Non-Global Symbols'.
 
-## Model File
+## Cheetah Model File Integration
 
 Add the Cheetah model file to your Flutter application by:
 
@@ -77,10 +77,10 @@ flutter:
 
 ## Usage
 
-`Cheetah` is created by passing a model file path into it's static constructor `create`:
+n instance of `Cheetah` is created by passing a model file path into it's static constructor `create`:
 
 ```dart
-import 'package:cheetah/cheetah.dart';
+import 'package:cheetah_flutter/cheetah.dart';
 
 const accessKey = "{ACCESS_KEY}"  // AccessKey obtained from Picovoice Console (https://picovoice.ai/console/)
 

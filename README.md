@@ -357,7 +357,7 @@ Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_
 
 ### Flutter
 
-Add the [Cheetah Flutter plugin](https://pub.dev/packages/cheetah) to your pub.yaml.
+Add the [Cheetah Flutter plugin](https://pub.dev/packages/cheetah_flutter) to your pub.yaml.
 
 ```yaml
 dependencies:
@@ -367,7 +367,7 @@ dependencies:
 Create an instance of the engine and transcribe audio in real-time:
 
 ```dart
-import 'package:cheetah/cheetah.dart';
+import 'package:cheetah_flutter/cheetah.dart';
 
 const accessKey = "{ACCESS_KEY}"  // AccessKey obtained from Picovoice Console (https://picovoice.ai/console/)
 
@@ -393,7 +393,7 @@ try{
 } on CheetahException catch (err) { }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with the default or custom trained model from [console](https://console.picovoice.ai/).
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${CHEETAH_MODEL_PATH}` with the the path to the default or custom trained model from [console](https://console.picovoice.ai/).
 
 ### Go
 
