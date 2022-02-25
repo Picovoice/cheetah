@@ -64,6 +64,7 @@ public class MicDemo {
             micDataLine.start();
 
             System.out.println("Cheetah version : " + cheetah.getVersion());
+            System.out.println("Now listening...");
 
             // buffers for processing audio
             int frameLength = cheetah.getFrameLength();
