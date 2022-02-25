@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+}
+
+dependencies {
+    // implementation 'ai.picovoice:cheetah-java:1.0.0'
+    implementation files('../../binding/java/build/libs/Cheetah.jar')
+    implementation 'commons-cli:commons-cli:1.4'
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "ai.picovoice.cheetahdemo.MicDemo",
+                   "Class-Path": "cheetah-1.0.0.jar;commons-cli-1.4.jar"
+    }
+    from sourceSets.main.output
+    exclude "**/FileDemo.class"
+    archiveFileName = 'cheetah-mic-demo.jar'
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+task fileDemoJar(type: Jar) {
+    manifest {
+        attributes "Main-Class": "ai.picovoice.cheetahdemo.FileDemo",
+                   "Class-Path": "cheetah-1.0.0.jar;commons-cli-1.4.jar"
+    }
+    from sourceSets.main.output
+    exclude "**/MicDemo.class"
+    archiveFileName = 'cheetah-file-demo.jar'
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+artifacts {
+    archives fileDemoJar
+}

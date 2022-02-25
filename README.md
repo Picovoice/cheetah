@@ -28,9 +28,10 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [Python](#python-demos)
         - [C](#c-demos)
         - [iOS](#ios-demos)
-        - [Android](#android-demo)
+        - [Android](#android-demos)
         - [Go](#go-demo)
         - [React Native](#react-native-demo)
+        - [Java](#java-demos)
         - [Node.js](#nodejs-demo)
     - [SDKs](#sdks)
         - [Python](#python)
@@ -40,6 +41,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [Go](#go)
         - [React Native](#react-native)
         - [Node.js](#nodejs)
+        - [Java](#java)
     - [Releases](#releases)
 
 ## AccessKey
@@ -111,7 +113,7 @@ Replace `let accessKey = "${YOUR_ACCESS_KEY_HERE}"` in the file [ViewModel.swift
 
 Then, using [Xcode](https://developer.apple.com/xcode/), open the generated `CheetahDemo.xcworkspace` and run the application.
 
-### Android Demo
+### Android Demos
 
 Using Android Studio, open [demo/android/CheetahDemo](/demo/android/CheetahDemo) as an Android project and then run the application. 
 
@@ -130,6 +132,7 @@ go run micdemo/cheetah_mic_demo.go -access_key "${ACCESS_KEY}"
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
 
 For more information about Go demos go to [demo/go](/demo/go).
+
 ### React Native Demo
 
 To run the React Native Porcupine demo app you will first need to set up your React Native environment. For this,
@@ -164,6 +167,21 @@ cheetah-mic-demo --access_key ${ACCESS_KEY}
 ```
 
 For more information about Node.js demos go to [demo/nodejs](/demo/nodejs).
+
+
+### Java Demos
+
+The [Cheetah Java demo](/demo/java) is a command-line application that lets you choose between running Cheetah on an audio file or on real-time microphone input.
+
+To try the real-time demo, make sure there is a working microphone connected to your device. Then invoke the following commands from the terminal:
+
+```console
+cd demo/java
+./gradlew build
+cd build/libs
+java -jar cheetah-mic-demo.jar -a ${ACCESS_KEY}
+```
+For more information about Java demos go to [demo/java](/demo/java).
 
 
 ## SDKs
@@ -428,6 +446,42 @@ When done, be sure to release resources using `release()`:
 ```javascript
 handle.release();
 ```
+
+### Java
+
+Create an instance of the engine with the Cheetah Builder class and transcribe audio in real-time:
+
+```java
+import ai.picovoice.cheetah.*;
+
+final String accessKey = "..."; // AccessKey provided by Picovoice Console (https://picovoice.ai/console/)
+
+short[] getNextAudioFrame() {
+    // .. get audioFrame
+    return audioFrame;
+}
+
+String transcript = "";
+
+try {
+    Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey).build();
+
+    while true {
+        CheetahTranscript transcriptObj = cheetah.process(getNextAudioFrame());
+        transcript += transcriptObj.getTranscript();
+
+        if (transcriptObj.getIsEndpoint()) {
+            CheetahTranscript finalTranscriptObj = cheetah.flush();
+            transcript += finalTranscriptObj.getTranscript();
+        }
+    }
+
+    cheetah.delete();
+
+} catch (CheetahException ex) { }
+
+```
+
 
 ## Releases
 

@@ -1,0 +1,91 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+ext {
+    PUBLISH_GROUP_ID = 'ai.picovoice'
+    PUBLISH_VERSION = '1.0.0'
+    PUBLISH_ARTIFACT_ID = 'cheetah-java'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['test']
+        }
+    }
+}
+
+javadoc.options.addStringOption('Xdoclint:none', '-quiet')
+
+def outputDir = "$buildDir/classes/java/main"
+
+task copyDefaultModel(type: Copy) {
+    from('../../lib/common/cheetah_params.pv') into "${outputDir}/cheetah/lib/common/"
+}
+task copyLinuxLib(type: Copy) {
+    from('../../lib/java/linux/x86_64/libpv_cheetah_jni.so') into "${outputDir}/cheetah/lib/java/linux/x86_64/"
+}
+task copyMacLib(type: Copy) {
+    from('../../lib/java/mac/')
+    include('x86_64/libpv_cheetah_jni.dylib',
+            'arm64/libpv_cheetah_jni.dylib')
+    into "${outputDir}/cheetah/lib/java/mac/"
+}
+task copyWindowsLib(type: Copy) {
+    from('../../lib/java/windows/amd64/libpv_cheetah_jni.dll') into "${outputDir}/cheetah/lib/java/windows/amd64/"
+}
+task copyRPILib(type: Copy) {
+    from('../../lib/java/raspberry-pi/')
+    include('cortex-a53/libpv_cheetah_jni.so',
+            'cortex-a53-aarch64/libpv_cheetah_jni.so',
+            'cortex-a72/libpv_cheetah_jni.so',
+            'cortex-a72-aarch64/libpv_cheetah_jni.so')
+    into("${outputDir}/cheetah/lib/java/raspberry-pi/")
+}
+task copyJetsonLib(type: Copy) {
+    from('../../lib/java/jetson/cortex-a57-aarch64/libpv_cheetah_jni.so') into "${outputDir}/cheetah/lib/java/jetson/cortex-a57-aarch64/"
+}
+
+jar {
+    dependsOn 'copyDefaultModel'
+    dependsOn 'copyLinuxLib'
+    dependsOn 'copyMacLib'
+    dependsOn 'copyWindowsLib'
+    dependsOn 'copyRPILib'
+    dependsOn 'copyJetsonLib'
+}
+
+if (file("${rootDir}/publish-mavencentral.gradle").exists()) {
+    apply from: "${rootDir}/publish-mavencentral.gradle"
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+}
+
+compileTestJava {
+    dependsOn 'assemble'
+}
+
+test {
+    systemProperty 'pvTestingAccessKey', System.getProperty('pvTestingAccessKey')
+    useJUnitPlatform()
+}

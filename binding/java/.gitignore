@@ -1,0 +1,7 @@
+*.iml
+/.idea
+.gradle
+.DS_Store
+/build
+local.properties
+publish-mavencentral.gradle
