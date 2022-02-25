@@ -37,6 +37,8 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [C](#c)
         - [iOS](#ios)
         - [Android](#android)
+        - [Go](#go)
+        - [React Native](#react-native)
         - [Node.js](#nodejs)
     - [Releases](#releases)
 
