@@ -102,7 +102,7 @@ class Cheetah(object):
             access_key: str,
             library_path: str,
             model_path: str,
-            endpoint_duration_sec: Optional[float] = None):
+            endpoint_duration_sec: Optional[float] = 1.0):
         """
         Constructor
 
@@ -110,7 +110,7 @@ class Cheetah(object):
         :param library_path: Absolute path to Cheetah's dynamic library.
         :param model_path: Absolute path to the file containing model parameters.
         :param endpoint_duration_sec Duration of endpoint in seconds. A speech endpoint is detected when there is a
-        chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `None`
+        chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
         to disable endpoint detection.
         """
 
