@@ -34,6 +34,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [React Native](#react-native-demo)
         - [Java](#java-demos)
         - [Node.js](#nodejs-demo)
+        - [.Net](#net-demo)
     - [SDKs](#sdks)
         - [Python](#python)
         - [C](#c)
@@ -44,6 +45,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [React Native](#react-native)
         - [Node.js](#nodejs)
         - [Java](#java)
+        - [.Net](#net)
     - [Releases](#releases)
 
 ## AccessKey
@@ -198,6 +200,21 @@ java -jar cheetah-mic-demo.jar -a ${ACCESS_KEY}
 ```
 For more information about Java demos go to [demo/java](/demo/java).
 
+### .NET Demo
+
+[Cheetah .NET demo](/demo/dotnet) is a command-line application that lets you choose between running Cheetah on an audio
+file or on real-time microphone input.
+
+Make sure there is a working microphone connected to your device. From [demo/dotnet/CheetahDemo](/demo/dotnet/CheetahDemo)
+run the following in the terminal:
+
+```console
+dotnet run -c MicDemo.Release -- --access_key ${ACCESS_KEY}
+```
+
+Replace `${ACCESS_KEY}` with your Picovoice `AccessKey`.
+
+For more information about .NET demos, go to [demo/dotnet](/demo/dotnet).
 
 ## SDKs
 
@@ -537,6 +554,57 @@ try {
 
 ```
 
+### .NET
+
+Install the .NET SDK using NuGet or the dotnet CLI:
+
+```console
+dotnet add package Cheetah
+```
+
+The SDK exposes a factory method to create instances of the engine as below:
+
+```csharp
+using Pv;
+
+const string accessKey = "${ACCESS_KEY}";
+
+Cheetah handle = Cheetah.Create(accessKey);
+```
+
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)).
+
+When initialized, the valid sample rate is given by `handle.SampleRate`. Expected frame length (number of audio samples in an input array) is `handle.FrameLength`. The engine accepts 16-bit linearly-encoded PCM and operates on single-channel audio.
+
+```csharp
+short[] GetNextAudioFrame()
+{
+    // .. get audioFrame
+    return audioFrame;
+}
+
+string transcript = "";
+
+while(true)
+{
+    CheetahTranscript transcriptObj = handle.Process(GetNextAudioFrame());   
+    transcript += transcriptObj.Transcript;
+
+        if (transcriptObj.IsEndpoint) {
+        CheetahTranscript finalTranscriptObj = handle.flush();
+        transcript += finalTranscriptObj.Transcript();
+    }
+}
+```
+
+Cheetah will have its resources freed by the garbage collector, but to have resources freed immediately after use, wrap it in a using statement: 
+
+```csharp
+using(Cheetah handle = Cheetah.Create(accessKey))
+{
+    // .. Cheetah usage here
+}
+```
 
 ## Releases
 

@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<Configurations>FileDemo.Debug;FileDemo.Release;MicDemo.Debug;MicDemo.Release</Configurations>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'FileDemo.Debug' Or '$(Configuration)' == 'FileDemo.Release'">
+		<StartupObject>CheetahDemo.FileDemo</StartupObject>
+		<TargetName>CheetahFileDemo</TargetName>
+		<AssemblyName>CheetahFileDemo</AssemblyName>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="'$(Configuration)' == 'MicDemo.Debug' Or '$(Configuration)' == 'MicDemo.Release'">
+		<StartupObject>CheetahDemo.MicDemo</StartupObject>
+		<TargetName>CheetahMicDemo</TargetName>
+		<AssemblyName>CheetahMicDemo</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="pvrecorder" Version="1.0.0" />
+		<PackageReference Include="Cheetah" Version="1.0.0" />
+	</ItemGroup>
+</Project>
