@@ -73,7 +73,8 @@ namespace CheetahDemo
                     }
                     if (transcriptObj.IsEndpoint)
                     {
-                        Console.WriteLine(cheetah.Flush());
+                        CheetahTranscript finalTranscriptObj = cheetah.Flush();
+                        Console.WriteLine(finalTranscriptObj.Transcript);
                     }
 
                 }
