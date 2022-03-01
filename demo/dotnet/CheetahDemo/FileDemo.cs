@@ -79,8 +79,8 @@ namespace CheetahDemo
                     reader.ReadInt16();
                 }
             }
-
-            string transcript = cheetah.Flush();
+            CheetahTranscript finalTranscriptObj = cheetah.Flush();
+            string transcript = finalTranscriptObj.Transcript;
             if (!String.IsNullOrEmpty(transcript))
             {
                 Console.WriteLine(transcript);
