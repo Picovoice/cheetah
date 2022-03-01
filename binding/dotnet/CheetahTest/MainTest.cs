@@ -98,7 +98,8 @@ namespace CheetahTest
                 transcript += transcriptObj.Transcript;
                 isEndpoint = transcriptObj.IsEndpoint;
             }
-            transcript += cheetah.Flush();
+            CheetahTranscript finalTranscriptObj = cheetah.Flush();
+            transcript += finalTranscriptObj.Transcript;
             Assert.AreEqual(transcript, REF_TRANSCRIPT);
             Assert.IsTrue(isEndpoint);
         }
@@ -122,7 +123,8 @@ namespace CheetahTest
                 CheetahTranscript transcriptObj = cheetah.Process(frame.ToArray());
                 transcript += transcriptObj.Transcript;
             }
-            transcript += cheetah.Flush();
+            CheetahTranscript finalTranscriptObj = cheetah.Flush();
+            transcript += finalTranscriptObj.Transcript;
             Assert.AreEqual(transcript, REF_TRANSCRIPT);
         }
     }

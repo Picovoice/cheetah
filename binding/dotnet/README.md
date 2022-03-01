@@ -43,10 +43,10 @@ Platforms compatible with .NET Core 3.1+:
 
 ## Installation
 
-You can install the latest version of Cheetah by getting the latest [Cheetah Nuget package](https://www.nuget.org/packages/Cheetah/) in Visual Studio or using the .NET CLI:
+You can install the latest version of Cheetah by getting the latest [Cheetah Nuget package](https://www.nuget.org/packages/Picovoice.Cheetah/) in Visual Studio or using the .NET CLI:
 
 ```console
-dotnet add package Cheetah
+dotnet add package Picovoice.Cheetah
 ```
 
 ## AccessKey
@@ -91,8 +91,8 @@ while(true)
     transcript += transcriptObj.Transcript;
 
     if (transcriptObj.IsEndpoint) {
-        CheetahTranscript finalTranscriptObj = handle.flush();
-        transcript += finalTranscriptObj.Transcript();
+        CheetahTranscript finalTranscriptObj = handle.Flush();
+        transcript += finalTranscriptObj.Transcript;
     }
 }
 ```

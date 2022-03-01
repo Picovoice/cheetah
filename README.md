@@ -591,8 +591,8 @@ while(true)
     transcript += transcriptObj.Transcript;
 
         if (transcriptObj.IsEndpoint) {
-        CheetahTranscript finalTranscriptObj = handle.flush();
-        transcript += finalTranscriptObj.Transcript();
+        CheetahTranscript finalTranscriptObj = handle.Flush();
+        transcript += finalTranscriptObj.Transcript;
     }
 }
 ```

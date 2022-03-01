@@ -202,7 +202,7 @@ namespace Pv
         /// <returns>
         /// Inferred transcription.
         /// </returns>
-        public string Flush()
+        public CheetahTranscript Flush()
         {
             IntPtr transcriptPtr = IntPtr.Zero;
             PvStatus status = pv_cheetah_flush(_libraryPointer, out transcriptPtr);
@@ -213,7 +213,7 @@ namespace Pv
 
             string transcript = Marshal.PtrToStringAnsi(transcriptPtr);
             pv_free(transcriptPtr);
-            return transcript;
+            return new CheetahTranscript(transcript, false);
         }
 
         /// <summary>
