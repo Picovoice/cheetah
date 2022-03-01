@@ -90,7 +90,7 @@ while(true)
     CheetahTranscript transcriptObj = handle.Process(GetNextAudioFrame());   
     transcript += transcriptObj.Transcript;
 
-        if (transcriptObj.IsEndpoint) {
+    if (transcriptObj.IsEndpoint) {
         CheetahTranscript finalTranscriptObj = handle.flush();
         transcript += finalTranscriptObj.Transcript();
     }

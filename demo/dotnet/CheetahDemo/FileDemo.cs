@@ -83,7 +83,7 @@ namespace CheetahDemo
             string transcript = cheetah.Flush();
             if (!String.IsNullOrEmpty(transcript))
             {
-                Console.Write(transcript);
+                Console.WriteLine(transcript);
             }
 
         }
