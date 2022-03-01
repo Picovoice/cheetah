@@ -1,0 +1,9 @@
+.vscode
+.vs
+*.user
+Cheetah/bin
+Cheetah/obj
+Cheetah/Properties
+CheetahTest/bin
+CheetahTest/obj
+TestResults

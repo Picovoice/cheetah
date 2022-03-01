@@ -1,0 +1,5 @@
+.vs
+CheetahDemo/bin/**
+CheetahDemo/obj/**
+CheetahDemo/Properties/**
+*.user
