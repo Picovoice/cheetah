@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	  <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
-	  <Version>1.0.0</Version>
+	  <Version>1.0.1</Version>
 	  <Authors>Picovoice</Authors>
 	  <Company />
 	  <Product>Cheetah Speech-to-Text Engine</Product>
@@ -22,10 +22,10 @@
 	  </Description>
 	  <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	  <PackageIcon>pv_circle_512.png</PackageIcon>
-	  <PackageId>Picovoice.Cheetah</PackageId>
+	  <PackageId>$(Authors).$(AssemblyName)</PackageId>
   </PropertyGroup>
 	<ItemGroup>		
-		<Content Include="Cheetah.targets">
+		<Content Include="Picovoice.Cheetah.targets">
 			<PackagePath>
 				build/netstandard2.0;
 				build/netcoreapp3.1
