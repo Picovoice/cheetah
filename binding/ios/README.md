@@ -79,6 +79,10 @@ while true {
 
 Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)) and `${MODEL_FILE}` with the name of the Cheetah model file name. Finally, when done be sure to explicitly release the resources using `cheetah.delete()`.
 
+## Running Unit Tests
+
+Copy your `AccessKey` into the `accessKey` variable in [`CheetahAppTestUITests.swift`](CheetahAppTest/CheetahAppTestUITests/CheetahAppTestUITests.swift). Open `CheetahAppTest.xcworkspace` with XCode and run the tests with `Product > Test`.
+
 ## Demo App
 
 For example usage refer to our [iOS demo application](/demo/ios).

@@ -19,7 +19,3 @@ Before building the demo app, run the following from `CheetahDemo` directory to 
 pod install
 ```
 Open [CheetahDemo.xcworkspace](/demo/ios/CheetahDemo/CheetahDemo.xcworkspace) and run the demo.
-
-## Running the On-Device Unit Tests
-
-Copy your `AccessKey` into the `accessKey` variable in [CheetahDemoUITests.swift](/demo/ios/CheetahDemo/CheetahDemoUITests/CheetahDemoUITests.swift). Open [CheetahDemo.xcworkspace](/demo/ios/CheetahDemo/CheetahDemo.xcworkspace) with XCode and run the tests with `Product > Test`.
