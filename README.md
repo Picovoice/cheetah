@@ -54,6 +54,10 @@ Cheetah requires a valid Picovoice `AccessKey` at initialization. `AccessKey` ac
 You can get your `AccessKey` for free. Make sure to keep your `AccessKey` secret. 
 Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get your `AccessKey`.
 
+AccessKey also verifies that your usage is within the limits of your account. Everyone who signs up for
+[Picovoice Console](https://console.picovoice.ai/) receives the `Free Tier` usage rights described
+[here](https://picovoice.ai/pricing/). If you wish to increase your limits, you can purchase a subscription plan.
+
 ## Demos
 
 ### Python Demos
