@@ -3,12 +3,12 @@
 ## Setup
 
 Replace `"${YOUR_ACCESS_KEY_HERE}"` inside [MainActivity.java](cheetah-demo-app/src/main/java/ai/picovoice/cheetahdemo/MainActivity.java)
-with your AccessKey obtained from [Picovoice Console](https://picovoice.ai/console/).
+with your AccessKey obtained from [Picovoice Console](https://console.picovoice.ai/).
 
 ## AccessKey
 
 Cheetah requires a valid Picovoice `AccessKey` at initialization. `AccessKey` acts as your credentials when using Cheetah SDKs.
-You can get your `AccessKey` for free. Make sure to keep your `AccessKey` secret. 
+You can get your `AccessKey` for free. Make sure to keep your `AccessKey` secret.
 Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get your `AccessKey`.
 
 ## Usage

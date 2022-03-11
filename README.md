@@ -50,9 +50,10 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
 ## AccessKey
 
-Cheetah requires a valid Picovoice `AccessKey` at initialization. `AccessKey` acts as your credentials when using Cheetah SDKs.
-You can get your `AccessKey` for free. Make sure to keep your `AccessKey` secret. 
-Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get your `AccessKey`.
+AccessKey is your authentication and authorization token for deploying Picovoice SDKs, including Cheetah. Anyone who is
+using Picovoice needs to have a valid AccessKey. You must keep your AccessKey secret. You would need internet
+connectivity to validate your AccessKey with Picovoice license servers even though the voice recognition is running 100%
+offline.
 
 AccessKey also verifies that your usage is within the limits of your account. Everyone who signs up for
 [Picovoice Console](https://console.picovoice.ai/) receives the `Free Tier` usage rights described
@@ -343,7 +344,7 @@ Create an instance of the engine and transcribe audio in real-time:
 ```java
 import ai.picovoice.cheetah.*;
 
-final String accessKey = "${ACCESS_KEY}"; // AccessKey obtained from Picovoice Console (https://picovoice.ai/console/)
+final String accessKey = "${ACCESS_KEY}"; // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
 final String modelPath = "${MODEL_FILE}";
 
 short[] getNextAudioFrame() {
@@ -385,7 +386,7 @@ Create an instance of the engine and transcribe audio in real-time:
 ```dart
 import 'package:cheetah_flutter/cheetah.dart';
 
-const accessKey = "{ACCESS_KEY}"  // AccessKey obtained from Picovoice Console (https://picovoice.ai/console/)
+const accessKey = "{ACCESS_KEY}"  // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
 
 List<int> buffer = getAudioFrame();
 
@@ -525,7 +526,7 @@ Create an instance of the engine with the Cheetah Builder class and transcribe a
 ```java
 import ai.picovoice.cheetah.*;
 
-final String accessKey = "..."; // AccessKey provided by Picovoice Console (https://picovoice.ai/console/)
+final String accessKey = "..."; // AccessKey provided by Picovoice Console (https://console.picovoice.ai/)
 
 short[] getNextAudioFrame() {
     // .. get audioFrame

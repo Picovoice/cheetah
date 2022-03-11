@@ -38,7 +38,7 @@ dependencies {
 ## AccessKey
 
 Cheetah requires a valid Picovoice `AccessKey` at initialization. `AccessKey` acts as your credentials when using Cheetah SDKs.
-You can get your `AccessKey` for free. Make sure to keep your `AccessKey` secret. 
+You can get your `AccessKey` for free. Make sure to keep your `AccessKey` secret.
 Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get your `AccessKey`.
 
 ## Usage
@@ -53,7 +53,7 @@ Create an instance of the engine with the Cheetah Builder class by passing in th
 ```java
 import ai.picovoice.cheetah.*;
 
-final String accessKey = "..."; // AccessKey provided by Picovoice Console (https://picovoice.ai/console/)
+final String accessKey = "..."; // AccessKey provided by Picovoice Console (https://console.picovoice.ai/)
 final String modelPath = "${MODEL_FILE}";
 try {
     Cheetah cheetah = new Cheetah.Builder(accessKey).setModelPath(modelPath).build(appContext);
