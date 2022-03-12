@@ -11,13 +11,9 @@
 
 ## AccessKey
 
-AccessKey is your authentication and authorization token for deploying Picovoice SDKs, including Cheetah. Anyone who is
-using Picovoice  needs to have a valid AccessKey. YOU MUST KEEP YOUR AccessKey SECRET! You do need internet connectivity
-to validate your AccessKey with Picovoice license servers even though the voice recognition is running 100% offline.
-
-AccessKey also verifies that your usage is within the limits of your account. Everyone who signs up for
-[Picovoice Console](https://console.picovoice.ai/) receives the `Free Tier` usage rights as described on
-[here](https://picovoice.ai/pricing/). If you wish to increase your limits, you can purchase a subscription plan.
+Cheetah requires a valid Picovoice `AccessKey` at initialization. `AccessKey` acts as your credentials when using Cheetah SDKs.
+You can get your `AccessKey` for free. Make sure to keep your `AccessKey` secret.
+Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get your `AccessKey`.
 
 ## Usage
 

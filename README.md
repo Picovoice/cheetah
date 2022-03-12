@@ -344,7 +344,7 @@ Create an instance of the engine and transcribe audio in real-time:
 ```java
 import ai.picovoice.cheetah.*;
 
-final String accessKey = "${ACCESS_KEY}"; // AccessKey obtained from Picovoice Console (https://picovoice.ai/console/)
+final String accessKey = "${ACCESS_KEY}"; // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
 final String modelPath = "${MODEL_FILE}";
 
 short[] getNextAudioFrame() {
@@ -386,7 +386,7 @@ Create an instance of the engine and transcribe audio in real-time:
 ```dart
 import 'package:cheetah_flutter/cheetah.dart';
 
-const accessKey = "{ACCESS_KEY}"  // AccessKey obtained from Picovoice Console (https://picovoice.ai/console/)
+const accessKey = "{ACCESS_KEY}"  // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
 
 List<int> buffer = getAudioFrame();
 
@@ -526,7 +526,7 @@ Create an instance of the engine with the Cheetah Builder class and transcribe a
 ```java
 import ai.picovoice.cheetah.*;
 
-final String accessKey = "..."; // AccessKey provided by Picovoice Console (https://picovoice.ai/console/)
+final String accessKey = "..."; // AccessKey provided by Picovoice Console (https://console.picovoice.ai/)
 
 short[] getNextAudioFrame() {
     // .. get audioFrame
