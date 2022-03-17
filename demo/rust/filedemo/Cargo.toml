@@ -1,0 +1,10 @@
+[package]
+name = "pv_cheetah_filedemo"
+version = "1.0.0"
+edition = "2018"
+
+[dependencies]
+clap = "2.33.3"
+hound = "3.4.0"
+itertools = "0.10.1"
+pv_cheetah = { path = "../../../binding/rust" }

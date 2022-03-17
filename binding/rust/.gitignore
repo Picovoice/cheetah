@@ -1,0 +1,4 @@
+Cargo.lock
+target/
+data/resources/*
+data/lib/*

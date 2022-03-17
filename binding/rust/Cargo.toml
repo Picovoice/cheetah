@@ -1,0 +1,34 @@
+[package]
+name = "pv_cheetah"
+version = "1.0.0"
+edition = "2018"
+description = "The Rust bindings for Picovoice's Cheetah library"
+license = "Apache-2.0"
+homepage = "https://picovoice.ai/platform/cheetah/"
+repository = "https://github.com/Picovoice/cheetah"
+keywords = [
+	"specch-to-text",
+]
+publish = true
+
+include = [
+	".gitignore",
+	"build.rs",
+	"Cargo.toml",
+	"data/",
+	"README.md",
+	"src/",
+]
+
+[lib]
+name = "cheetah"
+path = "src/lib.rs"
+crate_type = ["lib"]
+
+[dependencies]
+libc = "0.2"
+libloading = "0.7"
+
+[dev-dependencies]
+rodio = "0.14"
+itertools = "0.10.1"
