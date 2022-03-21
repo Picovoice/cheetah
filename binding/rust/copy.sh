@@ -6,7 +6,6 @@ rm -rf ./data
 
 echo "Preparing dir ..."
 mkdir -p ./data/lib/
-mkdir -p ./data/resources/keyword_files
 
 echo "Copying Model File ..."
 cp -r ../../lib/common ./data/lib/
