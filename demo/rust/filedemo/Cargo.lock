@@ -98,6 +98,8 @@ dependencies = [
 [[package]]
 name = "pv_cheetah"
 version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "12ad892ab62b876fe2642bb2dc1bb6be67077d8b48ff7db60ebd0a29dab8237f"
 dependencies = [
  "libc",
  "libloading",
