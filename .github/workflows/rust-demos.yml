@@ -34,6 +34,13 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: sudo apt install libasound2-dev -y
 
+    - name: Install stable toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+
     - name: Rust build micdemo
       run: cargo build --verbose
       working-directory: demo/rust/micdemo
@@ -63,8 +70,7 @@ jobs:
     - name: Install stable toolchain
       uses: actions-rs/toolchain@v1
       with:
-        profile: minimal
-        toolchain: stable
+        toolchain: nightly
         override: true
 
     - name: Rust build micdemo
