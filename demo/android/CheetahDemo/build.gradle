@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
 
         maven {
-            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1141/'
+            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1142/'
         }
     }
     dependencies {
@@ -18,7 +18,7 @@ allprojects {
         mavenCentral()
 
         maven {
-            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1141/'
+            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1142/'
         }
     }
 }
