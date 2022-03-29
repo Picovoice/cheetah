@@ -59,7 +59,7 @@ jobs:
       run: appcenter test run espresso
         --token ${{secrets.APPCENTERAPITOKEN}}
         --app "Picovoice/Cheetah-Android"
-        --devices "Picovoice/single-android"
+        --devices "Picovoice/android-min-max"
         --app-path cheetah-demo-app/build/outputs/apk/debug/cheetah-demo-app-debug.apk
         --test-series "cheetah-android"
         --locale "en_US"
