@@ -121,7 +121,7 @@ Then, using [Xcode](https://developer.apple.com/xcode/), open the generated `Che
 
 ### Android Demo
 
-Using Android Studio, open [demo/android/CheetahDemo](/demo/android/CheetahDemo) as an Android project and then run the application. 
+Using Android Studio, open [demo/android/CheetahDemo](/demo/android/CheetahDemo) as an Android project and then run the application.
 
 Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [MainActivity.java](/demo/android/cheetah-demo-app/src/main/java/ai/picovoice/cheetahdemo/MainActivity.java) with your `AccessKey`.
 
@@ -141,7 +141,7 @@ flutter run
 
 ### Go Demo
 
-The demo requires `cgo`, which on Windows may mean that you need to install a gcc compiler like [MinGW](http://mingw-w64.org/doku.php) to build it properly. 
+The demo requires `cgo`, which on Windows may mean that you need to install a gcc compiler like [MinGW](http://mingw-w64.org/doku.php) to build it properly.
 
 From [demo/go](/demo/go) run the following command from the terminal to build and run the file demo:
 
@@ -170,7 +170,7 @@ For iOS:
 
 ```console
 yarn ios-install        # sets up environment
-yarn ios-run 
+yarn ios-run
 ```
 ### Node.js Demo
 
@@ -305,13 +305,13 @@ while (true) {
 }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_PATH}` to path to 
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_PATH}` to path to
 [default model file](/lib/common/cheetah_params.pv) (or your custom one). Finally, when done be sure to release
 resources acquired using `pv_cheetah_delete(handle)`.
 
 ### iOS
 
-The Cheetah iOS binding is available via [CocoaPods](https://cocoapods.org/pods/Cheetah-iOS). To import it into your iOS project, add the following line to your Podfile and run `pod install`: 
+The Cheetah iOS binding is available via [CocoaPods](https://cocoapods.org/pods/Cheetah-iOS). To import it into your iOS project, add the following line to your Podfile and run `pod install`:
 
 ```ruby
 pod 'Cheetah-iOS'
@@ -339,7 +339,7 @@ while true {
     if isEndpoint {
       let finalTranscript = try cheetah.flush()
     }
-  } catch let error as CheetahError { 
+  } catch let error as CheetahError {
       // handle error
   } catch { }
 }
@@ -352,7 +352,7 @@ Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_
 To include the package in your Android project, ensure you have included `mavenCentral()` in your top-level `build.gradle` file and then add the following to your app's `build.gradle`:
 
 ```groovy
-dependencies {    
+dependencies {
     implementation 'ai.picovoice:cheetah-android:${LATEST_VERSION}'
 }
 ```
@@ -371,7 +371,7 @@ short[] getNextAudioFrame() {
 }
 
 try {
-    Cheetah cheetah = new Cheetah.Builder(accessKey).setModelPath(modelPath).build(appContext);
+    Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey).setModelPath(modelPath).build(appContext);
 
     String transcript = "";
 
@@ -605,7 +605,7 @@ string transcript = "";
 
 while(true)
 {
-    CheetahTranscript transcriptObj = handle.Process(GetNextAudioFrame());   
+    CheetahTranscript transcriptObj = handle.Process(GetNextAudioFrame());
     transcript += transcriptObj.Transcript;
 
         if (transcriptObj.IsEndpoint) {
@@ -615,7 +615,7 @@ while(true)
 }
 ```
 
-Cheetah will have its resources freed by the garbage collector, but to have resources freed immediately after use, wrap it in a using statement: 
+Cheetah will have its resources freed by the garbage collector, but to have resources freed immediately after use, wrap it in a using statement:
 
 ```csharp
 using(Cheetah handle = Cheetah.Create(accessKey))

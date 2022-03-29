@@ -7,17 +7,18 @@ on:
     paths:
       - 'demo/android/CheetahDemo/**'
       - '!demo/android/CheetahDemo/README.md'
-    
+      - '.github/workflows/android-appcenter.yml'
   pull_request:
     branches: [ master ]
     paths:
       - 'demo/android/CheetahDemo/**'
       - '!demo/android/CheetahDemo/README.md'
+      - '.github/workflows/android-appcenter.yml'
 
 defaults:
   run:
     working-directory: demo/android/CheetahDemo
-    
+
 jobs:
   build:
     name: Run Android Tests on AppCenter
@@ -55,11 +56,11 @@ jobs:
       run: ./gradlew assembleAndroidTest
 
     - name: Run tests on AppCenter
-      run: appcenter test run espresso 
+      run: appcenter test run espresso
         --token ${{secrets.APPCENTERAPITOKEN}}
         --app "Picovoice/Cheetah-Android"
-        --devices "Picovoice/single-android" 
+        --devices "Picovoice/single-android"
         --app-path cheetah-demo-app/build/outputs/apk/debug/cheetah-demo-app-debug.apk
         --test-series "cheetah-android"
-        --locale "en_US" 
+        --locale "en_US"
         --build-dir cheetah-demo-app/build/outputs/apk/androidTest/debug

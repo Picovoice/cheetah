@@ -46,7 +46,7 @@ public class CheetahModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void create(String accessKey, String modelPath, Float endpointDuration, Promise promise) {
     try {
-      Cheetah cheetah = new Cheetah.Builder(accessKey)
+      Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
               .setModelPath(modelPath.isEmpty() ? null : modelPath)
               .setEndpointDuration(endpointDuration)
               .build(reactContext);

@@ -81,7 +81,7 @@ public class CheetahTest {
 
     @Test
     public void testTranscribe() throws Exception {
-        Cheetah cheetah = new Cheetah.Builder(accessKey)
+        Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
             .setModelPath(defaultModelPath)
             .build(appContext);
 
@@ -115,7 +115,7 @@ public class CheetahTest {
 
     @Test
     public void getVersion() throws CheetahException {
-        Cheetah cheetah = new Cheetah.Builder(accessKey)
+        Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
             .setModelPath(defaultModelPath)
             .build(appContext);
 
@@ -126,7 +126,7 @@ public class CheetahTest {
 
     @Test
     public void getFrameLength() throws CheetahException {
-        Cheetah cheetah = new Cheetah.Builder(accessKey)
+        Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
             .setModelPath(defaultModelPath)
             .build(appContext);
 
@@ -137,7 +137,7 @@ public class CheetahTest {
 
     @Test
     public void getSampleRate() throws CheetahException {
-        Cheetah cheetah = new Cheetah.Builder(accessKey)
+        Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
             .setModelPath(defaultModelPath)
             .build(appContext);
 

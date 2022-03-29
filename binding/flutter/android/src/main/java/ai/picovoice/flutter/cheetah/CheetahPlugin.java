@@ -66,7 +66,7 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
           String modelPath = call.argument("modelPath");
           double endpointDuration = call.argument("endpointDuration");
 
-          Cheetah.Builder cheetahBuilder = new Cheetah.Builder(accessKey)
+          Cheetah.Builder cheetahBuilder = new Cheetah.Builder().setAccessKey(accessKey)
                   .setModelPath(modelPath)
                   .setEndpointDuration((float) endpointDuration);
 
