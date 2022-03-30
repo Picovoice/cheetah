@@ -56,7 +56,7 @@ import ai.picovoice.cheetah.*;
 final String accessKey = "..."; // AccessKey provided by Picovoice Console (https://console.picovoice.ai/)
 final String modelPath = "${MODEL_FILE}";
 try {
-    Cheetah cheetah = new Cheetah.Builder(accessKey).setModelPath(modelPath).build(appContext);
+    Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey).setModelPath(modelPath).build(appContext);
 } catch (CheetahException ex) { }
 ```
 

@@ -53,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             String modelPath = "cheetah_params.pv";
-            cheetah = new Cheetah.Builder(ACCESS_KEY)
+            cheetah = new Cheetah.Builder()
+                    .setAccessKey(ACCESS_KEY)
                     .setModelPath(modelPath)
                     .setEndpointDuration(1f)
                     .build(getApplicationContext());

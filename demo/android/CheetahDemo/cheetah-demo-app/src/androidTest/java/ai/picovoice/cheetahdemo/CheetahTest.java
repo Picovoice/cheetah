@@ -32,12 +32,11 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.file.Files;
 import java.util.Arrays;
 
 import ai.picovoice.cheetah.Cheetah;
@@ -81,7 +80,7 @@ public class CheetahTest {
 
     @Test
     public void testTranscribe() throws Exception {
-        Cheetah cheetah = new Cheetah.Builder(accessKey)
+        Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
             .setModelPath(defaultModelPath)
             .build(appContext);
 
@@ -115,7 +114,7 @@ public class CheetahTest {
 
     @Test
     public void getVersion() throws CheetahException {
-        Cheetah cheetah = new Cheetah.Builder(accessKey)
+        Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
             .setModelPath(defaultModelPath)
             .build(appContext);
 
@@ -126,7 +125,7 @@ public class CheetahTest {
 
     @Test
     public void getFrameLength() throws CheetahException {
-        Cheetah cheetah = new Cheetah.Builder(accessKey)
+        Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
             .setModelPath(defaultModelPath)
             .build(appContext);
 
@@ -137,7 +136,7 @@ public class CheetahTest {
 
     @Test
     public void getSampleRate() throws CheetahException {
-        Cheetah cheetah = new Cheetah.Builder(accessKey)
+        Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
             .setModelPath(defaultModelPath)
             .build(appContext);
 

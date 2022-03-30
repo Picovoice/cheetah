@@ -129,10 +129,6 @@ public class Cheetah {
         private String modelPath = null;
         private float endpointDuration = 1f;
 
-        public Builder(String accessKey) {
-            this.accessKey = accessKey;
-        }
-
         public Builder setAccessKey(String accessKey) {
             this.accessKey = accessKey;
             return this;
@@ -149,6 +145,9 @@ public class Cheetah {
         }
 
         public Cheetah build(Context context) throws CheetahException {
+            if (accessKey == null || this.accessKey.equals("")) {
+                throw new CheetahInvalidArgumentException("No AccessKey was provided to Cheetah");
+            }
 
             if (modelPath == null) {
                 throw new CheetahInvalidArgumentException("ModelPath must not be null");
@@ -164,10 +163,6 @@ public class Cheetah {
                         throw new CheetahIOException(ex);
                     }
                 }
-            }
-
-            if (accessKey == null) {
-                throw new CheetahInvalidArgumentException("AccessKey must not be null");
             }
 
             if (endpointDuration < 0f) {
