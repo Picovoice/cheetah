@@ -155,7 +155,7 @@ For more information about Go demos go to [demo/go](/demo/go).
 
 ### React Native Demo
 
-To run the React Native Porcupine demo app you will first need to set up your React Native environment. For this,
+To run the React Native Cheetah demo app you will first need to set up your React Native environment. For this,
 please refer to [React Native's documentation](https://reactnative.dev/docs/environment-setup). Once your environment has
 been set up, navigate to [demo/react-native](/demo/react-native) to run the following commands:
 

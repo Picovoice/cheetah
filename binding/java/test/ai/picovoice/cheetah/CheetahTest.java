@@ -97,13 +97,14 @@ public class CheetahTest {
     @Test
     @DisabledIf("systemProperty.get('performanceThresholdSec') == null || systemProperty.get('performanceThresholdSec') == ''")
     void testPerformance() throws Exception {
-        porcupine = new Porcupine.Builder()
-                .setAccessKey(accessKey)
-                .setModelPath(getTestModelPath("en"))
-                .setBuiltInKeyword(Porcupine.BuiltInKeyword.PORCUPINE)
-                .build();
+        Cheetah cheetah = new Cheetah(
+            accessKey,
+            Utils.getPackagedLibraryPath(),
+            Utils.getPackagedModelPath(),
+            1
+        );
 
-        int frameLen = porcupine.getFrameLength();
+        int frameLen = cheetah.getFrameLength();
         String audioFilePath = getTestAudioFilePath("multiple_keywords.wav");
         File testAudioPath = new File(audioFilePath);
 
@@ -114,15 +115,15 @@ public class CheetahTest {
         int bufferSize = frameLen * byteDepth;
 
         byte[] pcm = new byte[bufferSize];
-        short[] porcupineFrame = new short[frameLen];
+        short[] cheetahFrame = new short[frameLen];
         int numBytesRead;
 
         long totalNSec = 0;
         while ((numBytesRead = audioInputStream.read(pcm)) != -1) {
             if (numBytesRead / byteDepth == frameLen) {
-                ByteBuffer.wrap(pcm).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(porcupineFrame);
+                ByteBuffer.wrap(pcm).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(cheetahFrame);
                 long before = System.nanoTime();
-                porcupine.process(porcupineFrame);
+                cheetah.process(cheetahFrame);
                 long after = System.nanoTime();
                 totalNSec += (after - before);
             }
