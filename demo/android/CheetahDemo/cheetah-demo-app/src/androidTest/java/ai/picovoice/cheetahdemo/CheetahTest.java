@@ -22,6 +22,7 @@ import com.microsoft.appcenter.espresso.Factory;
 import com.microsoft.appcenter.espresso.ReportHelper;
 
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -143,6 +144,47 @@ public class CheetahTest {
         assertTrue(cheetah.getSampleRate() > 0);
 
         cheetah.delete();
+    }
+
+    @Test
+    public void testPerformance() throws Exception {
+        String thresholdString = appContext.getString(R.string.performanceThresholdSec);
+        Assume.assumeNotNull(thresholdString);
+        Assume.assumeFalse(thresholdString.equals(""));
+
+        Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
+            .setModelPath(defaultModelPath)
+            .build(appContext);
+
+        double performanceThresholdSec = Double.parseDouble(thresholdString);
+
+        File testAudio = new File(testResourcesPath, "audio_samples/test.wav");
+        FileInputStream audioInputStream = new FileInputStream(testAudio);
+
+        byte[] rawData = new byte[cheetah.getFrameLength() * 2];
+        short[] pcm = new short[cheetah.getFrameLength()];
+        ByteBuffer pcmBuff = ByteBuffer.wrap(rawData).order(ByteOrder.LITTLE_ENDIAN);
+
+        audioInputStream.skip(44);
+
+        long totalNSec = 0;
+        while (audioInputStream.available() > 0) {
+            int numRead = audioInputStream.read(pcmBuff.array());
+            if (numRead == cheetah.getFrameLength() * 2) {
+                pcmBuff.asShortBuffer().get(pcm);
+                long before = System.nanoTime();
+                cheetah.process(pcm);
+                long after = System.nanoTime();
+                totalNSec += (after - before);
+            }
+        }
+        cheetah.delete();
+
+        double totalSec = Math.round(((double) totalNSec) * 1e-6) / 1000.0;
+        assertTrue(
+                String.format("Expected threshold (%.3fs), process took (%.3fs)", performanceThresholdSec, totalSec),
+                totalSec <= performanceThresholdSec
+        );
     }
 
     private void extractAssetsRecursively(String path) throws IOException {

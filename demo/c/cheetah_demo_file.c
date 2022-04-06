@@ -94,9 +94,10 @@ int main(int argc, char **argv) {
     const char *access_key = NULL;
     const char *library_path = NULL;
     const char *model_path = NULL;
+    double performance_threshold_sec = 0;
 
     int opt;
-    while ((opt = getopt(argc, argv, "a:l:m:")) != -1) {
+    while ((opt = getopt(argc, argv, "a:l:m:p:")) != -1) {
         switch (opt) {
             case 'a':
                 access_key = optarg;
@@ -106,6 +107,9 @@ int main(int argc, char **argv) {
                 break;
             case 'm':
                 model_path = optarg;
+                break;
+            case 'p':
+                performance_threshold_sec = strtod(optarg, NULL);
                 break;
             default:
                 break;
@@ -267,6 +271,13 @@ int main(int argc, char **argv) {
     }
 
     fprintf(stdout, "RTF: %.3f\n", proc_sec / audio_sec);
+
+    if (performance_threshold_sec > 0) {
+        if (proc_sec > performance_threshold_sec) {
+            fprintf(stderr, "Expected threshold (%.3fs), process took (%.3fs)\n", performance_threshold_sec, proc_sec);
+            exit(1);
+        }
+    }
 
     free(pcm);
     pv_cheetah_delete_func(cheetah);

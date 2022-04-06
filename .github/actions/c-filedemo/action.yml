@@ -1,0 +1,39 @@
+name: Run filedemo
+
+inputs:
+  access_key:
+    required: true
+  library_path:
+    required: true
+  model_path:
+    required: true
+  audio_path:
+    required: true
+  performance_threshold_sec:
+    required: false
+    type: number
+
+runs:
+  using: "composite"
+  steps:
+  - run: >
+      ./build/cheetah_demo_file
+      -a ${{ inputs.access_key }}
+      -l ${{ inputs.library_path }}
+      -m ${{ inputs.model_path }}
+      ${{ inputs.audio_path }}
+    if: "${{ inputs.performance_threshold_sec == '' }}"
+    working-directory: demo/c
+    shell: bash
+
+  - run: >
+      ./build/cheetah_demo_file
+      -a ${{ inputs.access_key }}
+      -l ${{ inputs.library_path }}
+      -m ${{ inputs.model_path }}
+      -p ${{ inputs.performance_threshold_sec }}
+      ${{ inputs.audio_path }}
+    if: "${{ inputs.performance_threshold_sec != '' }}"
+    working-directory: demo/c
+    shell: bash
+  

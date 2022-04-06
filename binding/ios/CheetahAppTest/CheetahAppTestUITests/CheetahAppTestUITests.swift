@@ -13,6 +13,7 @@ import Cheetah
 
 class CheetahDemoUITests: XCTestCase {
     let accessKey: String = "{TESTING_ACCESS_KEY_HERE}"
+    let thresholdString: String = "{PERFORMANCE_THRESHOLD_SEC}"
     let transcript: String = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL"
 
     var cheetah: Cheetah?
@@ -58,5 +59,34 @@ class CheetahDemoUITests: XCTestCase {
     func testVersion() throws {
         XCTAssertTrue(Cheetah.version is String)
         XCTAssertGreaterThan(Cheetah.version, "")
+    }
+
+    func testPerformance() throws {
+        try XCTSkipIf(thresholdString == "{PERFORMANCE_THRESHOLD_SEC}")
+
+        let performanceThresholdSec = Double(thresholdString)
+        try XCTSkipIf(performanceThresholdSec == nil)
+
+        let bundle = Bundle(for: type(of: self))
+        let fileURL:URL = bundle.url(forResource: "multiple_keywords", withExtension: "wav")!
+
+        let data = try Data(contentsOf: fileURL)
+        let frameLengthBytes = Int(Cheetah.frameLength) * 2
+        var pcmBuffer = Array<Int16>(repeating: 0, count: Int(Cheetah.frameLength))
+
+        var totalNSec = 0.0
+        var index = 44
+        while(index + frameLengthBytes < data.count) {
+            _ = pcmBuffer.withUnsafeMutableBytes { data.copyBytes(to: $0, from: index..<(index + frameLengthBytes)) }
+            let before = CFAbsoluteTimeGetCurrent()
+            try cheetah!.process(pcm:pcmBuffer)
+            let after = CFAbsoluteTimeGetCurrent()
+            totalNSec += (after - before)
+            index += frameLengthBytes
+        }
+        try cheetah!.flush()
+
+        let totalSec = Double(round(totalNSec * 1000) / 1000)
+        XCTAssertLessThanOrEqual(totalSec, performanceThresholdSec!)
     }
 }

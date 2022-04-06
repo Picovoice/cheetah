@@ -25,10 +25,9 @@ const TRANSCRIPT = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE G
 
 const libraryPath = getSystemLibraryPath();
 
-const ACCESS_KEY = process.argv
-  .filter((x) => x.startsWith("--access_key="))[0]
-  .split("--access_key=")[1];
-
+const ACCESS_KEY = process.argv.filter((x) => x.startsWith('--access_key='))[0]?.split('--access_key=')[1] ?? "";
+const PERFORMANCE_THRESHOLD_SEC = Number(process.argv.filter((x) => x.startsWith('--performance_threshold_sec='))[0]?.split('--performance_threshold_sec=')[1] ?? 0);
+const describe_if = (condition) => condition ? describe : describe.skip;
 
 function cheetahProcessWaveFile(
   engineInstance,
@@ -134,4 +133,34 @@ describe("manual paths", () => {
   
       cheetahEngine.release();
   });
+});
+
+describe_if(PERFORMANCE_THRESHOLD_SEC > 0)("performance", () => {
+  test("process", () => {
+    let cheetahEngine = new Cheetah(
+      ACCESS_KEY, 
+      0.1,
+      MODEL_PATH,
+      libraryPath);
+
+    const path = require("path");
+    const waveFilePath = path.join(__dirname, WAV_PATH);
+    const waveBuffer = fs.readFileSync(waveFilePath);
+    const waveAudioFile = new WaveFile(waveBuffer);
+
+    const frames = getInt16Frames(waveAudioFile, cheetahEngine.frameLength);
+    let total = 0;
+    for (let i = 0; i < frames.length; i++) {
+      const frame = frames[0];
+      const before = performance.now();
+      cheetahEngine.process(frame);
+      const after = performance.now();
+      total += (after - before);
+    }
+
+    cheetahEngine.release();
+
+    total = Number((total / 1000).toFixed(3));
+    expect(total).toBeLessThanOrEqual(PERFORMANCE_THRESHOLD_SEC);
+  })
 });

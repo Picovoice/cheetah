@@ -31,190 +31,132 @@ on:
 
 defaults:
   run:
-    working-directory: .
+    working-directory: demo/c
 
 jobs:
-  ubuntu:
-    runs-on: ubuntu-latest
+  build-micdemo-github-hosted:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
 
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build
+    - name: Create build directory
+      run: cmake -B ./build
 
-    - name: Build
-      run: cmake --build demo/c/build
+    - name: Build micdemo
+      run: cmake --build ./build --target cheetah_demo_mic
+  
+  build-micdemo-self-hosted:
+    runs-on: ${{ matrix.machine }}
 
-    - name: Test
-      run: |
-        ./demo/c/build/cheetah_demo_file \
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
-        -l lib/linux/x86_64/libpv_cheetah.so \
-        -m lib/common/cheetah_params.pv \
-        resources/audio_samples/test.wav
-
-  macos:
-    runs-on: macos-latest
+    strategy:
+      matrix:
+        machine: [rpi2, rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson, beaglebone]
 
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
 
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build
+    - name: Create build directory
+      run: cmake -B ./build
 
-    - name: Build
-      run: cmake --build demo/c/build
+    - name: Build micdemo
+      run: cmake --build ./build --target cheetah_demo_mic
 
-    - name: Test
-      run: |
-        ./demo/c/build/cheetah_demo_file \
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
-        -l lib/mac/x86_64/libpv_cheetah.dylib \
-        -m lib/common/cheetah_params.pv \
-        resources/audio_samples/test.wav
+  build-filedemo-github-hosted:
+    runs-on: ${{ matrix.os }}
 
-  windows:
-    runs-on: windows-latest
-
-    defaults:
-      run:
-        shell: cmd
-
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: recursive
-
-    - name: Set up MinGW
-      uses: egor-tensin/setup-mingw@v2
-      with:
-        platform: x64
-
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build -G "MinGW Makefiles"
-
-    - name: Build
-      run: cmake --build demo/c/build
-
-    - name: Test
-      run: |
-        demo\\c\\build\\cheetah_demo_file.exe ^
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} ^
-        -l lib\\windows\\amd64\\libpv_cheetah.dll ^
-        -m lib\\common\\cheetah_params.pv ^
-        resources\\audio_samples\\test.wav
-
-  jetson:
-    runs-on: jetson
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+        - os: ubuntu-latest
+          platform: linux
+          arch: x86_64
+          ext: so
+          performance_threshold_sec: 0.5
+        - os: windows-latest
+          platform: windows
+          arch: amd64
+          ext: dll
+          performance_threshold_sec: 0.5
+        - os: macos-latest
+          platform: mac
+          arch: x86_64
+          ext: dylib
+          performance_threshold_sec: 0.5
 
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
 
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build
+    - name: Create build directory
+      run: cmake -B ./build
 
-    - name: Build
-      run: cmake --build demo/c/build
+    - name: Build filedemo
+      run: cmake --build ./build --target cheetah_demo_file
+    
+    - uses: ./.github/actions/c-filedemo
+      name: Run filedemo
+      with:
+        access_key: ${{ secrets.PV_VALID_ACCESS_KEY }}
+        library_path: ../../lib/${{ matrix.platform }}/${{ matrix.arch }}/libpv_cheetah.${{ matrix.ext }}
+        model_path: ../../lib/common/cheetah_params.pv
+        audio_path: ../../resources/audio_samples/test.wav
+        performance_threshold_sec: ${{ matrix.performance_threshold_sec }}
+  
+  build-filedemo-self-hosted:
+    runs-on: ${{ matrix.machine }}
 
-    - name: Test
-      run: |
-        ./demo/c/build/cheetah_demo_file \
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
-        -l lib/jetson/cortex-a57-aarch64/libpv_cheetah.so \
-        -m lib/common/cheetah_params.pv \
-        resources/audio_samples/test.wav
-
-  rpi4-32:
-    runs-on: rpi4-32
+    strategy:
+      matrix:
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
+        include:
+        - machine: rpi3-32
+          platform: raspberry-pi
+          arch: cortex-a53
+          performance_threshold_sec: 3.0
+        - machine: rpi3-64
+          platform: raspberry-pi
+          arch: cortex-a53-aarch64
+          performance_threshold_sec: 4.0
+        - machine: rpi4-32
+          platform: raspberry-pi
+          arch: cortex-a72
+          performance_threshold_sec: 2.0
+        - machine: rpi4-64
+          platform: raspberry-pi
+          arch: cortex-a72-aarch64
+          performance_threshold_sec: 2.5
+        - machine: jetson
+          platform: jetson
+          arch: cortex-a57-aarch64
+          performance_threshold_sec: 2.0
 
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
 
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build
+    - name: Create build directory
+      run: cmake -B ./build
 
-    - name: Build
-      run: cmake --build demo/c/build
+    - name: Build filedemo
+      run: cmake --build ./build --target cheetah_demo_file
 
-    - name: Test
-      run: |
-        ./demo/c/build/cheetah_demo_file \
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
-        -l lib/raspberry-pi/cortex-a72/libpv_cheetah.so \
-        -m lib/common/cheetah_params.pv \
-        resources/audio_samples/test.wav
-
-  rpi4-64:
-    runs-on: rpi4-64
-
-    steps:
-    - uses: actions/checkout@v2
+    - uses: ./.github/actions/c-filedemo
+      name: Run filedemo
       with:
-        submodules: recursive
-
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build
-
-    - name: Build
-      run: cmake --build demo/c/build
-
-    - name: Test
-      run: |
-        ./demo/c/build/cheetah_demo_file \
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
-        -l lib/raspberry-pi/cortex-a72-aarch64/libpv_cheetah.so \
-        -m lib/common/cheetah_params.pv \
-        resources/audio_samples/test.wav
-
-  rpi3-32:
-    runs-on: rpi3-32
-
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: recursive
-
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build
-
-    - name: Build
-      run: cmake --build demo/c/build
-
-    - name: Test
-      run: |
-        ./demo/c/build/cheetah_demo_file \
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
-        -l lib/raspberry-pi/cortex-a53/libpv_cheetah.so \
-        -m lib/common/cheetah_params.pv \
-        resources/audio_samples/test.wav
-
-  rpi3-64:
-    runs-on: rpi3-64
-
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: recursive
-
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build
-
-    - name: Build
-      run: cmake --build demo/c/build
-
-    - name: Test
-      run: |
-        ./demo/c/build/cheetah_demo_file \
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
-        -l lib/raspberry-pi/cortex-a53-aarch64/libpv_cheetah.so \
-        -m lib/common/cheetah_params.pv \
-        resources/audio_samples/test.wav
+        access_key: ${{ secrets.PV_VALID_ACCESS_KEY }}
+        library_path: ../../lib/${{ matrix.platform }}/${{ matrix.arch }}/libpv_cheetah.so
+        model_path: ../../lib/common/cheetah_params.pv
+        audio_path: ../../resources/audio_samples/test.wav
+        performance_threshold_sec: ${{ matrix.performance_threshold_sec }}

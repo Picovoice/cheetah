@@ -30,6 +30,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CheetahTest {
     private String accessKey = System.getProperty("pvTestingAccessKey");
+    private double performanceThresholdSec;
+
+    CheetahTest() {
+        try {
+            performanceThresholdSec = Double.parseDouble(System.getProperty("performanceThresholdSec"));
+        } catch (Exception e) {
+            performanceThresholdSec = 0f;
+        }
+    }
 
     @Test
     void getVersion() throws Exception{
@@ -83,5 +92,46 @@ public class CheetahTest {
         assertTrue(transcript.equals(referenceTranscript));
 
         cheetah.delete();
+    }
+
+    @Test
+    @DisabledIf("systemProperty.get('performanceThresholdSec') == null || systemProperty.get('performanceThresholdSec') == ''")
+    void testPerformance() throws Exception {
+        porcupine = new Porcupine.Builder()
+                .setAccessKey(accessKey)
+                .setModelPath(getTestModelPath("en"))
+                .setBuiltInKeyword(Porcupine.BuiltInKeyword.PORCUPINE)
+                .build();
+
+        int frameLen = porcupine.getFrameLength();
+        String audioFilePath = getTestAudioFilePath("multiple_keywords.wav");
+        File testAudioPath = new File(audioFilePath);
+
+        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(testAudioPath);
+        assertEquals(audioInputStream.getFormat().getFrameRate(), 16000);
+
+        int byteDepth = audioInputStream.getFormat().getFrameSize();
+        int bufferSize = frameLen * byteDepth;
+
+        byte[] pcm = new byte[bufferSize];
+        short[] porcupineFrame = new short[frameLen];
+        int numBytesRead;
+
+        long totalNSec = 0;
+        while ((numBytesRead = audioInputStream.read(pcm)) != -1) {
+            if (numBytesRead / byteDepth == frameLen) {
+                ByteBuffer.wrap(pcm).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(porcupineFrame);
+                long before = System.nanoTime();
+                porcupine.process(porcupineFrame);
+                long after = System.nanoTime();
+                totalNSec += (after - before);
+            }
+        }
+
+        double totalSec = Math.round(((double) totalNSec) * 1e-6) / 1000.0;
+        assertTrue(
+                totalSec <= this.performanceThresholdSec,
+                String.format("Expected threshold (%.3fs), process took (%.3fs)", this.performanceThresholdSec, totalSec)
+        );
     }
 }
