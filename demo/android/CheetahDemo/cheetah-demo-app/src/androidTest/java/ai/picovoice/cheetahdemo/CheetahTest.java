@@ -158,7 +158,7 @@ public class CheetahTest {
 
         double performanceThresholdSec = Double.parseDouble(thresholdString);
 
-        File testAudio = new File(testResourcesPath, "audio_samples/test.wav");
+        File testAudio = new File(testResourcesPath, "audio/test.wav");
         FileInputStream audioInputStream = new FileInputStream(testAudio);
 
         byte[] rawData = new byte[cheetah.getFrameLength() * 2];

@@ -13,6 +13,7 @@
 package ai.picovoice.cheetah;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -26,6 +27,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CheetahTest {
@@ -105,7 +107,9 @@ public class CheetahTest {
         );
 
         int frameLen = cheetah.getFrameLength();
-        String audioFilePath = getTestAudioFilePath("multiple_keywords.wav");
+        String audioFilePath = Paths.get(System.getProperty("user.dir"))
+            .resolve("../../resources/audio_samples/test.wav")
+            .toString();
         File testAudioPath = new File(audioFilePath);
 
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(testAudioPath);

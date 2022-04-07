@@ -45,7 +45,7 @@ class CheetahDemoUITests: XCTestCase {
         var res = ""
         while (index + frameLengthBytes < data.count) {
             _ = pcmBuffer.withUnsafeMutableBytes { data.copyBytes(to: $0, from: index..<(index + frameLengthBytes)) }
-            var (partial, _) = try cheetah!.process(pcmBuffer)
+            let (partial, _) = try cheetah!.process(pcmBuffer)
             res += partial
             index += frameLengthBytes
         }
@@ -79,12 +79,12 @@ class CheetahDemoUITests: XCTestCase {
         while(index + frameLengthBytes < data.count) {
             _ = pcmBuffer.withUnsafeMutableBytes { data.copyBytes(to: $0, from: index..<(index + frameLengthBytes)) }
             let before = CFAbsoluteTimeGetCurrent()
-            try cheetah!.process(pcm:pcmBuffer)
+            let _ = try cheetah!.process(pcmBuffer)
             let after = CFAbsoluteTimeGetCurrent()
             totalNSec += (after - before)
             index += frameLengthBytes
         }
-        try cheetah!.flush()
+        let _ = try cheetah!.flush()
 
         let totalSec = Double(round(totalNSec * 1000) / 1000)
         XCTAssertLessThanOrEqual(totalSec, performanceThresholdSec!)

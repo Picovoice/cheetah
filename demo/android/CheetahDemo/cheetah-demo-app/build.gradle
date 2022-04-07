@@ -28,6 +28,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         resValue 'string', 'pvTestingAccessKey', properties.getProperty("pvTestingAccessKey", "")
+        resValue 'string', 'performanceThresholdSec', properties.getProperty("performanceThresholdSec", "")
     }
 
     buildTypes {
