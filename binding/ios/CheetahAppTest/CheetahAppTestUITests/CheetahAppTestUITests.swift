@@ -26,7 +26,7 @@ class CheetahDemoUITests: XCTestCase {
         let bundle = Bundle(for: type(of: self))
 
         let modelURL = bundle.url(forResource: "cheetah_params", withExtension: "pv")!
-        cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL)
+        let cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL)
 
         let fileURL: URL = bundle.url(forResource: "test", withExtension: "wav")!
         let data = try Data(contentsOf: fileURL)
@@ -69,7 +69,7 @@ class CheetahDemoUITests: XCTestCase {
 
         let modelURL = bundle.url(forResource: "cheetah_params", withExtension: "pv")!
         let beforeInit = CFAbsoluteTimeGetCurrent()
-        cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL)
+        let cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL)
         let afterInit = CFAbsoluteTimeGetCurrent()
 
         let fileURL:URL = bundle.url(forResource: "multiple_keywords", withExtension: "wav")!
