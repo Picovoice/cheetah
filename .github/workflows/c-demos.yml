@@ -142,8 +142,8 @@ jobs:
         - machine: rpi4-64
           platform: raspberry-pi
           arch: cortex-a72-aarch64
-          init_performance_threshold_sec: 8.0
-          proc_performance_threshold_sec: 2.3
+          init_performance_threshold_sec: 9.0
+          proc_performance_threshold_sec: 3.3
         - machine: jetson
           platform: jetson
           arch: cortex-a57-aarch64
