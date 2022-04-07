@@ -13,21 +13,10 @@ import Cheetah
 
 class CheetahDemoUITests: XCTestCase {
     let accessKey: String = "{TESTING_ACCESS_KEY_HERE}"
-    let thresholdString: String = "{PERFORMANCE_THRESHOLD_SEC}"
+    let initThresholdString: String = "{INIT_PERFORMANCE_THRESHOLD_SEC}"
+    let procThresholdString: String = "{PROC_PERFORMANCE_THRESHOLD_SEC}"
+
     let transcript: String = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL"
-
-    var cheetah: Cheetah?
-
-    override func setUp() {
-        super.setUp()
-        let modelURL = Bundle(for: type(of: self)).url(forResource: "cheetah_params", withExtension: "pv")!
-        cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL)
-    }
-
-    override func tearDown() {
-        super.tearDown()
-        cheetah?.delete()
-    }
 
     override func setUpWithError() throws {
         continueAfterFailure = true
@@ -35,6 +24,10 @@ class CheetahDemoUITests: XCTestCase {
 
     func testTranscribe() throws {
         let bundle = Bundle(for: type(of: self))
+
+        let modelURL = bundle.url(forResource: "cheetah_params", withExtension: "pv")!
+        cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL)
+
         let fileURL: URL = bundle.url(forResource: "test", withExtension: "wav")!
         let data = try Data(contentsOf: fileURL)
         let frameLengthBytes = Int(Cheetah.frameLength) * 2
@@ -53,6 +46,8 @@ class CheetahDemoUITests: XCTestCase {
         let final = try cheetah!.flush()
         res += final
 
+        cheetah?.delete()
+
         XCTAssertEqual(transcript, res)
     }
 
@@ -62,31 +57,43 @@ class CheetahDemoUITests: XCTestCase {
     }
 
     func testPerformance() throws {
-        try XCTSkipIf(thresholdString == "{PERFORMANCE_THRESHOLD_SEC}")
+        try XCTSkipIf(initThresholdString == "{INIT_PERFORMANCE_THRESHOLD_SEC}")
+        try XCTSkipIf(procThresholdString == "{PROC_PERFORMANCE_THRESHOLD_SEC}")
 
-        let performanceThresholdSec = Double(thresholdString)
-        try XCTSkipIf(performanceThresholdSec == nil)
+        let initPerformanceThresholdSec = Double(initThresholdString)
+        try XCTSkipIf(initPerformanceThresholdSec == nil)
+        let procPerformanceThresholdSec = Double(procThresholdString)
+        try XCTSkipIf(procPerformanceThresholdSec == nil)
 
         let bundle = Bundle(for: type(of: self))
+
+        let modelURL = bundle.url(forResource: "cheetah_params", withExtension: "pv")!
+        let beforeInit = CFAbsoluteTimeGetCurrent()
+        cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL)
+        let afterInit = CFAbsoluteTimeGetCurrent()
+
         let fileURL:URL = bundle.url(forResource: "multiple_keywords", withExtension: "wav")!
 
         let data = try Data(contentsOf: fileURL)
         let frameLengthBytes = Int(Cheetah.frameLength) * 2
         var pcmBuffer = Array<Int16>(repeating: 0, count: Int(Cheetah.frameLength))
 
-        var totalNSec = 0.0
+        var totalNSecProc = 0.0
         var index = 44
         while(index + frameLengthBytes < data.count) {
             _ = pcmBuffer.withUnsafeMutableBytes { data.copyBytes(to: $0, from: index..<(index + frameLengthBytes)) }
-            let before = CFAbsoluteTimeGetCurrent()
+            let beforeProc = CFAbsoluteTimeGetCurrent()
             let _ = try cheetah!.process(pcmBuffer)
-            let after = CFAbsoluteTimeGetCurrent()
-            totalNSec += (after - before)
+            let afterProc = CFAbsoluteTimeGetCurrent()
+            totalNSecProc += (afterProc - beforeProc)
             index += frameLengthBytes
         }
-        let _ = try cheetah!.flush()
 
-        let totalSec = Double(round(totalNSec * 1000) / 1000)
-        XCTAssertLessThanOrEqual(totalSec, performanceThresholdSec!)
+        cheetah?.delete()
+
+        let totalSecInit = Double(round((afterInit - beforeInit) * 1000) / 1000)
+        let totalSecProc = Double(round(totalNSecProc * 1000) / 1000)
+        XCTAssertLessThanOrEqual(totalSecInit, initPerformanceThresholdSec!)
+        XCTAssertLessThanOrEqual(totalSecProc, procPerformanceThresholdSec!)
     }
 }

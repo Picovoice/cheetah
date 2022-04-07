@@ -32,13 +32,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CheetahTest {
     private String accessKey = System.getProperty("pvTestingAccessKey");
-    private double performanceThresholdSec;
+    
+    private double initPerformanceThresholdSec;
+    private double procPerformanceThresholdSec;
 
     CheetahTest() {
         try {
-            performanceThresholdSec = Double.parseDouble(System.getProperty("performanceThresholdSec"));
+            initPerformanceThresholdSec = Double.parseDouble(System.getProperty("initPerformanceThresholdSec"));
+            procPerformanceThresholdSec = Double.parseDouble(System.getProperty("procPerformanceThresholdSec"));
         } catch (Exception e) {
-            performanceThresholdSec = 0f;
+            initPerformanceThresholdSec = 0f;
+            procPerformanceThresholdSec = 0f;
         }
     }
 
@@ -97,14 +101,16 @@ public class CheetahTest {
     }
 
     @Test
-    @DisabledIf("systemProperty.get('performanceThresholdSec') == null || systemProperty.get('performanceThresholdSec') == ''")
+    @DisabledIf("systemProperty.get('initPerformanceThresholdSec') == null || systemProperty.get('initPerformanceThresholdSec') == '' || systemProperty.get('procPerformanceThresholdSec') == null || systemProperty.get('procPerformanceThresholdSec') == ''")
     void testPerformance() throws Exception {
+        long beforeInit = System.nanoTime();
         Cheetah cheetah = new Cheetah(
             accessKey,
             Utils.getPackagedLibraryPath(),
             Utils.getPackagedModelPath(),
             1
         );
+        long afterInit = System.nanoTime();
 
         int frameLen = cheetah.getFrameLength();
         String audioFilePath = Paths.get(System.getProperty("user.dir"))
@@ -122,21 +128,26 @@ public class CheetahTest {
         short[] cheetahFrame = new short[frameLen];
         int numBytesRead;
 
-        long totalNSec = 0;
+        long totalNSecProc = 0;
         while ((numBytesRead = audioInputStream.read(pcm)) != -1) {
             if (numBytesRead / byteDepth == frameLen) {
                 ByteBuffer.wrap(pcm).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(cheetahFrame);
-                long before = System.nanoTime();
+                long beforeProc = System.nanoTime();
                 cheetah.process(cheetahFrame);
-                long after = System.nanoTime();
-                totalNSec += (after - before);
+                long afterProc = System.nanoTime();
+                totalNSecProc += (afterProc - beforeProc);
             }
         }
 
-        double totalSec = Math.round(((double) totalNSec) * 1e-6) / 1000.0;
+        double totalSecInit = Math.round(((double) (afterInit - beforeInit)) * 1e-6) / 1000.0;
+        double totalSecProc = Math.round(((double) totalNSecProc) * 1e-6) / 1000.0;
         assertTrue(
-                totalSec <= this.performanceThresholdSec,
-                String.format("Expected threshold (%.3fs), process took (%.3fs)", this.performanceThresholdSec, totalSec)
+                totalSecInit <= this.initPerformanceThresholdSec,
+                String.format("Expected threshold (%.3fs), init took (%.3fs)", this.initPerformanceThresholdSec, totalSecInit)
+        );
+        assertTrue(
+                totalSecProc <= this.procPerformanceThresholdSec,
+                String.format("Expected threshold (%.3fs), process took (%.3fs)", this.procPerformanceThresholdSec, totalSecProc)
         );
     }
 }

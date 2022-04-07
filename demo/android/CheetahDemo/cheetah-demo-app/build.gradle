@@ -8,9 +8,11 @@ if (rootProject.file("local.properties").exists()) {
     if (project.hasProperty("pvTestingAccessKey")) {
         properties.put("pvTestingAccessKey", project.getProperty("pvTestingAccessKey"))
     }
-    if (project.hasProperty("performanceThresholdSec")) {
-        properties.put("performanceThresholdSec", project.getProperty("performanceThresholdSec"))
-
+    if (project.hasProperty("initPerformanceThresholdSec")) {
+        properties.put("initPerformanceThresholdSec", project.getProperty("initPerformanceThresholdSec"))
+    }
+    if (project.hasProperty("procPerformanceThresholdSec")) {
+        properties.put("procPerformanceThresholdSec", project.getProperty("procPerformanceThresholdSec"))
     }
 }
 
@@ -28,7 +30,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         resValue 'string', 'pvTestingAccessKey', properties.getProperty("pvTestingAccessKey", "")
-        resValue 'string', 'performanceThresholdSec', properties.getProperty("performanceThresholdSec", "")
+        resValue 'string', 'initPerformanceThresholdSec', properties.getProperty("initPerformanceThresholdSec", "")
+        resValue 'string', 'procPerformanceThresholdSec', properties.getProperty("procPerformanceThresholdSec", "")
     }
 
     buildTypes {

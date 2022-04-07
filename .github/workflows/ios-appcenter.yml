@@ -45,8 +45,12 @@ jobs:
         run: sed -i '.bak' 's:{TESTING_ACCESS_KEY_HERE}:${{secrets.PV_VALID_ACCESS_KEY}}:'
           CheetahAppTestUITests/CheetahAppTestUITests.swift
 
-      - name: Inject Performance Threshold
-        run: sed -i '.bak' 's:{PERFORMANCE_THRESHOLD_SEC}:1.25:'
+      - name: Inject Init Performance Threshold
+        run: sed -i '.bak' 's:{INIT_PERFORMANCE_THRESHOLD_SEC}:4.0:'
+          CheetahAppTestUITests/CheetahAppTestUITests.swift
+
+      - name: Inject Process Performance Threshold
+        run: sed -i '.bak' 's:{PROC_PERFORMANCE_THRESHOLD_SEC}:2.0:'
           CheetahAppTestUITests/CheetahAppTestUITests.swift
 
       - name: XCode Build

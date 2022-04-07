@@ -148,15 +148,21 @@ public class CheetahTest {
 
     @Test
     public void testPerformance() throws Exception {
-        String thresholdString = appContext.getString(R.string.performanceThresholdSec);
-        Assume.assumeNotNull(thresholdString);
-        Assume.assumeFalse(thresholdString.equals(""));
+        String initThresholdString = appContext.getString(R.string.initPerformanceThresholdSec);
+        String procThresholdString = appContext.getString(R.string.procPerformanceThresholdSec);
+        Assume.assumeNotNull(initThresholdString);
+        Assume.assumeNotNull(procThresholdString);
+        Assume.assumeFalse(initThresholdString.equals(""));
+        Assume.assumeFalse(procThresholdString.equals(""));
 
+        double initPerformanceThresholdSec = Double.parseDouble(initThresholdString);
+        double procPerformanceThresholdSec = Double.parseDouble(procThresholdString);
+
+        long beforeInit = System.nanoTime();
         Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
             .setModelPath(defaultModelPath)
             .build(appContext);
-
-        double performanceThresholdSec = Double.parseDouble(thresholdString);
+        long afterInit = System.nanoTime();
 
         File testAudio = new File(testResourcesPath, "audio/test.wav");
         FileInputStream audioInputStream = new FileInputStream(testAudio);
@@ -167,23 +173,28 @@ public class CheetahTest {
 
         audioInputStream.skip(44);
 
-        long totalNSec = 0;
+        long totalNSecProc = 0;
         while (audioInputStream.available() > 0) {
             int numRead = audioInputStream.read(pcmBuff.array());
             if (numRead == cheetah.getFrameLength() * 2) {
                 pcmBuff.asShortBuffer().get(pcm);
-                long before = System.nanoTime();
+                long beforeProc = System.nanoTime();
                 cheetah.process(pcm);
-                long after = System.nanoTime();
-                totalNSec += (after - before);
+                long afterProc = System.nanoTime();
+                totalNSecProc += (afterProc - beforeProc);
             }
         }
         cheetah.delete();
 
-        double totalSec = Math.round(((double) totalNSec) * 1e-6) / 1000.0;
+        double totalSecInit = Math.round(((double) (afterInit - beforeInit)) * 1e-6) / 1000.0;
+        double totalSecProc = Math.round(((double) totalNSecProc) * 1e-6) / 1000.0;
         assertTrue(
-                String.format("Expected threshold (%.3fs), process took (%.3fs)", performanceThresholdSec, totalSec),
-                totalSec <= performanceThresholdSec
+                String.format("Expected threshold (%.3fs), init took (%.3fs)", initPerformanceThresholdSec, totalSecInit),
+                totalSecInit <= initPerformanceThresholdSec
+        );
+        assertTrue(
+                String.format("Expected threshold (%.3fs), process took (%.3fs)", procPerformanceThresholdSec, totalSecProc),
+                totalSecProc <= procPerformanceThresholdSec
         );
     }
 

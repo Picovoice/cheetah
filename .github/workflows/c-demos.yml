@@ -81,17 +81,20 @@ jobs:
           platform: linux
           arch: x86_64
           ext: so
-          performance_threshold_sec: 0.5
+          init_performance_threshold_sec: 3.0
+          proc_performance_threshold_sec: 0.8
         - os: windows-latest
           platform: windows
           arch: amd64
           ext: dll
-          performance_threshold_sec: 0.5
+          init_performance_threshold_sec: 3.0
+          proc_performance_threshold_sec: 0.8
         - os: macos-latest
           platform: mac
           arch: x86_64
           ext: dylib
-          performance_threshold_sec: 0.5
+          init_performance_threshold_sec: 3.0
+          proc_performance_threshold_sec: 0.8
 
     steps:
     - uses: actions/checkout@v2
@@ -111,7 +114,8 @@ jobs:
         library_path: ../../lib/${{ matrix.platform }}/${{ matrix.arch }}/libpv_cheetah.${{ matrix.ext }}
         model_path: ../../lib/common/cheetah_params.pv
         audio_path: ../../resources/audio_samples/test.wav
-        performance_threshold_sec: ${{ matrix.performance_threshold_sec }}
+        init_performance_threshold_sec: ${{ matrix.init_performance_threshold_sec }}
+        proc_performance_threshold_sec: ${{ matrix.proc_performance_threshold_sec }}
   
   build-filedemo-self-hosted:
     runs-on: ${{ matrix.machine }}
@@ -123,23 +127,28 @@ jobs:
         - machine: rpi3-32
           platform: raspberry-pi
           arch: cortex-a53
-          performance_threshold_sec: 3.0
+          init_performance_threshold_sec: 9.3
+          proc_performance_threshold_sec: 3.2
         - machine: rpi3-64
           platform: raspberry-pi
           arch: cortex-a53-aarch64
-          performance_threshold_sec: 4.0
+          init_performance_threshold_sec: 15.0
+          proc_performance_threshold_sec: 3.6
         - machine: rpi4-32
           platform: raspberry-pi
           arch: cortex-a72
-          performance_threshold_sec: 2.0
+          init_performance_threshold_sec: 8.0
+          proc_performance_threshold_sec: 2.3
         - machine: rpi4-64
           platform: raspberry-pi
           arch: cortex-a72-aarch64
-          performance_threshold_sec: 2.5
+          init_performance_threshold_sec: 8.0
+          proc_performance_threshold_sec: 2.3
         - machine: jetson
           platform: jetson
           arch: cortex-a57-aarch64
-          performance_threshold_sec: 2.0
+          init_performance_threshold_sec: 8.0
+          proc_performance_threshold_sec: 2.3
 
     steps:
     - uses: actions/checkout@v2
@@ -159,4 +168,5 @@ jobs:
         library_path: ../../lib/${{ matrix.platform }}/${{ matrix.arch }}/libpv_cheetah.so
         model_path: ../../lib/common/cheetah_params.pv
         audio_path: ../../resources/audio_samples/test.wav
-        performance_threshold_sec: ${{ matrix.performance_threshold_sec }}
+        init_performance_threshold_sec: ${{ matrix.init_performance_threshold_sec }}
+        proc_performance_threshold_sec: ${{ matrix.proc_performance_threshold_sec }}

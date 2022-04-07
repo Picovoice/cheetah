@@ -25,8 +25,18 @@ const TRANSCRIPT = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE G
 
 const libraryPath = getSystemLibraryPath();
 
-const ACCESS_KEY = process.argv.filter((x) => x.startsWith('--access_key='))[0]?.split('--access_key=')[1] ?? "";
-const PERFORMANCE_THRESHOLD_SEC = Number(process.argv.filter((x) => x.startsWith('--performance_threshold_sec='))[0]?.split('--performance_threshold_sec=')[1] ?? 0);
+const INIT_PERFORMANCE_THRESHOLD_SEC = Number(
+  process.argv
+    .filter((x) => x.startsWith("--init_performance_threshold_sec="))[0]
+    ?.split("--init_performance_threshold_sec=")[1] ?? 0
+);
+
+const PROC_PERFORMANCE_THRESHOLD_SEC = Number(
+  process.argv
+    .filter((x) => x.startsWith("--proc_performance_threshold_sec="))[0]
+    ?.split("--proc_performance_threshold_sec=")[1] ?? 0
+);
+
 const describe_if = (condition) => condition ? describe : describe.skip;
 
 function cheetahProcessWaveFile(
@@ -135,13 +145,17 @@ describe("manual paths", () => {
   });
 });
 
-describe_if(PERFORMANCE_THRESHOLD_SEC > 0)("performance", () => {
+describe_if(
+  INIT_PERFORMANCE_THRESHOLD_SEC > 0 && PROC_PERFORMANCE_THRESHOLD_SEC > 0
+)("performance", () => {
   test("process", () => {
+    const beforeInit = performance.now();
     let cheetahEngine = new Cheetah(
       ACCESS_KEY, 
       0.1,
       MODEL_PATH,
       libraryPath);
+    const afterInit = performance.now();
 
     const path = require("path");
     const waveFilePath = path.join(__dirname, WAV_PATH);
@@ -149,18 +163,20 @@ describe_if(PERFORMANCE_THRESHOLD_SEC > 0)("performance", () => {
     const waveAudioFile = new WaveFile(waveBuffer);
 
     const frames = getInt16Frames(waveAudioFile, cheetahEngine.frameLength);
-    let total = 0;
+    let totalProc = 0;
     for (let i = 0; i < frames.length; i++) {
       const frame = frames[0];
-      const before = performance.now();
+      const beforeProc = performance.now();
       cheetahEngine.process(frame);
-      const after = performance.now();
-      total += (after - before);
+      const afterProc = performance.now();
+      totalProc += (afterProc - beforeProc);
     }
 
     cheetahEngine.release();
 
-    total = Number((total / 1000).toFixed(3));
-    expect(total).toBeLessThanOrEqual(PERFORMANCE_THRESHOLD_SEC);
+    let totalInit = Number(((afterInit - beforeInit) / 1000).toFixed(3));
+    totalProc = Number((totalProc / 1000).toFixed(3));
+    expect(totalInit).toBeLessThanOrEqual(INIT_PERFORMANCE_THRESHOLD_SEC);
+    expect(totalProc).toBeLessThanOrEqual(PROC_PERFORMANCE_THRESHOLD_SEC);
   })
 });

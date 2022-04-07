@@ -42,11 +42,14 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
         - os: ubuntu-latest
-          performance_threshold_sec: 0.5
+          init_performance_threshold_sec: 2.5
+          proc_performance_threshold_sec: 0.9
         - os: windows-latest
-          performance_threshold_sec: 0.5
+          init_performance_threshold_sec: 3.0
+          proc_performance_threshold_sec: 0.9
         - os: macos-latest
-          performance_threshold_sec: 0.5
+          init_performance_threshold_sec: 2.8
+          proc_performance_threshold_sec: 0.9
 
     steps:
     - uses: actions/checkout@v2
@@ -64,7 +67,10 @@ jobs:
       run: ./gradlew assemble
 
     - name: Test
-      run: ./gradlew test -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}" -DperformanceThresholdSec="${{matrix.performance_threshold_sec}}"
+      run: | 
+        ./gradlew test -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}" \
+          -DinitPerformanceThresholdSec="${{matrix.init_performance_threshold_sec}}" \ 
+          -DprocPerformanceThresholdSec="${{matrix.proc_performance_threshold_sec}}"
 
   build-self-hosted:
     runs-on: ${{ matrix.machine }}
@@ -74,15 +80,20 @@ jobs:
         machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
         include:
         - machine: rpi3-32
-          performance_threshold_sec: 3.0
+          init_performance_threshold_sec: 11.0
+          proc_performance_threshold_sec: 3.4
         - machine: rpi3-64
-          performance_threshold_sec: 4.0
+          init_performance_threshold_sec: 16.0
+          proc_performance_threshold_sec: 3.6
         - machine: rpi4-32
-          performance_threshold_sec: 2.0
+          init_performance_threshold_sec: 8.0
+          proc_performance_threshold_sec: 2.3
         - machine: rpi4-64
-          performance_threshold_sec: 2.5
+          init_performance_threshold_sec: 8.0
+          proc_performance_threshold_sec: 2.3
         - machine: jetson
-          performance_threshold_sec: 2.0
+          init_performance_threshold_sec: 8.0
+          proc_performance_threshold_sec: 2.3
 
     steps:
     - uses: actions/checkout@v2
@@ -94,4 +105,7 @@ jobs:
       run: ./gradlew assemble
 
     - name: Test
-      run: ./gradlew test -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}" -DperformanceThresholdSec="${{matrix.performance_threshold_sec}}"
+      run: | 
+        ./gradlew test -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}" \
+          -DinitPerformanceThresholdSec="${{matrix.init_performance_threshold_sec}}" \ 
+          -DprocPerformanceThresholdSec="${{matrix.proc_performance_threshold_sec}}"
