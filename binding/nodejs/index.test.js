@@ -25,6 +25,10 @@ const TRANSCRIPT = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE G
 
 const libraryPath = getSystemLibraryPath();
 
+const ACCESS_KEY = process.argv
+  .filter((x) => x.startsWith("--access_key="))[0]
+  .split("--access_key=")[1];
+
 const INIT_PERFORMANCE_THRESHOLD_SEC = Number(
   process.argv
     .filter((x) => x.startsWith("--init_performance_threshold_sec="))[0]
