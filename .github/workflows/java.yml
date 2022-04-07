@@ -67,7 +67,7 @@ jobs:
       run: ./gradlew assemble
 
     - name: Test
-      run: | 
+      run: |
         ./gradlew test -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}" \
           -DinitPerformanceThresholdSec="${{matrix.init_performance_threshold_sec}}" \ 
           -DprocPerformanceThresholdSec="${{matrix.proc_performance_threshold_sec}}"
@@ -105,7 +105,7 @@ jobs:
       run: ./gradlew assemble
 
     - name: Test
-      run: | 
+      run: |
         ./gradlew test -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}" \
           -DinitPerformanceThresholdSec="${{matrix.init_performance_threshold_sec}}" \ 
           -DprocPerformanceThresholdSec="${{matrix.proc_performance_threshold_sec}}"
