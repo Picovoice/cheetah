@@ -27,6 +27,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         node-version: [14.x, 16.x]
@@ -56,8 +57,10 @@ jobs:
       run: yarn install
 
     - name: Test
-      run: yarn test --access_key=${{secrets.PV_VALID_ACCESS_KEY}} --init_performance_threshold_sec=${{matrix.init_performance_threshold_sec}} --proc_performance_threshold_sec=${{matrix.proc_performance_threshold_sec}}
-
+      run: >
+        yarn test --access_key=${{secrets.PV_VALID_ACCESS_KEY}}
+        --init_performance_threshold_sec=${{matrix.init_performance_threshold_sec}}
+        --proc_performance_threshold_sec=${{matrix.proc_performance_threshold_sec}}
   build-self-hosted:
     runs-on: ${{ matrix.machine }}
 
@@ -92,46 +95,7 @@ jobs:
       run: yarn install
 
     - name: Test
-      run: |
-        yarn test --access_key=${{secrets.PV_VALID_ACCESS_KEY}} \ 
-          --init_performance_threshold_sec=${{matrix.init_performance_threshold_sec}} \
-          --proc_performance_threshold_sec=${{matrix.proc_performance_threshold_sec}}
-
-
-  build-self-hosted:
-    runs-on: ${{ matrix.machine }}
-
-    strategy:
-      matrix:
-        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
-        include:
-        - machine: rpi3-32
-          init_performance_threshold_sec: 9.0
-          proc_performance_threshold_sec: 3.4
-        - machine: rpi3-64
-          init_performance_threshold_sec: 15.0
-          proc_performance_threshold_sec: 3.6
-        - machine: rpi4-32
-          init_performance_threshold_sec: 8.0
-          proc_performance_threshold_sec: 2.2
-        - machine: rpi4-64
-          init_performance_threshold_sec: 8.0
-          proc_performance_threshold_sec: 2.2
-        - machine: jetson
-          init_performance_threshold_sec: 8.0
-          proc_performance_threshold_sec: 2.2
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Pre-build dependencies
-      run: npm install --global yarn
-
-    - name: Install dependencies
-      run: yarn install
-
-    - name: Test
-      run: |
-        yarn test --access_key=${{secrets.PV_VALID_ACCESS_KEY}} \ 
-          --init_performance_threshold_sec=${{matrix.init_performance_threshold_sec}} \
-          --proc_performance_threshold_sec=${{matrix.proc_performance_threshold_sec}}
+      run: >
+        yarn test --access_key=${{secrets.PV_VALID_ACCESS_KEY}}
+        --init_performance_threshold_sec=${{matrix.init_performance_threshold_sec}}
+        --proc_performance_threshold_sec=${{matrix.proc_performance_threshold_sec}}
