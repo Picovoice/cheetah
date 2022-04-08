@@ -81,7 +81,7 @@ class PerformanceTest: XCTestCase {
                 totalNSec += (after - before)
                 index += frameLengthBytes
             }
-            results.append(totalNsec)
+            results.append(totalNSec)
         }
         cheetah?.delete()
         
