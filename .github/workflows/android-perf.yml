@@ -29,11 +29,11 @@ jobs:
         device: [single-android, 32bit-android]
         include:
         - device: single-android
-          initPerformanceThresholdSec: 1.5
-          procPerformanceThresholdSec: 0.2
+          initPerformanceThresholdSec: 3
+          procPerformanceThresholdSec: 0.5
         - device: 32bit-android
-          initPerformanceThresholdSec: 1.5
-          procPerformanceThresholdSec: 0.2
+          initPerformanceThresholdSec: 3
+          procPerformanceThresholdSec: 0.5
 
     steps:
     - uses: actions/checkout@v2
