@@ -8,6 +8,15 @@ if (rootProject.file("local.properties").exists()) {
     if (project.hasProperty("pvTestingAccessKey")) {
         properties.put("pvTestingAccessKey", project.getProperty("pvTestingAccessKey"))
     }
+    if (project.hasProperty("numTestIterations")) {
+        properties.put("numTestIterations", project.getProperty("numTestIterations"))
+    }
+    if (project.hasProperty("initPerformanceThresholdSec")) {
+        properties.put("initPerformanceThresholdSec", project.getProperty("initPerformanceThresholdSec"))
+    }
+    if (project.hasProperty("procPerformanceThresholdSec")) {
+        properties.put("procPerformanceThresholdSec", project.getProperty("procPerformanceThresholdSec"))
+    }
 }
 
 android {
@@ -24,12 +33,26 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         resValue 'string', 'pvTestingAccessKey', properties.getProperty("pvTestingAccessKey", "")
+        resValue 'string', 'numTestIterations', properties.getProperty("numTestIterations", "")
+        resValue 'string', 'initPerformanceThresholdSec', properties.getProperty("initPerformanceThresholdSec", "")
+        resValue 'string', 'procPerformanceThresholdSec', properties.getProperty("procPerformanceThresholdSec", "")
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        androidTest {
+            java {
+                if (properties.getProperty("initPerformanceThresholdSec", "").length() == 0 ||
+                    properties.getProperty("procPerformanceThresholdSec", "").length() == 0) {
+                    exclude "**/PerformanceTest.java"
+                } else {
+                    exclude "**/CheetahTest.java"
+                }
+            }
         }
     }
     compileOptions {
