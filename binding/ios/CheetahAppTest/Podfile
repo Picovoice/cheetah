@@ -8,3 +8,7 @@ end
 target 'CheetahAppTestUITests' do
   pod 'Cheetah-iOS', '~> 1.0.0'
 end
+
+target 'PerformanceTest' do
+  pod 'Cheetah-iOS', '~> 1.0.0'
+end

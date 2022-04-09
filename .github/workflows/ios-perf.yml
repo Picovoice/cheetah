@@ -1,0 +1,89 @@
+name: iOS Performance
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths: 
+      - 'lib/ios/**'
+      - 'lib/common/**'
+      - '.github/workflows/ios-perf.yml'
+  pull_request:
+    branches: [ master ]
+    paths: 
+      - 'lib/ios/**'
+      - 'lib/common/**'
+      - '.github/workflows/ios-perf.yml'
+      
+defaults:
+  run:
+    working-directory: binding/ios/CheetahAppTest
+    
+jobs:
+  build:
+    name: Run iOS Tests on AppCenter
+    runs-on: macos-latest
+
+    strategy:
+      matrix:
+        device: [iOS-14.5, iOS-32bit]
+        include:
+        - device: iOS-14.5
+          initPerformanceThresholdSec: 1.5
+          procPerformanceThresholdSec: 0.2
+        - device: iOS-32bit
+          initPerformanceThresholdSec: 1.5
+          procPerformanceThresholdSec: 0.2
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.4.0
+
+      - name: Install Cocoapods
+        run: gem install cocoapods
+
+      - name: Install AppCenter CLI
+        run: npm install -g appcenter-cli
+
+      - name: Make build dir
+        run: mkdir ddp
+
+      - name: Run Cocoapods
+        run: pod install
+
+      - name: Inject AppID
+        run: sed -i '.bak' 's:{TESTING_ACCESS_KEY_HERE}:${{secrets.PV_VALID_ACCESS_KEY}}:'
+          PerformanceTest/PerformanceTest.swift
+
+      - name: Inject Number of Iterations
+        run: sed -i '.bak' 's:{NUM_TEST_ITERATIONS}:30:'
+          PerformanceTest/PerformanceTest.swift
+
+      - name: Inject Performance Threshold
+        run: sed -i '.bak' 's:{INIT_PERFORMANCE_THRESHOLD_SEC}:${{ matrix.indexPerformanceThresholdSec }}:'
+          PerformanceTest/PerformanceTest.swift
+
+      - name: Inject Performance Threshold
+        run: sed -i '.bak' 's:{PROC_PERFORMANCE_THRESHOLD_SEC}:${{ matrix.searchPerformanceThresholdSec }}:'
+          PerformanceTest/PerformanceTest.swift
+
+      - name: XCode Build
+        run: xcrun xcodebuild build-for-testing 
+          -configuration Debug 
+          -workspace CheetahAppTest.xcworkspace 
+          -sdk iphoneos 
+          -scheme PerformanceTest
+          -derivedDataPath ddp 
+          CODE_SIGNING_ALLOWED=NO
+
+      - name: Run Tests on AppCenter
+        run: appcenter test run xcuitest 
+          --token ${{secrets.APPCENTERAPITOKEN}}
+          --app "Picovoice/Cheetah-iOS" 
+          --devices "Picovoice/${{ matrix.device }}"
+          --test-series "cheetah-ios" 
+          --locale "en_US" 
+          --build-dir ddp/Build/Products/Debug-iphoneos
