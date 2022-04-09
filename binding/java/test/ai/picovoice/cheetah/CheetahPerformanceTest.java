@@ -77,15 +77,15 @@ public class CheetahPerformanceTest {
                 .resolve("../../resources/audio_samples/test.wav")
                 .toString();
         File testAudioPath = new File(audioFilePath);
-        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(testAudioPath);
 
-        int byteDepth = audioInputStream.getFormat().getFrameSize();
-        byte[] pcm = new byte[frameLen * byteDepth];
         short[] cheetahFrame = new short[frameLen];
-
         long[] perfResults = new long[numTestIterations];
         for (int i = 0; i < numTestIterations; i++) {
-            int totalProcTime = 0;
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(testAudioPath);
+            int byteDepth = audioInputStream.getFormat().getFrameSize();
+            byte[] pcm = new byte[frameLen * byteDepth];
+
+            long totalProcTime = 0;
             int numBytesRead;
             while ((numBytesRead = audioInputStream.read(pcm)) != -1) {
                 if (numBytesRead / byteDepth == frameLen) {
@@ -95,10 +95,10 @@ public class CheetahPerformanceTest {
                     totalProcTime += (System.nanoTime() - before);
                 }
             }
-
             if (i > 0) {
                 perfResults[i] = totalProcTime;
             }
+            audioInputStream.close();
         }
         cheetah.delete();
 
