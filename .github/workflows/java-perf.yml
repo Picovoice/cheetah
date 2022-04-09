@@ -1,0 +1,97 @@
+name: Java Performance
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - 'binding/java/**/CheetahPerformanceTest.java'
+      - 'lib/common/**'
+      - 'lib/java/**'
+      - '.github/workflows/java-perf.yml'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'binding/java/**/CheetahPerformanceTest.java'
+      - 'lib/common/**'
+      - 'lib/java/**'
+      - '.github/workflows/java-perf.yml'
+
+defaults:
+  run:
+    working-directory: binding/java
+
+jobs:
+  perf-github-hosted:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+        - os: ubuntu-latest
+          init_performance_threshold_sec: 2.0
+          proc_performance_threshold_sec: 0.5
+        - os: windows-latest
+          init_performance_threshold_sec: 2.1
+          proc_performance_threshold_sec: 0.6
+        - os: macos-latest
+          init_performance_threshold_sec: 2.5
+          proc_performance_threshold_sec: 0.6
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+
+    - name: Build
+      run: ./gradlew assemble
+
+    - name: Test
+      run: ./gradlew test --info --tests CheetahPerformanceTest -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}" -DnumTestIterations="50" -DinitPerformanceThresholdSec="${{matrix.init_performance_threshold_sec}}" -DprocPerformanceThresholdSec="${{matrix.proc_performance_threshold_sec}}"
+
+  perf-self-hosted:
+    runs-on: ${{ matrix.machine }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
+        include:
+        - machine: rpi3-32
+          init_performance_threshold_sec: 7.5
+          proc_performance_threshold_sec: 3.3
+        - machine: rpi3-64
+          init_performance_threshold_sec: 8.8
+          proc_performance_threshold_sec: 3.3
+        - machine: rpi4-32
+          init_performance_threshold_sec: 5.6
+          proc_performance_threshold_sec: 2.0
+        - machine: rpi4-64
+          init_performance_threshold_sec: 5.1
+          proc_performance_threshold_sec: 1.9
+        - machine: jetson
+          init_performance_threshold_sec: 5.1
+          proc_performance_threshold_sec: 2.0
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: ./gradlew assemble
+
+    - name: Machine state before
+      working-directory: resources/scripts
+      run: bash machine-state.sh
+
+    - name: Test
+      run: ./gradlew test --info --tests CheetahPerformanceTest -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}" -DnumTestIterations="20" -DinitPerformanceThresholdSec="${{matrix.init_performance_threshold_sec}}" -DprocPerformanceThresholdSec="${{matrix.proc_performance_threshold_sec}}"
+
+    - name: Machine state after
+      working-directory: resources/scripts
+      run: bash machine-state.sh

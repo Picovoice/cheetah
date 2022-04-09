@@ -16,28 +16,24 @@ import org.junit.jupiter.api.Test;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CheetahTest {
-    private String accessKey = System.getProperty("pvTestingAccessKey");
+    private final String accessKey = System.getProperty("pvTestingAccessKey");
 
     @Test
-    void getVersion() throws Exception{
+    void getVersion() throws Exception {
         Cheetah cheetah = new Cheetah(
-            accessKey,
-            Utils.getPackagedLibraryPath(),
-            Utils.getPackagedModelPath(),
-            1
+                accessKey,
+                Utils.getPackagedLibraryPath(),
+                Utils.getPackagedModelPath(),
+                1
         );
         assertTrue(cheetah.getVersion() != null && !cheetah.getVersion().equals(""));
 
@@ -45,22 +41,22 @@ public class CheetahTest {
     }
 
     @Test
-    void transcribe() throws Exception{
+    void transcribe() throws Exception {
         Cheetah cheetah = new Cheetah(
-            accessKey,
-            Utils.getPackagedLibraryPath(),
-            Utils.getPackagedModelPath(),
-            1
+                accessKey,
+                Utils.getPackagedLibraryPath(),
+                Utils.getPackagedModelPath(),
+                1
         );
 
         int frameLen = cheetah.getFrameLength();
         String audioFilePath = Paths.get(System.getProperty("user.dir"))
-            .resolve("../../resources/audio_samples/test.wav")
-            .toString();
+                .resolve("../../resources/audio_samples/test.wav")
+                .toString();
         File testAudioPath = new File(audioFilePath);
 
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(testAudioPath);
-        assertTrue(audioInputStream.getFormat().getFrameRate() == 16000);
+        assertEquals(audioInputStream.getFormat().getFrameRate(), 16000);
 
         int byteDepth = audioInputStream.getFormat().getFrameSize();
         byte[] pcm = new byte[frameLen * byteDepth];
@@ -80,7 +76,7 @@ public class CheetahTest {
         transcript += finalTranscriptObj.getTranscript();
 
         String referenceTranscript = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL";
-        assertTrue(transcript.equals(referenceTranscript));
+        assertEquals(referenceTranscript, transcript);
 
         cheetah.delete();
     }
