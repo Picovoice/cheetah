@@ -44,7 +44,7 @@ jobs:
       run: ./gradlew assemble
 
     - name: Test
-      run: ./gradlew test -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}"
+      run: ./gradlew test --info --tests CheetahTest -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}"
 
   build-self-hosted:
     runs-on: ${{ matrix.machine }}
@@ -60,4 +60,4 @@ jobs:
       run: ./gradlew assemble
 
     - name: Test
-      run: ./gradlew test -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}"
+      run: ./gradlew test --info --tests CheetahTest -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}"
