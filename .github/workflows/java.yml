@@ -7,26 +7,16 @@ on:
     paths:
       - 'binding/java/**'
       - '!binding/java/README.md'
+      - 'lib/commom/**'
       - 'lib/java/**'
-      - 'resources/contexts/beaglebone/**'      
-      - 'resources/contexts/jetson/**'
-      - 'resources/contexts/linux/**'
-      - 'resources/contexts/mac/**'
-      - 'resources/contexts/raspberry-pi/**'
-      - 'resources/contexts/windows/**'
       - '.github/workflows/java.yml'
   pull_request:
     branches: [ master ]
     paths:
       - 'binding/java/**'
       - '!binding/java/README.md'
+      - 'lib/commom/**'
       - 'lib/java/**'
-      - 'resources/contexts/beaglebone/**'      
-      - 'resources/contexts/jetson/**'
-      - 'resources/contexts/linux/**'
-      - 'resources/contexts/mac/**'
-      - 'resources/contexts/raspberry-pi/**'
-      - 'resources/contexts/windows/**'
       - '.github/workflows/java.yml'
 
 defaults:
@@ -50,9 +40,6 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
 
-    - name: Validate Gradle wrapper
-      uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
-
     - name: Build
       run: ./gradlew assemble
 
@@ -68,9 +55,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
-    - name: Validate Gradle wrapper
-      uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
 
     - name: Build
       run: ./gradlew assemble
