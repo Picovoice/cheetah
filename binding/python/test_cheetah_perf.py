@@ -24,10 +24,10 @@ class CheetahPerformanceTestCase(unittest.TestCase):
     ACCESS_KEY = sys.argv[1]
     NUM_TEST_ITERATIONS = int(sys.argv[2])
     INIT_PERFORMANCE_THRESHOLD_SEC = float(sys.argv[3])
-    PROC_PERFORMANCE_THRESHOLD_SEC = float(sys.argv[3])
+    PROC_PERFORMANCE_THRESHOLD_SEC = float(sys.argv[4])
     AUDIO_PATH = os.path.join(os.path.dirname(__file__), '../../resources/audio_samples/test.wav')
 
-    def test_init(self):
+    def test_performance_init(self):
 
         perf_results = list()
         for i in range(self.NUM_TEST_ITERATIONS):
@@ -48,7 +48,7 @@ class CheetahPerformanceTestCase(unittest.TestCase):
         print("Average init performance: %s" % avg_perf)
         self.assertLess(avg_perf, self.INIT_PERFORMANCE_THRESHOLD_SEC)
 
-    def test_transcribe(self):
+    def test_performance_proc(self):
         with wave.open(self.AUDIO_PATH, 'rb') as f:
             buffer = f.readframes(f.getnframes())
             pcm = struct.unpack('%dh' % (len(buffer) / struct.calcsize('h')), buffer)
