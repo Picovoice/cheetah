@@ -1,0 +1,103 @@
+name: Node.js Performance
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - 'binding/nodejs/perf.test.js'
+      - 'lib/common/**'
+      - 'lib/node/**'
+      - '.github/workflows/nodejs-perf.yml'
+
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'binding/nodejs/perf.test.js'
+      - 'lib/common/**'
+      - 'lib/node/**'
+      - '.github/workflows/nodejs-perf.yml'
+
+defaults:
+  run:
+    working-directory: binding/nodejs
+
+jobs:
+  perf-github-hosted:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+        - os: ubuntu-latest
+          init_performance_threshold_sec: 2.1
+          proc_performance_threshold_sec: 0.5
+        - os: windows-latest
+          init_performance_threshold_sec: 2.5
+          proc_performance_threshold_sec: 0.8
+        - os: macos-latest
+          init_performance_threshold_sec: 2.3
+          proc_performance_threshold_sec: 0.8
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Pre-build dependencies
+      run: npm install yarn
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Test
+      run: yarn test perf.test.js --access_key=${{secrets.PV_VALID_ACCESS_KEY}} --num_test_iterations=50 --init_performance_threshold_sec=${{matrix.init_performance_threshold_sec}} --proc_performance_threshold_sec=${{matrix.proc_performance_threshold_sec}}
+
+  perf-self-hosted:
+    runs-on: ${{ matrix.machine }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
+        include:
+        - machine: rpi3-32
+          init_performance_threshold_sec: 7.5
+          proc_performance_threshold_sec: 3.0
+        - machine: rpi3-64
+          init_performance_threshold_sec: 8.5
+          proc_performance_threshold_sec: 3.0
+        - machine: rpi4-32
+          init_performance_threshold_sec: 5.7
+          proc_performance_threshold_sec: 2.0
+        - machine: rpi4-64
+          init_performance_threshold_sec: 5.1
+          proc_performance_threshold_sec: 1.9
+        - machine: jetson
+          init_performance_threshold_sec: 5.0
+          proc_performance_threshold_sec: 2.0
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Pre-build dependencies
+      run: npm install --global yarn
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Machine state before
+      working-directory: resources/scripts
+      run: bash machine-state.sh
+
+    - name: Test
+      run: yarn test perf.test.js --access_key=${{secrets.PV_VALID_ACCESS_KEY}} --num_test_iterations=20 --init_performance_threshold_sec=${{matrix.init_performance_threshold_sec}} --proc_performance_threshold_sec=${{matrix.proc_performance_threshold_sec}}
+
+    - name: Machine state after
+      working-directory: resources/scripts
+      run: bash machine-state.sh
