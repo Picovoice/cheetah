@@ -1,22 +1,22 @@
-name: Node.js
+name: Node.js Performance
 
 on:
   workflow_dispatch:
   push:
     branches: [ master ]
     paths:
-      - 'binding/nodejs/test/perf.test.ts'
+      - 'binding/nodejs/perf.test.js'
       - 'lib/common/**'
       - 'lib/node/**'
-      - '.github/workflows/nodejs.yml'
+      - '.github/workflows/nodejs-perf.yml'
 
   pull_request:
     branches: [ master ]
     paths:
-      - 'binding/nodejs/test/perf.test.ts'
+      - 'binding/nodejs/perf.test.js'
       - 'lib/common/**'
       - 'lib/node/**'
-      - '.github/workflows/nodejs.yml'
+      - '.github/workflows/nodejs-perf.yml'
 
 defaults:
   run:

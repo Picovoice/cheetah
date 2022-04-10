@@ -12,12 +12,12 @@
 
 const Cheetah = require("./index.js");
 const path = require("path");
-const performance = require("perf_hooks")
+const {performance} = require("perf_hooks")
 const {getInt16Frames} = require("./wave_util");
 const fs = require("fs");
 const WaveFile = require("wavefile").WaveFile;
 
-const WAV_PATH = "../../../resources/audio_samples/test.wav";
+const WAV_PATH = "../../resources/audio_samples/test.wav";
 
 const ACCESS_KEY =
   process.argv
