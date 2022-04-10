@@ -44,7 +44,7 @@ jobs:
       run: yarn install
 
     - name: Test
-      run: yarn test --access_key=${{secrets.PV_VALID_ACCESS_KEY}}
+      run: yarn test index.test.js --access_key=${{secrets.PV_VALID_ACCESS_KEY}}
 
   build-self-hosted:
     runs-on: ${{ matrix.machine }}
@@ -63,4 +63,4 @@ jobs:
       run: yarn install
 
     - name: Test
-      run: yarn test --access_key=${{secrets.PV_VALID_ACCESS_KEY}}
+      run: yarn test index.test.js --access_key=${{secrets.PV_VALID_ACCESS_KEY}}
