@@ -13,10 +13,10 @@
 
 const { program } = require("commander");
 const readline = require("readline");
-const Cheetah = require("@picovoice/cheetah-node");
+
 const PvRecorder = require("@picovoice/pvrecorder-node");
 
-const { PvStatusActivationLimitReached } = require("@picovoice/cheetah-node/errors");
+const { Cheetah, CheetahActivationLimitReachedError } = require("@picovoice/cheetah-node");
 
 program
   .option(
@@ -102,8 +102,8 @@ async function micDemo() {
         process.stdout.write(`${finalTranscript}\n`);
       }
     } catch (err) {
-      if (err instanceof PvStatusActivationLimitReached) {
-        console.error(`AccessKey '${access_key}' has reached it's processing limit.`);
+      if (err instanceof CheetahActivationLimitReachedError) {
+        console.error(`AccessKey '${accessKey}' has reached it's processing limit.`);
       } else {
         console.error(err);
       }

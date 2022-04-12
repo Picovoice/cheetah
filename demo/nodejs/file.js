@@ -15,12 +15,8 @@ const { program } = require("commander");
 const fs = require("fs");
 
 const WaveFile = require("wavefile").WaveFile;
-const Cheetah = require("@picovoice/cheetah-node");
 
-const {
-  getInt16Frames,
-  checkWaveFile,
-} = require("@picovoice/cheetah-node/wave_util");
+const { Cheetah, getInt16Frames, checkWaveFile } = require("@picovoice/cheetah-node");
 
 program
   .requiredOption(

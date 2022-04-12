@@ -8,22 +8,27 @@
 // an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 //
-"use strict";
 
-const fs = require("fs");
-const path = require("path");
-const assert = require('assert');
+import * as fs from "fs";
+import * as path from "path";
+import * as assert from "assert";
 
-const PV_STATUS_T = require("./pv_status_t");
-const {
-  PvArgumentError,
-  PvStateError,
+import PvStatus from "./pv_status_t";
+
+import {
+  CheetahInvalidArgumentError,
+  CheetahInvalidStateError,
   pvStatusToException,
-} = require("./errors");
+} from "./errors";
 
-const { getSystemLibraryPath } = require("./platforms");
+import { getSystemLibraryPath } from "./platforms";
 
-const DEFAULT_MODEL_PATH = "lib/common/cheetah_params.pv";
+const DEFAULT_MODEL_PATH = "../lib/common/cheetah_params.pv";
+
+type CheetahHandleAndStatus = { handle: any; status: PvStatus };
+type TranscriptAndStatus = { transcript: string; status: PvStatus };
+type PartialTranscriptAndStatus = { transcript: string; is_endpoint: number, status: PvStatus };
+
 
 /**
  * Node.js binding for Cheetah streaming speech-to-text engine
@@ -31,24 +36,36 @@ const DEFAULT_MODEL_PATH = "lib/common/cheetah_params.pv";
  * Performs the calls to the Cheetah node library. Does some basic parameter validation to prevent
  * errors occurring in the library layer. Provides clearer error messages in native JavaScript.
  */
-class Cheetah {
+export default class Cheetah {
+  private _pvCheetah: any;
+
+  private _handle: any;
+
+  private readonly _version: string;
+  private readonly _frameLength: number;
+  private readonly _sampleRate: number;
+
   /**
    * Creates an instance of Cheetah.
    * @param {string} accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
-   * @param {number} endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio 
+   * @param {number} endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio
    * (with a duration specified herein) after an utterance without any speech in it. Set to `0` to disable endpoint detection.
    * @param {string} modelPath the path to the Cheetah model (.pv extension)
    * @param {string} libraryPath the path to the Cheetah dynamic library (.node extension)
    */
-  constructor(accessKey, endpointDurationSec, modelPath, libraryPath) {
-    assert(typeof accessKey === 'string');
-    
+  constructor(
+    accessKey: string,
+    endpointDurationSec: number,
+    modelPath?: string,
+    libraryPath?: string
+  ) {
+    assert(typeof accessKey === "string");
     if (
       accessKey === null ||
       accessKey === undefined ||
       accessKey.length === 0
     ) {
-      throw new PvArgumentError(`No AccessKey provided to Cheetah`);
+      throw new CheetahInvalidArgumentError(`No AccessKey provided to Cheetah`);
     }
 
     if (endpointDurationSec < 0) {
@@ -57,10 +74,7 @@ class Cheetah {
       );
     }
 
-    if (
-      endpointDurationSec === null ||
-      endpointDurationSec === undefined
-    ) {
+    if (endpointDurationSec === null || endpointDurationSec === undefined) {
       endpointDurationSec = 1.0;
     }
 
@@ -73,30 +87,36 @@ class Cheetah {
     }
 
     if (!fs.existsSync(libraryPath)) {
-      throw new PvArgumentError(
+      throw new CheetahInvalidArgumentError(
         `File not found at 'libraryPath': ${libraryPath}`
       );
     }
 
     if (!fs.existsSync(modelPath)) {
-      throw new PvArgumentError(`File not found at 'modelPath': ${modelPath}`);
+      throw new CheetahInvalidArgumentError(
+        `File not found at 'modelPath': ${modelPath}`
+      );
     }
 
     const pvCheetah = require(libraryPath);
 
-    let cheetahHandleAndStatus = null;
+    let cheetahHandleAndStatus: CheetahHandleAndStatus | null = null;
     try {
-      cheetahHandleAndStatus = pvCheetah.init(accessKey, modelPath, endpointDurationSec);
-    } catch (err) {
-      pvStatusToException(PV_STATUS_T[err.code], err);
+      cheetahHandleAndStatus = pvCheetah.init(
+        accessKey,
+        modelPath,
+        endpointDurationSec
+      );
+    } catch (err: any) {
+      pvStatusToException(<PvStatus>err.code, err);
     }
 
-    const status = cheetahHandleAndStatus.status;
-    if (status !== PV_STATUS_T.SUCCESS) {
+    const status = cheetahHandleAndStatus!.status;
+    if (status !== PvStatus.SUCCESS) {
       pvStatusToException(status, "Cheetah failed to initialize");
     }
 
-    this._handle = cheetahHandleAndStatus.handle;
+    this._handle = cheetahHandleAndStatus!.handle;
     this._pvCheetah = pvCheetah;
     this._sampleRate = pvCheetah.sample_rate();
     this._frameLength = pvCheetah.frame_length();
@@ -107,7 +127,7 @@ class Cheetah {
    * @returns number of audio samples per frame (i.e. the length of the array provided to the process function)
    * @see {@link process}
    */
-  get frameLength() {
+  get frameLength(): number {
     return this._frameLength;
   }
 
@@ -115,14 +135,14 @@ class Cheetah {
    * @returns the audio sampling rate accepted by the process function
    * @see {@link process}
    */
-  get sampleRate() {
+  get sampleRate(): number {
     return this._sampleRate;
   }
 
   /**
    * @returns the version of the Cheetah engine
    */
-  get version() {
+  get version(): string {
     return this._version;
   }
 
@@ -134,7 +154,7 @@ class Cheetah {
    * The specific array length can be attained by calling `Cheetah.frameLength`. This function operates on single-channel audio.
    * @returns {string, bool} Inferred transcription, and a flag indicating if an endpoint has been detected.
    */
-  process(pcm) {
+  process(pcm: Int16Array): [string, boolean] {
     assert(pcm instanceof Int16Array);
 
     if (
@@ -142,32 +162,35 @@ class Cheetah {
       this._handle === null ||
       this._handle === undefined
     ) {
-      throw new PvStateError("Cheetah is not initialized");
+      throw new CheetahInvalidStateError("Cheetah is not initialized");
     }
 
     if (pcm === undefined || pcm === null) {
-      throw new PvArgumentError(
+      throw new CheetahInvalidArgumentError(
         `PCM array provided to 'Cheetah.process()' is undefined or null`
       );
     } else if (pcm.length !== this.frameLength) {
-      throw new PvArgumentError(
-        `Size of frame array provided to 'Cheetah.process()' (${frame.length}) does not match the engine 'Cheetah.frameLength' (${this.frameLength})`
+      throw new CheetahInvalidArgumentError(
+        `Size of frame array provided to 'Cheetah.process()' (${pcm.length}) does not match the engine 'Cheetah.frameLength' (${this.frameLength})`
       );
     }
 
-    let partialTranscriptAndStatus = null;
+    let partialTranscriptAndStatus: PartialTranscriptAndStatus | null = null;
     try {
       partialTranscriptAndStatus = this._pvCheetah.process(this._handle, pcm);
-    } catch (err) {
-      pvStatusToException(PV_STATUS_T[err.code], err);
+    } catch (err: any) {
+      pvStatusToException(<PvStatus>err.code, err);
     }
 
-    const status = partialTranscriptAndStatus.status;
-    if (status !== PV_STATUS_T.SUCCESS) {
+    const status = partialTranscriptAndStatus!.status;
+    if (status !== PvStatus.SUCCESS) {
       pvStatusToException(status, "Cheetah failed to process the audio frame");
     }
 
-    return [ partialTranscriptAndStatus.transcript, partialTranscriptAndStatus.is_endpoint === 0 ? false : true ]
+    return [
+      partialTranscriptAndStatus!.transcript,
+      partialTranscriptAndStatus!.is_endpoint === 0 ? false : true,
+    ];
   }
 
   /**
@@ -175,28 +198,28 @@ class Cheetah {
    *
    * @returns {string} Inferred transcription.
    */
-  flush() {
+  flush(): string {
     if (
       this._handle === 0 ||
       this._handle === null ||
       this._handle === undefined
     ) {
-      throw new PvStateError("Cheetah is not initialized");
+      throw new CheetahInvalidStateError("Cheetah is not initialized");
     }
 
-    let partialTranscriptAndStatus = null;
+    let transcriptAndStatus: TranscriptAndStatus | null = null;
     try {
-      partialTranscriptAndStatus = this._pvCheetah.flush(this._handle);
-    } catch (err) {
-      pvStatusToException(PV_STATUS_T[err.code], err);
+      transcriptAndStatus = this._pvCheetah.flush(this._handle);
+    } catch (err: any) {
+      pvStatusToException(<PvStatus>err.code, err);
     }
 
-    const status = partialTranscriptAndStatus.status;
-    if (status !== PV_STATUS_T.SUCCESS) {
+    const status = transcriptAndStatus!.status;
+    if (status !== PvStatus.SUCCESS) {
       pvStatusToException(status, "Cheetah failed to process the audio frame");
     }
 
-    return partialTranscriptAndStatus.transcript
+    return transcriptAndStatus!.transcript;
   }
 
   /**
@@ -209,8 +232,8 @@ class Cheetah {
     if (this._handle !== 0) {
       try {
         this._pvCheetah.delete(this._handle);
-      } catch (err) {
-        pvStatusToException(PV_STATUS_T[err.code], err);
+      } catch (err: any) {
+        pvStatusToException(<PvStatus>err.code, err);
       }
       this._handle = 0;
     } else {
@@ -218,5 +241,3 @@ class Cheetah {
     }
   }
 }
-
-module.exports = Cheetah;
