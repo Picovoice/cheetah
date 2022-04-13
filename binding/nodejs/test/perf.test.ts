@@ -10,14 +10,14 @@
 //
 "use strict";
 
-const Cheetah = require("./index.js");
-const path = require("path");
-const {performance} = require("perf_hooks")
-const {getInt16Frames} = require("./wave_util");
-const fs = require("fs");
-const WaveFile = require("wavefile").WaveFile;
+import { Cheetah, getInt16Frames } from "../src";
+import * as fs from "fs";
+import * as path from "path";
+import { performance } from "perf_hooks";
 
-const WAV_PATH = "../../resources/audio_samples/test.wav";
+import { WaveFile } from "wavefile";
+
+const WAV_PATH = "../../../resources/audio_samples/test.wav";
 
 const ACCESS_KEY =
   process.argv

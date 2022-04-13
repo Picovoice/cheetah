@@ -10,18 +10,18 @@
 //
 "use strict";
 
-const Cheetah = require("./index.js");
-const fs = require("fs");
-const { getInt16Frames, checkWaveFile } = require("./wave_util");
-const WaveFile = require("wavefile").WaveFile;
+import { Cheetah, CheetahInvalidArgumentError, getInt16Frames, checkWaveFile } from "../src";
+import * as fs from "fs";
+import * as path from "path";
+import { WaveFile } from "wavefile";
 
-const { PvArgumentError } = require("./errors");
-const { getSystemLibraryPath } = require("./platforms");
+import { getSystemLibraryPath } from "../src/platforms";
 
 const MODEL_PATH = "./lib/common/cheetah_params.pv";
 
-const WAV_PATH = "../../resources/audio_samples/test.wav";
-const TRANSCRIPT = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL"
+const WAV_PATH = "../../../resources/audio_samples/test.wav";
+const TRANSCRIPT =
+  "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL";
 
 const libraryPath = getSystemLibraryPath();
 
@@ -29,11 +29,10 @@ const ACCESS_KEY = process.argv
   .filter((x) => x.startsWith("--access_key="))[0]
   .split("--access_key=")[1];
 
-
 function cheetahProcessWaveFile(
-  engineInstance,
-  relativeWaveFilePath) {
-  const path = require("path");
+  engineInstance: Cheetah,
+  relativeWaveFilePath: string
+): [string, boolean] {
   const waveFilePath = path.join(__dirname, relativeWaveFilePath);
   const waveBuffer = fs.readFileSync(waveFilePath);
   const waveAudioFile = new WaveFile(waveBuffer);
@@ -42,16 +41,17 @@ function cheetahProcessWaveFile(
     console.error(
       "Audio file did not meet requirements. Wave file must be 16KHz, 16-bit, linear PCM (mono)."
     );
-    return null;
+    return ["", false];
   }
 
   const frames = getInt16Frames(waveAudioFile, engineInstance.frameLength);
 
-  let transcript = '';
+  let transcript = "";
   let isEndpoint = false;
   for (let i = 0; i < frames.length; i++) {
     const frame = frames[i];
-    const [partialTranscript, partialIsEndpoint] = engineInstance.process(frame);
+    const [partialTranscript, partialIsEndpoint] =
+      engineInstance.process(frame);
     transcript += partialTranscript;
     isEndpoint = partialIsEndpoint;
   }
@@ -63,14 +63,12 @@ function cheetahProcessWaveFile(
 
 describe("Defaults", () => {
   test("successful process", () => {
-    let cheetahEngine = new Cheetah(
-      ACCESS_KEY,
-      0);
+    let cheetahEngine = new Cheetah(ACCESS_KEY, 0);
 
     let [transcript, isEndpoint] = cheetahProcessWaveFile(
       cheetahEngine,
       WAV_PATH
-    )
+    );
 
     expect(transcript).toBe(TRANSCRIPT);
     expect(isEndpoint).toBe(false);
@@ -79,14 +77,12 @@ describe("Defaults", () => {
   });
 
   test("successful process with endpoint detection", () => {
-    let cheetahEngine = new Cheetah(
-      ACCESS_KEY,
-      0.2);
+    let cheetahEngine = new Cheetah(ACCESS_KEY, 0.2);
 
     let [transcript, isEndpoint] = cheetahProcessWaveFile(
       cheetahEngine,
       WAV_PATH
-    )
+    );
 
     expect(transcript).toBe(TRANSCRIPT);
     expect(isEndpoint).toBe(true);
@@ -96,10 +92,9 @@ describe("Defaults", () => {
 
   test("Empty AccessKey", () => {
     expect(() => {
-      let cheetahEngine = new Cheetah('', 1.0);
-    }).toThrow(PvArgumentError);
+      let cheetahEngine = new Cheetah("", 1.0);
+    }).toThrow(CheetahInvalidArgumentError);
   });
-
 });
 
 describe("manual paths", () => {
@@ -109,7 +104,7 @@ describe("manual paths", () => {
     let [transcript, isEndpoint] = cheetahProcessWaveFile(
       cheetahEngine,
       WAV_PATH
-    )
+    );
 
     expect(transcript).toBe(TRANSCRIPT);
     expect(isEndpoint).toBe(false);
@@ -118,20 +113,16 @@ describe("manual paths", () => {
   });
 
   test("manual model and library path", () => {
-    let cheetahEngine = new Cheetah(
-      ACCESS_KEY, 
-      0.1,
-      MODEL_PATH,
-      libraryPath);
+    let cheetahEngine = new Cheetah(ACCESS_KEY, 0.1, MODEL_PATH, libraryPath);
 
-      let [transcript, isEndpoint] = cheetahProcessWaveFile(
-        cheetahEngine,
-        WAV_PATH
-      )
-  
-      expect(transcript).toBe(TRANSCRIPT);
-      expect(isEndpoint).toBe(true);
-  
-      cheetahEngine.release();
+    let [transcript, isEndpoint] = cheetahProcessWaveFile(
+      cheetahEngine,
+      WAV_PATH
+    );
+
+    expect(transcript).toBe(TRANSCRIPT);
+    expect(isEndpoint).toBe(true);
+
+    cheetahEngine.release();
   });
 });

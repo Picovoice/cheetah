@@ -8,13 +8,15 @@ on:
       - 'demo/nodejs/**'
       - '!demo/nodejs/README.md'
       - 'lib/node/**'
-
+      - '.github/workflows/nodejs-demos.yml'
+      
   pull_request:
     branches: [ master ]
     paths:
       - 'demo/nodejs/**'
       - '!demo/nodejs/README.md'
       - 'lib/node/**'
+      - '.github/workflows/nodejs-demos.yml'
 
 defaults:
   run:

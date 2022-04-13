@@ -10,13 +10,13 @@
 //
 "use strict";
 
-function chunkArray(array, size) {
+function chunkArray(array:Int16Array, size:number): Int16Array[] {
   return Array.from({ length: Math.ceil(array.length / size) }, (v, index) =>
     array.slice(index * size, index * size + size)
   );
 }
 
-function checkWaveFile(waveFile, engineSampleRate) {
+export function checkWaveFile(waveFile: any, engineSampleRate:number): boolean {
   let valid = true;
 
   if (waveFile.bitDepth !== "16") {
@@ -39,7 +39,8 @@ function checkWaveFile(waveFile, engineSampleRate) {
   return valid;
 }
 
-function getInt16Frames(waveFile, frameLength) {
+export function getInt16Frames(waveFile: any, frameLength:number): Int16Array[] {
+
   const samples = waveFile.getSamples(false, Int16Array);
 
   let frames = chunkArray(samples, frameLength);
@@ -51,6 +52,3 @@ function getInt16Frames(waveFile, frameLength) {
 
   return frames;
 }
-
-exports.checkWaveFile = checkWaveFile;
-exports.getInt16Frames = getInt16Frames;

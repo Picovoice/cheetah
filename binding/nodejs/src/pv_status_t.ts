@@ -10,27 +10,19 @@
 //
 "use strict";
 
-const mkdirp = require("mkdirp");
-const ncp = require("ncp").ncp;
+enum PvStatus {
+  SUCCESS = 0,
+  OUT_OF_MEMORY,
+  IO_ERROR,
+  INVALID_ARGUMENT,
+  STOP_ITERATION,
+  KEY_ERROR,
+  INVALID_STATE,
+  RUNTIME_ERROR,
+  ACTIVATION_ERROR,
+  ACTIVATION_LIMIT_REACHED,
+  ACTIVATION_THROTTLED,
+  ACTIVATION_REFUSED,
+}
 
-console.log("Copying library files...");
-
-// Library & Model
-mkdirp.sync("./lib/common");
-ncp(
-  "../../lib/common/cheetah_params.pv",
-  "./lib/common/cheetah_params.pv",
-  function (err) {
-    if (err) {
-      return console.error(err);
-    }
-    console.log("../../lib/common copied.");
-  }
-);
-
-ncp("../../lib/node", "./lib", function (err) {
-  if (err) {
-    return console.error(err);
-  }
-  console.log("../../lib/node copied.");
-});
+export default PvStatus;
