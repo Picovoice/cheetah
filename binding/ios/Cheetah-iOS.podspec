@@ -28,5 +28,5 @@ Pod::Spec.new do |s|
   s.swift_version = '5.0'
   s.vendored_frameworks = 'lib/ios/PvCheetah.xcframework'
   s.source_files = 'binding/ios/*.{swift}'
-  s.excluded_files = 'binding/ios/CheetahAppTest/**'
+  s.exclude_files = 'binding/ios/CheetahAppTest/**'
 end

@@ -32,8 +32,9 @@ public class Cheetah {
             throw CheetahInvalidArgumentError("AccessKey is required for Cheetah initialization")
         }
 
-        if !FileManager().fileExists(atPath: modelPath) {
-            throw CheetahInvalidArgumentError("Model file at does not exist at '\(modelPath)'")
+        var modelPathArg = modelPath
+        if !FileManager().fileExists(atPath: modelPathArg) {
+            modelPathArg = try getResourcePath(modelPathArg)
         }
 
         if endpointDuration < 0 {
@@ -42,7 +43,7 @@ public class Cheetah {
 
         let status = pv_cheetah_init(
                 accessKey,
-                modelPath,
+                modelPathArg,
                 endpointDuration,
                 &handle)
         try checkStatus(status, "Cheetah init failed")
@@ -121,6 +122,22 @@ public class Cheetah {
         cFinalTranscript?.deallocate()
 
         return transcript
+    }
+
+    /// Given a path, return the full path to the resource.
+    ///
+    /// - Parameters:
+    ///   - filePath: relative path of a file in the bundle.
+    /// - Throws: LeopardIOError
+    /// - Returns: The full path of the resource.
+    private func getResourcePath(_ filePath: String) throws -> String {
+        if let resourcePath = Bundle(for: type(of: self)).resourceURL?.appendingPathComponent(filePath).path {
+            if (FileManager.default.fileExists(atPath: resourcePath)) {
+                return resourcePath
+            }
+        }
+
+        throw CheetahIOError("Could not find file at path '\(filePath)'. If this is a packaged asset, ensure you have added it to your xcode project.")
     }
 
     private func checkStatus(_ status: pv_status_t, _ message: String) throws {
