@@ -20,7 +20,7 @@ Cheetah is an on-device speech-to-text engine. Cheetah is:
 
 ## Compatibility
 
-- Android 4.4 (SDK 19+)
+- Android 5.0 (SDK 21+)
 
 ## Installation
 

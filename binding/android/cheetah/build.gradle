@@ -3,17 +3,17 @@ apply plugin: 'com.github.dcendents.android-maven'
 
 ext {
     PUBLISH_GROUP_ID = 'ai.picovoice'
-    PUBLISH_VERSION = '1.0.1'
+    PUBLISH_VERSION = '1.0.2'
     PUBLISH_ARTIFACT_ID = 'cheetah-android'
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion defaultTargetSdkVersion
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 31
+        minSdkVersion 21
+        targetSdkVersion defaultTargetSdkVersion
         versionCode 1
         versionName "1.0"
 
