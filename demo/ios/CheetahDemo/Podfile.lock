@@ -1,9 +1,9 @@
 PODS:
-  - Cheetah-iOS (1.0.0)
+  - Cheetah-iOS (1.0.1)
   - ios-voice-processor (1.0.3)
 
 DEPENDENCIES:
-  - Cheetah-iOS (~> 1.0.0)
+  - Cheetah-iOS (~> 1.0.1)
   - ios-voice-processor (~> 1.0.2)
 
 SPEC REPOS:
@@ -12,9 +12,9 @@ SPEC REPOS:
     - ios-voice-processor
 
 SPEC CHECKSUMS:
-  Cheetah-iOS: 8ce51660745e5b493123b022a480bd05a454626c
+  Cheetah-iOS: ef8a2e22133edb83d8048e0572708642afd7e0cf
   ios-voice-processor: 65b25a8db69ea25ffba0eeef37bae71a982f34cc
 
-PODFILE CHECKSUM: 069f4cebaa13196f99f29a6f9a8093ce6a2f8565
+PODFILE CHECKSUM: e7c912ea22bb7e5925291b0bbb7f0e6662ea2e66
 
 COCOAPODS: 1.11.2
