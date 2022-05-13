@@ -1,16 +1,16 @@
 PODS:
-  - Cheetah-iOS (1.0.0)
+  - Cheetah-iOS (1.0.1)
 
 DEPENDENCIES:
-  - Cheetah-iOS (~> 1.0.0)
+  - Cheetah-iOS (~> 1.0.1)
 
 SPEC REPOS:
   trunk:
     - Cheetah-iOS
 
 SPEC CHECKSUMS:
-  Cheetah-iOS: 8ce51660745e5b493123b022a480bd05a454626c
+  Cheetah-iOS: ef8a2e22133edb83d8048e0572708642afd7e0cf
 
-PODFILE CHECKSUM: b88cb432c546931eca20b8737f367cd428737e60
+PODFILE CHECKSUM: 60b17ee7e93199b3bd117b7e8b32808ad14ab195
 
 COCOAPODS: 1.11.2
