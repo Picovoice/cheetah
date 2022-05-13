@@ -11,10 +11,8 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'package:cheetah_flutter/cheetah_error.dart';
 
@@ -22,7 +20,7 @@ class CheetahTranscript {
   final String? _transcript;
   final bool? _isEndpoint;
 
-  CheetahTranscript(this._transcript, this._isEndpoint) {}
+  CheetahTranscript(this._transcript, this._isEndpoint);
 
   String get transcript => _transcript ?? "";
 

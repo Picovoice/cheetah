@@ -1,6 +1,6 @@
 name: cheetah_flutter
 description: A Flutter plugin for Picovoice's Cheetah Speech-to-Text engine
-version: 1.0.1
+version: 1.0.2
 homepage: https://picovoice.ai/
 
 environment:
