@@ -16,5 +16,5 @@ Pod::Spec.new do |s|
   s.source_files = "ios/*.{h,m,mm,swift}"
 
   s.dependency "React"
-  s.dependency "Cheetah-iOS", '~> 1.0.0'
+  s.dependency "Cheetah-iOS", '~> 1.0.1'
 end
