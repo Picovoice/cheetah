@@ -19,7 +19,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Picovoice.Cheetah" Version="1.0.1" />
-		<PackageReference Include="pvrecorder" Version="1.0.0" />
+		<PackageReference Include="Picovoice.Cheetah" Version="1.0.3" />
+		<PackageReference Include="pvrecorder" Version="1.1.0" />
 	</ItemGroup>
 </Project>

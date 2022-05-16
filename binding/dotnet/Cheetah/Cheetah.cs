@@ -61,38 +61,38 @@ namespace Pv
             return libHandle;
         }
 #endif
-        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern PvStatus pv_cheetah_init(
-            string accessKey,
-            string modelPath,
+            IntPtr accessKey,
+            IntPtr modelPath,
             float endpointDurationSec,
             out IntPtr handle);
 
-        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern Int32 pv_sample_rate();
 
-        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern void pv_cheetah_delete(IntPtr handle);
 
-        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern PvStatus pv_cheetah_process(
             IntPtr handle,
             Int16[] pcm,
             out IntPtr transcriptPtr,
             out bool isEndpoint);
 
-        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern PvStatus pv_cheetah_flush(
             IntPtr handle,
             out IntPtr transcriptPtr);
 
-        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr pv_cheetah_version();
 
-        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern Int32 pv_cheetah_frame_length();
 
-        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern void pv_free(IntPtr memoryPtr);
 
         /// <summary>
@@ -145,17 +145,24 @@ namespace Pv
                 throw new CheetahInvalidArgumentException("`endpointDurationSec` must be either `0` or a positive number");
             }
 
+            IntPtr accessKeyPtr = Utils.GetPtrFromUtf8String(accessKey);
+            IntPtr modelPathPtr = Utils.GetPtrFromUtf8String(modelPath);
+
             PvStatus status = pv_cheetah_init(
-                accessKey,
-                modelPath,
+                accessKeyPtr,
+                modelPathPtr,
                 endpointDurationSec,
                 out _libraryPointer);
+
+            Marshal.FreeHGlobal(accessKeyPtr);
+            Marshal.FreeHGlobal(modelPathPtr);
+
             if (status != PvStatus.SUCCESS)
             {
                 throw PvStatusToException(status);
             }
 
-            Version = Marshal.PtrToStringAnsi(pv_cheetah_version());
+            Version = Utils.GetUtf8StringFromPtr(pv_cheetah_version());
             SampleRate = pv_sample_rate();
             FrameLength = pv_cheetah_frame_length();
         }
@@ -191,7 +198,7 @@ namespace Pv
                 throw PvStatusToException(status, "Cheetah failed to process the audio frame.");
             }
 
-            string transcript = Marshal.PtrToStringAnsi(transcriptPtr);
+            string transcript = Utils.GetUtf8StringFromPtr(transcriptPtr);
             pv_free(transcriptPtr);
             return new CheetahTranscript(transcript, isEndpoint);
         }
@@ -211,7 +218,7 @@ namespace Pv
                 throw PvStatusToException(status, "Cheetah failed to process the audio frame.");
             }
 
-            string transcript = Marshal.PtrToStringAnsi(transcriptPtr);
+            string transcript = Utils.GetUtf8StringFromPtr(transcriptPtr);
             pv_free(transcriptPtr);
             return new CheetahTranscript(transcript, false);
         }
