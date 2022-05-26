@@ -14,7 +14,7 @@ Looking for Cheetah on NodeJS? See the [@picovoice/cheetah-node](https://www.npm
 - Firefox
 - Safari
 
-This library requires several modern browser features: WebAssembly, Web Workers, IndexedDB and promises. Internet Explorer will _not_ work.
+This library requires several modern browser features: `WebAssembly`, `Web Workers`, `IndexedDB` and `Promise`. Internet Explorer will _not_ work.
 
 ## Installation & Usage
 

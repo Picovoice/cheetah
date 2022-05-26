@@ -43,7 +43,7 @@ type pv_cheetah_version_type = () => Promise<number>;
 */
 
 type CheetahWasmOutput = {
-  aligned_alloc: CallableFunction;
+  aligned_alloc: aligned_alloc_type;
   memory: WebAssembly.Memory;
   pvFree: pv_free_type;
   objectAddress: number;
