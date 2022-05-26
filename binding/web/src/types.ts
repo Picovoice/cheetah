@@ -30,7 +30,7 @@ export type CheetahWorkerInitRequest = {
 
 export type CheetahWorkerProcessRequest = {
   command: 'process';
-  pcm: Int16Array;
+  inputFrame: Int16Array;
 };
 
 export type CheetahWorkerFlushRequest = {

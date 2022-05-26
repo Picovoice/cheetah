@@ -56,7 +56,7 @@ self.onmessage = async function (
         return;
       }
       try {
-        const [transcription, isEndpoint] = await cheetah.process(event.data.pcm);
+        const [transcription, isEndpoint] = await cheetah.process(event.data.inputFrame);
         self.postMessage({
           command: "ok",
           transcription: transcription,

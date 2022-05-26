@@ -195,6 +195,9 @@ export class CheetahWorker {
                 case "error":
                   if (processErrorCallback) {
                     processErrorCallback(ev.data.message);
+                  } else {
+                    // eslint-disable-next-line no-console
+                    console.error(ev.data.message);
                   }
                   break;
                 default:
@@ -237,7 +240,7 @@ export class CheetahWorker {
   public process(pcm: Int16Array): void {
     this._worker.postMessage({
       command: "process",
-      pcm: pcm
+      inputFrame: pcm
     });
   }
 
