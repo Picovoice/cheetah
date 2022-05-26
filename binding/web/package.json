@@ -34,7 +34,7 @@
     "setup-test": "cp ../../lib/common/cheetah_params.pv ./test && npx pvbase64 -i ./test/cheetah_params.pv -o ./test/cheetah_params.js"
   },
   "dependencies": {
-    "@picovoice/web-utils": "^1.1.3"
+    "@picovoice/web-utils": "^1.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.18.0",
