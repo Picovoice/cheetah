@@ -26,13 +26,13 @@ self.onmessage = async function (
     case 'init':
       if (cheetah !== null) {
         self.postMessage({
-          command: "failed",
+          command: "error",
           message: "Cheetah already initialized"
         });
         return;
       }
-      Cheetah.setWasm(event.data.wasm);
       try {
+        Cheetah.setWasm(event.data.wasm);
         cheetah = await Cheetah.create(event.data.accessKey, event.data.modelPath, event.data.endpointDurationSec);
         self.postMessage({
           command: "ok",
@@ -50,7 +50,7 @@ self.onmessage = async function (
     case 'process':
       if (cheetah === null) {
         self.postMessage({
-          command: "failed",
+          command: "error",
           message: "Cheetah not initialized"
         });
         return;
@@ -79,7 +79,7 @@ self.onmessage = async function (
     case "flush":
       if (cheetah === null) {
         self.postMessage({
-          command: "failed",
+          command: "error",
           message: "Cheetah not initialized"
         });
         return;

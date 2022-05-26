@@ -4,7 +4,7 @@
 
 The Picovoice Cheetah library for web browsers, powered by WebAssembly.
 
-This library processes always-listening voice commands in-browser, offline. All processing is done via WebAssembly and Workers in a separate thread.
+This library transcribes audio samples in-browser, offline. All processing is done via WebAssembly and Workers in a separate thread.
 
 Looking for Cheetah on NodeJS? See the [@picovoice/cheetah-node](https://www.npmjs.com/package/@picovoice/cheetah-node) package.
 
@@ -40,8 +40,9 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 
 ### Cheetah Models
 
-Cheetah requires a model file on initialization. Get a custom model file from [Picovoice Console](https://console.picovoice.ai/cat)
+Cheetah requires a model file on initialization. Create a custom model file from [Picovoice Console](https://console.picovoice.ai/cat)
 or you can use the [default model file](/lib/common/cheetah_params.pv).
+
 For the web packages, there are two methods to initialize Cheetah.
 
 #### Public Directory
