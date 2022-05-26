@@ -15,12 +15,9 @@ import PvWorker from "web-worker:./cheetah_worker_handler.ts";
 
 import {
   CheetahInputConfig,
-  CheetahWorkerFlushResponse,
-  CheetahWorkerInitRequest,
   CheetahWorkerInitResponse,
   CheetahWorkerProcessResponse,
   CheetahWorkerReleaseResponse,
-  CheetahWorkerResponse
 } from "./types";
 
 export class CheetahWorker {
