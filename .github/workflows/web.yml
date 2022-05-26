@@ -1,0 +1,63 @@
+name: Web
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - 'binding/web/**'
+      - '!binding/web/README.md'
+      - 'lib/wasm/**'
+      - '.github/workflows/web.yml'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'binding/web/**'
+      - '!binding/web/README.md'
+      - 'lib/wasm/**'
+      - '.github/workflows/web.yml'
+
+defaults:
+  run:
+    working-directory: binding/web
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.8]
+        node-version: [lts/*]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install system dependencies
+      run: |
+        pip install selenium
+        pip install webdriver-manager
+    - name: Pre-build dependencies
+      run: npm install yarn
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Build
+      run: yarn build
+
+    - name: Prepare Test
+      run: yarn setup-test
+
+    - name: Test
+      run: python test/selenium_test.py --access_key ${{secrets.PV_VALID_ACCESS_KEY}} --audio_file ../../resources/audio_samples/test.wav
