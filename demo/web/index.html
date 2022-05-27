@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="node_modules/@picovoice/web-voice-processor/dist/iife/index.js"></script>
+    <script src="node_modules/@picovoice/cheetah-web/dist/iife/index.js"></script>
+    <script src="cheetah_params.js"></script>
+    <script type="application/javascript">
+      function writeMessage(message) {
+        console.log(message);
+        document.getElementById("status").innerHTML = message;
+      }
+
+      function cheetahErrorCallback(error) {
+        writeMessage(error);
+      }
+
+      function cheetahTranscriptionCallback(transcription, isEndpoint) {
+        document.getElementById("result").innerHTML += transcription;
+        if (isEndpoint) {
+          document.getElementById("result").innerHTML += "<br>";
+        }
+      }
+
+      async function startCheetah(accessKey) {
+        writeMessage("Cheetah is loading. Please wait...");
+        try {
+          let cheetah = await CheetahWeb.CheetahWorker.fromBase64(
+            accessKey,
+            modelParams,
+            cheetahTranscriptionCallback
+          );
+
+          writeMessage("Cheetah worker ready!");
+
+          writeMessage(
+            "WebVoiceProcessor initializing. Microphone permissions requested ..."
+          );
+          let webVp = await window.WebVoiceProcessor.WebVoiceProcessor.init({
+            engines: [cheetah.worker],
+            start: true
+          });
+          writeMessage("WebVoiceProcessor ready and listening!");
+        } catch (err) {
+          cheetahErrorCallback(err);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Cheetah Web Demo</h1>
+    <p>This demo uses Cheetah for Web and the WebVoiceProcessor to:</p>
+    <ol>
+      <li>
+        Create an instance of Cheetah with the model file provided or default model file.
+      </li>
+      <li>
+        Acquire microphone (& ask permission) data stream and convert to voice
+        processing format (16kHz 16-bit linear PCM). The downsampled audio is
+        forwarded to the Cheetah engine. The audio <i>does not</i> leave the
+        browser: all processing is occurring via the Cheetah WebAssembly code.
+      </li>
+      <li>
+        Listen for real time transcription results from the Cheetah engines and
+        output them to the page.
+      </li>
+    </ol>
+    After entering the AccessKey, click the "Start Cheetah" button.
+    <hr />
+    <label for="accessKey"
+      >AccessKey obtained from
+      <a href="https://console.picovoice.ai/">Picovoice Console</a>:</label
+    >
+    <input type="text" id="accessKey" name="accessKey" />
+    <input
+      type="button"
+      id="submit"
+      value="Start Cheetah"
+      onclick="startCheetah(document.getElementById('accessKey').value)"
+    />
+    <hr />
+    <div id="status"></div>
+    <br>
+    <div id="result"></div>
+  </body>
+</html>
