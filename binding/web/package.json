@@ -3,7 +3,7 @@
   "description": "Cheetah Speech-to-Text engine for web browsers (via WebAssembly)",
   "author": "Picovoice Inc",
   "license": "Apache-2.0",
-  "version": "0.1.0-beta",
+  "version": "0.1.1-beta",
   "keywords": [
     "cheetah",
     "web",
@@ -34,7 +34,7 @@
     "setup-test": "cp ../../lib/common/cheetah_params.pv ./test && npx pvbase64 -i ./test/cheetah_params.pv -o ./test/cheetah_params.js"
   },
   "dependencies": {
-    "@picovoice/web-utils": "^1.1.4"
+    "@picovoice/web-utils": "^1.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.18.2",
