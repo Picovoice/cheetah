@@ -24,6 +24,10 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
 ## Compatibility
 
+Platform compatible with .NET 6.0+:
+
+- macOS (arm64)
+
 Platform compatible with .NET Framework 4.6.1+:
 
 - Windows (x86_64)
@@ -82,7 +86,7 @@ string transcript = "";
 
 while(true)
 {
-    CheetahTranscript transcriptObj = handle.Process(GetNextAudioFrame());   
+    CheetahTranscript transcriptObj = handle.Process(GetNextAudioFrame());
     transcript += transcriptObj.Transcript;
 
     if (transcriptObj.IsEndpoint) {
@@ -92,7 +96,7 @@ while(true)
 }
 ```
 
-Cheetah will have its resources freed by the garbage collector, but to have resources freed immediately after use, wrap it in a using statement: 
+Cheetah will have its resources freed by the garbage collector, but to have resources freed immediately after use, wrap it in a using statement:
 
 ```csharp
 using(Cheetah handle = Cheetah.Create(accessKey))
