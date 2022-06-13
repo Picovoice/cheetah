@@ -47,13 +47,13 @@ namespace Pv
 
         static Cheetah()
         {
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
             NativeLibrary.SetDllImportResolver(typeof(Cheetah).Assembly, ImportResolver);
 #endif
             DEFAULT_MODEL_PATH = Utils.PvModelPath();
         }
 
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
         private static IntPtr ImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
         {
             IntPtr libHandle = IntPtr.Zero;
@@ -100,14 +100,14 @@ namespace Pv
         /// </summary>
         /// <param name="accessKey">AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).</param>
         /// <param name="modelPath">
-        /// Absolute path to the file containing model parameters. If not set it will be set to the 
+        /// Absolute path to the file containing model parameters. If not set it will be set to the
         /// default location.
         /// </param>
         /// <param name="endpointDurationSec">
-        /// Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio(with a duration specified herein) after 
+        /// Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio(with a duration specified herein) after
         /// an utterance without any speech in it. Set to `0` to disable
         /// </param>
-        /// <returns>An instance of Cheetah Speech-to-Text engine.</returns>                             
+        /// <returns>An instance of Cheetah Speech-to-Text engine.</returns>
         public static Cheetah Create(string accessKey, string modelPath = null, float endpointDurationSec = 1.0f)
         {
             return new Cheetah(accessKey, modelPath ?? DEFAULT_MODEL_PATH, endpointDurationSec);
@@ -118,11 +118,11 @@ namespace Pv
         /// </summary>
         /// <param name="accessKey">AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).</param>
         /// <param name="modelPath">
-        /// Absolute path to the file containing model parameters. If not set it will be set to the 
+        /// Absolute path to the file containing model parameters. If not set it will be set to the
         /// default location.
-        /// </param>   
+        /// </param>
         /// <param name="endpointDurationSec">
-        /// Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio(with a duration specified herein) after 
+        /// Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio(with a duration specified herein) after
         /// an utterance without any speech in it.Set to `0` to disable
         /// </param>
         private Cheetah(
@@ -171,7 +171,7 @@ namespace Pv
         /// Processes a given audio data and returns its transcription.
         /// </summary>
         /// <param name="pcm">
-        /// Audio data. A frame of audio samples. The number of samples per frame can be attained by calling `pv_cheetah_frame_length()`. 
+        /// Audio data. A frame of audio samples. The number of samples per frame can be attained by calling `pv_cheetah_frame_length()`.
         /// The incoming audio needs to have a sample rate equal to `pv_sample_rate()` and be 16-bit linearly-encoded.Cheetah operates on single-channel audio.
         /// </param>
         /// <returns>
