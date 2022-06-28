@@ -64,13 +64,21 @@ task copyJetsonLib(type: Copy) {
     from('../../lib/java/jetson/cortex-a57-aarch64/libpv_cheetah_jni.so') into "${outputDir}/cheetah/lib/java/jetson/cortex-a57-aarch64/"
 }
 
+task copyTasks(type: GradleBuild) {
+    tasks = ['copyDefaultModel',
+             'copyLinuxLib',
+             'copyMacLib',
+             'copyWindowsLib',
+             'copyRPiLib',
+             'copyJetsonLib']
+}
+
 jar {
-    dependsOn 'copyDefaultModel'
-    dependsOn 'copyLinuxLib'
-    dependsOn 'copyMacLib'
-    dependsOn 'copyWindowsLib'
-    dependsOn 'copyRPILib'
-    dependsOn 'copyJetsonLib'
+    dependsOn 'copyTasks'
+}
+
+javadoc {
+    dependsOn 'copyTasks'
 }
 
 if (file("${rootDir}/publish-mavencentral.gradle").exists()) {
