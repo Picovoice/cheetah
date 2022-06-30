@@ -183,6 +183,8 @@ export class CheetahWorker {
   ): Promise<CheetahWorker> {
     const worker = new PvWorker();
     const returnPromise: Promise<CheetahWorker> = new Promise((resolve, reject) => {
+      // @ts-ignore - block from GC
+      this.worker = worker;
       worker.onmessage = (event: MessageEvent<CheetahWorkerInitResponse>): void => {
         switch (event.data.command) {
           case "ok":
