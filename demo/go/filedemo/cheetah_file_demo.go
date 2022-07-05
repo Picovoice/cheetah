@@ -26,6 +26,7 @@ import (
 func main() {
 	inputAudioPathArg := flag.String("input_audio_path", "", "Path to input audio file (mono, WAV, 16-bit, 16kHz)")
 	accessKeyArg := flag.String("access_key", "", "AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)")
+	libraryPathArg := flag.String("library_path", "", "Path to Cheetah's dynamic library file")
 	modelPathArg := flag.String("model_path", "", "Path to Cheetah model file")
 	endpointDurationArg := flag.Float64("endpoint_duration", 1, "Duration of endpoint in seconds")
 	flag.Parse()
@@ -43,9 +44,28 @@ func main() {
 
 	c := cheetah.Cheetah{
 		AccessKey:        *accessKeyArg,
-		ModelPath:        *modelPathArg,
 		EndpointDuration: float32(*endpointDurationArg),
 	}
+	// validate library path
+	if *libraryPathArg != "" {
+		libraryPath, _ := filepath.Abs(*libraryPathArg)
+		if _, err := os.Stat(libraryPath); os.IsNotExist(err) {
+			log.Fatalf("Could not find library file at %s", libraryPath)
+		}
+
+		c.LibraryPath = libraryPath
+	}
+
+	// validate model
+	if *modelPathArg != "" {
+		modelPath, _ := filepath.Abs(*modelPathArg)
+		if _, err := os.Stat(modelPath); os.IsNotExist(err) {
+			log.Fatalf("Could not find model file at %s", modelPath)
+		}
+
+		c.ModelPath = modelPath
+	}
+
 	defer c.Delete()
 
 	err = c.Init()

@@ -28,6 +28,7 @@ import (
 	"runtime"
 	"strings"
 )
+import "unsafe"
 
 //go:embed embedded
 var embeddedFS embed.FS
@@ -63,10 +64,13 @@ func (e *CheetahError) Error() string {
 // Cheetah struct
 type Cheetah struct {
 	// handle for cheetah instance in C
-	handle uintptr
+	handle unsafe.Pointer
 
 	// AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
 	AccessKey string
+
+	// Absolute path to Cheetah's dynamic library.
+	LibraryPath string
 
 	// Absolute path to the file containing model parameters.
 	ModelPath string
@@ -77,41 +81,32 @@ type Cheetah struct {
 	EndpointDuration float32
 }
 
-type nativeCheetahInterface interface {
-	nativeInit(*Cheetah)
-	nativeProcess(*Cheetah, []int)
-	nativeFlush(*Cheetah, string)
-	nativeDelete(*Cheetah)
-	nativeSampleRate()
-	nativeVersion()
-}
-type nativeCheetahType struct{}
-
 // private vars
 var (
 	osName, cpu   = getOS()
 	extractionDir = filepath.Join(os.TempDir(), "cheetah")
 
 	defaultModelFile = extractDefaultModel()
-	libName          = extractLib()
+	defaultLibPath   = extractLib()
 	nativeCheetah    = nativeCheetahType{}
 )
 
 var (
 	// Number of audio samples per frame.
-	FrameLength = nativeCheetah.nativeFrameLength()
+	FrameLength int
 
 	// Audio sample rate accepted by Picovoice.
-	SampleRate = nativeCheetah.nativeSampleRate()
+	SampleRate int
 
 	// Cheetah version
-	Version = nativeCheetah.nativeVersion()
+	Version string
 )
 
 // Returns a Cheetah struct with default parameters
 func NewCheetah(accessKey string) Cheetah {
 	return Cheetah{
 		AccessKey:        accessKey,
+		LibraryPath:      defaultLibPath,
 		ModelPath:        defaultModelFile,
 		EndpointDuration: 1.0,
 	}
@@ -123,6 +118,16 @@ func (cheetah *Cheetah) Init() error {
 		return &CheetahError{
 			INVALID_ARGUMENT,
 			"No AccessKey provided to Cheetah"}
+	}
+
+	if cheetah.LibraryPath == "" {
+		cheetah.LibraryPath = defaultLibPath
+	}
+
+	if _, err := os.Stat(cheetah.LibraryPath); os.IsNotExist(err) {
+		return &CheetahError{
+			INVALID_ARGUMENT,
+			fmt.Sprintf("Specified library file could not be found at %s", cheetah.LibraryPath)}
 	}
 
 	if cheetah.ModelPath == "" {
@@ -148,12 +153,16 @@ func (cheetah *Cheetah) Init() error {
 			"Cheetah init failed."}
 	}
 
+	FrameLength = nativeCheetah.nativeFrameLength()
+	SampleRate = nativeCheetah.nativeSampleRate()
+	Version = nativeCheetah.nativeVersion()
+
 	return nil
 }
 
 // Releases resources acquired by Cheetah.
 func (cheetah *Cheetah) Delete() error {
-	if cheetah.handle == 0 {
+	if cheetah.handle == nil {
 		return &CheetahError{
 			INVALID_STATE,
 			"Cheetah has not been initialized or has already been deleted"}
@@ -168,7 +177,7 @@ func (cheetah *Cheetah) Delete() error {
 // Returns Any newly-transcribed speech (if none is available then an empty string is returned) and a
 // flag indicating if an endpoint has been detected.
 func (cheetah *Cheetah) Process(pcm []int16) (string, bool, error) {
-	if cheetah.handle == 0 {
+	if cheetah.handle == nil {
 		return "", false, &CheetahError{
 			INVALID_STATE,
 			"Cheetah has not been initialized or has already been deleted"}
@@ -193,7 +202,7 @@ func (cheetah *Cheetah) Process(pcm []int16) (string, bool, error) {
 // Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcribed text.
 // Return any remaining transcribed text. If none is available then an empty string is returned.
 func (cheetah *Cheetah) Flush() (string, error) {
-	if cheetah.handle == 0 {
+	if cheetah.handle == nil {
 		return "", &CheetahError{
 			INVALID_STATE,
 			"Cheetah has not been initialized or has already been deleted"}
@@ -332,11 +341,11 @@ func extractFile(srcFile string, dstDir string) string {
 		log.Fatalf("%v", readErr)
 	}
 
-    srcHash := sha256sumBytes(bytes)
-    hashedDstDir := filepath.Join(dstDir, srcHash)
+	srcHash := sha256sumBytes(bytes)
+	hashedDstDir := filepath.Join(dstDir, srcHash)
 	extractedFilepath := filepath.Join(hashedDstDir, srcFile)
 
-    if _, err := os.Stat(extractedFilepath); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(extractedFilepath); errors.Is(err, os.ErrNotExist) {
 		mkErr := os.MkdirAll(filepath.Dir(extractedFilepath), 0764)
 		if mkErr != nil {
 			log.Fatalf("%v", mkErr)
@@ -352,6 +361,6 @@ func extractFile(srcFile string, dstDir string) string {
 }
 
 func sha256sumBytes(bytes []byte) string {
-    sum := sha256.Sum256(bytes)
-    return hex.EncodeToString(sum[:])
+	sum := sha256.Sum256(bytes)
+	return hex.EncodeToString(sum[:])
 }

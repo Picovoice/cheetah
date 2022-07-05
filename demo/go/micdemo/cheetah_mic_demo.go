@@ -25,6 +25,7 @@ import (
 
 func main() {
 	accessKeyArg := flag.String("access_key", "", "AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)")
+	libraryPathArg := flag.String("library_path", "", "Path to Cheetah's dynamic library file")
 	modelPathArg := flag.String("model_path", "", "Path to Cheetah model file")
 	endpointDurationArg := flag.Float64("endpoint_duration", 1, "Duration of endpoint in seconds")
 	audioDeviceIndex := flag.Int("audio_device_index", -1, "Index of capture device to use.")
@@ -36,6 +37,37 @@ func main() {
 		printAudioDevices()
 		return
 	}
+
+	c := cheetah.Cheetah{
+		AccessKey:        *accessKeyArg,
+		EndpointDuration: float32(*endpointDurationArg),
+	}
+
+	// validate library path
+	if *libraryPathArg != "" {
+		libraryPath, _ := filepath.Abs(*libraryPathArg)
+		if _, err := os.Stat(libraryPath); os.IsNotExist(err) {
+			log.Fatalf("Could not find library file at %s", libraryPath)
+		}
+
+		c.LibraryPath = libraryPath
+	}
+
+	// validate model
+	if *modelPathArg != "" {
+		modelPath, _ := filepath.Abs(*modelPathArg)
+		if _, err := os.Stat(modelPath); os.IsNotExist(err) {
+			log.Fatalf("Could not find model file at %s", modelPath)
+		}
+
+		c.ModelPath = modelPath
+	}
+
+	err := c.Init()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer c.Delete()
 
 	var outputWav *wav.Encoder
 	if *outputPathArg != "" {
@@ -49,18 +81,6 @@ func main() {
 		outputWav = wav.NewEncoder(outputFile, cheetah.SampleRate, 16, 1, 1)
 		defer outputWav.Close()
 	}
-
-	c := cheetah.Cheetah{
-		AccessKey:        *accessKeyArg,
-		ModelPath:        *modelPathArg,
-		EndpointDuration: float32(*endpointDurationArg),
-	}
-
-	err := c.Init()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer c.Delete()
 
 	recorder := pvrecorder.PvRecorder{
 		DeviceIndex:    *audioDeviceIndex,

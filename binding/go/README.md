@@ -64,4 +64,4 @@ to explicitly release the resources using `cheetah.Delete()`.
 
 ## Demos
 
-Check out the Cheetah Go demos [here](/demo/go).
+Check out the Cheetah Go demos [here](https://github.com/Picovoice/cheetah/tree/master/demo/go).
