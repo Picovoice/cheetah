@@ -139,83 +139,100 @@ import (
 	"unsafe"
 )
 
-// private vars
-var (
-	lib = C.open_dl(C.CString(libName))
+type nativeCheetahInterface interface {
+	nativeInit(*Cheetah)
+	nativeProcess(*Cheetah, []int)
+	nativeFlush(*Cheetah, string)
+	nativeDelete(*Cheetah)
+	nativeSampleRate()
+	nativeVersion()
+}
 
-	pv_cheetah_init_ptr         = C.load_symbol(lib, C.CString("pv_cheetah_init"))
-	pv_cheetah_process_ptr      = C.load_symbol(lib, C.CString("pv_cheetah_process"))
-	pv_cheetah_flush_ptr        = C.load_symbol(lib, C.CString("pv_cheetah_flush"))
-	pv_cheetah_delete_ptr       = C.load_symbol(lib, C.CString("pv_cheetah_delete"))
-	pv_cheetah_version_ptr      = C.load_symbol(lib, C.CString("pv_cheetah_version"))
-	pv_cheetah_frame_length_ptr = C.load_symbol(lib, C.CString("pv_cheetah_frame_length"))
-	pv_sample_rate_ptr          = C.load_symbol(lib, C.CString("pv_sample_rate"))
-)
+type nativeCheetahType struct {
+	libraryPath unsafe.Pointer
 
-func (nc nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
+	pv_cheetah_init_ptr         unsafe.Pointer
+	pv_cheetah_process_ptr      unsafe.Pointer
+	pv_cheetah_flush_ptr        unsafe.Pointer
+	pv_cheetah_delete_ptr       unsafe.Pointer
+	pv_cheetah_version_ptr      unsafe.Pointer
+	pv_cheetah_frame_length_ptr unsafe.Pointer
+	pv_sample_rate_ptr          unsafe.Pointer
+}
+
+func (nc *nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
 	var (
 		accessKeyC        = C.CString(cheetah.AccessKey)
+		libraryPathC      = C.CString(cheetah.LibraryPath)
 		modelPathC        = C.CString(cheetah.ModelPath)
 		endpointDurationC = C.float(cheetah.EndpointDuration)
-		ptrC              = make([]unsafe.Pointer, 1)
 	)
+
 	defer C.free(unsafe.Pointer(accessKeyC))
+	defer C.free(unsafe.Pointer(libraryPathC))
 	defer C.free(unsafe.Pointer(modelPathC))
 
+	nc.libraryPath = C.open_dl(libraryPathC)
+	nc.pv_cheetah_init_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_cheetah_init"))
+	nc.pv_cheetah_process_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_cheetah_process"))
+	nc.pv_cheetah_flush_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_cheetah_flush"))
+	nc.pv_cheetah_delete_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_cheetah_delete"))
+	nc.pv_cheetah_version_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_cheetah_version"))
+	nc.pv_cheetah_frame_length_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_cheetah_frame_length"))
+	nc.pv_sample_rate_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_sample_rate"))
+
 	var ret = C.pv_cheetah_init_wrapper(
-		pv_cheetah_init_ptr,
+		nc.pv_cheetah_init_ptr,
 		accessKeyC,
 		modelPathC,
 		endpointDurationC,
-		&ptrC[0])
+		&cheetah.handle)
 
-	cheetah.handle = uintptr(ptrC[0])
 	return PvStatus(ret)
 }
 
-func (nc nativeCheetahType) nativeDelete(cheetah *Cheetah) {
-	C.pv_cheetah_delete_wrapper(pv_cheetah_delete_ptr,
-		unsafe.Pointer(cheetah.handle))
+func (nc *nativeCheetahType) nativeDelete(cheetah *Cheetah) {
+	C.pv_cheetah_delete_wrapper(nc.pv_cheetah_delete_ptr,
+		cheetah.handle)
 }
 
-func (nc nativeCheetahType) nativeProcess(cheetah *Cheetah, pcm []int16) (status PvStatus, transcript string, isEndpoint bool) {
-	var transcriptPtr uintptr
+func (nc *nativeCheetahType) nativeProcess(cheetah *Cheetah, pcm []int16) (status PvStatus, transcript string, isEndpoint bool) {
+	var transcriptPtr unsafe.Pointer
 
-	var ret = C.pv_cheetah_process_wrapper(pv_cheetah_process_ptr,
-		unsafe.Pointer(cheetah.handle),
+	var ret = C.pv_cheetah_process_wrapper(nc.pv_cheetah_process_ptr,
+		cheetah.handle,
 		(*C.int16_t)(unsafe.Pointer(&pcm[0])),
 		(**C.char)(unsafe.Pointer(&transcriptPtr)),
 		(*C.bool)(unsafe.Pointer(&isEndpoint)))
 
-	transcript = C.GoString((*C.char)(unsafe.Pointer(transcriptPtr)))
-	C.free(unsafe.Pointer(transcriptPtr))
+	transcript = C.GoString((*C.char)(transcriptPtr))
+	C.free(transcriptPtr)
 
 	return PvStatus(ret), transcript, isEndpoint
 }
 
-func (nc nativeCheetahType) nativeFlush(cheetah *Cheetah) (status PvStatus, transcript string) {
-	var (
-		transcriptPtr uintptr
-	)
+func (nc *nativeCheetahType) nativeFlush(cheetah *Cheetah) (status PvStatus, transcript string) {
 
-	var ret = C.pv_cheetah_flush_wrapper(pv_cheetah_flush_ptr,
-		unsafe.Pointer(cheetah.handle),
+	var transcriptPtr unsafe.Pointer
+
+	var ret = C.pv_cheetah_flush_wrapper(nc.pv_cheetah_flush_ptr,
+		cheetah.handle,
 		(**C.char)(unsafe.Pointer(&transcriptPtr)))
 
-	transcript = C.GoString((*C.char)(unsafe.Pointer(transcriptPtr)))
-	C.free(unsafe.Pointer(transcriptPtr))
+	transcript = C.GoString((*C.char)(transcriptPtr))
+	C.free(transcriptPtr)
 
 	return PvStatus(ret), transcript
 }
 
 func (nc nativeCheetahType) nativeSampleRate() (sampleRate int) {
-	return int(C.pv_cheetah_sample_rate_wrapper(pv_sample_rate_ptr))
+	return int(C.pv_cheetah_sample_rate_wrapper(nc.pv_sample_rate_ptr))
 }
 
 func (nc nativeCheetahType) nativeFrameLength() (frameLength int) {
-	return int(C.pv_cheetah_frame_length_wrapper(pv_cheetah_frame_length_ptr))
+	return int(C.pv_cheetah_frame_length_wrapper(nc.pv_cheetah_frame_length_ptr))
 }
 
 func (nc nativeCheetahType) nativeVersion() (version string) {
-	return C.GoString(C.pv_cheetah_version_wrapper(pv_cheetah_version_ptr))
+	return C.GoString(C.pv_cheetah_version_wrapper(nc.pv_cheetah_version_ptr))
 }
