@@ -77,14 +77,16 @@ npx pvbase64 -h
 
 Cheetah saves and caches your model file in IndexedDB to be used by Web Assembly. Use a different `modelPath` variable
 to hold multiple model values and set the `forceWrite` value to true to force re-save the model file. Set `endpointDurationSec`
-value to 0 if you do not with to detect endpoint (moment of silence).
+value to 0 if you do not with to detect endpoint (moment of silence). Set `enableAutomaticPunctuation` to
+false, if you do not wish to enable capitalization and punctuation in transcription.
 
 ```typescript
 // these are default
 const options = {
   modelPath: "cheetah_model",
   forceWrite: false,
-  endpointDurationSec: 1.0
+  endpointDurationSec: 1.0,
+  enableAutomaticPunctiation: true
 }
 ```
 
@@ -209,6 +211,14 @@ Clean up used resources by `Cheetah` or `CheetahWorker`:
 
 ```typescript
 await handle.release();
+```
+
+#### Terminate
+
+Terminate `CheetahWorker` instance:
+
+```typescript
+await handle.terminate();
 ```
 
 ## Build from source (IIFE + ESM outputs)
