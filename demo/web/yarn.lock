@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"@picovoice/cheetah-web@^0.1.1-beta":
-  version "0.1.1-beta"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-0.1.1-beta.tgz#c9e3f14c6b450e7866cbfdf8c52c60aadde52ea1"
-  integrity sha512-3MzVKEJx5UITwgbE7MqRpvvFv3DRVroM3DsztwY1HbXDwbGLHNubJ2f9D9N2DkxbhMmejtUEP4p3ybCXB0rxDQ==
+"@picovoice/cheetah-web@^0.2.0-beta":
+  version "0.2.0-beta"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-0.2.0-beta.tgz#0ac929ec3f8411994918a9d56ea5de73091870d6"
+  integrity sha512-+TMZ8pL9Tb6ih1iUAYy5yyl99Vh5B3fnMEyxlazTBS8ySA+dI7qEWqm2S/IJYa4MlWxRc8QUvMR34/mo6JWfxQ==
   dependencies:
-    "@picovoice/web-utils" "^1.1.5"
+    "@picovoice/web-utils" "^1.1.6"
 
-"@picovoice/web-utils@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@picovoice/web-utils/-/web-utils-1.1.5.tgz#eaa634feb04b3cd159085ce44db485d8bf59b0a3"
-  integrity sha512-vfRBaqGPdwTsgnA9ZbdxG5UwzrGQj38KQY4U7baVwPZnx9WEXa9L5wUM9W/jHBbWO1YFQLWVsqoS82Ot2i0fmQ==
+"@picovoice/web-utils@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@picovoice/web-utils/-/web-utils-1.1.6.tgz#0500f2c3330f3a98b8ead6be966009ecc6266f9f"
+  integrity sha512-QWNop2H9yn2vi7hhFFO8anw6k5yC9LM15CfqJcI6dUvdGvM0B0lIca/rwj5ekYIKGzq1+c58w6Rag3f7eOPi/Q==
   dependencies:
     commander "^9.2.0"
 
@@ -71,9 +71,9 @@ color-name@~1.1.4:
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
 commander@^9.2.0:
-  version "9.2.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-9.2.0.tgz#6e21014b2ed90d8b7c9647230d8b7a94a4a419a9"
-  integrity sha512-e2i4wANQiSXgnrBlIatyHtP1odfUp0BbV5Y5nEGbxtIrStkEOAAzCUirvLBNXHLr7kwLvJl6V+4V3XV9x7Wd9w==
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-9.3.0.tgz#f619114a5a2d2054e0d9ff1b31d5ccf89255e26b"
+  integrity sha512-hv95iU5uXPbK83mjrJKuZyFM/LBAoCV/XhVGkS5Je6tl7sxr6A0ITMw5WoRV46/UaJ46Nllm3Xt7IaJhXTIkzw==
 
 corser@^2.0.1:
   version "2.0.1"
