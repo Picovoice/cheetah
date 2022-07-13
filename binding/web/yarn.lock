@@ -1062,10 +1062,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@picovoice/web-utils@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@picovoice/web-utils/-/web-utils-1.1.5.tgz#eaa634feb04b3cd159085ce44db485d8bf59b0a3"
-  integrity sha512-vfRBaqGPdwTsgnA9ZbdxG5UwzrGQj38KQY4U7baVwPZnx9WEXa9L5wUM9W/jHBbWO1YFQLWVsqoS82Ot2i0fmQ==
+"@picovoice/web-utils@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@picovoice/web-utils/-/web-utils-1.1.6.tgz#0500f2c3330f3a98b8ead6be966009ecc6266f9f"
+  integrity sha512-QWNop2H9yn2vi7hhFFO8anw6k5yC9LM15CfqJcI6dUvdGvM0B0lIca/rwj5ekYIKGzq1+c58w6Rag3f7eOPi/Q==
   dependencies:
     commander "^9.2.0"
 
@@ -2994,6 +2994,11 @@ validate-npm-package-license@^3.0.1:
   dependencies:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
+
+wasm-feature-detect@^1.2.11:
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/wasm-feature-detect/-/wasm-feature-detect-1.2.11.tgz#e21992fd1f1d41a47490e392a5893cb39d81e29e"
+  integrity sha512-HUqwaodrQGaZgz1lZaNioIkog9tkeEJjrM3eq4aUL04whXOVDRc/o2EGb/8kV0QX411iAYWEqq7fMBmJ6dKS6w==
 
 webidl-conversions@^4.0.2:
   version "4.0.2"

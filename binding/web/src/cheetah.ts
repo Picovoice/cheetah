@@ -23,13 +23,15 @@ import {
   PvFile
 } from "@picovoice/web-utils";
 
-import { CheetahInputConfig } from "./types";
+import { simd } from "wasm-feature-detect";
+
+import { CheetahConfig, CheetahInitConfig } from "./types";
 
 /**
  * WebAssembly function types
  */
 
-type pv_cheetah_init_type = (accessKey: number, modelPath: number, endpointDurationSec: number, object: number) => Promise<number>;
+type pv_cheetah_init_type = (accessKey: number, modelPath: number, endpointDurationSec: number, enableAutomaticPunctuation: number, object: number) => Promise<number>;
 type pv_cheetah_process_type = (object: number, pcm: number, transcription: number, isEndpoint: number) => Promise<number>;
 type pv_cheetah_flush_type = (object: number, transcription: number) => Promise<number>;
 type pv_cheetah_delete_type = (object: number) => Promise<void>;
@@ -84,6 +86,7 @@ export class Cheetah {
   private static _sampleRate: number;
   private static _version: string;
   private static _wasm: string;
+  private static _wasmSimd: string;
 
   private static _cheetahMutex = new Mutex();
 
@@ -146,25 +149,26 @@ export class Cheetah {
    * @param options.endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
+   * @param options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
    *
    * @returns An instance of the Cheetah engine.
    */
   public static async fromBase64(
     accessKey: string,
     modelBase64: string,
-    options: CheetahInputConfig = {}
+    options: CheetahConfig = {}
   ): Promise<Cheetah> {
     const {
       modelPath = "cheetah_model",
       forceWrite = false,
-      endpointDurationSec = 1.0
+      ...rest
     } = options;
 
     if (!(await PvFile.exists(modelPath)) || forceWrite) {
       const pvFile = await PvFile.open(modelPath, "w");
       await pvFile.write(base64ToUint8Array(modelBase64));
     }
-    return this.create(accessKey, modelPath, endpointDurationSec);
+    return this.create(accessKey, modelPath, rest);
   }
 
   /**
@@ -181,18 +185,19 @@ export class Cheetah {
    * @param options.endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
+   * @param options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
    *
    * @returns An instance of the Cheetah engine.
    */
   public static async fromPublicDirectory(
     accessKey: string,
     publicPath: string,
-    options: CheetahInputConfig = {}
+    options: CheetahConfig = {}
   ): Promise<Cheetah> {
     const {
       modelPath = "cheetah_model",
       forceWrite = false,
-      endpointDurationSec = 1.0
+      ...rest
     } = options;
 
     if (!(await PvFile.exists(modelPath)) || forceWrite) {
@@ -204,7 +209,7 @@ export class Cheetah {
       const data = await response.arrayBuffer();
       await pvFile.write(new Uint8Array(data));
     }
-    return this.create(accessKey, modelPath, endpointDurationSec);
+    return this.create(accessKey, modelPath, rest);
   }
 
   /**
@@ -218,31 +223,36 @@ export class Cheetah {
   }
 
   /**
+   * Set base64 wasm file with SIMD feature.
+   * @param wasmSimd Base64'd wasm file to use to initialize wasm.
+   */
+  public static setWasmSimd(wasmSimd: string): void {
+    if (this._wasmSimd === undefined) {
+      this._wasmSimd = wasmSimd;
+    }
+  }
+
+  /**
    * Creates an instance of the Picovoice Cheetah Speech-to-Text engine.
    * Behind the scenes, it requires the WebAssembly code to load and initialize before
    * it can create an instance.
    *
    * @param accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
    * @param modelPath Path to the model saved in indexedDB.
-   * @param endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
-   * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
-   * to disable endpoint detection.
+   * @param inputConfig Cheetah init configurations.
    *
    * @returns An instance of the Cheetah engine.
    */
-  public static async create(accessKey: string, modelPath: string, endpointDurationSec: number): Promise<Cheetah> {
+  public static async create(accessKey: string, modelPath: string, inputConfig: CheetahInitConfig): Promise<Cheetah> {
     if (!isAccessKeyValid(accessKey)) {
       throw new Error('Invalid AccessKey');
-    }
-
-    if (!endpointDurationSec || typeof endpointDurationSec !== "number" || endpointDurationSec < 0) {
-      throw new Error("Cheetah endpointDurationSec must be a non-negative number");
     }
 
     return new Promise<Cheetah>((resolve, reject) => {
       Cheetah._cheetahMutex
         .runExclusive(async () => {
-          const wasmOutput = await Cheetah.initWasm(accessKey.trim(), this._wasm, modelPath, endpointDurationSec);
+          const isSimd = await simd();
+          const wasmOutput = await Cheetah.initWasm(accessKey.trim(), (isSimd) ? this._wasmSimd : this._wasm, modelPath, inputConfig);
           return new Cheetah(wasmOutput);
         })
         .then((result: Cheetah) => {
@@ -373,10 +383,15 @@ export class Cheetah {
     await this._pvFree(this._inputBufferAddress);
   }
 
-  private static async initWasm(accessKey: string, wasmBase64: string, modelPath: string, endpointDurationSec: number): Promise<any> {
+  private static async initWasm(accessKey: string, wasmBase64: string, modelPath: string, initConfig: CheetahInitConfig): Promise<any> {
+    const { endpointDurationSec = 1.0, enableAutomaticPunctuation = true } = initConfig;
+
+    if (!endpointDurationSec || endpointDurationSec < 0) {
+      throw new Error("Cheetah endpointDurationSec must be a non-negative number");
+    }
+
     // A WebAssembly page has a constant size of 64KiB. -> 1MiB ~= 16 pages
-    // minimum memory requirements for init: 5365 pages
-    const memory = new WebAssembly.Memory({ initial: 5365 });
+    const memory = new WebAssembly.Memory({ initial: 6000 });
 
     const memoryBufferUint8 = new Uint8Array(memory.buffer);
 
@@ -445,7 +460,12 @@ export class Cheetah {
     }
     memoryBufferUint8[modelPathAddress + modelPath.length] = 0;
 
-    const status = await pv_cheetah_init(accessKeyAddress, modelPathAddress, endpointDurationSec, objectAddressAddress);
+    const status = await pv_cheetah_init(
+      accessKeyAddress,
+      modelPathAddress,
+      endpointDurationSec,
+      (enableAutomaticPunctuation) ? 1 : 0,
+      objectAddressAddress);
     if (status !== PV_STATUS_SUCCESS) {
       throw new Error(
         `'pv_cheetah_init' failed with status ${arrayBufferToStringAtIndex(

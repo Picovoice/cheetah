@@ -6,7 +6,7 @@
   <script src="../dist/iife/index.js"></script>
   <script src="./cheetah_params.js"></script>
   <script type="application/javascript">
-    const expected = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL";
+    const expected = "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.";
     let pcm = null;
 
     window.onload = function () {
@@ -214,6 +214,40 @@
         document.getElementById("testComplete").style.display = "block";
       }
     }
+
+    const numIterations = 15;
+    async function performanceTest() {
+      document.getElementById("testComplete").style.display = "none";
+
+      const accessKey = document.getElementById("accessKey").value;
+      let handle = null;
+
+      try {
+        writeMessage("Starting init performance test!");
+        let start = Date.now();
+        for (let i = 0; i < numIterations; i++) {
+          handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, modelParams, transcriptionCallback, {forceWrite: true});
+          handle.terminate();
+        }
+        let end = Date.now();
+        writeMessage(`Init Performance: ${((end - start) / 1000) / numIterations}`);
+
+        handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, modelParams, transcriptionCallback, {forceWrite: true});
+        writeMessage("Starting process performance test!");
+        start = Date.now();
+        for (let i = 0; i < numIterations; i++) {
+          await transcribeWorker(handle, pcm);
+        }
+        end = Date.now();
+        writeMessage(`Process Performance: ${((end - start) / 1000) / numIterations}`);
+        handle.release();
+      } catch (e) {
+        console.log(e)
+        writeMessage("Test failed!")
+      } finally {
+        document.getElementById("testComplete").style.display = "block";
+      }
+    }
   </script>
 </head>
 
@@ -235,6 +269,7 @@
 </p>
 
 <input type="button" id="sumbit" value="Test Cheetah" onclick="startTest()"/>
+<input type="button" id="perfTest" value="Test Cheetah Performance" onclick="performanceTest()"/>
 
 <br>
 
