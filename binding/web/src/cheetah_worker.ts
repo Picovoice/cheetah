@@ -14,6 +14,8 @@ import { base64ToUint8Array, PvFile } from "@picovoice/web-utils";
 import PvWorker from "web-worker:./cheetah_worker_handler.ts";
 
 import {
+  CheetahConfig,
+  CheetahInitConfig,
   CheetahInputConfig,
   CheetahWorkerInitResponse,
   CheetahWorkerProcessResponse,
@@ -27,6 +29,7 @@ export class CheetahWorker {
   private readonly _sampleRate: number;
 
   private static _wasm: string;
+  private static _wasmSimd: string;
 
   private constructor(worker: Worker, version: string, frameLength: number, sampleRate: number) {
     this._worker = worker;
@@ -78,6 +81,7 @@ export class CheetahWorker {
    * @param options.endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
+   * @param options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
    * @param options.processErrorCallback User-defined callback invoked if any error happens
    * while processing the audio stream. Its only input argument is the error message.
    *
@@ -87,20 +91,20 @@ export class CheetahWorker {
     accessKey: string,
     modelBase64: string,
     transcriptionCallback: (transcription: string, isEndpoint: boolean) => void,
-    options: CheetahInputConfig = {}
+    options: CheetahConfig = {}
   ): Promise<CheetahWorker> {
     const {
       modelPath = "cheetah_model",
       forceWrite = false,
-      endpointDurationSec = 1.0,
-      processErrorCallback
+      processErrorCallback,
+      ...rest
     } = options;
 
     if (!(await PvFile.exists(modelPath)) || forceWrite) {
       const pvFile = await PvFile.open(modelPath, "w");
       await pvFile.write(base64ToUint8Array(modelBase64));
     }
-    return this.create(accessKey, modelPath, endpointDurationSec, transcriptionCallback, processErrorCallback);
+    return this.create(accessKey, modelPath, rest, transcriptionCallback, processErrorCallback);
   }
 
   /**
@@ -118,6 +122,7 @@ export class CheetahWorker {
    * @param options.endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
+   * @param options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
    * @param options.processErrorCallback User-defined callback invoked if any error happens
    * while processing the audio stream. Its only input argument is the error message.
    *
@@ -132,8 +137,8 @@ export class CheetahWorker {
     const {
       modelPath = "cheetah_model",
       forceWrite = false,
-      endpointDurationSec = 1.0,
-      processErrorCallback
+      processErrorCallback,
+      ...rest
     } = options;
 
     if (!(await PvFile.exists(modelPath)) || forceWrite) {
@@ -145,7 +150,7 @@ export class CheetahWorker {
       const data = await response.arrayBuffer();
       await pvFile.write(new Uint8Array(data));
     }
-    return this.create(accessKey, modelPath, endpointDurationSec, transcriptionCallback, processErrorCallback);
+    return this.create(accessKey, modelPath, rest, transcriptionCallback, processErrorCallback);
   }
 
   /**
@@ -159,15 +164,23 @@ export class CheetahWorker {
   }
 
   /**
+   * Set base64 wasm file with SIMD feature.
+   * @param wasmSimd Base64'd wasm file to use to initialize wasm.
+   */
+  public static setWasmSimd(wasmSimd: string): void {
+    if (this._wasmSimd === undefined) {
+      this._wasmSimd = wasmSimd;
+    }
+  }
+
+  /**
    * Creates a worker instance of the Picovoice Cheetah Speech-to-Text engine.
    * Behind the scenes, it requires the WebAssembly code to load and initialize before
    * it can create an instance.
    *
    * @param accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
    * @param modelPath Path to the model saved in indexedDB.
-   * @param endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
-   * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
-   * to disable endpoint detection.
+   * @param initConfig Cheetah init configurations.
    * @param transcriptionCallback User-defined callback to run after receiving transcription result.
    * @param processErrorCallback User-defined callback invoked if any error happens
    * while processing the audio stream. Its only input argument is the error message.
@@ -177,7 +190,7 @@ export class CheetahWorker {
   private static async create(
     accessKey: string,
     modelPath: string,
-    endpointDurationSec: number,
+    initConfig: CheetahInitConfig,
     transcriptionCallback: (transcription: string, isEndpoint: boolean) => void,
     processErrorCallback?: (error: string) => void
   ): Promise<CheetahWorker> {
@@ -225,7 +238,8 @@ export class CheetahWorker {
       accessKey: accessKey,
       modelPath: modelPath,
       wasm: this._wasm,
-      endpointDurationSec: endpointDurationSec
+      wasmSimd: this._wasmSimd,
+      initConfig: initConfig
     });
 
     return returnPromise;
@@ -284,5 +298,12 @@ export class CheetahWorker {
     });
 
     return returnPromise;
+  }
+
+  /**
+   * Terminates the active worker. Stops all requests being handled by worker.
+   */
+  public terminate(): void {
+    this._worker.terminate();
   }
 }

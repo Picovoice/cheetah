@@ -1,7 +1,7 @@
 const fs = require("fs");
 const { join } = require("path");
 
-const wasmFile = "pv_cheetah.wasm"
+const wasmFiles = ["pv_cheetah.wasm", "pv_cheetah_simd.wasm"]
 
 console.log("Copying the WASM model...");
 
@@ -18,7 +18,9 @@ const outputDirectory = join(__dirname, "..", "lib");
 
 try {
   fs.mkdirSync(outputDirectory, { recursive: true });
-  fs.copyFileSync(join(sourceDirectory, wasmFile), join(outputDirectory, wasmFile))
+  wasmFiles.forEach(file => {
+    fs.copyFileSync(join(sourceDirectory, file), join(outputDirectory, file))
+  })
 } catch (error) {
   console.error(error);
 }

@@ -1,0 +1,66 @@
+name: Web Performance
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - 'lib/wasm/**'
+      - 'lib/common/**'
+      - '.github/workflows/web-perf.yml'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'lib/wasm/**'
+      - 'lib/common/**'
+      - '.github/workflows/web-perf.yml'
+
+defaults:
+  run:
+    working-directory: binding/web
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.8]
+        node-version: [lts/*]
+        include:
+        - python-version: 3.8
+          initPerformanceThresholdSec: 5.0
+          procPerformanceThresholdSec: 0.5
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install system dependencies
+      run: |
+        pip install selenium
+        pip install webdriver-manager
+    - name: Pre-build dependencies
+      run: npm install yarn
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Build
+      run: yarn build
+
+    - name: Prepare Test
+      run: yarn setup-test
+
+    - name: Test
+      run: python test/perf_test.py --access_key ${{secrets.PV_VALID_ACCESS_KEY}} --audio_file ../../resources/audio_samples/test.wav
+        --init_performance_threshold_sec ${{ matrix.initPerformanceThresholdSec }} --proc_performance_threshold_sec ${{ matrix.procPerformanceThresholdSec }}
