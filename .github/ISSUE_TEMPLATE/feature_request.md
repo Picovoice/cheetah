@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Porcupine suggestion
+about: Cheetah suggestion
 title: ''
 labels: enhancement
 assignees: ''
