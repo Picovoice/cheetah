@@ -19,8 +19,8 @@ import {
   buildWasm,
   arrayBufferToStringAtIndex,
   isAccessKeyValid,
-  base64ToUint8Array,
-  PvFile
+  fromBase64,
+  fromPublicDirectory
 } from "@picovoice/web-utils";
 
 import { simd } from "wasm-feature-detect";
@@ -69,7 +69,7 @@ export class Cheetah {
   private readonly _pvCheetahFlush: pv_cheetah_flush_type;
   private readonly _pvStatusToString: pv_status_to_string_type;
 
-  private readonly _wasmMemory: WebAssembly.Memory;
+  private _wasmMemory: WebAssembly.Memory | undefined;
   private readonly _pvFree: pv_free_type;
   private readonly _memoryBuffer: Int16Array;
   private readonly _memoryBufferUint8: Uint8Array;
@@ -146,6 +146,7 @@ export class Cheetah {
    * @param options.modelPath The path to save and use the model from. Use different names to use different models
    * across different Cheetah instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
+   * @param options.version Leopard model version. Set to a higher number to update the model file.
    * @param options.endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
@@ -158,16 +159,8 @@ export class Cheetah {
     modelBase64: string,
     options: CheetahConfig = {}
   ): Promise<Cheetah> {
-    const {
-      modelPath = "cheetah_model",
-      forceWrite = false,
-      ...rest
-    } = options;
-
-    if (!(await PvFile.exists(modelPath)) || forceWrite) {
-      const pvFile = await PvFile.open(modelPath, "w");
-      await pvFile.write(base64ToUint8Array(modelBase64));
-    }
+    const {modelPath = "cheetah_model", forceWrite = false, version = 1, ...rest} = options;
+    await fromBase64(modelPath, modelBase64, forceWrite, version);
     return this.create(accessKey, modelPath, rest);
   }
 
@@ -182,6 +175,7 @@ export class Cheetah {
    * @param options.modelPath The path to save and use the model from. Use different names to use different models
    * across different Cheetah instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
+   * @param options.version Leopard model version. Set to a higher number to update the model file.
    * @param options.endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
@@ -194,21 +188,8 @@ export class Cheetah {
     publicPath: string,
     options: CheetahConfig = {}
   ): Promise<Cheetah> {
-    const {
-      modelPath = "cheetah_model",
-      forceWrite = false,
-      ...rest
-    } = options;
-
-    if (!(await PvFile.exists(modelPath)) || forceWrite) {
-      const pvFile = await PvFile.open(modelPath, "w");
-      const response = await fetch(publicPath);
-      if (!response.ok) {
-        throw new Error(`Failed to get model from '${publicPath}'`);
-      }
-      const data = await response.arrayBuffer();
-      await pvFile.write(new Uint8Array(data));
-    }
+    const {modelPath = "cheetah_model", forceWrite = false, version = 1, ...rest} = options;
+    await fromPublicDirectory(modelPath, publicPath, forceWrite, version);
     return this.create(accessKey, modelPath, rest);
   }
 
@@ -281,6 +262,10 @@ export class Cheetah {
     const returnPromise = new Promise<[string, boolean]>((resolve, reject) => {
       this._processMutex
         .runExclusive(async () => {
+          if (this._wasmMemory === undefined) {
+            throw new Error("Attempted to call Cheetah process after release.");
+          }
+
           this._memoryBuffer.set(
             pcm,
             this._inputBufferAddress / Int16Array.BYTES_PER_ELEMENT
@@ -338,6 +323,10 @@ export class Cheetah {
     return new Promise<string>((resolve, reject) => {
       this._processMutex
         .runExclusive(async () => {
+          if (this._wasmMemory === undefined) {
+            throw new Error("Attempted to call Cheetah flush after release.");
+          }
+
           const status = await this._pvCheetahFlush(
             this._objectAddress,
             this._transcriptionAddressAddress
@@ -381,6 +370,8 @@ export class Cheetah {
   public async release(): Promise<void> {
     await this._pvCheetahDelete(this._objectAddress);
     await this._pvFree(this._inputBufferAddress);
+    delete this._wasmMemory;
+    this._wasmMemory = undefined;
   }
 
   private static async initWasm(accessKey: string, wasmBase64: string, modelPath: string, initConfig: CheetahInitConfig): Promise<any> {
@@ -391,7 +382,7 @@ export class Cheetah {
     }
 
     // A WebAssembly page has a constant size of 64KiB. -> 1MiB ~= 16 pages
-    const memory = new WebAssembly.Memory({ initial: 6000 });
+    const memory = new WebAssembly.Memory({ initial: 3370 });
 
     const memoryBufferUint8 = new Uint8Array(memory.buffer);
 

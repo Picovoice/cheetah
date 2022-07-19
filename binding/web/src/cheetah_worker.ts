@@ -9,7 +9,10 @@
   specific language governing permissions and limitations under the License.
 */
 
-import { base64ToUint8Array, PvFile } from "@picovoice/web-utils";
+import {
+  fromBase64,
+  fromPublicDirectory
+} from "@picovoice/web-utils";
 
 import PvWorker from "web-worker:./cheetah_worker_handler.ts";
 
@@ -78,6 +81,7 @@ export class CheetahWorker {
    * @param options.modelPath The path to save and use the model from. Use different names to use different models
    * across different Cheetah instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
+   * @param options.version Leopard model version. Set to a higher number to update the model file
    * @param options.endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
@@ -93,17 +97,8 @@ export class CheetahWorker {
     transcriptionCallback: (transcription: string, isEndpoint: boolean) => void,
     options: CheetahConfig = {}
   ): Promise<CheetahWorker> {
-    const {
-      modelPath = "cheetah_model",
-      forceWrite = false,
-      processErrorCallback,
-      ...rest
-    } = options;
-
-    if (!(await PvFile.exists(modelPath)) || forceWrite) {
-      const pvFile = await PvFile.open(modelPath, "w");
-      await pvFile.write(base64ToUint8Array(modelBase64));
-    }
+    const {modelPath = "cheetah_model", forceWrite = false, version = 1, processErrorCallback, ...rest} = options;
+    await fromBase64(modelPath, modelBase64, forceWrite, version);
     return this.create(accessKey, modelPath, rest, transcriptionCallback, processErrorCallback);
   }
 
@@ -119,6 +114,7 @@ export class CheetahWorker {
    * @param options.modelPath The path to save and use the model from. Use different names to use different models
    * across different Cheetah instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
+   * @param options.version Leopard model version. Set to a higher number to update the model file.
    * @param options.endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
@@ -134,22 +130,8 @@ export class CheetahWorker {
     transcriptionCallback: (transcription: string, isEndpoint: boolean) => void,
     options: CheetahInputConfig = {}
   ): Promise<CheetahWorker> {
-    const {
-      modelPath = "cheetah_model",
-      forceWrite = false,
-      processErrorCallback,
-      ...rest
-    } = options;
-
-    if (!(await PvFile.exists(modelPath)) || forceWrite) {
-      const pvFile = await PvFile.open(modelPath, "w");
-      const response = await fetch(publicPath);
-      if (!response.ok) {
-        throw new Error(`Failed to get model from '${publicPath}'`);
-      }
-      const data = await response.arrayBuffer();
-      await pvFile.write(new Uint8Array(data));
-    }
+    const {modelPath = "cheetah_model", forceWrite = false, version = 1, processErrorCallback, ...rest} = options;
+    await fromPublicDirectory(modelPath, publicPath, forceWrite, version);
     return this.create(accessKey, modelPath, rest, transcriptionCallback, processErrorCallback);
   }
 

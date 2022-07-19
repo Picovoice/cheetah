@@ -79,6 +79,7 @@ Cheetah saves and caches your model file in IndexedDB to be used by Web Assembly
 to hold multiple model values and set the `forceWrite` value to true to force re-save the model file. Set `endpointDurationSec`
 value to 0 if you do not with to detect endpoint (moment of silence). Set `enableAutomaticPunctuation` to
 false, if you do not wish to enable capitalization and punctuation in transcription.
+If the model file (`.pv`) changes, `version` should be incremented to force the cached model to be updated.
 
 ```typescript
 // these are default
@@ -86,7 +87,8 @@ const options = {
   modelPath: "cheetah_model",
   forceWrite: false,
   endpointDurationSec: 1.0,
-  enableAutomaticPunctiation: true
+  enableAutomaticPunctiation: true,
+  version: 1
 }
 ```
 

@@ -21,6 +21,8 @@ export type CheetahInputConfig = {
   modelPath?: string;
   /** @defaultValue false */
   forceWrite?: boolean;
+  /** @defaultValue 1 */
+  version?: number;
   /** @defaultValue undefined */
   processErrorCallback?: (error: string) => void
 }
