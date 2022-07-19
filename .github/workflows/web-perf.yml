@@ -30,7 +30,7 @@ jobs:
         include:
         - python-version: 3.8
           initPerformanceThresholdSec: 5.0
-          procPerformanceThresholdSec: 0.5
+          procPerformanceThresholdSec: 0.4
 
     steps:
     - uses: actions/checkout@v2
