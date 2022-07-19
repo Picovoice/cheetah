@@ -84,7 +84,7 @@ export class CheetahWorker {
    * @param options.version Leopard model version. Set to a higher number to update the model file
    * @param options.endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
-   * to disable endpoint detection..
+   * to disable endpoint detection.
    * @param options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
    * @param options.processErrorCallback User-defined callback invoked if any error happens
    * while processing the audio stream. Its only input argument is the error message.
