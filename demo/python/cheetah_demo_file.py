@@ -31,7 +31,7 @@ def main():
             with wave.open(wav_path, 'rb') as f:
                 if f.getframerate() != o.sample_rate:
                     raise ValueError(
-                        f"invalid sample rate of `{f.getframerate()}`. cheetah only accepts `{o.sample_rate}`")
+                        "invalid sample rate of `%d`. cheetah only accepts `%d`" % (f.getframerate(), o.sample_rate))
                 if f.getnchannels() != 1:
                     raise ValueError("this demo can only process single-channel WAV files")
                 buffer = f.readframes(f.getnframes())
@@ -47,7 +47,7 @@ def main():
             final_transcript = o.flush()
             print(final_transcript)
     except CheetahActivationLimitError:
-        print(f"AccessKey `{args.access_key}` has reached it's processing limit.")
+        print("AccessKey `%s` has reached it's processing limit." % args.access_key)
     finally:
         o.delete()
 

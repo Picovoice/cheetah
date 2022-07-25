@@ -20,7 +20,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
 ## Compatibility
 
-- Python 3
+- Python 3.5+
 - Runs on Linux (x86_64), macOS (x86_64, arm64), Windows (x86_64), Raspberry Pi (4, 3), and NVIDIA Jetson Nano.
 
 ## Installation

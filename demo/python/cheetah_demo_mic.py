@@ -42,7 +42,7 @@ class Demo(Thread):
             recorder = PvRecorder(device_index=-1, frame_length=o.frame_length)
             recorder.start()
 
-            print(f'Cheetah version : {o.version}')
+            print('Cheetah version : %s' % o.version)
 
             while True:
                 partial_transcript, is_endpoint = o.process(recorder.read())
