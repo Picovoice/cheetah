@@ -28,6 +28,7 @@ func main() {
 	libraryPathArg := flag.String("library_path", "", "Path to Cheetah's dynamic library file")
 	modelPathArg := flag.String("model_path", "", "Path to Cheetah model file")
 	endpointDurationArg := flag.Float64("endpoint_duration", 1, "Duration of endpoint in seconds")
+	disableAutomaticPunctuationArg := flag.Bool("disable_automatic_punctuation", true, "Disable automatic punctuation")
 	audioDeviceIndex := flag.Int("audio_device_index", -1, "Index of capture device to use.")
 	outputPathArg := flag.String("output_path", "", "Path to recorded audio (for debugging)")
 	showAudioDevices := flag.Bool("show_audio_devices", false, "Display all available capture devices")
@@ -38,10 +39,9 @@ func main() {
 		return
 	}
 
-	c := cheetah.Cheetah{
-		AccessKey:        *accessKeyArg,
-		EndpointDuration: float32(*endpointDurationArg),
-	}
+	c := cheetah.NewCheetah(*accessKeyArg)
+	c.EndpointDuration = float32(*endpointDurationArg)
+	c.EnableAutomaticPunctuation = !*disableAutomaticPunctuationArg
 
 	// validate library path
 	if *libraryPathArg != "" {
