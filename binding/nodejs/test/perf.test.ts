@@ -45,9 +45,7 @@ describe("Performance", () => {
     let perfResults = [];
     for (let i = 0; i < NUM_TEST_ITERATIONS; i++) {
       const before = performance.now();
-      let cheetahEngine = new Cheetah(
-        ACCESS_KEY,
-        0);
+      let cheetahEngine = new Cheetah(ACCESS_KEY);
       let init_time = performance.now() - before;
 
       cheetahEngine.release();
@@ -65,9 +63,7 @@ describe("Performance", () => {
 
   test("proc performance", () => {
 
-    let cheetahEngine = new Cheetah(
-      ACCESS_KEY,
-      0);
+    let cheetahEngine = new Cheetah(ACCESS_KEY);
 
     const waveFilePath = path.join(__dirname, WAV_PATH);
     const waveBuffer = fs.readFileSync(waveFilePath);

@@ -10,18 +10,18 @@
 //
 "use strict";
 
-import { Cheetah, CheetahInvalidArgumentError, getInt16Frames, checkWaveFile } from "../src";
+import {Cheetah, CheetahInvalidArgumentError, getInt16Frames, checkWaveFile} from "../src";
 import * as fs from "fs";
 import * as path from "path";
-import { WaveFile } from "wavefile";
+import {WaveFile} from "wavefile";
 
-import { getSystemLibraryPath } from "../src/platforms";
+import {getSystemLibraryPath} from "../src/platforms";
 
 const MODEL_PATH = "./lib/common/cheetah_params.pv";
 
 const WAV_PATH = "../../../resources/audio_samples/test.wav";
 const TRANSCRIPT =
-  "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL";
+  "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel";
 
 const libraryPath = getSystemLibraryPath();
 
@@ -63,7 +63,7 @@ function cheetahProcessWaveFile(
 
 describe("Defaults", () => {
   test("successful process", () => {
-    let cheetahEngine = new Cheetah(ACCESS_KEY, 0);
+    let cheetahEngine = new Cheetah(ACCESS_KEY);
 
     let [transcript, isEndpoint] = cheetahProcessWaveFile(
       cheetahEngine,
@@ -77,7 +77,7 @@ describe("Defaults", () => {
   });
 
   test("successful process with endpoint detection", () => {
-    let cheetahEngine = new Cheetah(ACCESS_KEY, 0.2);
+    let cheetahEngine = new Cheetah(ACCESS_KEY, {endpointDurationSec: 0.2});
 
     let [transcript, isEndpoint] = cheetahProcessWaveFile(
       cheetahEngine,
@@ -92,14 +92,14 @@ describe("Defaults", () => {
 
   test("Empty AccessKey", () => {
     expect(() => {
-      let cheetahEngine = new Cheetah("", 1.0);
+      let cheetahEngine = new Cheetah("");
     }).toThrow(CheetahInvalidArgumentError);
   });
 });
 
 describe("manual paths", () => {
   test("manual model path", () => {
-    let cheetahEngine = new Cheetah(ACCESS_KEY, 0, MODEL_PATH);
+    let cheetahEngine = new Cheetah(ACCESS_KEY, {modelPath: MODEL_PATH});
 
     let [transcript, isEndpoint] = cheetahProcessWaveFile(
       cheetahEngine,
@@ -113,7 +113,9 @@ describe("manual paths", () => {
   });
 
   test("manual model and library path", () => {
-    let cheetahEngine = new Cheetah(ACCESS_KEY, 0.1, MODEL_PATH, libraryPath);
+    let cheetahEngine = new Cheetah(
+      ACCESS_KEY,
+      {modelPath: MODEL_PATH, libraryPath: libraryPath, endpointDurationSec: 0.2});
 
     let [transcript, isEndpoint] = cheetahProcessWaveFile(
       cheetahEngine,
@@ -122,6 +124,21 @@ describe("manual paths", () => {
 
     expect(transcript).toBe(TRANSCRIPT);
     expect(isEndpoint).toBe(true);
+
+    cheetahEngine.release();
+  });
+
+  test("Enable automatic punctuation", () => {
+    let cheetahEngine = new Cheetah(
+      ACCESS_KEY,
+      {enableAutomaticPunctuation: true, endpointDurationSec: 0.2});
+
+    let [transcript, _] = cheetahProcessWaveFile(
+      cheetahEngine,
+      WAV_PATH
+    );
+
+    expect(transcript).toBe('Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.');
 
     cheetahEngine.release();
   });

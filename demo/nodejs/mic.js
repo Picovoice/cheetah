@@ -40,7 +40,8 @@ program
     Number,
     3
   )
-  .option("-d, --show_audio_devices", "show the list of available devices");
+  .option("-s, --show_audio_devices", "show the list of available devices");
+  .option("-d, --disable_automatic_punctuation", "disable automatic punctuation")
 
 if (process.argv.length < 1) {
   program.help();
@@ -56,6 +57,7 @@ async function micDemo() {
   let audioDeviceIndex = program["audio_device_index"];
   let endpointDurationSec = program["endpoint_duration_sec"];
   let showAudioDevices = program["show_audio_devices"];
+  let disableAutomaticPunctuation = program["disable_automatic_punctuation"];
 
   let showAudioDevicesDefined = showAudioDevices !== undefined;
 
@@ -72,7 +74,14 @@ async function micDemo() {
     process.exit();
   }
 
-  let engineInstance = new Cheetah(accessKey, endpointDurationSec, modelFilePath, libraryFilePath);
+  let engineInstance = new Cheetah(
+    accessKey,
+    {
+      modelPath: modelFilePath,
+      libraryPath: libraryFilePath,
+      endpointDurationSec: endpointDurationSec,
+      enableAutomaticPunctuation: !disableAutomaticPunctuation
+    });
 
   const recorder = new PvRecorder(audioDeviceIndex, engineInstance.frameLength);
   recorder.start();
