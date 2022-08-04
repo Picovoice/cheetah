@@ -16,6 +16,7 @@
 #endif
 
 #include <getopt.h>
+#include <stdbool.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -109,26 +110,27 @@ static void show_audio_devices(void) {
     pv_recorder_free_device_list(count, devices);
 }
 
-int main(int argc, char *argv[]) {
+int picovoice_main(int argc, char *argv[]) {
     signal(SIGINT, interrupt_handler);
 
     const char *access_key = NULL;
-    const char *library_path = NULL;
     const char *model_path = NULL;
+    const char *library_path = NULL;
     float endpoint_duration_sec = 0.f;
+    bool enable_automatic_punctuation = true;
     int32_t device_index = -1;
 
     int opt;
-    while ((opt = getopt(argc, argv, "a:l:m:e:i:s")) != -1) {
+    while ((opt = getopt(argc, argv, "a:m:l:e:pi:s")) != -1) {
         switch (opt) {
             case 'a':
                 access_key = optarg;
                 break;
-            case 'l':
-                library_path = optarg;
-                break;
             case 'm':
                 model_path = optarg;
+                break;
+            case 'l':
+                library_path = optarg;
                 break;
             case 'e':
                 endpoint_duration_sec = (float) strtod(optarg, NULL);
@@ -138,6 +140,9 @@ int main(int argc, char *argv[]) {
                             "endpoint duration should be either a positive floating-point number or `0` to disable endpointing\n");
                     exit(1);
                 }
+                break;
+            case 'p':
+                enable_automatic_punctuation = false;
                 break;
             case 'i':
                 device_index = (int32_t) strtol(optarg, NULL, 10);
@@ -156,7 +161,7 @@ int main(int argc, char *argv[]) {
 
     if (!(access_key && library_path && model_path)) {
         fprintf(stderr,
-                "usage: -a ACCESS_KEY -l LIBRARY_PATH -m MODEL_PATH [-i DEVICE_INDEX]\n-s (show audio device indices)\n");
+                "usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-e ENDPOINT_DURATION] [-p] [-i DEVICE_INDEX]\n-s (show audio device indices)\n");
         exit(1);
     }
 
@@ -178,7 +183,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    pv_status_t (*pv_cheetah_init_func)(const char *, const char *, float, pv_cheetah_t **) =
+    pv_status_t (*pv_cheetah_init_func)(const char *, const char *, float, bool, pv_cheetah_t **) =
     load_symbol(dl_handle, "pv_cheetah_init");
     if (!pv_cheetah_init_func) {
         print_dl_error("failed to load `pv_cheetah_init`");
@@ -217,7 +222,7 @@ int main(int argc, char *argv[]) {
     }
 
     pv_cheetah_t *cheetah = NULL;
-    pv_status_t status = pv_cheetah_init_func(access_key, model_path, endpoint_duration_sec, &cheetah);
+    pv_status_t status = pv_cheetah_init_func(access_key, model_path, endpoint_duration_sec, enable_automatic_punctuation, &cheetah);
     if (status != PV_STATUS_SUCCESS) {
         fprintf(stderr, "failed to init with `%s`.\n", pv_status_to_string_func(status));
         exit(1);
@@ -291,4 +296,47 @@ int main(int argc, char *argv[]) {
     close_dl(dl_handle);
 
     return 0;
+}
+
+int main(int argc, char *argv[]) {
+
+#if defined(_WIN32) || defined(_WIN64)
+
+#define UTF8_COMPOSITION_FLAG (0)
+#define NULL_TERMINATED (-1)
+
+    LPWSTR *wargv = CommandLineToArgvW(GetCommandLineW(), &argc);
+    if (wargv == NULL) {
+        fprintf(stderr, "CommandLineToArgvW failed\n");
+        exit(1);
+    }
+
+    char *utf8_argv[argc];
+
+    for (int i = 0; i < argc; ++i) {
+        // WideCharToMultiByte: https://docs.microsoft.com/en-us/windows/win32/api/stringapiset/nf-stringapiset-widechartomultibyte
+        int arg_chars_num = WideCharToMultiByte(CP_UTF8, UTF8_COMPOSITION_FLAG, wargv[i], NULL_TERMINATED, NULL, 0, NULL, NULL);
+        utf8_argv[i] = (char *) malloc(arg_chars_num * sizeof(char));
+        if (!utf8_argv[i]) {
+            fprintf(stderr, "failed to to allocate memory for converting args");
+        }
+        WideCharToMultiByte(CP_UTF8, UTF8_COMPOSITION_FLAG, wargv[i], NULL_TERMINATED, utf8_argv[i], arg_chars_num, NULL, NULL);
+    }
+
+    LocalFree(wargv);
+    argv = utf8_argv;
+
+#endif
+
+    int result = picovoice_main(argc, argv);
+
+#if defined(_WIN32) || defined(_WIN64)
+
+    for (int i = 0; i < argc; ++i) {
+        free(utf8_argv[i]);
+    }
+
+#endif
+
+    return result;
 }
