@@ -39,7 +39,7 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 ### Cheetah Models
 
 Cheetah requires a model file on initialization. Create a custom model file from [Picovoice Console](https://console.picovoice.ai/cat)
-or you can use the [default model file](/lib/common/cheetah_params.pv).
+or you can use the [default model file](https://github.com/Picovoice/cheetah/blob/master/lib/common/cheetah_params.pv).
 
 For the web packages, there are two methods to initialize Cheetah.
 
