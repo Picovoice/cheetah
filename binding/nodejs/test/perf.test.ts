@@ -10,12 +10,12 @@
 //
 "use strict";
 
-import { Cheetah, getInt16Frames } from "../src";
+import {Cheetah, getInt16Frames} from "../src";
 import * as fs from "fs";
 import * as path from "path";
-import { performance } from "perf_hooks";
+import {performance} from "perf_hooks";
 
-import { WaveFile } from "wavefile";
+import {WaveFile} from "wavefile";
 
 const WAV_PATH = "../../../resources/audio_samples/test.wav";
 

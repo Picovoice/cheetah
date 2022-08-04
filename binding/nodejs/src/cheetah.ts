@@ -76,7 +76,8 @@ export default class Cheetah {
       modelPath = path.resolve(__dirname, DEFAULT_MODEL_PATH),
       libraryPath = getSystemLibraryPath(),
       endpointDurationSec = 1.0,
-      enableAutomaticPunctuation = false} = options;
+      enableAutomaticPunctuation = false
+    } = options;
 
     if (endpointDurationSec < 0) {
       throw new RangeError(
