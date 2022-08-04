@@ -49,7 +49,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md'), 'r') as f:
 
 setuptools.setup(
     name="pvcheetah",
-    version="1.0.3",
+    version="1.1.0",
     author="Picovoice",
     author_email="hello@picovoice.ai",
     description="Cheetah Speech-to-Text Engine.",
@@ -67,5 +67,5 @@ setuptools.setup(
         "Topic :: Multimedia :: Sound/Audio :: Speech"
     ],
     python_requires='>=3.5',
-    keywords="Speech-to-Text, Speech Recognition, Voice Recognition, ASR",
+    keywords="Speech-to-Text, Speech Recognition, Voice Recognition, ASR, Automatic Speech Recognition",
 )

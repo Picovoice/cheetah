@@ -100,18 +100,20 @@ class Cheetah(object):
     def __init__(
             self,
             access_key: str,
-            library_path: str,
             model_path: str,
-            endpoint_duration_sec: Optional[float] = 1.0):
+            library_path: str,
+            endpoint_duration_sec: Optional[float] = 1.0,
+            enable_automatic_punctuation: bool = False):
         """
         Constructor
 
         :param access_key: AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
-        :param library_path: Absolute path to Cheetah's dynamic library.
         :param model_path: Absolute path to the file containing model parameters.
+        :param library_path: Absolute path to Cheetah's dynamic library.
         :param endpoint_duration_sec Duration of endpoint in seconds. A speech endpoint is detected when there is a
-        chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
+        chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `None`
         to disable endpoint detection.
+        :param enable_automatic_punctuation Set to `True` to enable automatic punctuation insertion.
         """
 
         if not isinstance(access_key, str) or len(access_key) == 0:
@@ -129,7 +131,7 @@ class Cheetah(object):
             raise CheetahInvalidArgumentError("`endpoint_duration_sec` must be either `None` or a positive number")
 
         init_func = library.pv_cheetah_init
-        init_func.argtypes = [c_char_p, c_char_p, c_float, POINTER(POINTER(self.CCheetah))]
+        init_func.argtypes = [c_char_p, c_char_p, c_float, c_bool, POINTER(POINTER(self.CCheetah))]
         init_func.restype = self.PicovoiceStatuses
 
         self._handle = POINTER(self.CCheetah)()
@@ -138,6 +140,7 @@ class Cheetah(object):
             access_key.encode(),
             model_path.encode(),
             float(endpoint_duration_sec) if endpoint_duration_sec is not None else 0.,
+            enable_automatic_punctuation,
             byref(self._handle))
         if status is not self.PicovoiceStatuses.SUCCESS:
             raise self._PICOVOICE_STATUS_TO_EXCEPTION[status]()
@@ -230,3 +233,20 @@ class Cheetah(object):
         """Number of audio samples per frame expected by C library."""
 
         return self._frame_length
+
+
+__all__ = [
+    'Cheetah',
+    'CheetahActivationError',
+    'CheetahActivationLimitError',
+    'CheetahActivationRefusedError',
+    'CheetahActivationThrottledError',
+    'CheetahError',
+    'CheetahIOError',
+    'CheetahInvalidArgumentError',
+    'CheetahInvalidStateError',
+    'CheetahKeyError',
+    'CheetahMemoryError',
+    'CheetahRuntimeError',
+    'CheetahStopIterationError',
+]
