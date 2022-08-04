@@ -54,11 +54,11 @@ export default class Cheetah {
    * @param {string} accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
    * @param options Optional configuration arguments.
    * @param {string} options.modelPath the path to the Cheetah model (.pv extension)
+   * @param {string} options.libraryPath the path to the Cheetah library (.node extension)
    * @param {number} options.endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
    * @param {boolean} options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
-   * @param {string} options.libraryPath the path to the Cheetah library (.node extension)
    */
   constructor(
     accessKey: string,
