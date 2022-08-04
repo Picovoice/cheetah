@@ -27,7 +27,12 @@ import java.util.Map;
 
 public class FileDemo {
 
-    public static void runDemo(String accessKey, File inputAudioFile, String libraryPath, String modelPath) {
+    public static void runDemo(
+            String accessKey,
+            String modelPath,
+            String libraryPath,
+            boolean enableAutomaticPunctuation,
+            File inputAudioFile) {
 
         AudioInputStream audioInputStream;
         try {
@@ -46,6 +51,7 @@ public class FileDemo {
                     .setAccessKey(accessKey)
                     .setLibraryPath(libraryPath)
                     .setModelPath(modelPath)
+                    .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
                     .build();
 
             AudioFormat audioFormat = audioInputStream.getFormat();
@@ -114,9 +120,10 @@ public class FileDemo {
         }
 
         String accessKey = cmd.getOptionValue("access_key");
-        String inputAudioPath = cmd.getOptionValue("input_audio_path");
         String libraryPath = cmd.getOptionValue("library_path");
         String modelPath = cmd.getOptionValue("model_path");
+        boolean enableAutomaticPunctuation = !cmd.hasOption("disable_automatic_punctuation");
+        String inputAudioPath = cmd.getOptionValue("input_audio_path");
 
         if (accessKey == null || accessKey.length() == 0) {
             throw new IllegalArgumentException("AccessKey is required for Cheetah.");
@@ -138,7 +145,12 @@ public class FileDemo {
             modelPath = Cheetah.MODEL_PATH;
         }
 
-        runDemo(accessKey, inputAudioFile, libraryPath, modelPath);
+        runDemo(
+                accessKey,
+                modelPath,
+                libraryPath,
+                enableAutomaticPunctuation,
+                inputAudioFile);
     }
 
     private static Options BuildCommandLineOptions() {
@@ -150,10 +162,10 @@ public class FileDemo {
                 .desc("AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).")
                 .build());
 
-        options.addOption(Option.builder("i")
-                .longOpt("input_audio_path")
+        options.addOption(Option.builder("m")
+                .longOpt("model_path")
                 .hasArg(true)
-                .desc("Absolute path to input audio file.")
+                .desc("Absolute path to the file containing model parameters.")
                 .build());
 
         options.addOption(Option.builder("l")
@@ -162,10 +174,15 @@ public class FileDemo {
                 .desc("Absolute path to the Cheetah native runtime library.")
                 .build());
 
-        options.addOption(Option.builder("m")
-                .longOpt("model_path")
+        options.addOption(Option.builder("i")
+                .longOpt("input_audio_path")
                 .hasArg(true)
-                .desc("Absolute path to the file containing model parameters.")
+                .desc("Absolute path to input audio file.")
+                .build());
+
+        options.addOption(Option.builder("d")
+                .longOpt("disable_automatic_punctuation")
+                .desc("")
                 .build());
 
         options.addOption(new Option("h", "help", false, ""));

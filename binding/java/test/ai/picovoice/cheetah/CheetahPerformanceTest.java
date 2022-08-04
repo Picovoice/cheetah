@@ -37,12 +37,12 @@ public class CheetahPerformanceTest {
         long[] perfResults = new long[numTestIterations];
         for (int i = 0; i < numTestIterations; i++) {
             long before = System.nanoTime();
-            Cheetah cheetah = new Cheetah(
-                    accessKey,
-                    Utils.getPackagedLibraryPath(),
-                    Utils.getPackagedModelPath(),
-                    1
-            );
+            Cheetah cheetah = new Cheetah.Builder()
+                    .setAccessKey(accessKey)
+                    .setModelPath(Utils.getPackagedModelPath())
+                    .setLibraryPath(Utils.getPackagedLibraryPath())
+                    .build();
+
             long initTime = (System.nanoTime() - before);
 
             if (i > 0) {
@@ -65,12 +65,11 @@ public class CheetahPerformanceTest {
 
     @Test
     void procPerformance() throws Exception {
-        Cheetah cheetah = new Cheetah(
-                accessKey,
-                Utils.getPackagedLibraryPath(),
-                Utils.getPackagedModelPath(),
-                1
-        );
+        Cheetah cheetah = new Cheetah.Builder()
+                .setAccessKey(accessKey)
+                .setModelPath(Utils.getPackagedModelPath())
+                .setLibraryPath(Utils.getPackagedLibraryPath())
+                .build();
 
         int frameLen = cheetah.getFrameLength();
         String audioFilePath = Paths.get(System.getProperty("user.dir"))

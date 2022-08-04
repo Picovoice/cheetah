@@ -4,6 +4,10 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1177/'
+    }
+
 }
 
 sourceSets {
@@ -15,7 +19,7 @@ sourceSets {
 }
 
 dependencies {
-    implementation 'ai.picovoice:cheetah-java:1.0.1'
+    implementation 'ai.picovoice:cheetah-java:1.1.0'
     implementation 'commons-cli:commons-cli:1.4'
 }
 

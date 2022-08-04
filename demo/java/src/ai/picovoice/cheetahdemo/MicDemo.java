@@ -25,8 +25,14 @@ import java.util.Map;
 import javax.sound.sampled.*;
 
 public class MicDemo {
-    public static void runDemo(String accessKey, String libraryPath, String modelPath,
-                               float endpointDuration, int audioDeviceIndex, String outputPath) {
+    public static void runDemo(
+            String accessKey,
+            String modelPath,
+            String libraryPath,
+            float endpointDuration,
+            boolean enableAutomaticPunctuation,
+            int audioDeviceIndex,
+            String outputPath) {
 
         // for file output
         File outputFile = null;
@@ -54,6 +60,7 @@ public class MicDemo {
                     .setLibraryPath(libraryPath)
                     .setModelPath(modelPath)
                     .setEndpointDuration(endpointDuration)
+                    .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
                     .build();
 
             if (outputPath != null) {
@@ -196,9 +203,10 @@ public class MicDemo {
         }
 
         String accessKey = cmd.getOptionValue("access_key");
-        String libraryPath = cmd.getOptionValue("library_path");
         String modelPath = cmd.getOptionValue("model_path");
+        String libraryPath = cmd.getOptionValue("library_path");
         String endpointDurationStr = cmd.getOptionValue("endpoint_duration_sec");
+        boolean enableAutomaticPunctuation = !cmd.hasOption("disable_automatic_punctuation");
         String audioDeviceIndexStr = cmd.getOptionValue("audio_device_index");
         String outputPath = cmd.getOptionValue("output_path");
 
@@ -243,7 +251,14 @@ public class MicDemo {
             }
         }
 
-        runDemo(accessKey, libraryPath, modelPath, endpointDuration, audioDeviceIndex, outputPath);
+        runDemo(
+                accessKey,
+                modelPath,
+                libraryPath,
+                endpointDuration,
+                enableAutomaticPunctuation,
+                audioDeviceIndex,
+                outputPath);
     }
 
     private static Options BuildCommandLineOptions() {
@@ -255,16 +270,16 @@ public class MicDemo {
                 .desc("AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).")
                 .build());
 
-        options.addOption(Option.builder("l")
-                .longOpt("library_path")
-                .hasArg(true)
-                .desc("Absolute path to the Cheetah native runtime library.")
-                .build());
-
         options.addOption(Option.builder("m")
                 .longOpt("model_path")
                 .hasArg(true)
                 .desc("Absolute path to the file containing model parameters.")
+                .build());
+
+        options.addOption(Option.builder("l")
+                .longOpt("library_path")
+                .hasArg(true)
+                .desc("Absolute path to the Cheetah native runtime library.")
                 .build());
 
         options.addOption(Option.builder("e")
@@ -273,6 +288,11 @@ public class MicDemo {
                 .desc("Duration of endpoint in seconds. A speech endpoint is detected when there is a " +
                       "chunk of audio (with a duration specified herein) after an utterance without " +
                       "any speech in it. Set duration to 0 to disable this. Default is 1 second.")
+                .build());
+
+        options.addOption(Option.builder("d")
+                .longOpt("disable_automatic_punctuation")
+                .desc("")
                 .build());
 
         options.addOption(Option.builder("o")
@@ -288,6 +308,7 @@ public class MicDemo {
                 .build());
 
         options.addOption(new Option("sd", "show_audio_devices", false, "Print available recording devices."));
+
         options.addOption(new Option("h", "help", false, ""));
 
         return options;
