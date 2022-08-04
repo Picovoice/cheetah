@@ -77,4 +77,4 @@ The model file contains the parameters for the Cheetah engine. You may create be
 
 ## Demos
 
-The [Cheetah Rust demo project](/demo/rust) is a Rust console app that allows for processing real-time audio (i.e. microphone) and files using Cheetah.
+The [Cheetah Rust demo project](https://github.com/Picovoice/cheetah/tree/master/demo/rust) is a Rust console app that allows for processing real-time audio (i.e. microphone) and files using Cheetah.

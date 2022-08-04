@@ -9,22 +9,31 @@
     specific language governing permissions and limitations under the License.
 */
 
+use hound;
+use itertools::Itertools;
 use std::io::{stdout, Write};
 use std::path::PathBuf;
-use itertools::Itertools;
-use hound;
 
-use clap::{App, Arg};
 use cheetah::CheetahBuilder;
+use clap::{App, Arg};
 
-fn cheetah_demo(input_audio_path: PathBuf, access_key: &str, model_path: Option<&str>) {
-    let mut cheetah_builder = CheetahBuilder::new(access_key);
+fn cheetah_demo(
+    input_audio_path: PathBuf,
+    access_key: &str,
+    model_path: Option<&str>,
+    enable_automatic_punctuation: bool,
+) {
+    let mut cheetah_builder = CheetahBuilder::new();
 
     if let Some(model_path) = model_path {
         cheetah_builder.model_path(model_path);
     }
 
-    let cheetah = cheetah_builder.init().expect("Failed to create Cheetah");
+    let cheetah = cheetah_builder
+        .enable_automatic_punctuation(enable_automatic_punctuation)
+        .access_key(access_key)
+        .init()
+        .expect("Failed to create Cheetah");
 
     let mut wav_reader = match hound::WavReader::open(input_audio_path.clone()) {
         Ok(reader) => reader,
@@ -75,6 +84,7 @@ fn main() {
         .arg(
             Arg::with_name("input_audio_path")
                 .long("input_audio_path")
+                .short('i')
                 .value_name("PATH")
                 .help("Path to input audio file (mono, WAV, 16-bit, 16kHz).")
                 .takes_value(true)
@@ -83,6 +93,7 @@ fn main() {
         .arg(
             Arg::with_name("access_key")
                 .long("access_key")
+                .short('a')
                 .value_name("ACCESS_KEY")
                 .help("AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)")
                 .takes_value(true)
@@ -91,19 +102,33 @@ fn main() {
         .arg(
             Arg::with_name("model_path")
                 .long("model_path")
+                .short('m')
                 .value_name("PATH")
                 .help("Path to the file containing model parameter.")
                 .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("disable_automatic_punctuation")
+                .long("disable_automatic_punctuation")
+                .short('p')
+                .help("Set to disable automatic punctuation insertion."),
         )
         .get_matches();
 
     let input_audio_path = PathBuf::from(matches.value_of("input_audio_path").unwrap());
 
-    let model_path = matches.value_of("model_path");
-
     let access_key = matches
         .value_of("access_key")
         .expect("AccessKey is REQUIRED for Cheetah operation");
 
-    cheetah_demo(input_audio_path, access_key, model_path);
+    let model_path = matches.value_of("model_path");
+
+    let enable_automatic_punctuation = !matches.contains_id("disable_automatic_punctuation");
+
+    cheetah_demo(
+        input_audio_path,
+        access_key,
+        model_path,
+        enable_automatic_punctuation,
+    );
 }

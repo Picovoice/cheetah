@@ -33,7 +33,8 @@ mod tests {
         let audio_file = BufReader::new(File::open(&audio_path).expect(&audio_path));
         let source = Decoder::new(audio_file).unwrap();
 
-        let cheetah = CheetahBuilder::new(access_key)
+        let cheetah = CheetahBuilder::new()
+            .access_key(access_key)
             .init()
             .expect("Unable to create Cheetah");
 
@@ -53,7 +54,7 @@ mod tests {
 
         assert_eq!(
             result,
-            "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL"
+            "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel"
         )
     }
 
@@ -62,7 +63,8 @@ mod tests {
         let access_key = env::var("PV_ACCESS_KEY")
             .expect("Pass the AccessKey in using the PV_ACCESS_KEY env variable");
 
-        let cheetah = CheetahBuilder::new(access_key)
+        let cheetah = CheetahBuilder::new()
+            .access_key(access_key)
             .init()
             .expect("Unable to create Cheetah");
 

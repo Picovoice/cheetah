@@ -155,8 +155,8 @@ impl CheetahBuilder {
     pub fn init(&self) -> Result<Cheetah, CheetahError> {
         let inner = CheetahInner::init(
             &self.access_key,
-            &self.library_path,
             &self.model_path,
+            &self.library_path,
             self.endpoint_duration_sec,
             self.enable_automatic_punctuation,
         );
