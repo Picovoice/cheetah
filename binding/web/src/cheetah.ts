@@ -150,7 +150,7 @@ export class Cheetah {
    * @param options.modelPath The path to save and use the model from. Use different names to use different models
    * across different Cheetah instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
-   * @param options.version Leopard model version. Set to a higher number to update the model file.
+   * @param options.version Cheetah model version. Set to a higher number to update the model file.
    * @returns An instance of the Cheetah engine.
    */
   public static async fromBase64(
@@ -178,7 +178,7 @@ export class Cheetah {
    * @param options.modelPath The path to save and use the model from. Use different names to use different models
    * across different Cheetah instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
-   * @param options.version Leopard model version. Set to a higher number to update the model file.
+   * @param options.version Cheetah model version. Set to a higher number to update the model file.
    *
    * @returns An instance of the Cheetah engine.
    */
