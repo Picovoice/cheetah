@@ -121,7 +121,7 @@ int picovoice_main(int argc, char *argv[]) {
     int32_t device_index = -1;
 
     int opt;
-    while ((opt = getopt(argc, argv, "a:m:l:e:pi:s")) != -1) {
+    while ((opt = getopt(argc, argv, "a:m:l:e:di:s")) != -1) {
         switch (opt) {
             case 'a':
                 access_key = optarg;
@@ -141,7 +141,7 @@ int picovoice_main(int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 'p':
+            case 'd':
                 enable_automatic_punctuation = false;
                 break;
             case 'i':
@@ -161,7 +161,7 @@ int picovoice_main(int argc, char *argv[]) {
 
     if (!(access_key && library_path && model_path)) {
         fprintf(stderr,
-                "usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-e ENDPOINT_DURATION] [-p] [-i DEVICE_INDEX]\n-s (show audio device indices)\n");
+                "usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-e ENDPOINT_DURATION] [-d] [-i DEVICE_INDEX]\n-s (show audio device indices)\n");
         exit(1);
     }
 

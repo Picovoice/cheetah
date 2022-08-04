@@ -97,7 +97,7 @@ int picovoice_main(int argc, char **argv) {
     bool enable_automatic_punctuation = true;
 
     int opt;
-    while ((opt = getopt(argc, argv, "a:m:l:e:p")) != -1) {
+    while ((opt = getopt(argc, argv, "a:m:l:e:d")) != -1) {
         switch (opt) {
             case 'a':
                 access_key = optarg;
@@ -108,7 +108,7 @@ int picovoice_main(int argc, char **argv) {
             case 'l':
                 library_path = optarg;
                 break;
-            case 'p':
+            case 'd':
                 enable_automatic_punctuation = false;
             default:
                 break;
@@ -116,7 +116,7 @@ int picovoice_main(int argc, char **argv) {
     }
 
     if (!(access_key && library_path && model_path && (optind < argc))) {
-        fprintf(stderr, "usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-p] wav_path0 wav_path1 ...\n");
+        fprintf(stderr, "usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-d] wav_path0 wav_path1 ...\n");
         exit(1);
     }
 

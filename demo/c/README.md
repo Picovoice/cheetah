@@ -45,7 +45,7 @@ cmake --build demo/c/build
 Running the demo without arguments prints the usage:
 
 ```console
-usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-e ENDPOINT_DURATION] [-p] [-i DEVICE_INDEX]
+usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-e ENDPOINT_DURATION] [-d] [-i DEVICE_INDEX]
 -s (show audio device indices)
 ```
 
@@ -59,7 +59,7 @@ Run the command corresponding to your platform from the root of the repository. 
 obtained from [Picovoice Console](https://console.picovoice.ai/). Either remove the `-i ${MIC_INDEX}` portion or replace
 `${MIC_INDEX}` with the microphone index you wish to use.
 
-Use the `-p` flag to disable automatic punctuation.
+Use the `-d` flag to disable automatic punctuation.
 
 ##### Linux (x86_64)
 
