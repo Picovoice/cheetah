@@ -110,7 +110,7 @@ fn main() {
         .arg(
             Arg::with_name("disable_automatic_punctuation")
                 .long("disable_automatic_punctuation")
-                .short('p')
+                .short('d')
                 .help("Set to disable automatic punctuation insertion."),
         )
         .get_matches();
