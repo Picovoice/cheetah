@@ -17,13 +17,20 @@ from pvrecorder import PvRecorder
 
 
 class Demo(Thread):
-    def __init__(self, access_key, library_path, model_path, endpoint_duration_sec):
+    def __init__(
+            self,
+            access_key: str,
+            model_path: Optional[str],
+            library_path: Optional[str],
+            endpoint_duration_sec: float,
+            enable_automatic_punctuation: bool):
         super(Demo, self).__init__()
 
         self._access_key = access_key
-        self._library_path = library_path
         self._model_path = model_path
+        self._library_path = library_path
         self._endpoint_duration_sec = endpoint_duration_sec
+        self._enable_automatic_punctuation = enable_automatic_punctuation
         self._is_recording = False
         self._stop = False
 
@@ -65,13 +72,15 @@ def main():
     parser.add_argument('--library_path', default=None)
     parser.add_argument('--model_path', default=None)
     parser.add_argument('--endpoint_duration_sec', type=float, default=1.)
+    parser.add_argument('--enable_automatic_punctuation', action='store_true')
     args = parser.parse_args()
 
     Demo(
         access_key=args.access_key,
         library_path=args.library_path,
         model_path=args.model_path,
-        endpoint_duration_sec=args.endpoint_duration_sec).run()
+        endpoint_duration_sec=args.endpoint_duration_sec,
+        enable_automatic_punctuation=args.enable_automatic_punctuation).run()
 
 
 if __name__ == '__main__':
