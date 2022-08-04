@@ -41,14 +41,13 @@ func TestMain(m *testing.M) {
 	dir := filepath.Dir(filename)
 
 	cheetah = NewCheetah(testAccessKey)
-	cheetah.EnableAutomaticPunctuation = true
 	err := cheetah.Init()
 	if err != nil {
 		log.Fatalf("Failed to init cheetah with: %v", err)
 	}
 
 	testAudioPath, _ = filepath.Abs(filepath.Join(dir, "../../resources/audio_samples/test.wav"))
-	transcript = "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel."
+	transcript = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL"
 
 	defer cheetah.Delete()
 

@@ -69,19 +69,16 @@ type Cheetah struct {
 	// AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
 	AccessKey string
 
-	// Absolute path to the file containing model parameters.
-	ModelPath string
-
 	// Absolute path to Cheetah's dynamic library.
 	LibraryPath string
+
+	// Absolute path to the file containing model parameters.
+	ModelPath string
 
 	// Duration of endpoint in seconds. A speech endpoint is detected when there is a
 	// chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to 0
 	// to disable endpoint detection.
 	EndpointDuration float32
-
-	// Flag to enable automatic punctuation insertion.
-	EnableAutomaticPunctuation bool
 }
 
 // private vars
@@ -108,11 +105,10 @@ var (
 // Returns a Cheetah struct with default parameters
 func NewCheetah(accessKey string) Cheetah {
 	return Cheetah{
-		AccessKey:                  accessKey,
-		LibraryPath:                defaultLibPath,
-		ModelPath:                  defaultModelFile,
-		EndpointDuration:           1.0,
-		EnableAutomaticPunctuation: false,
+		AccessKey:        accessKey,
+		LibraryPath:      defaultLibPath,
+		ModelPath:        defaultModelFile,
+		EndpointDuration: 1.0,
 	}
 }
 
@@ -124,24 +120,24 @@ func (cheetah *Cheetah) Init() error {
 			"No AccessKey provided to Cheetah"}
 	}
 
-	if cheetah.ModelPath == "" {
-		cheetah.ModelPath = defaultModelFile
-	}
-
 	if cheetah.LibraryPath == "" {
 		cheetah.LibraryPath = defaultLibPath
-	}
-
-	if _, err := os.Stat(cheetah.ModelPath); os.IsNotExist(err) {
-		return &CheetahError{
-			INVALID_ARGUMENT,
-			fmt.Sprintf("Specified model file could not be found at %s", cheetah.ModelPath)}
 	}
 
 	if _, err := os.Stat(cheetah.LibraryPath); os.IsNotExist(err) {
 		return &CheetahError{
 			INVALID_ARGUMENT,
 			fmt.Sprintf("Specified library file could not be found at %s", cheetah.LibraryPath)}
+	}
+
+	if cheetah.ModelPath == "" {
+		cheetah.ModelPath = defaultModelFile
+	}
+
+	if _, err := os.Stat(cheetah.ModelPath); os.IsNotExist(err) {
+		return &CheetahError{
+			INVALID_ARGUMENT,
+			fmt.Sprintf("Specified model file could not be found at %s", cheetah.ModelPath)}
 	}
 
 	if cheetah.EndpointDuration < 0 {
