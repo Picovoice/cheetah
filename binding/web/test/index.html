@@ -6,7 +6,8 @@
   <script src="../dist/iife/index.js"></script>
   <script src="./cheetah_params.js"></script>
   <script type="application/javascript">
-    const expected = "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.";
+    const expected = "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel";
+    const expectedPunctuation = "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.";
     let pcm = null;
 
     window.onload = function () {
@@ -125,9 +126,9 @@
 
       try {
         writeMessage("Checking Cheetah 'fromPublicDirectory'");
-        let handle = await CheetahWeb.Cheetah.fromPublicDirectory(accessKey, "cheetah_params.pv", { forceWrite: true });
+        let handle = await CheetahWeb.Cheetah.fromPublicDirectory(accessKey, "cheetah_params.pv", { forceWrite: true, enableAutomaticPunctuation: true });
         let transcription = await transcribeMain(handle, pcm);
-        assertEquals(expected, transcription, 'Failed to transcribe audio file');
+        assertEquals(expectedPunctuation, transcription, 'Failed to transcribe audio file');
         handle.release()
         writeMessage("Checking Cheetah 'fromPublicDirectory'... done!");
 

@@ -1,7 +1,5 @@
 # cheetah-web
 
-**NOTE**: This is a beta build.
-
 The Picovoice Cheetah library for web browsers, powered by WebAssembly.
 
 This library transcribes audio samples in-browser, offline. All processing is done via WebAssembly and Workers in a separate thread.
@@ -78,16 +76,17 @@ npx pvbase64 -h
 Cheetah saves and caches your model file in IndexedDB to be used by Web Assembly. Use a different `modelPath` variable
 to hold multiple model values and set the `forceWrite` value to true to force re-save the model file. Set `endpointDurationSec`
 value to 0 if you do not with to detect endpoint (moment of silence). Set `enableAutomaticPunctuation` to
-false, if you do not wish to enable capitalization and punctuation in transcription.
-If the model file (`.pv`) changes, `version` should be incremented to force the cached model to be updated.
+true to enable  punctuation in transcription. Set `processErrorCallback` to handle errors if an error occurs
+while transcribing. If the model file (`.pv`) changes, `version` should be incremented to force the cached model to be updated.
 
 ```typescript
 // these are default
 const options = {
-  modelPath: "cheetah_model",
-  forceWrite: false,
   endpointDurationSec: 1.0,
   enableAutomaticPunctiation: true,
+  processErrorCallback: (error) => {},
+  modelPath: "cheetah_model",
+  forceWrite: false,
   version: 1
 }
 ```
@@ -170,8 +169,8 @@ Use `CheetahWorker` to initialize from public directory:
 ```typescript
 const handle = await CheetahWorker.fromPublicDirectory(
   ${ACCESS_KEY},
-  ${MODEL_FILE_RELATIVE_TO_PUBLIC_DIRECTORY},
   transcriptionCallback,
+  ${MODEL_FILE_RELATIVE_TO_PUBLIC_DIRECTORY},
   options // optional options
 );
 ```
@@ -183,8 +182,8 @@ import cheetahParams from "${PATH_TO_BASE64_CHEETAH_PARAMS}";
 
 const handle = await CheetahWorker.fromBase64(
   ${ACCESS_KEY},
-  cheetahParams,
   transcriptionCallback,
+  cheetahParams,
   options // optional options
 )
 ```

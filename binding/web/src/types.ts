@@ -12,19 +12,19 @@
 export type CheetahInitConfig = {
   /** @defaultValue 1.0 */
   endpointDurationSec?: number
-  /** @defaultValue true */
+  /** @defaultValue false */
   enableAutomaticPunctuation?: boolean;
 }
 
 export type CheetahInputConfig = {
+  /** @defaultValue undefined */
+  processErrorCallback?: (error: string) => void
   /** @defaultValue 'cheetah_model' */
   modelPath?: string;
   /** @defaultValue false */
   forceWrite?: boolean;
   /** @defaultValue 1 */
   version?: number;
-  /** @defaultValue undefined */
-  processErrorCallback?: (error: string) => void
 }
 
 export type CheetahConfig = CheetahInitConfig & CheetahInputConfig;
