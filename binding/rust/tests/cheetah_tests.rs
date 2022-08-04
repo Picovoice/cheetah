@@ -59,6 +59,46 @@ mod tests {
     }
 
     #[test]
+    fn test_process_punctuation() {
+        let access_key = env::var("PV_ACCESS_KEY")
+            .expect("Pass the AccessKey in using the PV_ACCESS_KEY env variable");
+
+        let audio_path = format!(
+            "{}{}",
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../resources/audio_samples/test.wav",
+        );
+
+        let audio_file = BufReader::new(File::open(&audio_path).expect(&audio_path));
+        let source = Decoder::new(audio_file).unwrap();
+
+        let cheetah = CheetahBuilder::new()
+            .access_key(access_key)
+            .enable_automatic_punctuation(true)
+            .init()
+            .expect("Unable to create Cheetah");
+
+        assert_eq!(cheetah.sample_rate(), source.sample_rate());
+
+        let mut result = String::new();
+        for frame in &source.chunks(cheetah.frame_length() as usize) {
+            let frame = frame.collect_vec();
+            if frame.len() == cheetah.frame_length() as usize {
+                let partial_transcript = cheetah.process(&frame).unwrap();
+                result = format!("{}{}", result, partial_transcript.transcript);
+            }
+        }
+
+        let final_transcript = cheetah.flush().unwrap();
+        result = format!("{}{}", result, final_transcript.transcript);
+
+        assert_eq!(
+            result,
+            "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel."
+        )
+    }
+
+    #[test]
     fn test_version() {
         let access_key = env::var("PV_ACCESS_KEY")
             .expect("Pass the AccessKey in using the PV_ACCESS_KEY env variable");
