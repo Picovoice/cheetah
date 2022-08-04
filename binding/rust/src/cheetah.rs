@@ -97,11 +97,6 @@ impl std::fmt::Display for CheetahError {
 
 impl std::error::Error for CheetahError {}
 
-pub struct CheetahTranscript {
-    pub transcript: String,
-    pub is_endpoint: bool,
-}
-
 pub struct CheetahBuilder {
     access_key: String,
     model_path: PathBuf,
@@ -167,6 +162,12 @@ impl CheetahBuilder {
             Err(err) => Err(err),
         }
     }
+}
+
+#[derive(Clone)]
+pub struct CheetahTranscript {
+    pub transcript: String,
+    pub is_endpoint: bool,
 }
 
 #[derive(Clone)]
