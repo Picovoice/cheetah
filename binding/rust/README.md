@@ -4,19 +4,15 @@
 
 Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
-Cheetah is an on-device speech-to-text engine. Cheetah is:
-
+Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 - Private; All voice processing runs locally.
-- Accurate [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results)
-- Compact and Computationally-Efficient [[2]](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
+- [Accurate](https://picovoice.ai/docs/benchmark/stt/)
+- [Compact and Computationally-Efficient](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
 - Cross-Platform:
-  - Linux (x86_64)
-  - macOS (x86_64, arm64)
-  - Windows (x86_64)
-  - Android
-  - iOS
-  - Raspberry Pi (4, 3)
-  - NVIDIA Jetson Nano
+    - Linux (x86_64), macOS (x86_64, arm64), and Windows (x86_64)
+    - Android and iOS
+    - Chrome, Safari, Firefox, and Edge
+    - Raspberry Pi (4, 3) and NVIDIA Jetson Nano
 
 ## Compatibility
 
@@ -59,7 +55,7 @@ fn next_audio_frame() -> Vec<i16> {
 }
 
 let access_key = "${ACCESS_KEY}"; // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
-let cheetah: Cheetah = CheetahBuilder::new(access_key).init().expect("Unable to create Cheetah");
+let cheetah: Cheetah = CheetahBuilder::new().access_key(access_key).init().expect("Unable to create Cheetah");
 
 if let Ok(cheetahTranscript) = cheetah.process(&next_audio_frame()) {
   println!("{}", cheetahTranscript.transcript)
@@ -77,4 +73,4 @@ The model file contains the parameters for the Cheetah engine. You may create be
 
 ## Demos
 
-The [Cheetah Rust demo project](/demo/rust) is a Rust console app that allows for processing real-time audio (i.e. microphone) and files using Cheetah.
+The [Cheetah Rust demo project](https://github.com/Picovoice/cheetah/tree/master/demo/rust) is a Rust console app that allows for processing real-time audio (i.e. microphone) and files using Cheetah.

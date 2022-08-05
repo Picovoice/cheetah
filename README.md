@@ -645,7 +645,7 @@ fn next_audio_frame() -> Vec<i16> {
 }
 
 let access_key = "${ACCESS_KEY}"; // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
-let cheetah: Cheetah = CheetahBuilder::new(access_key).init().expect("Unable to create Cheetah");
+let cheetah: Cheetah = CheetahBuilder::new().access_key(access_key).init().expect("Unable to create Cheetah");
 
 if let Ok(cheetahTranscript) = cheetah.process(&next_audio_frame()) {
   println!("{}", cheetahTranscript.transcript)

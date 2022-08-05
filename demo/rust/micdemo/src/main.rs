@@ -13,21 +13,32 @@ use std::io::stdout;
 use std::io::Write;
 use std::sync::atomic::{AtomicBool, Ordering};
 
+use cheetah::CheetahBuilder;
 use clap::{App, Arg, ArgGroup};
 use ctrlc;
-use cheetah::CheetahBuilder;
 use pv_recorder::RecorderBuilder;
 
 static RECORDING: AtomicBool = AtomicBool::new(false);
 
-fn cheetah_demo(audio_device_index: i32, access_key: &str, model_path: Option<&str>) {
-    let mut cheetah_builder = CheetahBuilder::new(access_key);
+fn cheetah_demo(
+    audio_device_index: i32,
+    access_key: &str,
+    model_path: Option<&str>,
+    endpoint_duration_sec: f32,
+    enable_automatic_punctuation: bool,
+) {
+    let mut cheetah_builder = CheetahBuilder::new();
 
     if let Some(model_path) = model_path {
         cheetah_builder.model_path(model_path);
     }
 
-    let cheetah = cheetah_builder.init().expect("Failed to create Cheetah");
+    let cheetah = cheetah_builder
+        .enable_automatic_punctuation(enable_automatic_punctuation)
+        .endpoint_duration_sec(endpoint_duration_sec)
+        .access_key(access_key)
+        .init()
+        .expect("Failed to create Cheetah");
 
     let recorder = RecorderBuilder::new()
         .device_index(audio_device_index)
@@ -88,6 +99,7 @@ fn main() {
         .arg(
             Arg::with_name("access_key")
                 .long("access_key")
+                .short('a')
                 .value_name("ACCESS_KEY")
                 .help("AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)")
                 .takes_value(true),
@@ -95,19 +107,40 @@ fn main() {
         .arg(
             Arg::with_name("model_path")
                 .long("model_path")
+                .short('m')
                 .value_name("PATH")
                 .help("Path to the file containing model parameter.")
                 .takes_value(true),
         )
         .arg(
+            Arg::with_name("endpoint_duration_sec")
+                .long("endpoint_duration_sec")
+                .short('e')
+                .value_name("ENDPOINT_DURATION")
+                .help("Duration of endpoint in seconds. A speech endpoint is detected when there is a segment. Set to `0` to disable endpoint detection.")
+                .takes_value(true)
+                .default_value("0.0")
+        )
+        .arg(
+            Arg::with_name("disable_automatic_punctuation")
+                .long("disable_automatic_punctuation")
+                .short('d')
+                .help("Set to disable automatic punctuation insertion."),
+        )
+        .arg(
             Arg::with_name("audio_device_index")
                 .long("audio_device_index")
+                .short('i')
                 .value_name("INDEX")
                 .help("Index of input audio device.")
                 .takes_value(true)
                 .default_value("-1"),
         )
-        .arg(Arg::with_name("show_audio_devices").long("show_audio_devices"))
+        .arg(
+            Arg::with_name("show_audio_devices")
+                .long("show_audio_devices")
+                .short('s'),
+        )
         .get_matches();
 
     if matches.is_present("show_audio_devices") {
@@ -120,11 +153,25 @@ fn main() {
         .parse()
         .unwrap();
 
-    let model_path = matches.value_of("model_path");
-
     let access_key = matches
         .value_of("access_key")
         .expect("AccessKey is REQUIRED for Cheetah operation");
 
-    cheetah_demo(audio_device_index, access_key, model_path);
+    let model_path = matches.value_of("model_path");
+
+    let endpoint_duration_sec = matches
+        .value_of("endpoint_duration_sec")
+        .unwrap()
+        .parse()
+        .unwrap();
+
+    let enable_automatic_punctuation = !matches.contains_id("disable_automatic_punctuation");
+
+    cheetah_demo(
+        audio_device_index,
+        access_key,
+        model_path,
+        endpoint_duration_sec,
+        enable_automatic_punctuation,
+    );
 }
