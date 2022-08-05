@@ -38,9 +38,9 @@ import ai.picovoice.cheetah.*;
 
 public class MainActivity extends AppCompatActivity {
     private static final String ACCESS_KEY = "${YOUR_ACCESS_KEY_HERE}";
+    private static final String MODEL_FILE = "cheetah_params.pv";
 
     private final MicrophoneReader microphoneReader = new MicrophoneReader();
-    final private ArrayList<Short> pcmData = new ArrayList<>();
     public Cheetah cheetah;
 
     @Override
@@ -52,14 +52,14 @@ public class MainActivity extends AppCompatActivity {
         transcriptTextView.setMovementMethod(new ScrollingMovementMethod());
 
         try {
-            String modelPath = "cheetah_params.pv";
             cheetah = new Cheetah.Builder()
                     .setAccessKey(ACCESS_KEY)
-                    .setModelPath(modelPath)
+                    .setModelPath(MODEL_FILE)
                     .setEndpointDuration(1f)
+                    .setEnableAutomaticPunctuation(true)
                     .build(getApplicationContext());
         } catch (CheetahInvalidArgumentException e) {
-            displayError(String.format("(%s)\n Ensure your AccessKey '%s' is valid", e.getMessage(), ACCESS_KEY));
+            displayError(String.format("%s\nEnsure your AccessKey '%s' is valid", e.getMessage(), ACCESS_KEY));
         } catch (CheetahActivationException e) {
             displayError("AccessKey activation error");
         } catch (CheetahActivationLimitException e) {
@@ -200,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
             AudioRecord audioRecord = null;
 
             short[] buffer = new short[cheetah.getFrameLength()];
-            pcmData.clear();
 
             try {
                 audioRecord = new AudioRecord(
