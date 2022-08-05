@@ -3,7 +3,7 @@ name: Node.js Demos
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ master, v1.1 ]
     paths:
       - 'demo/nodejs/**'
       - '!demo/nodejs/README.md'
@@ -11,7 +11,7 @@ on:
       - '.github/workflows/nodejs-demos.yml'
       
   pull_request:
-    branches: [ master ]
+    branches: [ master, v1.1 ]
     paths:
       - 'demo/nodejs/**'
       - '!demo/nodejs/README.md'
