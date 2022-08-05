@@ -22,7 +22,7 @@ import {
 } from "./errors";
 
 import {
-  CheetahConfig,
+  CheetahOptions,
 } from "./types";
 
 import {getSystemLibraryPath} from "./platforms";
@@ -62,7 +62,7 @@ export default class Cheetah {
    */
   constructor(
     accessKey: string,
-    options: CheetahConfig = {}) {
+    options: CheetahOptions = {}) {
     assert(typeof accessKey === "string");
     if (
       accessKey === null ||

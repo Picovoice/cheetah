@@ -7,15 +7,15 @@
   specific language governing permissions and limitations under the License.
 */
 
-export type CheetahInitConfig = {
+export type CheetahInitOptions = {
   endpointDurationSec?: number
   enableAutomaticPunctuation?: boolean;
 }
 
-export type CheetahInputConfig = {
+export type CheetahInputOptions = {
   modelPath?: string;
   libraryPath?: string;
 
 }
 
-export type CheetahConfig = CheetahInitConfig & CheetahInputConfig;
+export type CheetahOptions = CheetahInitOptions & CheetahInputOptions;
