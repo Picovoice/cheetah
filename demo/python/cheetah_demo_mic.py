@@ -72,7 +72,7 @@ def main():
     parser.add_argument('--library_path', default=None)
     parser.add_argument('--model_path', default=None)
     parser.add_argument('--endpoint_duration_sec', type=float, default=1.)
-    parser.add_argument('--enable_automatic_punctuation', action='store_true')
+    parser.add_argument('--disable_automatic_punctuation', action='store_true')
     args = parser.parse_args()
 
     Demo(
@@ -80,7 +80,7 @@ def main():
         library_path=args.library_path,
         model_path=args.model_path,
         endpoint_duration_sec=args.endpoint_duration_sec,
-        enable_automatic_punctuation=args.enable_automatic_punctuation).run()
+        enable_automatic_punctuation=not args.disable_automatic_punctuation).run()
 
 
 if __name__ == '__main__':
