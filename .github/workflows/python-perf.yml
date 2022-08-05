@@ -45,7 +45,7 @@ jobs:
           init_performance_threshold_sec: 2.4
           proc_performance_threshold_sec: 0.6
         - os: macos-latest
-          init_performance_threshold_sec: 2.2
+          init_performance_threshold_sec: 3.0
           proc_performance_threshold_sec: 0.8
 
     steps:
