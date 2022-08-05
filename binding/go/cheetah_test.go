@@ -29,7 +29,6 @@ var (
 	testAccessKey string
 	cheetah       pvCheetah
 	testAudioPath string
-	transcript    string
 )
 
 var processTestParameters = []struct {
