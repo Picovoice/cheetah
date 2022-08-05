@@ -8,16 +8,13 @@ Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
 - Private; All voice processing runs locally.
-- Accurate [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results)
-- Compact and Computationally-Efficient [[2]](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
+- [Accurate](https://picovoice.ai/docs/benchmark/stt/)
+- [Compact and Computationally-Efficient](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
 - Cross-Platform:
-    - Linux (x86_64)
-    - macOS (x86_64, arm64)
-    - Windows (x86_64)
-    - Android
-    - iOS
-    - Raspberry Pi (4, 3)
-    - NVIDIA Jetson Nano
+    - Linux (x86_64), macOS (x86_64, arm64), and Windows (x86_64)
+    - Android and iOS
+    - Chrome, Safari, Firefox, and Edge
+    - Raspberry Pi (4, 3) and NVIDIA Jetson Nano
 
 ## Table of Contents
 
@@ -36,6 +33,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [Node.js](#nodejs-demo)
         - [.Net](#net-demo)
         - [Rust](#rust-demo)
+        - [Web](#web-demo)
     - [SDKs](#sdks)
         - [Python](#python)
         - [C](#c)
@@ -48,6 +46,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [Java](#java)
         - [.Net](#net)
         - [Rust](#rust)
+        - [Web](#web)
     - [Releases](#releases)
 
 ## AccessKey
@@ -233,6 +232,24 @@ cargo run --release -- --access_key ${ACCESS_KEY}
 Replace `${ACCESS_KEY}` with your Picovoice `AccessKey`.
 
 For more information about Rust demos, go to [demo/rust](/demo/rust).
+
+### Web Demo
+
+From [demo/web](/demo/web) run the following in the terminal:
+
+```console
+yarn
+yarn start
+```
+
+(or)
+
+```console
+npm install
+npm run start
+```
+
+Open [http://localhost:5000](http://localhost:5000) in your browser to try the demo.
 
 ## SDKs
 
@@ -658,6 +675,55 @@ if let Ok(cheetahTranscript) = cheetah.process(&next_audio_frame()) {
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)).
+
+### Web
+
+Install the web SDK using yarn:
+
+```console
+yarn add @picovoice/cheetah-web
+```
+
+or using npm:
+
+```console
+npm install --save @picovoice/cheetah-web
+```
+
+Create an instance of the engine using `CheetahWorker` and transcribe an audio file:
+
+```typescript
+import { CheetahWorker } from "@picovoice/cheetah-web";
+import cheetahParams from "${PATH_TO_BASE64_CHEETAH_PARAMS}";
+
+let transcription = "";
+
+function transcriptionCallback(partial: string, isEndpoint: boolean) {
+  transcription += partial;
+  if (isEndpoint) {
+    transcription += "\n";
+  }
+}
+
+function getAudioData(): Int16Array {
+... // function to get audio data
+  return new Int16Array();
+}
+
+const cheetah = await CheetahWorker.fromBase64(
+  "${ACCESS_KEY}",
+  transcriptionCallback,
+  cheetahParams
+);
+
+for (;;) {
+  cheetah.process(getAudioData());
+  // break on some condition
+}
+cheetah.flush(); // runs transcriptionCallback on remaining data.
+```
+
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)). Finally, when done release the resources using `cheetah.release()`.
 
 ## Releases
 
