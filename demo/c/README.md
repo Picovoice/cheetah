@@ -156,14 +156,14 @@ demo\\c\\build\\cheetah_demo.exe ^
 #### File Demo
 
 ```console
-usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-p] wav_path0 wav_path1 ...
+usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-d] wav_path0 wav_path1 ...
 ```
 
 Run the command corresponding to your platform from the root of the repository. Replace `${ACCESS_KEY}` with yours
 obtained from [Picovoice Console](https://console.picovoice.ai/) and `${WAV_PATH}` with the path to a compatible
 (single-channel, 16 kHz, and 16-bit PCM) WAV file you want to transcribe.
 
-Use the `-p` flag to disable automatic punctuation.
+Use the `-d` flag to disable automatic punctuation.
 
 ##### Linux (x86_64)
 
