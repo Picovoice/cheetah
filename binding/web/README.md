@@ -1,10 +1,19 @@
-# cheetah-web
+# Cheetah Binding for Web
 
-The Picovoice Cheetah library for web browsers, powered by WebAssembly.
+## Cheetah Speech-to-Text Engine
 
-This library transcribes audio samples in-browser, offline. All processing is done via WebAssembly and Workers in a separate thread.
+Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
-Looking for Cheetah on NodeJS? See the [@picovoice/cheetah-node](https://www.npmjs.com/package/@picovoice/cheetah-node) package.
+Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
+
+- Private; All voice processing runs locally.
+- [Accurate](https://picovoice.ai/docs/benchmark/stt/)
+- [Compact and Computationally-Efficient](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
+- Cross-Platform:
+    - Linux (x86_64), macOS (x86_64, arm64), and Windows (x86_64)
+    - Android and iOS
+    - Chrome, Safari, Firefox, and Edge
+    - Raspberry Pi (4, 3) and NVIDIA Jetson Nano
 
 ## Compatibility
 
@@ -12,13 +21,11 @@ Looking for Cheetah on NodeJS? See the [@picovoice/cheetah-node](https://www.npm
 - Firefox
 - Safari
 
-This library requires several modern browser features: `WebAssembly`, `Web Workers`, `IndexedDB` and `Promise`. Internet Explorer will _not_ work.
-
-## Installation & Usage
+## Installation
 
 ### Package
 
-Install the [Cheetah-Web package](https://www.npmjs.com/package/@picovoice/cheetah-web) using `yarn`:
+Using `Yarn`:
 
 ```console
 yarn add @picovoice/cheetah-web
@@ -36,10 +43,7 @@ Cheetah requires a valid Picovoice `AccessKey` at initialization. `AccessKey` ac
 You can get your `AccessKey` for free. Make sure to keep your `AccessKey` secret.
 Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get your `AccessKey`.
 
-### Cheetah Models
-
-Cheetah requires a model file on initialization. Create a custom model file from [Picovoice Console](https://console.picovoice.ai/cat)
-or you can use the [default model file](https://github.com/Picovoice/cheetah/blob/master/lib/common/cheetah_params.pv).
+### Usage
 
 For the web packages, there are two methods to initialize Cheetah.
 
@@ -71,7 +75,7 @@ run:
 npx pvbase64 -h
 ```
 
-### Usage
+#### Init options
 
 Cheetah saves and caches your model file in IndexedDB to be used by Web Assembly. Use a different `modelPath` variable
 to hold multiple model values and set the `forceWrite` value to true to force re-save the model file. Set `endpointDurationSec`
@@ -222,13 +226,6 @@ Terminate `CheetahWorker` instance:
 await handle.terminate();
 ```
 
-## Build from source (IIFE + ESM outputs)
+# Demo
 
-This library uses Rollup and TypeScript along with Babel and other popular rollup plugins. There are two outputs: an IIFE version intended for script tags / CDN usage, and a JavaScript module version intended for use with modern JavaScript/TypeScript development (e.g. Angular, Create React App, Webpack).
-
-```console
-yarn
-yarn build
-```
-
-The output will appear in the ./dist/ folder.
+For example usage refer to our [Web demo application](https://github.com/Picovoice/cheetah/tree/master/demo/web).

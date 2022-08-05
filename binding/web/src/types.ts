@@ -9,14 +9,11 @@
   specific language governing permissions and limitations under the License.
 */
 
-export type CheetahInitConfig = {
+export type CheetahOptions = {
   /** @defaultValue 1.0 */
   endpointDurationSec?: number
   /** @defaultValue false */
   enableAutomaticPunctuation?: boolean;
-}
-
-export type CheetahInputConfig = {
   /** @defaultValue undefined */
   processErrorCallback?: (error: string) => void
   /** @defaultValue 'cheetah_model' */
@@ -27,15 +24,13 @@ export type CheetahInputConfig = {
   version?: number;
 }
 
-export type CheetahConfig = CheetahInitConfig & CheetahInputConfig;
-
 export type CheetahWorkerInitRequest = {
   command: 'init';
   accessKey: string;
   modelPath: string;
   wasm: string;
   wasmSimd: string;
-  initConfig: CheetahInitConfig;
+  options: CheetahOptions;
 };
 
 export type CheetahWorkerProcessRequest = {

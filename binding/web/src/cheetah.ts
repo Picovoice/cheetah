@@ -25,7 +25,7 @@ import {
 
 import { simd } from 'wasm-feature-detect';
 
-import { CheetahConfig, CheetahInitConfig } from './types';
+import { CheetahOptions } from './types';
 
 /**
  * WebAssembly function types
@@ -156,7 +156,7 @@ export class Cheetah {
   public static async fromBase64(
     accessKey: string,
     modelBase64: string,
-    options: CheetahConfig = {},
+    options: CheetahOptions = {},
   ): Promise<Cheetah> {
     const { modelPath = 'cheetah_model', forceWrite = false, version = 1, ...rest } = options;
     await fromBase64(modelPath, modelBase64, forceWrite, version);
@@ -185,7 +185,7 @@ export class Cheetah {
   public static async fromPublicDirectory(
     accessKey: string,
     publicPath: string,
-    options: CheetahConfig = {},
+    options: CheetahOptions = {},
   ): Promise<Cheetah> {
     const { modelPath = 'cheetah_model', forceWrite = false, version = 1, ...rest } = options;
     await fromPublicDirectory(modelPath, publicPath, forceWrite, version);
@@ -219,11 +219,11 @@ export class Cheetah {
    *
    * @param accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
    * @param modelPath Path to the model saved in indexedDB.
-   * @param inputConfig Cheetah init configurations.
+   * @param options Optional configuration arguments.
    *
    * @returns An instance of the Cheetah engine.
    */
-  public static async create(accessKey: string, modelPath: string, inputConfig: CheetahInitConfig): Promise<Cheetah> {
+  public static async create(accessKey: string, modelPath: string, options: CheetahOptions): Promise<Cheetah> {
     if (!isAccessKeyValid(accessKey)) {
       throw new Error('Invalid AccessKey');
     }
@@ -232,7 +232,7 @@ export class Cheetah {
       Cheetah._cheetahMutex
         .runExclusive(async () => {
           const isSimd = await simd();
-          const wasmOutput = await Cheetah.initWasm(accessKey.trim(), (isSimd) ? this._wasmSimd : this._wasm, modelPath, inputConfig);
+          const wasmOutput = await Cheetah.initWasm(accessKey.trim(), (isSimd) ? this._wasmSimd : this._wasm, modelPath, options);
           return new Cheetah(wasmOutput);
         })
         .then((result: Cheetah) => {
@@ -373,8 +373,8 @@ export class Cheetah {
     this._wasmMemory = undefined;
   }
 
-  private static async initWasm(accessKey: string, wasmBase64: string, modelPath: string, initConfig: CheetahInitConfig): Promise<any> {
-    const { endpointDurationSec = 1.0, enableAutomaticPunctuation = false } = initConfig;
+  private static async initWasm(accessKey: string, wasmBase64: string, modelPath: string, options: CheetahOptions): Promise<any> {
+    const { endpointDurationSec = 1.0, enableAutomaticPunctuation = false } = options;
 
     if (!endpointDurationSec || endpointDurationSec < 0) {
       throw new Error('Cheetah endpointDurationSec must be a non-negative number');

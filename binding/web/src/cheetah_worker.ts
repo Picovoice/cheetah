@@ -17,9 +17,7 @@ import {
 import PvWorker from 'web-worker:./cheetah_worker_handler.ts';
 
 import {
-  CheetahConfig,
-  CheetahInitConfig,
-  CheetahInputConfig,
+  CheetahOptions,
   CheetahWorkerInitResponse,
   CheetahWorkerProcessResponse,
   CheetahWorkerReleaseResponse,
@@ -95,7 +93,7 @@ export class CheetahWorker {
     accessKey: string,
     transcriptionCallback: (transcription: string, isEndpoint: boolean) => void,
     modelBase64: string,
-    options: CheetahConfig = {},
+    options: CheetahOptions = {},
   ): Promise<CheetahWorker> {
     const { modelPath = 'cheetah_model', forceWrite = false, version = 1, processErrorCallback, ...rest } = options;
     await fromBase64(modelPath, modelBase64, forceWrite, version);
@@ -128,7 +126,7 @@ export class CheetahWorker {
     accessKey: string,
     transcriptionCallback: (transcription: string, isEndpoint: boolean) => void,
     publicPath: string,
-    options: CheetahInputConfig = {},
+    options: CheetahOptions = {},
   ): Promise<CheetahWorker> {
     const { modelPath = 'cheetah_model', forceWrite = false, version = 1, processErrorCallback, ...rest } = options;
     await fromPublicDirectory(modelPath, publicPath, forceWrite, version);
@@ -163,8 +161,8 @@ export class CheetahWorker {
    * @param accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
    * @param transcriptionCallback User-defined callback to run after receiving transcription result.
    * @param modelPath Path to the model saved in indexedDB.
-   * @param processErrorCallback User-defined callback invoked if any error happens
-   * @param initConfig Cheetah init configurations.
+   * @param processErrorCallback User-defined callback invoked if any error happens.
+   * @param options Optional configuration arguments.
    * while processing the audio stream. Its only input argument is the error message.
    *
    * @returns An instance of CheetahWorker.
@@ -174,7 +172,7 @@ export class CheetahWorker {
     transcriptionCallback: (transcription: string, isEndpoint: boolean) => void,
     modelPath: string,
     processErrorCallback?: (error: string) => void,
-    initConfig: CheetahInitConfig = {},
+    options: CheetahOptions = {},
   ): Promise<CheetahWorker> {
     const worker = new PvWorker();
     const returnPromise: Promise<CheetahWorker> = new Promise((resolve, reject) => {
@@ -221,7 +219,7 @@ export class CheetahWorker {
       modelPath: modelPath,
       wasm: this._wasm,
       wasmSimd: this._wasmSimd,
-      initConfig: initConfig,
+      options: options,
     });
 
     return returnPromise;

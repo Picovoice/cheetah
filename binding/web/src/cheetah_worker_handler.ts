@@ -34,7 +34,7 @@ self.onmessage = async function(
       try {
         Cheetah.setWasm(event.data.wasm);
         Cheetah.setWasmSimd(event.data.wasmSimd);
-        cheetah = await Cheetah.create(event.data.accessKey, event.data.modelPath, event.data.initConfig);
+        cheetah = await Cheetah.create(event.data.accessKey, event.data.modelPath, event.data.options);
         self.postMessage({
           command: 'ok',
           version: cheetah.version,
