@@ -226,6 +226,6 @@ Terminate `CheetahWorker` instance:
 await handle.terminate();
 ```
 
-# Demo
+## Demo
 
 For example usage refer to our [Web demo application](https://github.com/Picovoice/cheetah/tree/master/demo/web).
