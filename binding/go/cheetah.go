@@ -109,8 +109,8 @@ var (
 func NewCheetah(accessKey string) pvCheetah {
 	return pvCheetah{
 		AccessKey:                  accessKey,
-		LibraryPath:                defaultLibPath,
 		ModelPath:                  defaultModelFile,
+		LibraryPath:                defaultLibPath,
 		EndpointDuration:           1.0,
 		EnableAutomaticPunctuation: false,
 	}
