@@ -18,16 +18,17 @@
     "directory": "binding/nodejs"
   },
   "keywords": [
+    "ai",
+    "asr",
+    "automatic speech recognition",
     "nlu",
-    "speech recognition",
-    "voice commands",
     "offline",
     "private",
-    "voice",
-    "ai",
+    "speech recognition",
+    "speech-to-text",
     "voice assistant",
-    "asr",
-    "speech-to-text"
+    "voice commands",
+    "voice"
   ],
   "author": "Picovoice Inc.",
   "license": "Apache-2.0",
