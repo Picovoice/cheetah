@@ -2,8 +2,10 @@
 # yarn lockfile v1
 
 
-"@picovoice/cheetah-web@../../binding/web":
+"@picovoice/cheetah-web@^1.1.0":
   version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-1.1.0.tgz#d484a82a83d6200a5c084d0930218addce384d2b"
+  integrity sha512-mvj5wBuXq3fargSU5J8k2i9ns4K2bHztFw0p2g1hAKtjXQ0oIqbvBTZr6QdxBx4w8k56P4m8RsNVz6aOZjY5sg==
   dependencies:
     "@picovoice/web-utils" "=1.2.1"
 
