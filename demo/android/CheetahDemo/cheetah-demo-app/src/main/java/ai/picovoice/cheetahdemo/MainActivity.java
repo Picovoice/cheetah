@@ -29,12 +29,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import ai.picovoice.cheetah.*;
+import ai.picovoice.cheetah.Cheetah;
+import ai.picovoice.cheetah.CheetahActivationException;
+import ai.picovoice.cheetah.CheetahActivationLimitException;
+import ai.picovoice.cheetah.CheetahActivationRefusedException;
+import ai.picovoice.cheetah.CheetahActivationThrottledException;
+import ai.picovoice.cheetah.CheetahException;
+import ai.picovoice.cheetah.CheetahInvalidArgumentException;
+import ai.picovoice.cheetah.CheetahTranscript;
 
 public class MainActivity extends AppCompatActivity {
     private static final String ACCESS_KEY = "${YOUR_ACCESS_KEY_HERE}";
@@ -113,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint({"SetTextI18n", "DefaultLocale"})
     public void onRecordClick(View view) {
         ToggleButton recordButton = findViewById(R.id.recordButton);
-
+        TextView recordingTextView = findViewById(R.id.recordingTextView);
         if (cheetah == null) {
             displayError("Cheetah is not initialized");
             recordButton.setChecked(false);
@@ -123,31 +129,30 @@ public class MainActivity extends AppCompatActivity {
         try {
             if (recordButton.isChecked()) {
                 if (hasRecordPermission()) {
+                    recordingTextView.setText("Recording...");
                     microphoneReader.start();
                 } else {
                     requestRecordPermission();
                 }
             } else {
+                recordingTextView.setText("");
                 microphoneReader.stop();
             }
         } catch (InterruptedException e) {
-            displayError("Audio stop command interrupted\n" + e.toString());
+            displayError("Audio stop command interrupted\n" + e);
         }
     }
 
     private void updateTranscriptView(String transcript) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (transcript.length() != 0) {
-                    TextView transcriptTextView = findViewById(R.id.transcriptTextView);
-                    transcriptTextView.append(transcript);
+        runOnUiThread(() -> {
+            if (transcript.length() != 0) {
+                TextView transcriptTextView = findViewById(R.id.transcriptTextView);
+                transcriptTextView.append(transcript);
 
-                    final int scrollAmount = transcriptTextView.getLayout().getLineTop(transcriptTextView.getLineCount()) - transcriptTextView.getHeight() + transcriptTextView.getLineHeight();
+                final int scrollAmount = transcriptTextView.getLayout().getLineTop(transcriptTextView.getLineCount()) - transcriptTextView.getHeight() + transcriptTextView.getLineHeight();
 
-                    if (scrollAmount > 0) {
-                        transcriptTextView.scrollTo(0, scrollAmount);
-                    }
+                if (scrollAmount > 0) {
+                    transcriptTextView.scrollTo(0, scrollAmount);
                 }
             }
         });
