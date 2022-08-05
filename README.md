@@ -100,7 +100,7 @@ cmake -S demo/c/ -B demo/c/build && cmake --build demo/c/build
 Run the demo:
 
 ```console
-./demo/c/build/cheetah_demo_mic -a ${ACCESS_KEY} -l ${LIBRARY_PATH} -m ${MODEL_PATH}
+./demo/c/build/cheetah_demo_mic -a ${ACCESS_KEY} -m ${MODEL_PATH} -l ${LIBRARY_PATH}
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console, `${LIBRARY_PATH}` with the path to appropriate
@@ -273,7 +273,7 @@ Create an instance of the engine and transcribe audio in real-time:
 #include "pv_cheetah.h"
 
 pv_cheetah_t *handle = NULL;
-const pv_status_t status = pv_cheetah_init("${ACCESS_KEY}", "${MODEL_PATH}", -1.f, &handle);
+const pv_status_t status = pv_cheetah_init("${ACCESS_KEY}", "${MODEL_PATH}", 0.f, false, &handle);
 if (status != PV_STATUS_SUCCESS) {
     // error handling logic
 }
