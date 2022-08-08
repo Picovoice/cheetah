@@ -2,13 +2,13 @@ source 'https://cdn.cocoapods.org/'
 platform :ios, '9.0'
 
 target 'CheetahAppTest' do
-  pod 'Cheetah-iOS', podspec: 'https://raw.githubusercontent.com/Picovoice/cheetah/v1.1-ios/binding/ios/Cheetah-iOS.podspec'
+  pod 'Cheetah-iOS', podspec: 'https://raw.githubusercontent.com/Picovoice/cheetah/v1.1/binding/ios/Cheetah-iOS.podspec'
 end
 
 target 'CheetahAppTestUITests' do
-  pod 'Cheetah-iOS', podspec: 'https://raw.githubusercontent.com/Picovoice/cheetah/v1.1-ios/binding/ios/Cheetah-iOS.podspec'
+  pod 'Cheetah-iOS', podspec: 'https://raw.githubusercontent.com/Picovoice/cheetah/v1.1/binding/ios/Cheetah-iOS.podspec'
 end
 
 target 'PerformanceTest' do
-  pod 'Cheetah-iOS', podspec: 'https://raw.githubusercontent.com/Picovoice/cheetah/v1.1-ios/binding/ios/Cheetah-iOS.podspec'
+  pod 'Cheetah-iOS', podspec: 'https://raw.githubusercontent.com/Picovoice/cheetah/v1.1/binding/ios/Cheetah-iOS.podspec'
 end
