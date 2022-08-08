@@ -1,12 +1,19 @@
-# cheetah-web
+# Cheetah Binding for Web
 
-**NOTE**: This is a beta build.
+## Cheetah Speech-to-Text Engine
 
-The Picovoice Cheetah library for web browsers, powered by WebAssembly.
+Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
-This library transcribes audio samples in-browser, offline. All processing is done via WebAssembly and Workers in a separate thread.
+Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
-Looking for Cheetah on NodeJS? See the [@picovoice/cheetah-node](https://www.npmjs.com/package/@picovoice/cheetah-node) package.
+- Private; All voice processing runs locally.
+- [Accurate](https://picovoice.ai/docs/benchmark/stt/)
+- [Compact and Computationally-Efficient](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
+- Cross-Platform:
+    - Linux (x86_64), macOS (x86_64, arm64), and Windows (x86_64)
+    - Android and iOS
+    - Chrome, Safari, Firefox, and Edge
+    - Raspberry Pi (4, 3) and NVIDIA Jetson Nano
 
 ## Compatibility
 
@@ -14,13 +21,11 @@ Looking for Cheetah on NodeJS? See the [@picovoice/cheetah-node](https://www.npm
 - Firefox
 - Safari
 
-This library requires several modern browser features: `WebAssembly`, `Web Workers`, `IndexedDB` and `Promise`. Internet Explorer will _not_ work.
-
-## Installation & Usage
+## Installation
 
 ### Package
 
-Install the [Cheetah-Web package](https://www.npmjs.com/package/@picovoice/cheetah-web) using `yarn`:
+Using `Yarn`:
 
 ```console
 yarn add @picovoice/cheetah-web
@@ -38,10 +43,9 @@ Cheetah requires a valid Picovoice `AccessKey` at initialization. `AccessKey` ac
 You can get your `AccessKey` for free. Make sure to keep your `AccessKey` secret.
 Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get your `AccessKey`.
 
-### Cheetah Models
+### Usage
 
-Cheetah requires a model file on initialization. Create a custom model file from [Picovoice Console](https://console.picovoice.ai/cat)
-or you can use the [default model file](/lib/common/cheetah_params.pv).
+Create a model in [Picovoice Console](https://console.picovoice.ai/) or use the [default model](https://github.com/Picovoice/cheetah/tree/master/lib/common).
 
 For the web packages, there are two methods to initialize Cheetah.
 
@@ -73,21 +77,22 @@ run:
 npx pvbase64 -h
 ```
 
-### Usage
+#### Init options
 
 Cheetah saves and caches your model file in IndexedDB to be used by Web Assembly. Use a different `modelPath` variable
 to hold multiple model values and set the `forceWrite` value to true to force re-save the model file. Set `endpointDurationSec`
 value to 0 if you do not with to detect endpoint (moment of silence). Set `enableAutomaticPunctuation` to
-false, if you do not wish to enable capitalization and punctuation in transcription.
-If the model file (`.pv`) changes, `version` should be incremented to force the cached model to be updated.
+true to enable  punctuation in transcription. Set `processErrorCallback` to handle errors if an error occurs
+while transcribing. If the model file (`.pv`) changes, `version` should be incremented to force the cached model to be updated.
 
 ```typescript
 // these are default
 const options = {
-  modelPath: "cheetah_model",
-  forceWrite: false,
   endpointDurationSec: 1.0,
   enableAutomaticPunctiation: true,
+  processErrorCallback: (error) => {},
+  modelPath: "cheetah_model",
+  forceWrite: false,
   version: 1
 }
 ```
@@ -170,8 +175,8 @@ Use `CheetahWorker` to initialize from public directory:
 ```typescript
 const handle = await CheetahWorker.fromPublicDirectory(
   ${ACCESS_KEY},
-  ${MODEL_FILE_RELATIVE_TO_PUBLIC_DIRECTORY},
   transcriptionCallback,
+  ${MODEL_FILE_RELATIVE_TO_PUBLIC_DIRECTORY},
   options // optional options
 );
 ```
@@ -183,8 +188,8 @@ import cheetahParams from "${PATH_TO_BASE64_CHEETAH_PARAMS}";
 
 const handle = await CheetahWorker.fromBase64(
   ${ACCESS_KEY},
-  cheetahParams,
   transcriptionCallback,
+  cheetahParams,
   options // optional options
 )
 ```
@@ -223,13 +228,6 @@ Terminate `CheetahWorker` instance:
 await handle.terminate();
 ```
 
-## Build from source (IIFE + ESM outputs)
+## Demo
 
-This library uses Rollup and TypeScript along with Babel and other popular rollup plugins. There are two outputs: an IIFE version intended for script tags / CDN usage, and a JavaScript module version intended for use with modern JavaScript/TypeScript development (e.g. Angular, Create React App, Webpack).
-
-```console
-yarn
-yarn build
-```
-
-The output will appear in the ./dist/ folder.
+For example usage refer to our [Web demo application](https://github.com/Picovoice/cheetah/tree/master/demo/web).

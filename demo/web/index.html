@@ -26,8 +26,9 @@
         try {
           let cheetah = await CheetahWeb.CheetahWorker.fromBase64(
             accessKey,
+            cheetahTranscriptionCallback,
             modelParams,
-            cheetahTranscriptionCallback
+            { enableAutomaticPunctuation: true }
           );
 
           writeMessage("Cheetah worker ready!");
