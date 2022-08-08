@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name = 'Cheetah-iOS'
   s.module_name = 'Cheetah'
-  s.version = '1.0.1'
+  s.version = '1.1.0'
   s.license = {:type => 'Apache 2.0'}
   s.summary = 'iOS SDK for Picovoice\'s Cheetah speech-to-text engine.'
   s.description = 
@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   DESC
   s.homepage = 'https://github.com/Picovoice/cheetah/tree/master/binding/ios'
   s.author = { 'Picovoice' => 'hello@picovoice.ai' }
-  s.source = { :git => "https://github.com/Picovoice/cheetah.git", :tag => "Cheetah-iOS-v1.0.1" }
+  s.source = { :git => "https://github.com/Picovoice/cheetah.git", :tag => "Cheetah-iOS-v1.1.0" }
   s.ios.deployment_target = '9.0'
   s.swift_version = '5.0'
   s.vendored_frameworks = 'lib/ios/PvCheetah.xcframework'
