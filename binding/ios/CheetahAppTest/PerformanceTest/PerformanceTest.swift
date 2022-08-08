@@ -34,14 +34,18 @@ class PerformanceTest: XCTestCase {
         let modelURL = bundle.url(forResource: "cheetah_params", withExtension: "pv")!
 
         var results: [Double] = []
-        for _ in 0...numTestIterations {
+        for i in 0...numTestIterations {
             var totalNSec = 0.0
 
             let before = CFAbsoluteTimeGetCurrent()
             let cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL)
             let after = CFAbsoluteTimeGetCurrent()
             totalNSec += (after - before)
-            results.append(totalNSec)
+
+            // throw away first run to account for cold start
+            if i > 0 {
+                results.append(totalNSec)
+            }
             cheetah?.delete()
         }
         
@@ -69,7 +73,7 @@ class PerformanceTest: XCTestCase {
         var pcmBuffer = Array<Int16>(repeating: 0, count: Int(Cheetah.frameLength))
 
         var results: [Double] = []
-        for _ in 0...numTestIterations {
+        for i in 0...numTestIterations {
             var totalNSec = 0.0
             
             var index = 44
@@ -81,7 +85,10 @@ class PerformanceTest: XCTestCase {
                 totalNSec += (after - before)
                 index += frameLengthBytes
             }
-            results.append(totalNSec)
+            // throw away first run to account for cold start
+            if i > 0 {
+                results.append(totalNSec)
+            }
         }
         cheetah?.delete()
         

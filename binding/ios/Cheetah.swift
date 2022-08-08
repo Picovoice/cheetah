@@ -13,8 +13,14 @@ import PvCheetah
 public class Cheetah {
 
     private var handle: OpaquePointer?
+    
+    /// The number of audio samples per frame.
     public static let frameLength = UInt32(pv_cheetah_frame_length())
+
+    /// Audio sample rate accepted by Cheetah.
     public static let sampleRate = UInt32(pv_sample_rate())
+
+    /// Current Cheetah version.
     public static let version = String(cString: pv_cheetah_version())
 
     /// Constructor.
@@ -25,8 +31,13 @@ public class Cheetah {
     ///   - endpointDuration: Duration of endpoint in seconds. A speech endpoint is detected when there is a
     ///     chunk of audio (with a duration specified herein) after an utterance without any speech in it.
     ///     Set duration to 0 to disable this. Default is 1 second.
+    ///   - enableAutomaticPunctuation: Set to `true` to enable automatic punctuation insertion.
     /// - Throws: CheetahError
-    public init(accessKey: String, modelPath: String, endpointDuration: Float = 1.0) throws {
+    public init(
+            accessKey: String,
+            modelPath: String,
+            endpointDuration: Float = 1.0,
+            enableAutomaticPunctuation: Bool = false) throws {
 
         if accessKey.count == 0 {
             throw CheetahInvalidArgumentError("AccessKey is required for Cheetah initialization")
@@ -45,6 +56,7 @@ public class Cheetah {
                 accessKey,
                 modelPathArg,
                 endpointDuration,
+                enableAutomaticPunctuation,
                 &handle)
         try checkStatus(status, "Cheetah init failed")
     }
@@ -61,9 +73,18 @@ public class Cheetah {
     ///   - endpointDuration: Duration of endpoint in seconds. A speech endpoint is detected when there is a
     ///     chunk of audio (with a duration specified herein) after an utterance without any speech in it.
     ///     Set duration to 0 to disable this. Default is 1 second.
+    ///   - enableAutomaticPunctuation: Set to `true` to enable automatic punctuation insertion.
     /// - Throws: CheetahError
-    public convenience init(accessKey: String, modelURL: URL, endpointDuration: Float = 1.0) throws {
-        try self.init(accessKey: accessKey, modelPath: modelURL.path, endpointDuration: endpointDuration)
+    public convenience init(
+            accessKey: String,
+            modelURL: URL,
+            endpointDuration: Float = 1.0,
+            enableAutomaticPunctuation: Bool = false) throws {
+        try self.init(
+                accessKey: accessKey,
+                modelPath: modelURL.path,
+                endpointDuration: endpointDuration,
+                enableAutomaticPunctuation: enableAutomaticPunctuation)
     }
 
     /// Releases native resources that were allocated to Cheetah

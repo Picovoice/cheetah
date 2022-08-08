@@ -13,28 +13,24 @@ import Cheetah
 
 class CheetahDemoUITests: XCTestCase {
     let accessKey: String = "{TESTING_ACCESS_KEY_HERE}"
-    let transcript: String = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL"
+    let transcript: String = "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel"
+    let transcriptWithPunctuation: String = "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.";
 
-    var cheetah: Cheetah?
+    let modelURL = Bundle(for: CheetahDemoUITests.self).url(forResource: "cheetah_params", withExtension: "pv")!
 
     override func setUp() {
         super.setUp()
-        let modelURL = Bundle(for: type(of: self)).url(forResource: "cheetah_params", withExtension: "pv")!
-        cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL)
     }
 
     override func tearDown() {
         super.tearDown()
-        cheetah?.delete()
     }
 
     override func setUpWithError() throws {
         continueAfterFailure = true
     }
 
-    func testTranscribe() throws {
-        let bundle = Bundle(for: type(of: self))
-        let fileURL: URL = bundle.url(forResource: "test", withExtension: "wav")!
+    func processFile(cheetah: Cheetah, fileURL: URL) throws -> String {
         let data = try Data(contentsOf: fileURL)
         let frameLengthBytes = Int(Cheetah.frameLength) * 2
 
@@ -44,19 +40,65 @@ class CheetahDemoUITests: XCTestCase {
         var res = ""
         while (index + frameLengthBytes < data.count) {
             _ = pcmBuffer.withUnsafeMutableBytes { data.copyBytes(to: $0, from: index..<(index + frameLengthBytes)) }
-            var (partial, _) = try cheetah!.process(pcmBuffer)
+            let (partial, _) = try cheetah.process(pcmBuffer)
             res += partial
             index += frameLengthBytes
         }
 
-        let final = try cheetah!.flush()
+        let final = try cheetah.flush()
         res += final
+
+        return res
+    }
+
+    func testTranscribe() throws {
+        let cheetah = try Cheetah(accessKey: accessKey, modelURL: modelURL)
+
+        let bundle = Bundle(for: type(of: self))
+        let fileURL: URL = bundle.url(forResource: "test", withExtension: "wav")!
+        let res: String = try processFile(cheetah: cheetah, fileURL: fileURL)
+        cheetah.delete()
 
         XCTAssertEqual(transcript, res)
     }
 
+    func testTranscribeCustomEndpointDuration() throws {
+        let cheetah = try Cheetah(
+                accessKey: accessKey,
+                modelURL: modelURL,
+                endpointDuration: 1.5)
+
+        let bundle = Bundle(for: type(of: self))
+        let fileURL: URL = bundle.url(forResource: "test", withExtension: "wav")!
+        let res: String = try processFile(cheetah: cheetah, fileURL: fileURL)
+        cheetah.delete()
+
+        XCTAssertEqual(transcript, res)
+    }
+
+    func testTranscribeWithPunctuation() throws {
+        let cheetah = try Cheetah(
+                accessKey: accessKey,
+                modelURL: modelURL,
+                enableAutomaticPunctuation: true)
+
+        let bundle = Bundle(for: type(of: self))
+        let fileURL: URL = bundle.url(forResource: "test", withExtension: "wav")!
+        let res: String = try processFile(cheetah: cheetah, fileURL: fileURL)
+        cheetah.delete()
+
+        XCTAssertEqual(transcriptWithPunctuation, res)
+    }
+
+    func testFrameLength() throws {
+        XCTAssertGreaterThan(Cheetah.frameLength, 0)
+    }
+
+    func testSampleRate() throws {
+        XCTAssertGreaterThan(Cheetah.sampleRate, 0)
+    }
+
     func testVersion() throws {
-        XCTAssertTrue(Cheetah.version is String)
         XCTAssertGreaterThan(Cheetah.version, "")
     }
 }
