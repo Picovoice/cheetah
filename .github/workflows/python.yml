@@ -15,7 +15,7 @@ on:
       - 'lib/raspberry-pi/**'
       - 'lib/windows/**'
   pull_request:
-    branches: [master]
+    branches: [master, v1.1]
     paths:
       - '.github/workflows/python.yml'
       - 'binding/python/**'
@@ -48,6 +48,12 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Pre-build dependencies
+      run: python -m pip install --upgrade pip
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
     - name: Test
       run: python test_cheetah.py ${{secrets.PV_VALID_ACCESS_KEY}}
 
@@ -60,6 +66,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
 
     - name: Test
       run: python3 test_cheetah.py ${{secrets.PV_VALID_ACCESS_KEY}}

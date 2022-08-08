@@ -30,7 +30,7 @@ class CheetahPerformanceTestCase(unittest.TestCase):
     def test_performance_init(self):
 
         perf_results = list()
-        for i in range(self.NUM_TEST_ITERATIONS):
+        for i in range(self.NUM_TEST_ITERATIONS + 1):
             start = time.time()
             cheetah = Cheetah(
                 access_key=self.ACCESS_KEY,
@@ -62,7 +62,7 @@ class CheetahPerformanceTestCase(unittest.TestCase):
         num_frames = len(pcm) // cheetah.frame_length
 
         perf_results = list()
-        for i in range(self.NUM_TEST_ITERATIONS):
+        for i in range(self.NUM_TEST_ITERATIONS + 1):
             total_proc_time = 0
             for j in range(num_frames):
                 frame = pcm[j * cheetah.frame_length:(j + 1) * cheetah.frame_length]

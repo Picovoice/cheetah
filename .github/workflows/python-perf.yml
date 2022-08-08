@@ -14,7 +14,7 @@ on:
       - 'lib/raspberry-pi/**'
       - 'lib/windows/**'
   pull_request:
-    branches: [master]
+    branches: [master, v1.1]
     paths:
       - '.github/workflows/python-perf.yml'
       - 'binding/python/test_cheetah_perf.py'
@@ -45,8 +45,8 @@ jobs:
           init_performance_threshold_sec: 2.4
           proc_performance_threshold_sec: 0.6
         - os: macos-latest
-          init_performance_threshold_sec: 2.2
-          proc_performance_threshold_sec: 0.7
+          init_performance_threshold_sec: 3.0
+          proc_performance_threshold_sec: 0.8
 
     steps:
     - uses: actions/checkout@v2
@@ -55,6 +55,12 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.10'
+
+    - name: Pre-build dependencies
+      run: python -m pip install --upgrade pip
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
 
     - name: Test
       run: python3 test_cheetah_perf.py ${{secrets.PV_VALID_ACCESS_KEY}} 50 ${{matrix.init_performance_threshold_sec}} ${{matrix.proc_performance_threshold_sec}}
@@ -89,6 +95,9 @@ jobs:
     - name: Machine state before
       working-directory: resources/scripts
       run: bash machine-state.sh
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
 
     - name: Test
       run: python3 test_cheetah_perf.py ${{secrets.PV_VALID_ACCESS_KEY}} 20 ${{matrix.init_performance_threshold_sec}} ${{matrix.proc_performance_threshold_sec}}
