@@ -35,7 +35,7 @@ public class CheetahPerformanceTest {
     void initPerformance() throws Exception {
 
         long[] perfResults = new long[numTestIterations];
-        for (int i = 0; i < numTestIterations; i++) {
+        for (int i = 0; i < numTestIterations + 1; i++) {
             long before = System.nanoTime();
             Cheetah cheetah = new Cheetah.Builder()
                     .setAccessKey(accessKey)
@@ -46,7 +46,7 @@ public class CheetahPerformanceTest {
             long initTime = (System.nanoTime() - before);
 
             if (i > 0) {
-                perfResults[i] = initTime;
+                perfResults[i - 1] = initTime;
             }
             cheetah.delete();
         }
@@ -79,7 +79,7 @@ public class CheetahPerformanceTest {
 
         short[] cheetahFrame = new short[frameLen];
         long[] perfResults = new long[numTestIterations];
-        for (int i = 0; i < numTestIterations; i++) {
+        for (int i = 0; i < numTestIterations + 1; i++) {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(testAudioPath);
             int byteDepth = audioInputStream.getFormat().getFrameSize();
             byte[] pcm = new byte[frameLen * byteDepth];
@@ -95,7 +95,7 @@ public class CheetahPerformanceTest {
                 }
             }
             if (i > 0) {
-                perfResults[i] = totalProcTime;
+                perfResults[i - 1] = totalProcTime;
             }
             audioInputStream.close();
         }
