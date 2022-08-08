@@ -61,24 +61,27 @@ func (e *CheetahError) Error() string {
 	return fmt.Sprintf("%s: %s", pvStatusToString(e.StatusCode), e.Message)
 }
 
-// Cheetah struct
-type Cheetah struct {
+// pvCheetah struct
+type pvCheetah struct {
 	// handle for cheetah instance in C
 	handle unsafe.Pointer
 
 	// AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
 	AccessKey string
 
-	// Absolute path to Cheetah's dynamic library.
-	LibraryPath string
-
 	// Absolute path to the file containing model parameters.
 	ModelPath string
+
+	// Absolute path to Cheetah's dynamic library.
+	LibraryPath string
 
 	// Duration of endpoint in seconds. A speech endpoint is detected when there is a
 	// chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to 0
 	// to disable endpoint detection.
 	EndpointDuration float32
+
+	// Flag to enable automatic punctuation insertion.
+	EnableAutomaticPunctuation bool
 }
 
 // private vars
@@ -103,41 +106,42 @@ var (
 )
 
 // Returns a Cheetah struct with default parameters
-func NewCheetah(accessKey string) Cheetah {
-	return Cheetah{
-		AccessKey:        accessKey,
-		LibraryPath:      defaultLibPath,
-		ModelPath:        defaultModelFile,
-		EndpointDuration: 1.0,
+func NewCheetah(accessKey string) pvCheetah {
+	return pvCheetah{
+		AccessKey:                  accessKey,
+		ModelPath:                  defaultModelFile,
+		LibraryPath:                defaultLibPath,
+		EndpointDuration:           1.0,
+		EnableAutomaticPunctuation: false,
 	}
 }
 
 // Init function for Cheetah. Must be called before attempting process
-func (cheetah *Cheetah) Init() error {
+func (cheetah *pvCheetah) Init() error {
 	if cheetah.AccessKey == "" {
 		return &CheetahError{
 			INVALID_ARGUMENT,
 			"No AccessKey provided to Cheetah"}
 	}
 
-	if cheetah.LibraryPath == "" {
-		cheetah.LibraryPath = defaultLibPath
-	}
-
-	if _, err := os.Stat(cheetah.LibraryPath); os.IsNotExist(err) {
-		return &CheetahError{
-			INVALID_ARGUMENT,
-			fmt.Sprintf("Specified library file could not be found at %s", cheetah.LibraryPath)}
-	}
-
 	if cheetah.ModelPath == "" {
 		cheetah.ModelPath = defaultModelFile
+	}
+
+	if cheetah.LibraryPath == "" {
+		cheetah.LibraryPath = defaultLibPath
 	}
 
 	if _, err := os.Stat(cheetah.ModelPath); os.IsNotExist(err) {
 		return &CheetahError{
 			INVALID_ARGUMENT,
 			fmt.Sprintf("Specified model file could not be found at %s", cheetah.ModelPath)}
+	}
+
+	if _, err := os.Stat(cheetah.LibraryPath); os.IsNotExist(err) {
+		return &CheetahError{
+			INVALID_ARGUMENT,
+			fmt.Sprintf("Specified library file could not be found at %s", cheetah.LibraryPath)}
 	}
 
 	if cheetah.EndpointDuration < 0 {
@@ -161,7 +165,7 @@ func (cheetah *Cheetah) Init() error {
 }
 
 // Releases resources acquired by Cheetah.
-func (cheetah *Cheetah) Delete() error {
+func (cheetah *pvCheetah) Delete() error {
 	if cheetah.handle == nil {
 		return &CheetahError{
 			INVALID_STATE,
@@ -176,7 +180,7 @@ func (cheetah *Cheetah) Delete() error {
 // detected. Upon detection of an endpoint, the client may invoke `.Flush()` to retrieve any remaining transcription.
 // Returns Any newly-transcribed speech (if none is available then an empty string is returned) and a
 // flag indicating if an endpoint has been detected.
-func (cheetah *Cheetah) Process(pcm []int16) (string, bool, error) {
+func (cheetah *pvCheetah) Process(pcm []int16) (string, bool, error) {
 	if cheetah.handle == nil {
 		return "", false, &CheetahError{
 			INVALID_STATE,
@@ -201,7 +205,7 @@ func (cheetah *Cheetah) Process(pcm []int16) (string, bool, error) {
 
 // Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcribed text.
 // Return any remaining transcribed text. If none is available then an empty string is returned.
-func (cheetah *Cheetah) Flush() (string, error) {
+func (cheetah *pvCheetah) Flush() (string, error) {
 	if cheetah.handle == nil {
 		return "", &CheetahError{
 			INVALID_STATE,
