@@ -2,15 +2,15 @@ PODS:
   - Cheetah-iOS (1.1.0)
 
 DEPENDENCIES:
-  - Cheetah-iOS (from `https://raw.githubusercontent.com/Picovoice/cheetah/v1.1/binding/ios/Cheetah-iOS.podspec`)
+  - Cheetah-iOS (~> 1.1.0)
 
-EXTERNAL SOURCES:
-  Cheetah-iOS:
-    :podspec: https://raw.githubusercontent.com/Picovoice/cheetah/v1.1/binding/ios/Cheetah-iOS.podspec
+SPEC REPOS:
+  trunk:
+    - Cheetah-iOS
 
 SPEC CHECKSUMS:
   Cheetah-iOS: 6fb7be693878f5b1dec0ea5b6534fbba30954afc
 
-PODFILE CHECKSUM: deec15b727c076cf68813c438b51ee4fbaf08f66
+PODFILE CHECKSUM: be70602bbfa54a30183877dfe83545b7f63d2887
 
 COCOAPODS: 1.11.2
