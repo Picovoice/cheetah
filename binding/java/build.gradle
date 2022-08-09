@@ -7,7 +7,7 @@ plugins {
 
 ext {
     PUBLISH_GROUP_ID = 'ai.picovoice'
-    PUBLISH_VERSION = '1.0.1'
+    PUBLISH_VERSION = '1.1.0'
     PUBLISH_ARTIFACT_ID = 'cheetah-java'
 }
 
@@ -87,6 +87,7 @@ if (file("${rootDir}/publish-mavencentral.gradle").exists()) {
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
 }
 
 compileTestJava {
