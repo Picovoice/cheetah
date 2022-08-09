@@ -79,7 +79,7 @@ npx pvbase64 -h
 
 #### Init options
 
-Cheetah saves and caches your model file in IndexedDB to be used by Web Assembly. Use a different `modelPath` variable
+Cheetah saves and caches your model file in IndexedDB to be used by Web Assembly. Use a different `customWritePath` variable
 to hold multiple model values and set the `forceWrite` value to true to force re-save the model file. Set `endpointDurationSec`
 value to 0 if you do not with to detect endpoint (moment of silence). Set `enableAutomaticPunctuation` to
 true to enable  punctuation in transcription. Set `processErrorCallback` to handle errors if an error occurs
@@ -91,7 +91,7 @@ const options = {
   endpointDurationSec: 1.0,
   enableAutomaticPunctiation: true,
   processErrorCallback: (error) => {},
-  modelPath: "cheetah_model",
+  customWritePath: "cheetah_model",
   forceWrite: false,
   version: 1
 }
@@ -104,7 +104,7 @@ Use `Cheetah` to initialize from public directory:
 ```typescript
 const handle = await Cheetah.fromPublicDirectory(
   ${ACCESS_KEY},
-  ${MODEL_FILE_RELATIVE_TO_PUBLIC_DIRECTORY},
+  ${MODEL_RELATIVE_PATH},
   options // optional options
 );
 ```
@@ -176,7 +176,7 @@ Use `CheetahWorker` to initialize from public directory:
 const handle = await CheetahWorker.fromPublicDirectory(
   ${ACCESS_KEY},
   transcriptionCallback,
-  ${MODEL_FILE_RELATIVE_TO_PUBLIC_DIRECTORY},
+  ${MODEL_RELATIVE_PATH},
   options // optional options
 );
 ```

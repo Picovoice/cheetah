@@ -17,7 +17,7 @@ export type CheetahOptions = {
   /** @defaultValue undefined */
   processErrorCallback?: (error: string) => void
   /** @defaultValue 'cheetah_model' */
-  modelPath?: string;
+  customWritePath?: string;
   /** @defaultValue false */
   forceWrite?: boolean;
   /** @defaultValue 1 */

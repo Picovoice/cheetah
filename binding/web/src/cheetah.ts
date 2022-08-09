@@ -147,8 +147,8 @@ export class Cheetah {
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
    * @param options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
-   * @param options.modelPath The path to save and use the model from. Use different names to use different models
-   * across different Cheetah instances.
+   * @param options.customWritePath Custom path to save the model in storage.
+   * Set to a different name to use multiple models across `leopard` instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
    * @param options.version Cheetah model version. Set to a higher number to update the model file.
    * @returns An instance of the Cheetah engine.
@@ -158,9 +158,9 @@ export class Cheetah {
     modelBase64: string,
     options: CheetahOptions = {},
   ): Promise<Cheetah> {
-    const { modelPath = 'cheetah_model', forceWrite = false, version = 1, ...rest } = options;
-    await fromBase64(modelPath, modelBase64, forceWrite, version);
-    return this.create(accessKey, modelPath, rest);
+    const { customWritePath = 'cheetah_model', forceWrite = false, version = 1, ...rest } = options;
+    await fromBase64(customWritePath, modelBase64, forceWrite, version);
+    return this.create(accessKey, customWritePath, rest);
   }
 
   /**
@@ -175,8 +175,8 @@ export class Cheetah {
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
    * @param options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
-   * @param options.modelPath The path to save and use the model from. Use different names to use different models
-   * across different Cheetah instances.
+   * @param options.customWritePath Custom path to save the model in storage.
+   * Set to a different name to use multiple models across `leopard` instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
    * @param options.version Cheetah model version. Set to a higher number to update the model file.
    *
@@ -187,9 +187,9 @@ export class Cheetah {
     publicPath: string,
     options: CheetahOptions = {},
   ): Promise<Cheetah> {
-    const { modelPath = 'cheetah_model', forceWrite = false, version = 1, ...rest } = options;
-    await fromPublicDirectory(modelPath, publicPath, forceWrite, version);
-    return this.create(accessKey, modelPath, rest);
+    const { customWritePath = 'cheetah_model', forceWrite = false, version = 1, ...rest } = options;
+    await fromPublicDirectory(customWritePath, publicPath, forceWrite, version);
+    return this.create(accessKey, customWritePath, rest);
   }
 
   /**

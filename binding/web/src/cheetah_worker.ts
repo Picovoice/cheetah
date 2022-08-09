@@ -82,8 +82,8 @@ export class CheetahWorker {
    * @param options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
    * @param options.processErrorCallback User-defined callback invoked if any error happens
    * while processing the audio stream. Its only input argument is the error message.
-   * @param options.modelPath The path to save and use the model from. Use different names to use different models
-   * across different Cheetah instances.
+   * @param options.customWritePath Custom path to save the model in storage.
+   * Set to a different name to use multiple models across `leopard` instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
    * @param options.version Cheetah model version. Set to a higher number to update the model file.
    *
@@ -95,9 +95,9 @@ export class CheetahWorker {
     modelBase64: string,
     options: CheetahOptions = {},
   ): Promise<CheetahWorker> {
-    const { modelPath = 'cheetah_model', forceWrite = false, version = 1, processErrorCallback, ...rest } = options;
-    await fromBase64(modelPath, modelBase64, forceWrite, version);
-    return this.create(accessKey, transcriptionCallback, modelPath, processErrorCallback, rest);
+    const { customWritePath = 'cheetah_model', forceWrite = false, version = 1, processErrorCallback, ...rest } = options;
+    await fromBase64(customWritePath, modelBase64, forceWrite, version);
+    return this.create(accessKey, transcriptionCallback, customWritePath, processErrorCallback, rest);
   }
 
   /**
@@ -115,8 +115,8 @@ export class CheetahWorker {
    * @param options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
    * @param options.processErrorCallback User-defined callback invoked if any error happens
    * while processing the audio stream. Its only input argument is the error message.
-   * @param options.modelPath The path to save and use the model from. Use different names to use different models
-   * across different Cheetah instances.
+   * @param options.customWritePath Custom path to save the model in storage.
+   * Set to a different name to use multiple models across `leopard` instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
    * @param options.version Cheetah model version. Set to a higher number to update the model file.
    *
@@ -128,9 +128,9 @@ export class CheetahWorker {
     publicPath: string,
     options: CheetahOptions = {},
   ): Promise<CheetahWorker> {
-    const { modelPath = 'cheetah_model', forceWrite = false, version = 1, processErrorCallback, ...rest } = options;
-    await fromPublicDirectory(modelPath, publicPath, forceWrite, version);
-    return this.create(accessKey, transcriptionCallback, modelPath, processErrorCallback, rest);
+    const { customWritePath = 'cheetah_model', forceWrite = false, version = 1, processErrorCallback, ...rest } = options;
+    await fromPublicDirectory(customWritePath, publicPath, forceWrite, version);
+    return this.create(accessKey, transcriptionCallback, customWritePath, processErrorCallback, rest);
   }
 
   /**
