@@ -3,6 +3,7 @@ import { CheetahWorker } from './cheetah_worker';
 
 import {
   CheetahOptions,
+  CheetahTranscript,
   CheetahWorkerInitRequest,
   CheetahWorkerProcessRequest,
   CheetahWorkerReleaseRequest,
@@ -25,6 +26,7 @@ CheetahWorker.setWasmSimd(cheetahWasmSimd);
 export {
   Cheetah,
   CheetahOptions,
+  CheetahTranscript,
   CheetahWorker,
   CheetahWorkerInitRequest,
   CheetahWorkerProcessRequest,

@@ -22,7 +22,12 @@ export type CheetahOptions = {
   forceWrite?: boolean;
   /** @defaultValue 1 */
   version?: number;
-}
+};
+
+export type CheetahTranscript = {
+  transcript: string;
+  isEndpoint?: boolean;
+};
 
 export type CheetahWorkerInitRequest = {
   command: 'init';
@@ -66,13 +71,12 @@ export type CheetahWorkerInitResponse = CheetahWorkerFailureResponse | {
 
 export type CheetahWorkerProcessResponse = CheetahWorkerFailureResponse | {
   command: 'ok';
-  transcription: string;
-  isEndpoint: boolean;
+  cheetahTranscript: CheetahTranscript;
 };
 
 export type CheetahWorkerFlushResponse = CheetahWorkerFailureResponse | {
   command: 'ok';
-  transcription: string;
+  cheetahTranscript: CheetahTranscript;
 };
 
 export type CheetahWorkerReleaseResponse = CheetahWorkerFailureResponse | {

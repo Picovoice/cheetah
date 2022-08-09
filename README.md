@@ -696,12 +696,12 @@ Create an instance of the engine using `CheetahWorker` and transcribe an audio f
 import { CheetahWorker } from "@picovoice/cheetah-web";
 import cheetahParams from "${PATH_TO_BASE64_CHEETAH_PARAMS}";
 
-let transcription = "";
+let transcript = "";
 
-function transcriptionCallback(partial: string, isEndpoint: boolean) {
-  transcription += partial;
-  if (isEndpoint) {
-    transcription += "\n";
+function transcriptCallback(cheetahTranscript: CheetahTranscript) {
+  transcript += cheetahTranscript.transcript;
+  if (cheetahTranscript.isEndpoint) {
+    transcript += "\n";
   }
 }
 
@@ -712,11 +712,11 @@ function getAudioData(): Int16Array {
 
 const cheetah = await CheetahWorker.fromBase64(
   "${ACCESS_KEY}",
-  transcriptionCallback,
+  transcriptCallback,
   cheetahParams
 );
 
-for (;;) {
+for (; ;) {
   cheetah.process(getAudioData());
   // break on some condition
 }
