@@ -83,7 +83,7 @@ export class CheetahWorker {
    * @param options.processErrorCallback User-defined callback invoked if any error happens
    * while processing the audio stream. Its only input argument is the error message.
    * @param options.customWritePath Custom path to save the model in storage.
-   * Set to a different name to use multiple models across `leopard` instances.
+   * Set to a different name to use multiple models across `cheetah` instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
    * @param options.version Cheetah model version. Set to a higher number to update the model file.
    *
@@ -116,7 +116,7 @@ export class CheetahWorker {
    * @param options.processErrorCallback User-defined callback invoked if any error happens
    * while processing the audio stream. Its only input argument is the error message.
    * @param options.customWritePath Custom path to save the model in storage.
-   * Set to a different name to use multiple models across `leopard` instances.
+   * Set to a different name to use multiple models across `cheetah` instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
    * @param options.version Cheetah model version. Set to a higher number to update the model file.
    *

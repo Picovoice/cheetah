@@ -148,7 +148,7 @@ export class Cheetah {
    * to disable endpoint detection.
    * @param options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
    * @param options.customWritePath Custom path to save the model in storage.
-   * Set to a different name to use multiple models across `leopard` instances.
+   * Set to a different name to use multiple models across `cheetah` instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
    * @param options.version Cheetah model version. Set to a higher number to update the model file.
    * @returns An instance of the Cheetah engine.
@@ -176,7 +176,7 @@ export class Cheetah {
    * to disable endpoint detection.
    * @param options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
    * @param options.customWritePath Custom path to save the model in storage.
-   * Set to a different name to use multiple models across `leopard` instances.
+   * Set to a different name to use multiple models across `cheetah` instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
    * @param options.version Cheetah model version. Set to a higher number to update the model file.
    *
