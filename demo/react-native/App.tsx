@@ -95,18 +95,24 @@ export default class App extends Component<Props, State> {
         async (buffer: number[]) => {
           if (this._cheetah !== undefined) {
             const partialResult = await this._cheetah.process(buffer);
-            let transcriptText =
-              this.state.transcription + partialResult.transcript;
             if (partialResult.isEndpoint) {
               const remainingResult = await this._cheetah.flush();
-              transcriptText += remainingResult.transcript;
+              let transcriptText =
+                this.state.transcription +
+                partialResult.transcript +
+                remainingResult.transcript;
               if (remainingResult.transcript.length > 0) {
                 transcriptText += ' ';
               }
+              this.setState({
+                transcription: transcriptText,
+              });
+            } else {
+              this.setState({
+                transcription:
+                  this.state.transcription + partialResult.transcript,
+              });
             }
-            this.setState({
-              transcription: transcriptText,
-            });
           }
         },
       );
