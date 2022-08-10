@@ -25,15 +25,15 @@ import {
 
 import { simd } from 'wasm-feature-detect';
 
-import { CheetahOptions } from './types';
+import { CheetahOptions, CheetahTranscript } from './types';
 
 /**
  * WebAssembly function types
  */
 
 type pv_cheetah_init_type = (accessKey: number, modelPath: number, endpointDurationSec: number, enableAutomaticPunctuation: number, object: number) => Promise<number>;
-type pv_cheetah_process_type = (object: number, pcm: number, transcription: number, isEndpoint: number) => Promise<number>;
-type pv_cheetah_flush_type = (object: number, transcription: number) => Promise<number>;
+type pv_cheetah_process_type = (object: number, pcm: number, transcript: number, isEndpoint: number) => Promise<number>;
+type pv_cheetah_flush_type = (object: number, transcript: number) => Promise<number>;
 type pv_cheetah_delete_type = (object: number) => Promise<void>;
 type pv_status_to_string_type = (status: number) => Promise<number>
 type pv_cheetah_frame_length_type = () => Promise<number>;
@@ -58,7 +58,7 @@ type CheetahWasmOutput = {
   version: string;
   inputBufferAddress: number;
   isEndpointAddress: number;
-  transcriptionAddressAddress: number;
+  transcriptAddressAddress: number;
 };
 
 const PV_STATUS_SUCCESS = 10000;
@@ -80,7 +80,7 @@ export class Cheetah {
   private readonly _inputBufferAddress: number;
   private readonly _alignedAlloc: CallableFunction;
   private readonly _isEndpointAddress: number;
-  private readonly _transcriptionAddressAddress: number;
+  private readonly _transcriptAddressAddress: number;
 
   private static _frameLength: number;
   private static _sampleRate: number;
@@ -106,7 +106,7 @@ export class Cheetah {
     this._inputBufferAddress = handleWasm.inputBufferAddress;
     this._alignedAlloc = handleWasm.aligned_alloc;
     this._isEndpointAddress = handleWasm.isEndpointAddress;
-    this._transcriptionAddressAddress = handleWasm.transcriptionAddressAddress;
+    this._transcriptAddressAddress = handleWasm.transcriptAddressAddress;
 
     this._memoryBuffer = new Int16Array(handleWasm.memory.buffer);
     this._memoryBufferUint8 = new Uint8Array(handleWasm.memory.buffer);
@@ -147,8 +147,8 @@ export class Cheetah {
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
    * @param options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
-   * @param options.modelPath The path to save and use the model from. Use different names to use different models
-   * across different Cheetah instances.
+   * @param options.customWritePath Custom path to save the model in storage.
+   * Set to a different name to use multiple models across `cheetah` instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
    * @param options.version Cheetah model version. Set to a higher number to update the model file.
    * @returns An instance of the Cheetah engine.
@@ -158,9 +158,9 @@ export class Cheetah {
     modelBase64: string,
     options: CheetahOptions = {},
   ): Promise<Cheetah> {
-    const { modelPath = 'cheetah_model', forceWrite = false, version = 1, ...rest } = options;
-    await fromBase64(modelPath, modelBase64, forceWrite, version);
-    return this.create(accessKey, modelPath, rest);
+    const { customWritePath = 'cheetah_model', forceWrite = false, version = 1, ...rest } = options;
+    await fromBase64(customWritePath, modelBase64, forceWrite, version);
+    return this.create(accessKey, customWritePath, rest);
   }
 
   /**
@@ -175,8 +175,8 @@ export class Cheetah {
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
    * @param options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
-   * @param options.modelPath The path to save and use the model from. Use different names to use different models
-   * across different Cheetah instances.
+   * @param options.customWritePath Custom path to save the model in storage.
+   * Set to a different name to use multiple models across `cheetah` instances.
    * @param options.forceWrite Flag to overwrite the model in storage even if it exists.
    * @param options.version Cheetah model version. Set to a higher number to update the model file.
    *
@@ -187,9 +187,9 @@ export class Cheetah {
     publicPath: string,
     options: CheetahOptions = {},
   ): Promise<Cheetah> {
-    const { modelPath = 'cheetah_model', forceWrite = false, version = 1, ...rest } = options;
-    await fromPublicDirectory(modelPath, publicPath, forceWrite, version);
-    return this.create(accessKey, modelPath, rest);
+    const { customWritePath = 'cheetah_model', forceWrite = false, version = 1, ...rest } = options;
+    await fromPublicDirectory(customWritePath, publicPath, forceWrite, version);
+    return this.create(accessKey, customWritePath, rest);
   }
 
   /**
@@ -253,12 +253,12 @@ export class Cheetah {
    * @return Any newly-transcribed speech (if none is available then an empty string is returned) and a
    * flag indicating if an endpoint has been detected.
    */
-  public async process(pcm: Int16Array): Promise<[string, boolean]> {
+  public async process(pcm: Int16Array): Promise<CheetahTranscript> {
     if (!(pcm instanceof Int16Array)) {
       throw new Error('The argument \'pcm\' must be provided as an Int16Array');
     }
 
-    const returnPromise = new Promise<[string, boolean]>((resolve, reject) => {
+    const returnPromise = new Promise<CheetahTranscript>((resolve, reject) => {
       this._processMutex
         .runExclusive(async () => {
           if (this._wasmMemory === undefined) {
@@ -273,7 +273,7 @@ export class Cheetah {
           const status = await this._pvCheetahProcess(
             this._objectAddress,
             this._inputBufferAddress,
-            this._transcriptionAddressAddress,
+            this._transcriptAddressAddress,
             this._isEndpointAddress,
           );
           if (status !== PV_STATUS_SUCCESS) {
@@ -288,20 +288,20 @@ export class Cheetah {
 
           const isEndpoint = this._memoryBufferView.getUint8(this._isEndpointAddress) === 1;
 
-          const transcriptionAddress = this._memoryBufferView.getInt32(
-            this._transcriptionAddressAddress,
+          const transcriptAddress = this._memoryBufferView.getInt32(
+            this._transcriptAddressAddress,
             true,
           );
 
-          const transcription = arrayBufferToStringAtIndex(
+          const transcript = arrayBufferToStringAtIndex(
             this._memoryBufferUint8,
-            transcriptionAddress,
+            transcriptAddress,
           );
-          await this._pvFree(transcriptionAddress);
+          await this._pvFree(transcriptAddress);
 
-          return [transcription, isEndpoint] as [string, boolean];
+          return { transcript, isEndpoint };
         })
-        .then((result: [string, boolean]) => {
+        .then((result: CheetahTranscript) => {
           resolve(result);
         })
         .catch((error: any) => {
@@ -318,8 +318,8 @@ export class Cheetah {
    *
    * @return Any remaining transcribed text. If none is available then an empty string is returned.
    */
-  public async flush(): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
+  public async flush(): Promise<CheetahTranscript> {
+    return new Promise<CheetahTranscript>((resolve, reject) => {
       this._processMutex
         .runExclusive(async () => {
           if (this._wasmMemory === undefined) {
@@ -328,7 +328,7 @@ export class Cheetah {
 
           const status = await this._pvCheetahFlush(
             this._objectAddress,
-            this._transcriptionAddressAddress,
+            this._transcriptAddressAddress,
           );
 
           if (status !== PV_STATUS_SUCCESS) {
@@ -341,20 +341,20 @@ export class Cheetah {
             );
           }
 
-          const transcriptionAddress = this._memoryBufferView.getInt32(
-            this._transcriptionAddressAddress,
+          const transcriptAddress = this._memoryBufferView.getInt32(
+            this._transcriptAddressAddress,
             true,
           );
 
-          const transcription = arrayBufferToStringAtIndex(
+          const transcript = arrayBufferToStringAtIndex(
             this._memoryBufferUint8,
-            transcriptionAddress,
+            transcriptAddress,
           );
-          await this._pvFree(transcriptionAddress);
+          await this._pvFree(transcriptAddress);
 
-          return transcription;
+          return { transcript };
         })
-        .then((result: string) => {
+        .then((result: CheetahTranscript) => {
           resolve(result);
         })
         .catch((error: any) => {
@@ -398,11 +398,11 @@ export class Cheetah {
     const pv_cheetah_frame_length = exports.pv_cheetah_frame_length as pv_cheetah_frame_length_type;
     const pv_sample_rate = exports.pv_sample_rate as pv_sample_rate_type;
 
-    const transcriptionAddressAddress = await aligned_alloc(
+    const transcriptAddressAddress = await aligned_alloc(
       Int32Array.BYTES_PER_ELEMENT,
       Int32Array.BYTES_PER_ELEMENT,
     );
-    if (transcriptionAddressAddress === 0) {
+    if (transcriptAddressAddress === 0) {
       throw new Error('malloc failed: Cannot allocate memory');
     }
 
@@ -498,7 +498,7 @@ export class Cheetah {
       version: version,
       inputBufferAddress: inputBufferAddress,
       isEndpointAddress: isEndpointAddress,
-      transcriptionAddressAddress: transcriptionAddressAddress,
+      transcriptAddressAddress: transcriptAddressAddress,
     };
   }
 }

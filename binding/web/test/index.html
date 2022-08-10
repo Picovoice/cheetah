@@ -66,31 +66,31 @@
     }
 
     async function transcribeMain(engineInstance, pcm) {
-      let transcription = "";
+      let transcript = "";
       let frameLength = engineInstance.frameLength;
       for (let i = 0; i < (pcm.byteLength / pcm.BYTES_PER_ELEMENT); i += frameLength) {
-        const [partial, isEndpoint] = await engineInstance.process(pcm.slice(i, i + frameLength))
-        transcription += partial;
-        if (isEndpoint) {
-          transcription += await engineInstance.flush();
+        const transcriptObj = await engineInstance.process(pcm.slice(i, i + frameLength))
+        transcript += transcriptObj.transcript;
+        if (transcriptObj.isEndpoint) {
+          transcript += (await engineInstance.flush()).transcript;
         }
       }
-      transcription += await engineInstance.flush();
-      return transcription;
+      transcript += (await engineInstance.flush()).transcript;
+      return transcript;
     }
 
-    let workerTranscription = "";
+    let workerTranscript = "";
     let workerCbCount = 0;
-    function transcriptionCallback(transcription, isEndpoint) {
-      workerTranscription += transcription;
+    function transcriptCallback(cheetahTranscript) {
+      workerTranscript += cheetahTranscript.transcript;
       workerCbCount += 1;
-      if (isEndpoint) {
+      if (cheetahTranscript.isEndpoint) {
         workerCbCount += 1;
       }
     }
 
     async function transcribeWorker(engineInstance, pcm) {
-      workerTranscription = "";
+      workerTranscript = "";
       workerCbCount = 0;
 
       let totalCount = 1;
@@ -103,9 +103,9 @@
 
       return new Promise(resolve => {
         const interval = setInterval(() => {
-          if (workerCbCount >= (totalCount + 1)) {
+          if (workerCbCount >= (totalCount)) {
             clearInterval(interval);
-            resolve(workerTranscription);
+            resolve(workerTranscript);
           }
         }, 100);
       });
@@ -127,29 +127,29 @@
       try {
         writeMessage("Checking Cheetah 'fromPublicDirectory'");
         let handle = await CheetahWeb.Cheetah.fromPublicDirectory(accessKey, "cheetah_params.pv", { forceWrite: true, enableAutomaticPunctuation: true });
-        let transcription = await transcribeMain(handle, pcm);
-        assertEquals(expectedPunctuation, transcription, 'Failed to transcribe audio file');
+        let transcript = await transcribeMain(handle, pcm);
+        assertEquals(expectedPunctuation, transcript, 'Failed to transcribe audio file');
         handle.release()
         writeMessage("Checking Cheetah 'fromPublicDirectory'... done!");
 
         writeMessage("Checking Cheetah 'fromBase64'");
         handle = await CheetahWeb.Cheetah.fromBase64(accessKey, modelParams, { forceWrite: true });
-        transcription = await transcribeMain(handle, pcm);
-        assertEquals(expected, transcription, 'Failed to transcribe audio file');
+        transcript = await transcribeMain(handle, pcm);
+        assertEquals(expected, transcript, 'Failed to transcribe audio file');
         handle.release()
         writeMessage("Checking Cheetah 'fromBase64'... done!");
 
         writeMessage("Checking CheetahWorker 'fromPublicDirectory'");
-        handle = await CheetahWeb.CheetahWorker.fromPublicDirectory(accessKey, transcriptionCallback, "cheetah_params.pv", { forceWrite: true });
-        transcription = await transcribeWorker(handle, pcm);
-        assertEquals(expected, transcription, 'Failed to transcribe audio file');
+        handle = await CheetahWeb.CheetahWorker.fromPublicDirectory(accessKey, transcriptCallback, "cheetah_params.pv", { forceWrite: true });
+        transcript = await transcribeWorker(handle, pcm);
+        assertEquals(expected, transcript, 'Failed to transcribe audio file');
         handle.release()
         writeMessage("Checking CheetahWorker 'fromPublicDirectory'... done!");
 
         writeMessage("Checking CheetahWorker 'fromBase64'");
-        handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptionCallback, modelParams, { forceWrite: true });
-        transcription = await transcribeWorker(handle, pcm);
-        assertEquals(expected, transcription, 'Failed to transcribe audio file');
+        handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptCallback, modelParams, { forceWrite: true });
+        transcript = await transcribeWorker(handle, pcm);
+        assertEquals(expected, transcript, 'Failed to transcribe audio file');
         handle.release()
         writeMessage("Checking CheetahWorker 'fromBase64'... done!");
 
@@ -164,7 +164,7 @@
 
         is_failed = false
         try {
-          await CheetahWeb.CheetahWorker.fromPublicDirectory(accessKey, transcriptionCallback, "invalid", { forceWrite: true });
+          await CheetahWeb.CheetahWorker.fromPublicDirectory(accessKey, transcriptCallback, "invalid", { forceWrite: true });
         } catch (e) {
           is_failed = true;
         }
@@ -182,7 +182,7 @@
 
         is_failed = false
         try {
-          await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptionCallback, "invalid", { forceWrite: true });
+          await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptCallback, "invalid", { forceWrite: true });
         } catch (e) {
           is_failed = true;
         }
@@ -200,7 +200,7 @@
 
         is_failed = false
         try {
-          await CheetahWeb.CheetahWorker.fromPublicDirectory("invalid", transcriptionCallback, "cheetah_params.pv");
+          await CheetahWeb.CheetahWorker.fromPublicDirectory("invalid", transcriptCallback, "cheetah_params.pv");
         } catch (e) {
           is_failed = true;
         }
@@ -227,13 +227,13 @@
         writeMessage("Starting init performance test!");
         let start = Date.now();
         for (let i = 0; i < numIterations; i++) {
-          handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptionCallback, modelParams, {forceWrite: true});
+          handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptCallback, modelParams, {forceWrite: true});
           handle.terminate();
         }
         let end = Date.now();
         writeMessage(`Init Performance: ${((end - start) / 1000) / numIterations}`);
 
-        handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptionCallback, modelParams, {forceWrite: true});
+        handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptCallback, modelParams, {forceWrite: true});
         writeMessage("Starting process performance test!");
         start = Date.now();
         for (let i = 0; i < numIterations; i++) {

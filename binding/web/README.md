@@ -79,10 +79,10 @@ npx pvbase64 -h
 
 #### Init options
 
-Cheetah saves and caches your model file in IndexedDB to be used by Web Assembly. Use a different `modelPath` variable
+Cheetah saves and caches your model file in IndexedDB to be used by Web Assembly. Use a different `customWritePath` variable
 to hold multiple model values and set the `forceWrite` value to true to force re-save the model file. Set `endpointDurationSec`
 value to 0 if you do not with to detect endpoint (moment of silence). Set `enableAutomaticPunctuation` to
-true to enable  punctuation in transcription. Set `processErrorCallback` to handle errors if an error occurs
+true to enable  punctuation in transcript. Set `processErrorCallback` to handle errors if an error occurs
 while transcribing. If the model file (`.pv`) changes, `version` should be incremented to force the cached model to be updated.
 
 ```typescript
@@ -91,7 +91,7 @@ const options = {
   endpointDurationSec: 1.0,
   enableAutomaticPunctiation: true,
   processErrorCallback: (error) => {},
-  modelPath: "cheetah_model",
+  customWritePath: "cheetah_model",
   forceWrite: false,
   version: 1
 }
@@ -104,7 +104,7 @@ Use `Cheetah` to initialize from public directory:
 ```typescript
 const handle = await Cheetah.fromPublicDirectory(
   ${ACCESS_KEY},
-  ${MODEL_FILE_RELATIVE_TO_PUBLIC_DIRECTORY},
+  ${MODEL_RELATIVE_PATH},
   options // optional options
 );
 ```
@@ -129,32 +129,32 @@ function getAudioData(): Int16Array {
   return new Int16Array();
 }
 
-let transcription = "";
+let transcript = "";
 for (;;) {
-  const [partial, isEndpoint] = await handle.process(getAudioData());
-  transcription += partial;
-  if (isEndpoint) {
-    transcription += await handle.flush();
-    transcription += "\n";
+  const transcriptObj = await handle.process(getAudioData());
+  transcript += transcriptObj.transcript;
+  if (transcriptObj.isEndpoint) {
+    const finalTranscriptObj = await handle.flush();
+    transcript += finalTranscriptObj.transcript;
+    transcript += "\n";
   }
   // break on some condition
 }
-transcription += await handle.flush(); // runs transcriptionCallback in remaining data
-console.log(transcription);
+console.log(transcript);
 ```
 
 #### Initialize in Worker Thread
 
-Create a `transcriptionCallback` function to get the streaming results
+Create a `transcriptCallback` function to get the streaming results
 from the worker:
 
 ```typescript
-let transcription = "";
+let transcript = "";
 
-function transcriptionCallback(partial: string, isEndpoint: boolean) {
-  transcription += partial;
-  if (isEndpoint) {
-    transcription += "\n";
+function transcriptCallback(cheetahTranscript: CheetahTranscript) {
+  transcript += cheetahTranscript.transcript;
+  if (cheetahTranscript.isEndpoint) {
+    transcript += "\n";
   }
 }
 ```
@@ -175,8 +175,8 @@ Use `CheetahWorker` to initialize from public directory:
 ```typescript
 const handle = await CheetahWorker.fromPublicDirectory(
   ${ACCESS_KEY},
-  transcriptionCallback,
-  ${MODEL_FILE_RELATIVE_TO_PUBLIC_DIRECTORY},
+  transcriptCallback,
+  ${MODEL_RELATIVE_PATH},
   options // optional options
 );
 ```
@@ -188,7 +188,7 @@ import cheetahParams from "${PATH_TO_BASE64_CHEETAH_PARAMS}";
 
 const handle = await CheetahWorker.fromBase64(
   ${ACCESS_KEY},
-  transcriptionCallback,
+  transcriptCallback,
   cheetahParams,
   options // optional options
 )
@@ -197,7 +197,7 @@ const handle = await CheetahWorker.fromBase64(
 #### Process Audio Frames in Worker Thread
 
 In a worker thread, the `process` function will send the input frames to the worker.
-The transcription is received from `transcriptionCallback` as mentioned above.
+The transcript is received from `transcriptCallback` as mentioned above.
 
 ```typescript
 function getAudioData(): Int16Array {
@@ -209,7 +209,7 @@ for (;;) {
   handle.process(getAudioData());
   // break on some condition
 }
-handle.flush(); // runs transcriptionCallback on remaining data.
+handle.flush(); // runs transcriptCallback on remaining data.
 ```
 
 #### Clean Up

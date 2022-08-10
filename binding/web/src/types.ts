@@ -17,12 +17,17 @@ export type CheetahOptions = {
   /** @defaultValue undefined */
   processErrorCallback?: (error: string) => void
   /** @defaultValue 'cheetah_model' */
-  modelPath?: string;
+  customWritePath?: string;
   /** @defaultValue false */
   forceWrite?: boolean;
   /** @defaultValue 1 */
   version?: number;
-}
+};
+
+export type CheetahTranscript = {
+  transcript: string;
+  isEndpoint?: boolean;
+};
 
 export type CheetahWorkerInitRequest = {
   command: 'init';
@@ -66,13 +71,12 @@ export type CheetahWorkerInitResponse = CheetahWorkerFailureResponse | {
 
 export type CheetahWorkerProcessResponse = CheetahWorkerFailureResponse | {
   command: 'ok';
-  transcription: string;
-  isEndpoint: boolean;
+  cheetahTranscript: CheetahTranscript;
 };
 
 export type CheetahWorkerFlushResponse = CheetahWorkerFailureResponse | {
   command: 'ok';
-  transcription: string;
+  cheetahTranscript: CheetahTranscript;
 };
 
 export type CheetahWorkerReleaseResponse = CheetahWorkerFailureResponse | {

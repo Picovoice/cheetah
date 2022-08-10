@@ -57,17 +57,15 @@ self.onmessage = async function(
         return;
       }
       try {
-        const [transcription, isEndpoint] = await cheetah.process(event.data.inputFrame);
+        const cheetahTranscript = await cheetah.process(event.data.inputFrame);
         self.postMessage({
           command: 'ok',
-          transcription: transcription,
-          isEndpoint: false,
+          cheetahTranscript: cheetahTranscript
         });
-        if (isEndpoint) {
+        if (cheetahTranscript.isEndpoint) {
           self.postMessage({
             command: 'ok',
-            transcription: await cheetah.flush(),
-            isEndpoint: true,
+            cheetahTranscript: await cheetah.flush(),
           });
         }
       } catch (e: any) {
@@ -88,8 +86,7 @@ self.onmessage = async function(
       try {
         self.postMessage({
           command: 'ok',
-          transcription: await cheetah.flush(),
-          isEndpoint: true,
+          cheetahTranscript: await cheetah.flush()
         });
       } catch (e: any) {
         self.postMessage({
