@@ -11,6 +11,7 @@
 
 import { NativeModules } from 'react-native';
 import * as CheetahErrors from './cheetah_errors';
+import type { CheetahOptions, CheetahTranscript } from './cheetah_types';
 
 const RCTCheetah = NativeModules.PvCheetah;
 
@@ -29,19 +30,29 @@ class Cheetah {
    * Static creator for initializing Cheetah given the model path.
    * @param accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
    * @param modelPath Path to the file containing model parameters.
-   * @param endpointDuration Duration of endpoint in seconds. A speech endpoint is detected when there is a
+   * @param options Optional configuration arguments.
+   * @param options.endpointDuration Duration of endpoint in seconds. A speech endpoint is detected when there is a
    *                         chunk of audio (with a duration specified herein) after an utterance without any speech in it.
    *                         Set duration to 0 to disable this. Default is 1 second.
+   * @param options.enableAutomaticPunctuation Set to `true` to enable automatic punctuation insertion.
    * @returns An instance of the engine.
    */
   public static async create(
     accessKey: string,
     modelPath: string,
-    endpointDuration: number = 1.0
+    options: CheetahOptions = {}
   ) {
+    const { endpointDuration = 1.0, enableAutomaticPunctuation = false } =
+      options;
+
     try {
       let { handle, frameLength, sampleRate, version } =
-        await RCTCheetah.create(accessKey, modelPath, endpointDuration);
+        await RCTCheetah.create(
+          accessKey,
+          modelPath,
+          endpointDuration,
+          enableAutomaticPunctuation
+        );
       return new Cheetah(handle, frameLength, sampleRate, version);
     } catch (err) {
       if (err instanceof CheetahErrors.CheetahError) {
@@ -70,10 +81,10 @@ class Cheetah {
    * @param frame An array of 16-bit pcm samples. The number of samples per frame can be attained by calling
    *              `Cheetah.frameLength`. The incoming audio needs to have a sample rate equal to `Cheetah.sampleRate`
    *              and be 16-bit linearly-encoded. Furthermore, Cheetah operates on single-channel audio.
-   * @returns {Promise} [transcription, isEndpoint] of any newly-transcribed speech (if none is available then an empty string is returned)
-   *                    and a flag indicating if an endpoint has been detected.
+   * @returns {Promise<CheetahTranscript>} transcript of any newly-transcribed speech (if none is available then an
+   *                                       empty string is returned) and a flag indicating if an endpoint has been detected.
    */
-  async process(frame: number[]): Promise<[string, boolean]> {
+  async process(frame: number[]): Promise<CheetahTranscript> {
     if (frame === undefined || frame === null) {
       throw new CheetahErrors.CheetahInvalidArgumentError(
         `Frame array provided to process() is undefined or null`
@@ -92,11 +103,7 @@ class Cheetah {
     }
 
     try {
-      let { transcript, isEndpoint } = await RCTCheetah.process(
-        this._handle,
-        frame
-      );
-      return [transcript, isEndpoint];
+      return await RCTCheetah.process(this._handle, frame);
     } catch (err) {
       const nativeError = err as NativeError;
       throw Cheetah.codeToError(nativeError.code, nativeError.message);
@@ -107,9 +114,9 @@ class Cheetah {
    * Marks the end of the audio stream, flushes internal state of the object, and returns
    * any remaining transcribed text.
    *
-   * @returns {Promise} Any remaining transcribed text. If none is available then an empty string is returned.
+   * @returns {Promise<CheetahTranscript>} Any remaining transcribed text. If none is available then an empty string is returned.
    */
-  async flush(): Promise<string> {
+  async flush(): Promise<CheetahTranscript> {
     try {
       return RCTCheetah.flush(this._handle);
     } catch (err) {

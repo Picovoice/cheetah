@@ -7,27 +7,24 @@ Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 Cheetah is an on-device speech-to-text engine. Cheetah is:
 
 - Private; All voice processing runs locally.
-- Accurate [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results)
-- Compact and Computationally-Efficient [[2]](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
+- [Accurate](https://picovoice.ai/docs/benchmark/stt/)
+- [Compact and Computationally-Efficient](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
 - Cross-Platform:
-  - Linux (x86_64)
-  - macOS (x86_64, arm64)
-  - Windows (x86_64)
-  - Android
-  - iOS
-  - Raspberry Pi (4, 3)
-  - NVIDIA Jetson Nano
+  - Linux (x86_64), macOS (x86_64, arm64), Windows (x86_64)
+  - Android and iOS
+  - Chrome, Safari, Firefox, and Edge
+  - Raspberry Pi (4, 3) and NVIDIA Jetson Nano
 
 ## Compatibility
 
 This binding is for running Cheetah on **React Native 0.62.2+** on the following platforms:
 
-- Android 4.4+ (SDK 19+)
+- Android 5.0+ (SDK 21+)
 - iOS 10.0+
 
 ## Installation
 
-To start install be sure you have installed yarn and CocoaPods. Then add these two native modules to your react-native project.
+To start install, ensure you have installed yarn and CocoaPods. Then, add the following native modules to your react-native project:
 
 ```console
 yarn add @picovoice/cheetah-react-native
@@ -37,7 +34,7 @@ or
 npm i @picovoice/cheetah-react-native --save
 ```
 
-Link the iOS package
+Link the iOS package:
 
 ```console
 cd ios && pod install && cd ..
@@ -55,19 +52,15 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 
 ## Adding custom Cheetah models
 
+Create a custom model using the [Picovoice Console](https://console.picovoice.ai/) or use the [default model](https://github.com/Picovoice/cheetah/tree/master/lib/common/).
+
 ### Android
 
-Add the Cheetah model file to your Android application by:
-
-1. Either creating a model in [Picovoice Console](https://console.picovoice.ai/) or get the default model in [/lib/common/cheetah_params.pv](/lib/common/cheetah_params.pv).
-2. Add the model as a bundled resource by placing it under the [`assets`](./android/src/main/assets/) directory of your Android application.
+To add a Leopard model file to your Android application, add the file as a bundled resource by placing it under the `assets` directory of your Android application.
 
 ### iOS
 
-Open [`Cheetah.xcodeproj`](./ios/Cheetah.xcodeproj) in `Xcode` and add the Cheetah model file in `Xcode` by:
-
-1. Either creating a model in [Picovoice CAT Console](https://picovoice.ai/cat/) or get the default model in [/lib/common/cheetah_params.pv](/lib/common/cheetah_params.pv).
-2. Add the model as a bundled resource by selecting Build Phases and adding it to Copy Bundle Resources step.
+To add a Leopard model file to your iOS application, add the file as a bundled resource by selecting Build Phases in `Xcode` and adding it to the `Copy Bundle Resources` step.
 
 ## Usage
 
@@ -83,9 +76,9 @@ const getAudioFrame = () => {
 try {
   while (1) {
     const cheetah = await Cheetah.create("${ACCESS_KEY}", "${MODEL_FILE}")
-    const [partialTranscript, isEndpoint] = await cheetah.process(getAudioFrame())
+    const {transcript, isEndpoint} = await cheetah.process(getAudioFrame())
     if (isEndpoint) {
-      const finalTranscript = await cheetah.flush()
+      const {transcript} = await cheetah.flush()
     }
   }
 } catch (err: any) {
@@ -95,10 +88,10 @@ try {
 }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)) and `${MODEL_FILE}`
-with the name of the Cheetah model file name.
+Replace `${ACCESS_KEY}` with your `AccessKey` obtained from [Picovoice Console]((https://console.picovoice.ai/)) and `${MODEL_FILE}`
+with the file name of the Cheetah model file.
 Finally, when done be sure to explicitly release the resources using `cheetah.delete()`.
 
 ## Demo App
 
-For example usage refer to our [React Native demo application](/demo/react-native).
+For example usage refer to our [React Native demo application](https://github.com/Picovoice/cheetah/tree/master/demo/react-native).

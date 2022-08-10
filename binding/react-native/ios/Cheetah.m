@@ -16,6 +16,7 @@
 RCT_EXTERN_METHOD(create: (NSString *)accessKey
                   modelPath: (NSString *)modelPath
                   endpointDuration: (float)endpointDuration
+                  enableAutomaticPunctuation: (BOOL)enableAutomaticPunctuation
                   resolver: (RCTPromiseResolveBlock)resolve
                   rejecter: (RCTPromiseRejectBlock)reject)
 

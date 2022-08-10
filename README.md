@@ -501,9 +501,9 @@ const getAudioFrame = () => {
 try {
   while (1) {
     const cheetah = await Cheetah.create("${ACCESS_KEY}", "${MODEL_FILE}")
-    const [partialTranscript, isEndpoint] = await cheetah.process(getAudioFrame())
+    const {transcript, isEndpoint} = await cheetah.process(getAudioFrame())
     if (isEndpoint) {
-      const finalTranscript = await cheetah.flush()
+      const {transcript} = await cheetah.flush()
     }
   }
 } catch (err: any) {
