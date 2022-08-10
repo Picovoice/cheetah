@@ -8,21 +8,28 @@
 // an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 //
+
 import Cheetah
 
 @objc(PvCheetah)
 class PvCheetah: NSObject {
-    private var cheetahPool:Dictionary<String, Cheetah> = [:]
+    private var cheetahPool: Dictionary<String, Cheetah> = [:]
 
-    @objc(create:modelPath:endpointDuration:resolver:rejecter:)
-    func create(accessKey: String, modelPath: String, endpointDuration: Float32,
-        resolver resolve:RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
+    @objc(create:modelPath:endpointDuration:enableAutomaticPunctuation:resolver:rejecter:)
+    func create(
+            accessKey: String,
+            modelPath: String,
+            endpointDuration: Float32,
+            enableAutomaticPunctuation: Bool,
+            resolver resolve: RCTPromiseResolveBlock,
+            rejecter reject: RCTPromiseRejectBlock) -> Void {
 
         do {
             let cheetah = try Cheetah(
-                accessKey: accessKey,
-                modelPath: modelPath,
-                endpointDuration: endpointDuration)
+                    accessKey: accessKey,
+                    modelPath: modelPath,
+                    endpointDuration: endpointDuration,
+                    enableAutomaticPunctuation: enableAutomaticPunctuation)
 
             let handle: String = String(describing: cheetah)
             cheetahPool[handle] = cheetah
@@ -44,23 +51,26 @@ class PvCheetah: NSObject {
     }
 
     @objc(delete:)
-    func delete(handle:String) -> Void {
+    func delete(handle: String) -> Void {
         if let cheetah = cheetahPool.removeValue(forKey: handle) {
             cheetah.delete()
         }
     }
 
     @objc(process:pcm:resolver:rejecter:)
-    func process(handle:String, pcm:[Int16],
-        resolver resolve:RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
+    func process(
+            handle: String,
+            pcm: [Int16],
+            resolver resolve: RCTPromiseResolveBlock,
+            rejecter reject: RCTPromiseRejectBlock) -> Void {
         do {
             if let cheetah = cheetahPool[handle] {
                 let (transcript, isEndpoint) = try cheetah.process(pcm)
 
-                var param: [String: Any] = [:]
-                param["transcript"] = transcript
-                param["isEndpoint"] = isEndpoint
-
+                var param: [String: Any] = [
+                    "transcript": transcript,
+                    "isEndpoint": isEndpoint
+                ]
                 resolve(param)
             } else {
                 let (code, message) = errorToCodeAndMessage(CheetahRuntimeError("Invalid handle provided to Cheetah 'process'"))
@@ -76,10 +86,16 @@ class PvCheetah: NSObject {
     }
 
     @objc(flush:resolver:rejecter:)
-    func flush(handle:String, resolver resolve:RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
+    func flush(
+            handle: String,
+            resolver resolve: RCTPromiseResolveBlock,
+            rejecter reject: RCTPromiseRejectBlock) -> Void {
         do {
             if let cheetah = cheetahPool[handle] {
-                let result = try cheetah.flush()
+                let transcript = try cheetah.flush()
+                var result: [String: Any] = [
+                    "transcript": transcript,
+                ]
                 resolve(result)
             } else {
                 let (code, message) = errorToCodeAndMessage(CheetahRuntimeError("Invalid handle provided to Cheetah 'process'"))

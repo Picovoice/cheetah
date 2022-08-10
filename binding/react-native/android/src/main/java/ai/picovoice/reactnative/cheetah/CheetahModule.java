@@ -12,7 +12,7 @@
 
 package ai.picovoice.reactnative.cheetah;
 
-import ai.picovoice.cheetah.*;
+import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -26,10 +26,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import ai.picovoice.cheetah.Cheetah;
+import ai.picovoice.cheetah.CheetahException;
+import ai.picovoice.cheetah.CheetahInvalidStateException;
+import ai.picovoice.cheetah.CheetahTranscript;
+
 
 public class CheetahModule extends ReactContextBaseJavaModule {
-
-  private static final String LOG_TAG = "PvCheetah";
+  
   private final ReactApplicationContext reactContext;
   private final Map<String, Cheetah> cheetahPool = new HashMap<>();
 
@@ -38,18 +42,26 @@ public class CheetahModule extends ReactContextBaseJavaModule {
     this.reactContext = reactContext;
   }
 
+  @NonNull
   @Override
   public String getName() {
     return "PvCheetah";
   }
 
   @ReactMethod
-  public void create(String accessKey, String modelPath, Float endpointDuration, Promise promise) {
+  public void create(
+    String accessKey,
+    String modelPath,
+    Float endpointDuration,
+    boolean enableAutomaticPunctuation,
+    Promise promise) {
     try {
-      Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
-              .setModelPath(modelPath.isEmpty() ? null : modelPath)
-              .setEndpointDuration(endpointDuration)
-              .build(reactContext);
+      Cheetah cheetah = new Cheetah.Builder()
+        .setAccessKey(accessKey)
+        .setModelPath(modelPath.isEmpty() ? null : modelPath)
+        .setEndpointDuration(endpointDuration)
+        .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
+        .build(reactContext);
       cheetahPool.put(String.valueOf(System.identityHashCode(cheetah)), cheetah);
 
       WritableMap paramMap = Arguments.createMap();
@@ -66,31 +78,43 @@ public class CheetahModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void delete(String handle) {
     if (cheetahPool.containsKey(handle)) {
-      cheetahPool.get(handle).delete();
+      Cheetah cheetah = cheetahPool.get(handle);
+      if (cheetah != null) {
+        cheetah.delete();
+      }
       cheetahPool.remove(handle);
     }
   }
 
   @ReactMethod
   public void process(String handle, ReadableArray pcmArray, Promise promise) {
+
+    if (!cheetahPool.containsKey(handle)) {
+      promise.reject(CheetahInvalidStateException.class.getSimpleName(),
+        "Invalid Cheetah handle provided to native module.");
+      return;
+    }
+
+    ArrayList<Object> pcmArrayList = pcmArray.toArrayList();
+    short[] buffer = new short[pcmArray.size()];
+    for (int i = 0; i < pcmArray.size(); i++) {
+      buffer[i] = ((Number) pcmArrayList.get(i)).shortValue();
+    }
+
+    Cheetah cheetah = cheetahPool.get(handle);
+    if (cheetah == null) {
+      promise.reject(CheetahInvalidStateException.class.getSimpleName(),
+        "Instance of Cheetah no longer exists.");
+      return;
+    }
+
     try {
-      if (!cheetahPool.containsKey(handle)) {
-        promise.reject(CheetahInvalidStateException.class.getSimpleName(), "Invalid Cheetah handle provided to native module.");
-        return;
-      }
+      CheetahTranscript result = cheetah.process(buffer);
 
-      Cheetah cheetah = cheetahPool.get(handle);
-      ArrayList<Object> pcmArrayList = pcmArray.toArrayList();
-      short[] buffer = new short[pcmArray.size()];
-      for (int i = 0; i < pcmArray.size(); i++) {
-        buffer[i] = ((Number) pcmArrayList.get(i)).shortValue();
-      }
-      CheetahTranscript transcriptObj = cheetah.process(buffer);
-
-      WritableMap paramMap = Arguments.createMap();
-      paramMap.putString("transcript", transcriptObj.getTranscript());
-      paramMap.putBoolean("isEndpoint", transcriptObj.getIsEndpoint());
-      promise.resolve(paramMap);
+      WritableMap resultMap = Arguments.createMap();
+      resultMap.putString("transcript", result.getTranscript());
+      resultMap.putBoolean("isEndpoint", result.getIsEndpoint());
+      promise.resolve(resultMap);
     } catch (CheetahException e) {
       promise.reject(e.getClass().getSimpleName(), e.getMessage());
     }
@@ -98,15 +122,25 @@ public class CheetahModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void flush(String handle, Promise promise) {
-    try {
-      if (!cheetahPool.containsKey(handle)) {
-        promise.reject(CheetahInvalidStateException.class.getSimpleName(), "Invalid Cheetah handle provided to native module.");
-        return;
-      }
 
-      Cheetah cheetah = cheetahPool.get(handle);
-      CheetahTranscript transcriptObj = cheetah.flush();
-      promise.resolve(transcriptObj.getTranscript());
+    if (!cheetahPool.containsKey(handle)) {
+      promise.reject(CheetahInvalidStateException.class.getSimpleName(),
+        "Invalid Cheetah handle provided to native module.");
+      return;
+    }
+
+    Cheetah cheetah = cheetahPool.get(handle);
+    if (cheetah == null) {
+      promise.reject(CheetahInvalidStateException.class.getSimpleName(),
+        "Instance of Cheetah no longer exists.");
+      return;
+    }
+
+    try {
+      CheetahTranscript result = cheetah.flush();
+      WritableMap resultMap = Arguments.createMap();
+      resultMap.putString("transcript", result.getTranscript());
+      promise.resolve(resultMap);
     } catch (CheetahException e) {
       promise.reject(e.getClass().getSimpleName(), e.getMessage());
     }
