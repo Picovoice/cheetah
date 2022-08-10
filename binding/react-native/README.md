@@ -34,7 +34,7 @@ or
 npm i @picovoice/cheetah-react-native --save
 ```
 
-Link the iOS packageL
+Link the iOS package:
 
 ```console
 cd ios && pod install && cd ..
