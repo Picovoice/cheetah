@@ -7,5 +7,5 @@
 ## [1.0.2] - 2022-05-13
 * Android/iOS lib patch.
 
-## [1.1.0] - 2022-
-*
+## [1.1.0] - 2022-08-10
+* True-casing and automatic punctuation insertion enabled.

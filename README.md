@@ -431,12 +431,12 @@ try{
     String transcript = "";
 
     while true {
-        CheetahTranscript transcriptObj = await _cheetah.process(getAudioFrame());
-        transcript += transcriptObj.transcript;
+        CheetahTranscript partialResult = await _cheetah.process(getAudioFrame());
+        transcript += partialResult.transcript;
 
-        if (transcriptObj.isEndpoint) {
-            CheetahTranscript endpointTranscriptObj = await _cheetah.flush();
-            transcript += endpointTranscriptObj.transcript;
+        if (partialResult.isEndpoint) {
+            CheetahTranscript finalResult = await _cheetah.flush();
+            transcript += finalResult.transcript;
         }
     }
 
@@ -445,7 +445,7 @@ try{
 } on CheetahException catch (err) { }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${CHEETAH_MODEL_PATH}` with the the path to the default or custom trained model from [console](https://console.picovoice.ai/).
+Replace `${ACCESS_KEY}` with your `AccessKey` obtained from [Picovoice Console](https://console.picovoice.ai/) and `${CHEETAH_MODEL_PATH}` with the the path a custom trained model from [Picovoice Console](https://console.picovoice.ai/) or the [default model](lib/common/).
 
 ### Go
 

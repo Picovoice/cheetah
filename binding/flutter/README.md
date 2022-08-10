@@ -7,16 +7,13 @@ Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 Cheetah is an on-device speech-to-text engine. Cheetah is:
 
 - Private; All voice processing runs locally.
-- Accurate [[1]](https://picovoice.ai/docs/benchmark/stt/#accuracy)
-- Compact and Computationally-Efficient [[2]](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
+- [Accurate](https://picovoice.ai/docs/benchmark/stt/)
+- [Compact and Computationally-Efficient](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
 - Cross-Platform:
-    - Linux (x86_64)
-    - macOS (x86_64, arm64)
-    - Windows (x86_64)
-    - Android
-    - iOS
-    - Raspberry Pi (4, 3)
-    - NVIDIA Jetson Nano
+  - Linux (x86_64), macOS (x86_64, arm64), Windows (x86_64)
+  - Android and iOS
+  - Chrome, Safari, Firefox, and Edge
+  - Raspberry Pi (4, 3) and NVIDIA Jetson Nano
 
 ## Compatibility
 
@@ -43,7 +40,7 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 
 ## Permissions
 
-To enable recording with the hardware's microphone, you must first ensure that you have enabled the proper permission on both iOS and Android.
+To enable recording with the hardware's microphone, you must first ensure that you have enabled the proper permissions on both iOS and Android.
 
 On iOS, open your Info.plist and add the following line:
 ```xml
@@ -61,9 +58,9 @@ On Android, open your AndroidManifest.xml and add the following line:
 
 Add the Cheetah model file to your Flutter application by:
 
-1. Either creating a model in [Picovoice Console](https://console.picovoice.ai/) or using the [default model](https://github.com/Picovoice/cheetah/tree/master/lib/common).
+1. Create a model in [Picovoice Console](https://console.picovoice.ai/) or use the [default model](https://github.com/Picovoice/cheetah/tree/master/lib/common).
 2. Add the model file to an `assets` folder in your project directory.
-3. Then add it to your `pubspec.yaml`:
+3. Add the asset to your `pubspec.yaml`:
 ```yaml
 flutter:
   assets:
@@ -100,17 +97,17 @@ List<int> buffer = getAudioFrame();
 String transcript = "";
 
 while true {
-    CheetahTranscript transcriptObj = await _cheetah.process(getAudioFrame());
-    transcript += transcriptObj.transcript;
+    CheetahTranscript partialResult = await _cheetah.process(getAudioFrame());
+    transcript += partialResult.transcript;
 
-    if (transcriptObj.isEndpoint) {
-        CheetahTranscript endpointTranscriptObj = await _cheetah.flush();
-        transcript += endpointTranscriptObj.transcript;
+    if (partialResult.isEndpoint) {
+        CheetahTranscript finalResult = await _cheetah.flush();
+        transcript += finalResult.transcript;
     }
 }
 ```
 
-When done resources have to be released explicitly:
+When done, resources have to be released explicitly:
 
 ```dart
 cheetah.delete();
