@@ -80,6 +80,7 @@ typedef int32_t (*pv_cheetah_init_func)(
 	const char *access_key,
 	const char *model_path,
     float endpoint_duration_sec,
+	bool enable_automatic_punctuation,
 	void **object);
 
 int32_t pv_cheetah_init_wrapper(
@@ -87,11 +88,13 @@ int32_t pv_cheetah_init_wrapper(
 	const char *access_key,
 	const char *model_path,
     float endpoint_duration_sec,
+	bool enable_automatic_punctuation,
 	void **object) {
 	return ((pv_cheetah_init_func) f)(
 		access_key,
 		model_path,
         endpoint_duration_sec,
+		enable_automatic_punctuation,
 		object);
 }
 
@@ -140,10 +143,10 @@ import (
 )
 
 type nativeCheetahInterface interface {
-	nativeInit(*Cheetah)
-	nativeProcess(*Cheetah, []int)
-	nativeFlush(*Cheetah, string)
-	nativeDelete(*Cheetah)
+	nativeInit(*pvCheetah)
+	nativeProcess(*pvCheetah, []int)
+	nativeFlush(*pvCheetah, string)
+	nativeDelete(*pvCheetah)
 	nativeSampleRate()
 	nativeVersion()
 }
@@ -160,17 +163,18 @@ type nativeCheetahType struct {
 	pv_sample_rate_ptr          unsafe.Pointer
 }
 
-func (nc *nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
+func (nc *nativeCheetahType) nativeInit(cheetah *pvCheetah) (status PvStatus) {
 	var (
-		accessKeyC        = C.CString(cheetah.AccessKey)
-		libraryPathC      = C.CString(cheetah.LibraryPath)
-		modelPathC        = C.CString(cheetah.ModelPath)
-		endpointDurationC = C.float(cheetah.EndpointDuration)
+		accessKeyC                  = C.CString(cheetah.AccessKey)
+		modelPathC                  = C.CString(cheetah.ModelPath)
+		libraryPathC                = C.CString(cheetah.LibraryPath)
+		endpointDurationC           = C.float(cheetah.EndpointDuration)
+		enableAutomaticPunctuationC = C.bool(cheetah.EnableAutomaticPunctuation)
 	)
 
 	defer C.free(unsafe.Pointer(accessKeyC))
-	defer C.free(unsafe.Pointer(libraryPathC))
 	defer C.free(unsafe.Pointer(modelPathC))
+	defer C.free(unsafe.Pointer(libraryPathC))
 
 	nc.libraryPath = C.open_dl(libraryPathC)
 	nc.pv_cheetah_init_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_cheetah_init"))
@@ -186,17 +190,19 @@ func (nc *nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
 		accessKeyC,
 		modelPathC,
 		endpointDurationC,
+		enableAutomaticPunctuationC,
 		&cheetah.handle)
 
 	return PvStatus(ret)
 }
 
-func (nc *nativeCheetahType) nativeDelete(cheetah *Cheetah) {
-	C.pv_cheetah_delete_wrapper(nc.pv_cheetah_delete_ptr,
+func (nc *nativeCheetahType) nativeDelete(cheetah *pvCheetah) {
+	C.pv_cheetah_delete_wrapper(
+		nc.pv_cheetah_delete_ptr,
 		cheetah.handle)
 }
 
-func (nc *nativeCheetahType) nativeProcess(cheetah *Cheetah, pcm []int16) (status PvStatus, transcript string, isEndpoint bool) {
+func (nc *nativeCheetahType) nativeProcess(cheetah *pvCheetah, pcm []int16) (status PvStatus, transcript string, isEndpoint bool) {
 	var transcriptPtr unsafe.Pointer
 
 	var ret = C.pv_cheetah_process_wrapper(nc.pv_cheetah_process_ptr,
@@ -211,7 +217,7 @@ func (nc *nativeCheetahType) nativeProcess(cheetah *Cheetah, pcm []int16) (statu
 	return PvStatus(ret), transcript, isEndpoint
 }
 
-func (nc *nativeCheetahType) nativeFlush(cheetah *Cheetah) (status PvStatus, transcript string) {
+func (nc *nativeCheetahType) nativeFlush(cheetah *pvCheetah) (status PvStatus, transcript string) {
 
 	var transcriptPtr unsafe.Pointer
 

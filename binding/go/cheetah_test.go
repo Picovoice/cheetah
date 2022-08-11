@@ -27,10 +27,17 @@ import (
 
 var (
 	testAccessKey string
-	cheetah       Cheetah
+	cheetah       pvCheetah
 	testAudioPath string
-	transcript    string
 )
+
+var processTestParameters = []struct {
+	enableAutomaticPunctuation bool
+	transcript                 string
+}{
+	{false, "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel"},
+	{true, "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel."},
+}
 
 func TestMain(m *testing.M) {
 
@@ -40,21 +47,19 @@ func TestMain(m *testing.M) {
 	_, filename, _, _ := runtime.Caller(0)
 	dir := filepath.Dir(filename)
 
-	cheetah = NewCheetah(testAccessKey)
-	err := cheetah.Init()
-	if err != nil {
-		log.Fatalf("Failed to init cheetah with: %v", err)
-	}
-
 	testAudioPath, _ = filepath.Abs(filepath.Join(dir, "../../resources/audio_samples/test.wav"))
-	transcript = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL"
-
-	defer cheetah.Delete()
 
 	os.Exit(m.Run())
 }
 
 func TestVersion(t *testing.T) {
+	cheetah = NewCheetah(testAccessKey)
+	err := cheetah.Init()
+	if err != nil {
+		log.Fatalf("Failed to init cheetah with: %v", err)
+	}
+	defer cheetah.Delete()
+
 	if reflect.TypeOf(Version).Name() != "string" {
 		t.Fatal("Unexpected version format.")
 	}
@@ -63,7 +68,19 @@ func TestVersion(t *testing.T) {
 	}
 }
 
-func TestProcess(t *testing.T) {
+func runProcessTestCase(
+	t *testing.T,
+	enableAutomaticPunctuation bool,
+	expectedTranscript string) {
+
+	cheetah = NewCheetah(testAccessKey)
+	cheetah.EnableAutomaticPunctuation = enableAutomaticPunctuation
+	err := cheetah.Init()
+	if err != nil {
+		log.Fatalf("Failed to init cheetah with: %v", err)
+	}
+	defer cheetah.Delete()
+
 	data, err := ioutil.ReadFile(testAudioPath)
 	if err != nil {
 		t.Fatalf("Could not read test file: %v", err)
@@ -95,7 +112,13 @@ func TestProcess(t *testing.T) {
 	}
 	res += final
 
-	if res != transcript {
-		t.Fatalf("Expected '%s' got '%s'", transcript, res)
+	if res != expectedTranscript {
+		t.Fatalf("Expected '%s' got '%s'", expectedTranscript, res)
+	}
+}
+
+func TestProcess(t *testing.T) {
+	for _, test := range processTestParameters {
+		runProcessTestCase(t, test.enableAutomaticPunctuation, test.transcript)
 	}
 }

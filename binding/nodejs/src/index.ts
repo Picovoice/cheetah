@@ -12,7 +12,13 @@
 
 import Cheetah from "./cheetah";
 
-import { getInt16Frames, checkWaveFile } from "./wave_util"
+import {getInt16Frames, checkWaveFile} from "./wave_util"
+
+import {
+  CheetahInitOptions,
+  CheetahInputOptions,
+  CheetahOptions,
+} from "./types";
 
 import {
   CheetahError,
@@ -31,18 +37,21 @@ import {
 
 export {
   Cheetah,
-  CheetahError,
-  getInt16Frames,
-  checkWaveFile,
-  CheetahOutOfMemoryError,
-  CheetahIoError,
-  CheetahInvalidArgumentError,
-  CheetahStopIterationError,
-  CheetahKeyError,
-  CheetahInvalidStateError,
-  CheetahRuntimeError,
   CheetahActivationError,
   CheetahActivationLimitReached,
-  CheetahActivationThrottled,
   CheetahActivationRefused,
+  CheetahActivationThrottled,
+  CheetahError,
+  CheetahInitOptions,
+  CheetahInputOptions,
+  CheetahInvalidArgumentError,
+  CheetahInvalidStateError,
+  CheetahIoError,
+  CheetahKeyError,
+  CheetahOptions,
+  CheetahOutOfMemoryError,
+  CheetahRuntimeError,
+  CheetahStopIterationError,
+  checkWaveFile,
+  getInt16Frames,
 };

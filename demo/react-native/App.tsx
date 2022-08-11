@@ -83,6 +83,7 @@ export default class App extends Component<Props, State> {
       this._cheetah = await Cheetah.create(
         this._accessKey,
         'cheetah_params.pv',
+        {enableAutomaticPunctuation: true},
       );
       this._voiceProcessor = VoiceProcessor.getVoiceProcessor(
         this._cheetah.frameLength,
@@ -93,22 +94,23 @@ export default class App extends Component<Props, State> {
         BufferEmitter.BUFFER_EMITTER_KEY,
         async (buffer: number[]) => {
           if (this._cheetah !== undefined) {
-            const [partialTranscript, isEndpoint] = await this._cheetah.process(
-              buffer,
-            );
-            if (isEndpoint) {
-              const finalTranscript = await this._cheetah.flush();
-              let transcript =
-                this.state.transcription + partialTranscript + finalTranscript;
-              if (finalTranscript.length > 0) {
-                transcript += ' ';
+            const partialResult = await this._cheetah.process(buffer);
+            if (partialResult.isEndpoint) {
+              const remainingResult = await this._cheetah.flush();
+              let transcriptText =
+                this.state.transcription +
+                partialResult.transcript +
+                remainingResult.transcript;
+              if (remainingResult.transcript.length > 0) {
+                transcriptText += ' ';
               }
               this.setState({
-                transcription: transcript,
+                transcription: transcriptText,
               });
             } else {
               this.setState({
-                transcription: this.state.transcription + partialTranscript,
+                transcription:
+                  this.state.transcription + partialResult.transcript,
               });
             }
           }
@@ -183,10 +185,10 @@ export default class App extends Component<Props, State> {
 
     this._voiceProcessor?.stop().then(async () => {
       try {
-        const res = await this._cheetah?.flush();
-        if (res !== undefined) {
+        const result = await this._cheetah?.flush();
+        if (result !== undefined) {
           this.setState({
-            transcription: this.state.transcription + res,
+            transcription: this.state.transcription + result.transcript,
             appState: UIState.init,
           });
         }
@@ -325,7 +327,7 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     width: '50%',
-    height: '100%',
+    height: 60,
     alignSelf: 'center',
     justifyContent: 'center',
     backgroundColor: '#377DFF',

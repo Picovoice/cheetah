@@ -12,7 +12,6 @@
 package ai.picovoice.cheetah;
 
 import android.content.Context;
-import android.content.res.Resources;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -20,9 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.regex.Pattern;
 
 /**
  * Android binding for Cheetah Speech-to-Text engine.
@@ -38,15 +34,24 @@ public class Cheetah {
     /**
      * Constructor.
      *
-     * @param accessKey AccessKey obtained from Picovoice Console
-     * @param modelPath Absolute path to the file containing Cheetah model parameters.
-     * @param endpointDuration Duration of endpoint in seconds. A speech endpoint is detected when there is a
-     *                         chunk of audio (with a duration specified herein) after an utterance without
-     *                         any speech in it. Set duration to 0 to disable this. Default is 1 second in the Builder.
+     * @param accessKey                  AccessKey obtained from Picovoice Console
+     * @param modelPath                  Absolute path to the file containing Cheetah model parameters.
+     * @param endpointDuration           Duration of endpoint in seconds. A speech endpoint is detected when there is a
+     *                                   chunk of audio (with a duration specified herein) after an utterance without
+     *                                   any speech in it. Set duration to 0 to disable this. Default is 1 second in the Builder.
+     * @param enableAutomaticPunctuation Set to `true` to enable automatic punctuation insertion.
      * @throws CheetahException if there is an error while initializing Cheetah.
      */
-    public Cheetah(String accessKey, String modelPath, float endpointDuration) throws CheetahException {
-        handle = init(accessKey, modelPath, endpointDuration);
+    private Cheetah(
+            String accessKey,
+            String modelPath,
+            float endpointDuration,
+            boolean enableAutomaticPunctuation) throws CheetahException {
+        handle = init(
+                accessKey,
+                modelPath,
+                endpointDuration,
+                enableAutomaticPunctuation);
     }
 
     private static String extractResource(Context context, InputStream srcFileStream, String dstFilename) throws IOException {
@@ -115,7 +120,11 @@ public class Cheetah {
      */
     public native String getVersion();
 
-    private native long init(String accessKey, String modelPath, float endpointDuration);
+    private native long init(
+            String accessKey,
+            String modelPath,
+            float endpointDuration,
+            boolean enableAutomaticPunctuation);
 
     private native void delete(long object);
 
@@ -128,19 +137,45 @@ public class Cheetah {
         private String accessKey = null;
         private String modelPath = null;
         private float endpointDuration = 1f;
+        private boolean enableAutomaticPunctuation = false;
 
+        /**
+         * Setter the AccessKey
+         *
+         * @param accessKey AccessKey obtained from Picovoice Console
+         */
         public Builder setAccessKey(String accessKey) {
             this.accessKey = accessKey;
             return this;
         }
 
+        /**
+         * Setter for the absolute path to the file containing Cheetah model parameters.
+         *
+         * @param modelPath Absolute path to the file containing Cheetah model parameters.
+         */
         public Builder setModelPath(String modelPath) {
             this.modelPath = modelPath;
             return this;
         }
 
+        /**
+         * Setter for the duration of endpoint in seconds.
+         *
+         * @param endpointDuration Duration of endpoint in seconds.
+         */
         public Builder setEndpointDuration(float endpointDuration) {
             this.endpointDuration = endpointDuration;
+            return this;
+        }
+
+        /**
+         * Setter for enabling automatic punctuation insertion
+         *
+         * @param enableAutomaticPunctuation Set to `true` to enable automatic punctuation insertion.
+         */
+        public Builder setEnableAutomaticPunctuation(boolean enableAutomaticPunctuation) {
+            this.enableAutomaticPunctuation = enableAutomaticPunctuation;
             return this;
         }
 
@@ -169,7 +204,11 @@ public class Cheetah {
                 throw new CheetahInvalidArgumentException("endpointDuration must be greater than or equal to 0.0");
             }
 
-            return new Cheetah(accessKey, modelPath, endpointDuration);
+            return new Cheetah(
+                    accessKey,
+                    modelPath,
+                    endpointDuration,
+                    enableAutomaticPunctuation);
         }
     }
 }

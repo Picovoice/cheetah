@@ -7,16 +7,13 @@ Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 Cheetah is an on-device speech-to-text engine. Cheetah is:
 
 - Private; All voice processing runs locally.
-- Accurate [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results)
-- Compact and Computationally-Efficient [[2]](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
+- [Accurate](https://picovoice.ai/docs/benchmark/stt/)
+- [Compact and Computationally-Efficient](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
 - Cross-Platform:
-    - Linux (x86_64)
-    - macOS (x86_64, arm64)
-    - Windows (x86_64)
-    - Android
-    - iOS
-    - Raspberry Pi (4, 3)
-    - NVIDIA Jetson Nano
+    - Linux (x86_64), macOS (x86_64, arm64), Windows (x86_64)
+    - Android and iOS
+    - Chrome, Safari, Firefox, and Edge
+    - Raspberry Pi (4, 3) and NVIDIA Jetson Nano
 
 ## Compatibility
 
@@ -45,18 +42,21 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 
 Add the Cheetah model file to your Android application by:
 
-1. Either creat a model in [Picovoice Console](https://console.picovoice.ai/) or get the default model in [/lib/common/cheetah_params.pv](/lib/common/cheetah_params.pv).
+1. Either create a model in [Picovoice Console](https://console.picovoice.ai/) or use the [default model](/lib/common).
 2. Add the model as a bundled resource by placing it under the `assets` directory of your Android application.
 
-Create an instance of the engine with the Cheetah Builder class by passing in the Android app context:
+Create an instance of the engine with the Cheetah Builder class by passing in the `accessKey`, `modelPath` and Android app context:
 
 ```java
 import ai.picovoice.cheetah.*;
 
-final String accessKey = "..."; // AccessKey provided by Picovoice Console (https://console.picovoice.ai/)
+final String accessKey = "${ACCESS_KEY}"; // AccessKey provided by Picovoice Console (https://console.picovoice.ai/)
 final String modelPath = "${MODEL_FILE}";
 try {
-    Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey).setModelPath(modelPath).build(appContext);
+    Cheetah cheetah = new Cheetah.Builder()
+        .setAccessKey(accessKey)
+        .setModelPath(modelPath)
+        .build(appContext);
 } catch (CheetahException ex) { }
 ```
 

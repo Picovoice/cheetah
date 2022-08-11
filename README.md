@@ -8,16 +8,13 @@ Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
 - Private; All voice processing runs locally.
-- Accurate [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results)
-- Compact and Computationally-Efficient [[2]](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
+- [Accurate](https://picovoice.ai/docs/benchmark/stt/)
+- [Compact and Computationally-Efficient](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
 - Cross-Platform:
-    - Linux (x86_64)
-    - macOS (x86_64, arm64)
-    - Windows (x86_64)
-    - Android
-    - iOS
-    - Raspberry Pi (4, 3)
-    - NVIDIA Jetson Nano
+    - Linux (x86_64), macOS (x86_64, arm64), and Windows (x86_64)
+    - Android and iOS
+    - Chrome, Safari, Firefox, and Edge
+    - Raspberry Pi (4, 3) and NVIDIA Jetson Nano
 
 ## Table of Contents
 
@@ -36,6 +33,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [Node.js](#nodejs-demo)
         - [.Net](#net-demo)
         - [Rust](#rust-demo)
+        - [Web](#web-demo)
     - [SDKs](#sdks)
         - [Python](#python)
         - [C](#c)
@@ -48,6 +46,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [Java](#java)
         - [.Net](#net)
         - [Rust](#rust)
+        - [Web](#web)
     - [Releases](#releases)
 
 ## AccessKey
@@ -100,7 +99,7 @@ cmake -S demo/c/ -B demo/c/build && cmake --build demo/c/build
 Run the demo:
 
 ```console
-./demo/c/build/cheetah_demo_mic -a ${ACCESS_KEY} -l ${LIBRARY_PATH} -m ${MODEL_PATH}
+./demo/c/build/cheetah_demo_mic -a ${ACCESS_KEY} -m ${MODEL_PATH} -l ${LIBRARY_PATH}
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console, `${LIBRARY_PATH}` with the path to appropriate
@@ -234,6 +233,24 @@ Replace `${ACCESS_KEY}` with your Picovoice `AccessKey`.
 
 For more information about Rust demos, go to [demo/rust](/demo/rust).
 
+### Web Demo
+
+From [demo/web](/demo/web) run the following in the terminal:
+
+```console
+yarn
+yarn start
+```
+
+(or)
+
+```console
+npm install
+npm run start
+```
+
+Open [http://localhost:5000](http://localhost:5000) in your browser to try the demo.
+
 ## SDKs
 
 ### Python
@@ -267,13 +284,14 @@ Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
 Create an instance of the engine and transcribe audio in real-time:
 
 ```c
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "pv_cheetah.h"
 
 pv_cheetah_t *handle = NULL;
-const pv_status_t status = pv_cheetah_init("${ACCESS_KEY}", "${MODEL_PATH}", -1.f, &handle);
+const pv_status_t status = pv_cheetah_init("${ACCESS_KEY}", "${MODEL_PATH}", 0.f, false, &handle);
 if (status != PV_STATUS_SUCCESS) {
     // error handling logic
 }
@@ -345,7 +363,7 @@ while true {
 }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with the default or custom trained model from [console](https://console.picovoice.ai/).
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with a custom trained model from [Picovoice Console](https://console.picovoice.ai/) or the [default model](/lib/common/).
 
 ### Android
 
@@ -414,12 +432,12 @@ try{
     String transcript = "";
 
     while true {
-        CheetahTranscript transcriptObj = await _cheetah.process(getAudioFrame());
-        transcript += transcriptObj.transcript;
+        CheetahTranscript partialResult = await _cheetah.process(getAudioFrame());
+        transcript += partialResult.transcript;
 
-        if (transcriptObj.isEndpoint) {
-            CheetahTranscript endpointTranscriptObj = await _cheetah.flush();
-            transcript += endpointTranscriptObj.transcript;
+        if (partialResult.isEndpoint) {
+            CheetahTranscript finalResult = await _cheetah.flush();
+            transcript += finalResult.transcript;
         }
     }
 
@@ -428,7 +446,7 @@ try{
 } on CheetahException catch (err) { }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${CHEETAH_MODEL_PATH}` with the the path to the default or custom trained model from [console](https://console.picovoice.ai/).
+Replace `${ACCESS_KEY}` with your `AccessKey` obtained from [Picovoice Console](https://console.picovoice.ai/) and `${CHEETAH_MODEL_PATH}` with the the path a custom trained model from [Picovoice Console](https://console.picovoice.ai/) or the [default model](lib/common/).
 
 ### Go
 
@@ -484,9 +502,9 @@ const getAudioFrame = () => {
 try {
   while (1) {
     const cheetah = await Cheetah.create("${ACCESS_KEY}", "${MODEL_FILE}")
-    const [partialTranscript, isEndpoint] = await cheetah.process(getAudioFrame())
+    const {transcript, isEndpoint} = await cheetah.process(getAudioFrame())
     if (isEndpoint) {
-      const finalTranscript = await cheetah.flush()
+      const {transcript} = await cheetah.flush()
     }
   }
 } catch (err: any) {
@@ -645,7 +663,7 @@ fn next_audio_frame() -> Vec<i16> {
 }
 
 let access_key = "${ACCESS_KEY}"; // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
-let cheetah: Cheetah = CheetahBuilder::new(access_key).init().expect("Unable to create Cheetah");
+let cheetah: Cheetah = CheetahBuilder::new().access_key(access_key).init().expect("Unable to create Cheetah");
 
 if let Ok(cheetahTranscript) = cheetah.process(&next_audio_frame()) {
   println!("{}", cheetahTranscript.transcript)
@@ -658,6 +676,55 @@ if let Ok(cheetahTranscript) = cheetah.process(&next_audio_frame()) {
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)).
+
+### Web
+
+Install the web SDK using yarn:
+
+```console
+yarn add @picovoice/cheetah-web
+```
+
+or using npm:
+
+```console
+npm install --save @picovoice/cheetah-web
+```
+
+Create an instance of the engine using `CheetahWorker` and transcribe an audio file:
+
+```typescript
+import { CheetahWorker } from "@picovoice/cheetah-web";
+import cheetahParams from "${PATH_TO_BASE64_CHEETAH_PARAMS}";
+
+let transcript = "";
+
+function transcriptCallback(cheetahTranscript: CheetahTranscript) {
+  transcript += cheetahTranscript.transcript;
+  if (cheetahTranscript.isEndpoint) {
+    transcript += "\n";
+  }
+}
+
+function getAudioData(): Int16Array {
+... // function to get audio data
+  return new Int16Array();
+}
+
+const cheetah = await CheetahWorker.fromBase64(
+  "${ACCESS_KEY}",
+  transcriptCallback,
+  cheetahParams
+);
+
+for (; ;) {
+  cheetah.process(getAudioData());
+  // break on some condition
+}
+cheetah.flush(); // runs transcriptionCallback on remaining data.
+```
+
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)). Finally, when done release the resources using `cheetah.release()`.
 
 ## Releases
 

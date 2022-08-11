@@ -31,20 +31,25 @@ namespace CheetahDemo
         /// Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio(with a duration specified herein) after 
         /// an utterance without any speech in it. Set to `0` to disable
         /// </param>
+        /// <param name="enableAutomaticPunctuation">
+        /// Set to `true` to enable automatic punctuation insertion.
+        /// </param>
         /// <param name="audioDeviceIndex">Optional argument. If provided, audio is recorded from this input device. Otherwise, the default audio input device is used.</param>        
         public static void RunDemo(
             string accessKey,
             string modelPath,
             float endpointDurationSec,
+            bool enableAutomaticPunctuation,
             int audioDeviceIndex)
         {
 
             Cheetah cheetah = null;
 
             cheetah = Cheetah.Create(
-                accessKey,
-                modelPath,
-                endpointDurationSec);
+                accessKey: accessKey,
+                modelPath: modelPath,
+                endpointDurationSec: endpointDurationSec,
+                enableAutomaticPunctuation: enableAutomaticPunctuation);
 
             PvRecorder recorder = PvRecorder.Create(audioDeviceIndex, cheetah.FrameLength);
             recorder.Start();
@@ -116,6 +121,7 @@ namespace CheetahDemo
             string accessKey = null;
             string modelPath = null;
             float endpointDurationSec = 3.0f;
+            bool enableAutomaticPunctuation = true;
             int audioDeviceIndex = -1;
             bool showAudioDevices = false;
             bool showHelp = false;
@@ -145,6 +151,11 @@ namespace CheetahDemo
                     {
                         argIndex++;
                     }
+                }
+                else if (args[argIndex] == "--disable_automatic_punctuation")
+                {
+                    enableAutomaticPunctuation = false;
+                    argIndex++;
                 }
                 else if (args[argIndex] == "--show_audio_devices")
                 {
@@ -191,6 +202,7 @@ namespace CheetahDemo
                 accessKey,
                 modelPath,
                 endpointDurationSec,
+                enableAutomaticPunctuation,
                 audioDeviceIndex);
         }
 
@@ -207,6 +219,7 @@ namespace CheetahDemo
             "\t--endpoint_duration: Duration of endpoint in seconds. " +
             "A speech endpoint is detected when there is a chunk of audio (with a duration specified herein)" +
             " after an utterance without any speech in it. Set duration to 0 to disable this. Default is 3 seconds\n" +
+            "\t--disable_automatic_punctuation: Disable automatic punctuation.\n" +
             "\t--audio_device_index: Index of input audio device.\n" +
             "\t--show_audio_devices: Print available recording devices.\n";
     }

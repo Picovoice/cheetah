@@ -15,48 +15,57 @@ import sys
 import unittest
 import wave
 
+from parameterized import parameterized
+
 from cheetah import Cheetah
 from util import *
 
+TEST_PARAMS = [
+    [False, "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel"],
+    [True, "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel."],
+]
+
 
 class CheetahTestCase(unittest.TestCase):
-    _AUDIO_PATH = os.path.join(os.path.dirname(__file__), '../../resources/audio_samples/test.wav')
-    _TRANSCRIPT = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL"
-
-    _o = None
-
     @classmethod
     def setUpClass(cls):
-        cls._o = Cheetah(
-            access_key=sys.argv[1],
-            library_path=default_library_path('../..'),
-            model_path=default_model_path('../..')
-        )
-
-    @classmethod
-    def tearDownClass(cls):
-        cls._o.delete()
-
-    def test_transcribe(self):
-        with wave.open(self._AUDIO_PATH, 'rb') as f:
+        with wave.open(os.path.join(os.path.dirname(__file__), '../../resources/audio_samples/test.wav'), 'rb') as f:
             buffer = f.readframes(f.getnframes())
-            pcm = struct.unpack('%dh' % (len(buffer) / struct.calcsize('h')), buffer)
+            cls.pcm = struct.unpack('%dh' % (len(buffer) / struct.calcsize('h')), buffer)
+
+    @staticmethod
+    def _create_cheetah(enable_automatic_punctuation: bool) -> Cheetah:
+        return Cheetah(
+            access_key=sys.argv[1],
+            model_path=default_model_path('../..'),
+            library_path=default_library_path('../..'),
+            enable_automatic_punctuation=enable_automatic_punctuation)
+
+    @parameterized.expand(TEST_PARAMS)
+    def test_transcribe(self, enable_automatic_punctuation: bool, ref: str):
+        o = self._create_cheetah(enable_automatic_punctuation)
 
         transcript = ''
-        num_frames = len(pcm) // self._o.frame_length
+        num_frames = len(self.pcm) // o.frame_length
         for i in range(num_frames):
-            frame = pcm[i * self._o.frame_length:(i + 1) * self._o.frame_length]
-            partial_transcript, _ = self._o.process(frame)
+            frame = self.pcm[i * o.frame_length:(i + 1) * o.frame_length]
+            partial_transcript, _ = o.process(frame)
             transcript += partial_transcript
 
-        final_transcript = self._o.flush()
+        final_transcript = o.flush()
         transcript += final_transcript
-        self.assertEqual(transcript, self._TRANSCRIPT)
+        print(transcript)
+        self.assertEqual(transcript, ref)
 
     def test_version(self):
-        self.assertIsInstance(self._o.version, str)
-        self.assertGreater(len(self._o.version), 0)
+        o = self._create_cheetah(False)
+        self.assertIsInstance(o.version, str)
+        self.assertGreater(len(o.version), 0)
 
 
 if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print("usage: %s ${ACCESS_KEY}" % sys.argv[0])
+        exit(1)
+
     unittest.main(argv=sys.argv[:1])

@@ -12,89 +12,86 @@
 /// <reference no-default-lib="false"/>
 /// <reference lib="webworker" />
 
-import { Cheetah } from "./cheetah";
-import { CheetahWorkerRequest } from "./types";
+import { Cheetah } from './cheetah';
+import { CheetahWorkerRequest } from './types';
 
 /**
  * Cheetah worker handler.
  */
 let cheetah: Cheetah | null = null;
-self.onmessage = async function (
-  event: MessageEvent<CheetahWorkerRequest>
+self.onmessage = async function(
+  event: MessageEvent<CheetahWorkerRequest>,
 ): Promise<void> {
   switch (event.data.command) {
     case 'init':
       if (cheetah !== null) {
         self.postMessage({
-          command: "error",
-          message: "Cheetah already initialized"
+          command: 'error',
+          message: 'Cheetah already initialized',
         });
         return;
       }
       try {
         Cheetah.setWasm(event.data.wasm);
         Cheetah.setWasmSimd(event.data.wasmSimd);
-        cheetah = await Cheetah.create(event.data.accessKey, event.data.modelPath, event.data.initConfig);
+        cheetah = await Cheetah.create(event.data.accessKey, event.data.modelPath, event.data.options);
         self.postMessage({
-          command: "ok",
+          command: 'ok',
           version: cheetah.version,
           frameLength: cheetah.frameLength,
-          sampleRate: cheetah.sampleRate
+          sampleRate: cheetah.sampleRate,
         });
       } catch (e: any) {
         self.postMessage({
-          command: "error",
-          message: e.message
+          command: 'error',
+          message: e.message,
         });
       }
       break;
     case 'process':
       if (cheetah === null) {
         self.postMessage({
-          command: "error",
-          message: "Cheetah not initialized"
+          command: 'error',
+          message: 'Cheetah not initialized',
         });
         return;
       }
       try {
-        const [transcription, isEndpoint] = await cheetah.process(event.data.inputFrame);
+        const cheetahTranscript = await cheetah.process(event.data.inputFrame);
         self.postMessage({
-          command: "ok",
-          transcription: transcription,
-          isEndpoint: false
+          command: 'ok',
+          cheetahTranscript: cheetahTranscript
         });
-        if (isEndpoint) {
+        if (cheetahTranscript.isEndpoint) {
           self.postMessage({
-            command: "ok",
-            transcription: await cheetah.flush(),
-            isEndpoint: true
+            command: 'ok',
+            cheetahTranscript: await cheetah.flush(),
           });
         }
       } catch (e: any) {
         self.postMessage({
-          command: "error",
-          message: e.message
+          command: 'error',
+          message: e.message,
         });
       }
       break;
-    case "flush":
+    case 'flush':
       if (cheetah === null) {
         self.postMessage({
-          command: "error",
-          message: "Cheetah not initialized"
+          command: 'error',
+          message: 'Cheetah not initialized',
         });
         return;
       }
       try {
         self.postMessage({
-          command: "ok",
-          transcription: await cheetah.flush(),
-          isEndpoint: true
+          command: 'ok',
+          cheetahTranscript: await cheetah.flush()
         });
       } catch (e: any) {
         self.postMessage({
-          command: "error",
-          message: e.message
+          command: 'error',
+          message: e.message,
         });
       }
       break;
@@ -105,14 +102,14 @@ self.onmessage = async function (
         close();
       }
       self.postMessage({
-        command: "ok"
+        command: 'ok',
       });
       break;
     default:
       self.postMessage({
-        command: "failed",
+        command: 'failed',
         // @ts-ignore
-        message: `Unrecognized command: ${event.data.command}`
+        message: `Unrecognized command: ${event.data.command}`,
       });
   }
 };

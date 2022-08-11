@@ -20,34 +20,36 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class CheetahTest {
     private final String accessKey = System.getProperty("pvTestingAccessKey");
 
     @Test
     void getVersion() throws Exception {
-        Cheetah cheetah = new Cheetah(
-                accessKey,
-                Utils.getPackagedLibraryPath(),
-                Utils.getPackagedModelPath(),
-                1
-        );
+        Cheetah cheetah = new Cheetah.Builder()
+                .setAccessKey(accessKey)
+                .build();
+
         assertTrue(cheetah.getVersion() != null && !cheetah.getVersion().equals(""));
 
         cheetah.delete();
     }
 
-    @Test
-    void transcribe() throws Exception {
-        Cheetah cheetah = new Cheetah(
-                accessKey,
-                Utils.getPackagedLibraryPath(),
-                Utils.getPackagedModelPath(),
-                1
-        );
+    @ParameterizedTest(name = "test transcribe with automatic punctuation set to ''{0}''")
+    @MethodSource("transcribeProvider")
+    void transcribe(boolean enableAutomaticPunctuation, String referenceTranscript) throws Exception {
+        Cheetah cheetah = new Cheetah.Builder()
+                .setAccessKey(accessKey)
+                .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
+                .build();
 
         int frameLen = cheetah.getFrameLength();
         String audioFilePath = Paths.get(System.getProperty("user.dir"))
@@ -74,10 +76,15 @@ public class CheetahTest {
         }
         CheetahTranscript finalTranscriptObj = cheetah.flush();
         transcript += finalTranscriptObj.getTranscript();
-
-        String referenceTranscript = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL";
         assertEquals(referenceTranscript, transcript);
 
         cheetah.delete();
+    }
+
+    private static Stream<Arguments> transcribeProvider() {
+        return Stream.of(
+                Arguments.of(true, "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel."),
+                Arguments.of(false, "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel")
+        );
     }
 }

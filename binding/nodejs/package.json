@@ -1,6 +1,6 @@
 {
   "name": "@picovoice/cheetah-node",
-  "version": "1.0.3",
+  "version": "1.1.1",
   "description": "Picovoice Cheetah Node.js binding",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
@@ -18,16 +18,17 @@
     "directory": "binding/nodejs"
   },
   "keywords": [
+    "ai",
+    "asr",
+    "automatic speech recognition",
     "nlu",
-    "speech recognition",
-    "voice commands",
     "offline",
     "private",
-    "voice",
-    "ai",
+    "speech recognition",
+    "speech-to-text",
     "voice assistant",
-    "asr",
-    "speech-to-text"
+    "voice commands",
+    "voice"
   ],
   "author": "Picovoice Inc.",
   "license": "Apache-2.0",

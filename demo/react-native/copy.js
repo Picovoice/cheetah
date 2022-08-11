@@ -11,31 +11,23 @@
 
 const mkdirp = require('mkdirp');
 const ncp = require('ncp').ncp;
-const fs = require('fs');
 
 const androidAssetPath =
   './android/cheetah-rn-demo-app/src/main/assets/cheetah_params.pv';
 const iosAssetPath = './ios/CheetahDemo/cheetah_params.pv';
 
 mkdirp.sync('./android/cheetah-rn-demo-app/src/main/assets/');
-fs.stat(androidAssetPath, (err, stat) => {
-  if (err !== null && err.code === 'ENOENT') {
-    ncp('../../lib/common/cheetah_params.pv', androidAssetPath, (error) => {
-      if (error) {
-        return console.error(error);
-      }
-      console.log('Copied Android params.');
-    });
+
+ncp('../../lib/common/cheetah_params.pv', androidAssetPath, (error) => {
+  if (error) {
+    return console.error(error);
   }
+  console.log('Copied Android params.');
 });
 
-fs.stat(iosAssetPath, (err, stat) => {
-  if (err !== null && err.code === 'ENOENT') {
-    ncp('../../lib/common/cheetah_params.pv', iosAssetPath, (error) => {
-      if (error) {
-        return console.error(error);
-      }
-      console.log('Copied iOS params.');
-    });
+ncp('../../lib/common/cheetah_params.pv', iosAssetPath, (error) => {
+  if (error) {
+    return console.error(error);
   }
+  console.log('Copied iOS params.');
 });

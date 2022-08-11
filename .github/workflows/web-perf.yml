@@ -3,13 +3,13 @@ name: Web Performance
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ master, v1.1 ]
     paths:
       - 'lib/wasm/**'
       - 'lib/common/**'
       - '.github/workflows/web-perf.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ master, v1.1 ]
     paths:
       - 'lib/wasm/**'
       - 'lib/common/**'

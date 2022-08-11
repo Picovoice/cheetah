@@ -53,11 +53,13 @@ class Cheetah {
   /// [endpointDuration] (Optional) Duration of endpoint in seconds. A speech endpoint is detected when there is a
   ///                               chunk of audio (with a duration specified herein) after an utterance without
   ///                               any speech in it. Set duration to 0 to disable this. Default is 1 second.
+  /// [enableAutomaticPunctuation] (Optional) Set to `true` to enable automatic punctuation insertion.
   ///
-  /// Thows a `CheetahException` if not initialized correctly
+  /// Throws a `CheetahException` if not initialized correctly
   ///
-  /// returns an instance of the speech-to-text engine
-  static Future<Cheetah> create(String accessKey, String modelPath, {double endpointDuration = 1}) async {
+  /// returns an instance of the Cheetah Speech-to-Text engine
+  static Future<Cheetah> create(String accessKey, String modelPath,
+      {double endpointDuration = 1, enableAutomaticPunctuation = false}) async {
     modelPath = await _tryExtractFlutterAsset(modelPath);
 
     try {
@@ -66,9 +68,11 @@ class Cheetah {
         'accessKey': accessKey,
         'modelPath': modelPath,
         'endpointDuration': endpointDuration,
+        'enableAutomaticPunctuation': enableAutomaticPunctuation
       }));
 
-      return Cheetah._(result['handle'], result['frameLength'], result['sampleRate'], result['version']);
+      return Cheetah._(result['handle'], result['frameLength'],
+          result['sampleRate'], result['version']);
     } on PlatformException catch (error) {
       throw cheetahStatusToException(error.code, error.message);
     } on Exception catch (error) {
@@ -95,7 +99,8 @@ class Cheetah {
             "field 'transcript' must be always present");
       }
 
-      return CheetahTranscript(transcript['transcript'], transcript['isEndpoint']);
+      return CheetahTranscript(
+          transcript['transcript'], transcript['isEndpoint']);
     } on PlatformException catch (error) {
       throw cheetahStatusToException(error.code, error.message);
     } on Exception catch (error) {
@@ -108,8 +113,8 @@ class Cheetah {
   /// returns CheetahTranscript object.
   Future<CheetahTranscript> flush() async {
     try {
-      Map<String, dynamic> transcript = Map<String, dynamic>.from(await _channel
-          .invokeMethod('flush', {'handle': _handle}));
+      Map<String, dynamic> transcript = Map<String, dynamic>.from(
+          await _channel.invokeMethod('flush', {'handle': _handle}));
 
       if (transcript['transcript'] == null) {
         throw CheetahInvalidStateException(

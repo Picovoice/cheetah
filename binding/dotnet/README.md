@@ -7,16 +7,13 @@ Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
 - Private; All voice processing runs locally.
-- Accurate [[1]](https://github.com/Picovoice/speech-to-text-benchmark#results)
-- Compact and Computationally-Efficient [[2]](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
+- [Accurate](https://picovoice.ai/docs/benchmark/stt/#results)
+- [Compact and Computationally-Efficient](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
 - Cross-Platform:
-    - Linux (x86_64)
-    - macOS (x86_64, arm64)
-    - Windows (x86_64)
-    - Android
-    - iOS
-    - Raspberry Pi (4, 3)
-    - NVIDIA Jetson Nano
+  - Linux (x86_64), macOS (x86_64, arm64), and Windows (x86_64)
+  - Android and iOS
+  - Chrome, Safari, Firefox, and Edge
+  - Raspberry Pi (4, 3) and NVIDIA Jetson Nano
 
 ## Requirements
 
@@ -118,4 +115,4 @@ Cheetah handle = Cheetah.Create(accessKey, modelPath);
 
 ## Demos
 
-The [Cheetah dotnet demo project](/demo/dotnet) is a .NET Core console app that allows for processing real-time audio (i.e. microphone) and files using Cheetah.
+The [Cheetah dotnet demo project](https://github.com/Picovoice/cheetah/tree/master/demo/dotnet) is a .NET Core console app that allows for processing real-time audio (i.e. microphone) and files using Cheetah.

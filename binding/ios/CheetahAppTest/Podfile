@@ -2,13 +2,13 @@ source 'https://cdn.cocoapods.org/'
 platform :ios, '9.0'
 
 target 'CheetahAppTest' do
-  pod 'Cheetah-iOS', '~> 1.0.1'
+  pod 'Cheetah-iOS', '~> 1.1.0'
 end
 
 target 'CheetahAppTestUITests' do
-  pod 'Cheetah-iOS', '~> 1.0.1'
+  pod 'Cheetah-iOS', '~> 1.1.0'
 end
 
 target 'PerformanceTest' do
-  pod 'Cheetah-iOS', '~> 1.0.1'
+  pod 'Cheetah-iOS', '~> 1.1.0'
 end

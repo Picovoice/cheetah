@@ -35,20 +35,30 @@ public class Cheetah {
      * Constructor.
      *
      * @param accessKey     AccessKey obtained from Picovoice Console.
-     * @param libraryPath   Absolute path to the native Cheetah library.
      * @param modelPath     Absolute path to the file containing model parameters.
+     * @param libraryPath   Absolute path to the native Cheetah library.
      * @param endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
      *                         chunk of audio (with a duration specified herein) after an utterance without
      *                         any speech in it. Set duration to 0 to disable this. Default is 1 second in the Builder.
+     * @param enableAutomaticPunctuation Set to `true` to enable automatic punctuation insertion.
      * @throws CheetahException if there is an error while initializing Cheetah.
      */
-    public Cheetah(String accessKey, String libraryPath, String modelPath, float endpointDurationSec) throws CheetahException {
+    private Cheetah(
+            String accessKey,
+            String modelPath,
+            String libraryPath,
+            float endpointDurationSec,
+            boolean enableAutomaticPunctuation) throws CheetahException {
         try {
             System.load(libraryPath);
         } catch (Exception exception) {
             throw new CheetahException(exception);
         }
-        libraryHandle = init(accessKey, modelPath, endpointDurationSec);
+        libraryHandle = init(
+                accessKey,
+                modelPath,
+                endpointDurationSec,
+                enableAutomaticPunctuation);
     }
 
     /**
@@ -103,7 +113,11 @@ public class Cheetah {
      */
     public native String getVersion();
 
-    private native long init(String accessKey, String modelPath, float endpointDurationSec);
+    private native long init(
+            String accessKey,
+            String modelPath,
+            float endpointDurationSec,
+            boolean enableAutomaticPunctuation);
 
     private native void delete(long object);
 
@@ -116,6 +130,7 @@ public class Cheetah {
         private String libraryPath = null;
         private String modelPath = null;
         private float endpointDuration = 1f;
+        private boolean enableAutomaticPunctuation = false;
 
         public Builder setAccessKey(String accessKey) {
             this.accessKey = accessKey;
@@ -127,13 +142,35 @@ public class Cheetah {
             return this;
         }
 
+        /**
+         * Setter for the absolute path to the file containing Cheetah model parameters.
+         *
+         * @param modelPath Absolute path to the file containing Cheetah model parameters.
+         */
         public Builder setModelPath(String modelPath) {
             this.modelPath = modelPath;
             return this;
         }
 
+        /**
+         * Setter for the duration of endpoint in seconds.
+         *
+         * @param endpointDuration Duration of endpoint in seconds. A speech endpoint is detected when there is a
+         *                         chunk of audio (with a duration specified herein) after an utterance without
+         *                         any speech in it.
+         */
         public Builder setEndpointDuration(float endpointDuration) {
             this.endpointDuration = endpointDuration;
+            return this;
+        }
+
+        /**
+         * Setter for enabling automatic punctuation insertion
+         *
+         * @param enableAutomaticPunctuation Set to `true` to enable automatic punctuation insertion.
+         */
+        public Builder setEnableAutomaticPunctuation(boolean enableAutomaticPunctuation) {
+            this.enableAutomaticPunctuation = enableAutomaticPunctuation;
             return this;
         }
 
@@ -178,7 +215,12 @@ public class Cheetah {
                 throw new CheetahInvalidArgumentException("endpointDuration must be greater than or equal to 0.0");
             }
 
-            return new Cheetah(accessKey, libraryPath, modelPath, endpointDuration);
+            return new Cheetah(
+                    accessKey,
+                    modelPath,
+                    libraryPath,
+                    endpointDuration,
+                    enableAutomaticPunctuation);
         }
     }
 }

@@ -41,7 +41,10 @@ class ViewModel: ObservableObject {
         state = UIState.INIT
         do {
             let modelPath = Bundle(for: type(of: self)).path(forResource: "cheetah_params", ofType: "pv")!
-            try cheetah = Cheetah(accessKey: ACCESS_KEY, modelPath: modelPath)
+            try cheetah = Cheetah(
+                    accessKey: ACCESS_KEY,
+                    modelPath: modelPath,
+                    enableAutomaticPunctuation: true)
             state = UIState.READY
         } catch let error as CheetahInvalidArgumentError{
             errorMessage = "\(error.localizedDescription)\nEnsure your AccessKey '\(ACCESS_KEY)' is valid."

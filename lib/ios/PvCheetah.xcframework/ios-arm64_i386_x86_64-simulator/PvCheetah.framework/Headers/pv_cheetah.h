@@ -40,6 +40,7 @@ typedef struct pv_cheetah pv_cheetah_t;
  * @param endpoint_duration_sec Duration of endpoint in seconds. A speech endpoint is detected when there is a segment
  * of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0` to disable
  * endpoint detection.
+ * @param enable_automatic_punctuation Set to `true` to enable automatic punctuation insertion.
  * @param[out] object Constructed instance of Cheetah.
  * @return Status code. Returns `PV_STATUS_INVALID_ARGUMENT`, `PV_STATUS_IO_ERROR`, `PV_STATUS_OUT_OF_MEMORY`,
  * `PV_STATUS_RUNTIME_ERROR`, `PV_STATUS_ACTIVATION_ERROR`, `PV_STATUS_ACTIVATION_LIMIT_REACHED`,
@@ -49,6 +50,7 @@ PV_API pv_status_t pv_cheetah_init(
         const char *access_key,
         const char *model_path,
         float endpoint_duration_sec,
+        bool enable_automatic_punctuation,
         pv_cheetah_t **object);
 
 /**

@@ -21,7 +21,11 @@ import {
   pvStatusToException,
 } from "./errors";
 
-import { getSystemLibraryPath } from "./platforms";
+import {
+  CheetahOptions,
+} from "./types";
+
+import {getSystemLibraryPath} from "./platforms";
 
 const DEFAULT_MODEL_PATH = "../lib/common/cheetah_params.pv";
 
@@ -48,17 +52,17 @@ export default class Cheetah {
   /**
    * Creates an instance of Cheetah.
    * @param {string} accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
-   * @param {number} endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio
-   * (with a duration specified herein) after an utterance without any speech in it. Set to `0` to disable endpoint detection.
-   * @param {string} modelPath the path to the Cheetah model (.pv extension)
-   * @param {string} libraryPath the path to the Cheetah dynamic library (.node extension)
+   * @param options Optional configuration arguments.
+   * @param {string} options.modelPath the path to the Cheetah model (.pv extension)
+   * @param {string} options.libraryPath the path to the Cheetah library (.node extension)
+   * @param {number} options.endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
+   * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
+   * to disable endpoint detection.
+   * @param {boolean} options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
    */
   constructor(
     accessKey: string,
-    endpointDurationSec: number,
-    modelPath?: string,
-    libraryPath?: string
-  ) {
+    options: CheetahOptions = {}) {
     assert(typeof accessKey === "string");
     if (
       accessKey === null ||
@@ -68,22 +72,17 @@ export default class Cheetah {
       throw new CheetahInvalidArgumentError(`No AccessKey provided to Cheetah`);
     }
 
+    const {
+      modelPath = path.resolve(__dirname, DEFAULT_MODEL_PATH),
+      libraryPath = getSystemLibraryPath(),
+      endpointDurationSec = 1.0,
+      enableAutomaticPunctuation = false
+    } = options;
+
     if (endpointDurationSec < 0) {
       throw new RangeError(
         `Duration of endpoint value in 'endpointDurationSec' must be a positive number: ${endpointDurationSec}`
       );
-    }
-
-    if (endpointDurationSec === null || endpointDurationSec === undefined) {
-      endpointDurationSec = 1.0;
-    }
-
-    if (modelPath === undefined || modelPath === null) {
-      modelPath = path.resolve(__dirname, DEFAULT_MODEL_PATH);
-    }
-
-    if (libraryPath === undefined || modelPath === null) {
-      libraryPath = getSystemLibraryPath();
     }
 
     if (!fs.existsSync(libraryPath)) {
@@ -105,7 +104,8 @@ export default class Cheetah {
       cheetahHandleAndStatus = pvCheetah.init(
         accessKey,
         modelPath,
-        endpointDurationSec
+        endpointDurationSec,
+        enableAutomaticPunctuation
       );
     } catch (err: any) {
       pvStatusToException(<PvStatus>err.code, err);

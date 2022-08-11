@@ -16,7 +16,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"time"
 
 	cheetah "github.com/Picovoice/cheetah/binding/go"
 	"github.com/go-audio/audio"
@@ -29,6 +28,7 @@ func main() {
 	libraryPathArg := flag.String("library_path", "", "Path to Cheetah's dynamic library file")
 	modelPathArg := flag.String("model_path", "", "Path to Cheetah model file")
 	endpointDurationArg := flag.Float64("endpoint_duration", 1, "Duration of endpoint in seconds")
+	disableAutomaticPunctuationArg := flag.Bool("disable_automatic_punctuation", true, "Disable automatic punctuation")
 	flag.Parse()
 
 	// validate input audio
@@ -42,10 +42,9 @@ func main() {
 	}
 	defer f.Close()
 
-	c := cheetah.Cheetah{
-		AccessKey:        *accessKeyArg,
-		EndpointDuration: float32(*endpointDurationArg),
-	}
+	c := cheetah.NewCheetah(*accessKeyArg)
+	c.EndpointDuration = float32(*endpointDurationArg)
+	c.EnableAutomaticPunctuation = !*disableAutomaticPunctuationArg
 	// validate library path
 	if *libraryPathArg != "" {
 		libraryPath, _ := filepath.Abs(*libraryPathArg)
@@ -90,8 +89,6 @@ func main() {
 	}
 
 	shortBuf := make([]int16, cheetah.FrameLength)
-	totalRead := 0
-	start := time.Now()
 
 	for err == nil {
 		n, err := wavFile.PCMBuffer(buf)
@@ -130,9 +127,4 @@ func main() {
 	if len(final) > 0 {
 		fmt.Println(final)
 	}
-
-	audioLen := float64(totalRead) / float64(cheetah.SampleRate)
-	elapsed := time.Since(start)
-	realtimeFactor := audioLen / elapsed.Seconds()
-	fmt.Printf("\nRealtime factor: %fx\n", realtimeFactor)
 }

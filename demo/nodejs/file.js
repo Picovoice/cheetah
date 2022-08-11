@@ -32,6 +32,7 @@ program
     "absolute path to cheetah dynamic library"
   )
   .option("-m, --model_file_path <string>", "absolute path to cheetah model")
+  .option("-d, --disable_automatic_punctuation", "disable automatic punctuation")
 
 if (process.argv.length < 2) {
   program.help();
@@ -40,16 +41,19 @@ program.parse(process.argv);
 
 function fileDemo() {
   let audioPath = program["input_audio_file_path"];
-  let access_key = program["access_key"]
+  let accessKey = program["access_key"]
   let libraryFilePath = program["library_file_path"];
   let modelFilePath = program["model_file_path"];
+  let disableAutomaticPunctuation = program["disable_automatic_punctuation"];
 
   let engineInstance = new Cheetah(
-    access_key,
-    0.4,
-    modelFilePath,
-    libraryFilePath
-  );
+    accessKey,
+    {
+      modelPath: modelFilePath,
+      libraryPath: libraryFilePath,
+      endpointDurationSec: 0.4,
+      enableAutomaticPunctuation: !disableAutomaticPunctuation
+    });
 
   if (!fs.existsSync(audioPath)) {
     console.error(`--input_audio_file_path file not found: ${audioPath}`);
@@ -76,7 +80,7 @@ function fileDemo() {
 
   let transcript = '';
   for (let frame of frames) {
-    const [partialTranscript, isEndpoint] = engineInstance.process(frame);
+    const [partialTranscript, _] = engineInstance.process(frame);
     transcript += partialTranscript
   }
 

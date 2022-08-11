@@ -3,13 +3,13 @@ name: Android AppCenter Tests
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ master, v1.1 ]
     paths:
       - 'demo/android/CheetahDemo/**'
       - '!demo/android/CheetahDemo/README.md'
       - '.github/workflows/android-appcenter.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ master, v1.1 ]
     paths:
       - 'demo/android/CheetahDemo/**'
       - '!demo/android/CheetahDemo/README.md'

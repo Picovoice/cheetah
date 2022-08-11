@@ -49,6 +49,7 @@ type PvCheetahInitFn = unsafe extern "C" fn(
     access_key: *const c_char,
     model_path: *const c_char,
     endpoint_duration_sec: c_float,
+    enable_automatic_punctuation: bool,
     object: *mut *mut CCheetah,
 ) -> PvStatus;
 type PvCheetahFrameLengthFn = unsafe extern "C" fn() -> i32;
@@ -96,27 +97,25 @@ impl std::fmt::Display for CheetahError {
 
 impl std::error::Error for CheetahError {}
 
-pub struct CheetahTranscript {
-    pub transcript: String,
-    pub is_endpoint: bool,
-}
-
 pub struct CheetahBuilder {
     access_key: String,
-    library_path: PathBuf,
     model_path: PathBuf,
+    library_path: PathBuf,
     endpoint_duration_sec: f32,
+    enable_automatic_punctuation: bool,
 }
 
 impl CheetahBuilder {
     const DEFAULT_ENDPOINT_DURATION_SEC: f32 = 1.0;
+    const DEFAULT_ENABLE_AUTOMATIC_PUNCTUATION: bool = false;
 
-    pub fn new<S: Into<String>>(access_key: S) -> Self {
+    pub fn new() -> Self {
         Self {
-            access_key: access_key.into(),
+            access_key: String::from(""),
             model_path: pv_model_path(),
             library_path: pv_library_path(),
             endpoint_duration_sec: Self::DEFAULT_ENDPOINT_DURATION_SEC,
+            enable_automatic_punctuation: Self::DEFAULT_ENABLE_AUTOMATIC_PUNCTUATION,
         }
     }
 
@@ -125,13 +124,13 @@ impl CheetahBuilder {
         self
     }
 
-    pub fn library_path<P: Into<PathBuf>>(&mut self, library_path: P) -> &mut Self {
-        self.library_path = library_path.into();
+    pub fn model_path<P: Into<PathBuf>>(&mut self, model_path: P) -> &mut Self {
+        self.model_path = model_path.into();
         self
     }
 
-    pub fn model_path<P: Into<PathBuf>>(&mut self, model_path: P) -> &mut Self {
-        self.model_path = model_path.into();
+    pub fn library_path<P: Into<PathBuf>>(&mut self, library_path: P) -> &mut Self {
+        self.library_path = library_path.into();
         self
     }
 
@@ -140,12 +139,21 @@ impl CheetahBuilder {
         self
     }
 
+    pub fn enable_automatic_punctuation(
+        &mut self,
+        enable_automatic_punctuation: bool,
+    ) -> &mut Self {
+        self.enable_automatic_punctuation = enable_automatic_punctuation;
+        self
+    }
+
     pub fn init(&self) -> Result<Cheetah, CheetahError> {
         let inner = CheetahInner::init(
             &self.access_key,
-            &self.library_path,
             &self.model_path,
+            &self.library_path,
             self.endpoint_duration_sec,
+            self.enable_automatic_punctuation,
         );
         match inner {
             Ok(inner) => Ok(Cheetah {
@@ -154,6 +162,12 @@ impl CheetahBuilder {
             Err(err) => Err(err),
         }
     }
+}
+
+#[derive(Clone)]
+pub struct CheetahTranscript {
+    pub transcript: String,
+    pub is_endpoint: bool,
 }
 
 #[derive(Clone)]
@@ -247,17 +261,15 @@ struct CheetahInner {
 impl CheetahInner {
     pub fn init<P: AsRef<Path>>(
         access_key: &str,
-        library_path: P,
         model_path: P,
+        library_path: P,
         endpoint_duration_sec: f32,
+        enable_automatic_punctuation: bool,
     ) -> Result<Self, CheetahError> {
-        if !library_path.as_ref().exists() {
+        if access_key == "" {
             return Err(CheetahError::new(
                 CheetahErrorStatus::ArgumentError,
-                format!(
-                    "Couldn't find Cheetah's dynamic library at {}",
-                    library_path.as_ref().display()
-                ),
+                "AccessKey is empty",
             ));
         }
 
@@ -267,6 +279,16 @@ impl CheetahInner {
                 format!(
                     "Couldn't find model file at {}",
                     model_path.as_ref().display()
+                ),
+            ));
+        }
+
+        if !library_path.as_ref().exists() {
+            return Err(CheetahError::new(
+                CheetahErrorStatus::ArgumentError,
+                format!(
+                    "Couldn't find Cheetah's dynamic library at {}",
+                    library_path.as_ref().display()
                 ),
             ));
         }
@@ -313,6 +335,7 @@ impl CheetahInner {
                 access_key.as_ptr(),
                 pv_model_path.as_ptr(),
                 endpoint_duration_sec,
+                enable_automatic_punctuation,
                 addr_of_mut!(ccheetah),
             );
             check_fn_call_status(status, "pv_cheetah_init")?;
