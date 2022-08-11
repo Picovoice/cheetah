@@ -284,6 +284,7 @@ Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
 Create an instance of the engine and transcribe audio in real-time:
 
 ```c
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
