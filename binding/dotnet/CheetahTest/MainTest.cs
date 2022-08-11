@@ -24,8 +24,6 @@ namespace CheetahTest
     {
         private static string ACCESS_KEY;
 
-        private static string REF_TRANSCRIPT = "MR QUILTER IS THE APOSTLE OF THE MIDDLE CLASSES AND WE ARE GLAD TO WELCOME HIS GOSPEL";
-
         private static string _relativeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         private List<short> GetPcmFromFile(string audioFilePath, int expectedSampleRate)
@@ -76,9 +74,14 @@ namespace CheetahTest
         }
 
         [TestMethod]
-        public void TestProcess()
+        [DataRow(true, "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.")]
+        [DataRow(false, "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel")]
+        public void TestProcess(bool enableAutomaticPunctuation, string expectedTranscript)
         {
-            using Cheetah cheetah = Cheetah.Create(ACCESS_KEY, null, 0.2f);
+            using Cheetah cheetah = Cheetah.Create(
+                accessKey:ACCESS_KEY, 
+                endpointDurationSec:0.2f, 
+                enableAutomaticPunctuation:enableAutomaticPunctuation);
             string testAudioPath = Path.Combine(_relativeDir, "resources/audio_samples/test.wav");
             List<short> pcm = GetPcmFromFile(testAudioPath, cheetah.SampleRate);
 
@@ -97,15 +100,20 @@ namespace CheetahTest
             }
             CheetahTranscript finalTranscriptObj = cheetah.Flush();
             transcript += finalTranscriptObj.Transcript;
-            Assert.AreEqual(transcript, REF_TRANSCRIPT);
+            Assert.AreEqual(transcript, expectedTranscript);
             Assert.IsTrue(isEndpoint);
         }
 
         [TestMethod]
-        public void TestCustomModel()
+        [DataRow(true, "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.")]
+        [DataRow(false, "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel")]
+        public void TestCustomModel(bool enableAutomaticPunctuation, string expectedTranscript)
         {
             string testModelPath = Path.Combine(_relativeDir, "lib/common/cheetah_params.pv");
-            using Cheetah cheetah = Cheetah.Create(ACCESS_KEY, testModelPath);
+            using Cheetah cheetah = Cheetah.Create(
+                accessKey:ACCESS_KEY,
+                modelPath:testModelPath,
+                enableAutomaticPunctuation:enableAutomaticPunctuation);
             string testAudioPath = Path.Combine(_relativeDir, "resources/audio_samples/test.wav");
             List<short> pcm = GetPcmFromFile(testAudioPath, cheetah.SampleRate);
 
@@ -122,7 +130,7 @@ namespace CheetahTest
             }
             CheetahTranscript finalTranscriptObj = cheetah.Flush();
             transcript += finalTranscriptObj.Transcript;
-            Assert.AreEqual(transcript, REF_TRANSCRIPT);
+            Assert.AreEqual(transcript, expectedTranscript);
         }
     }
 }

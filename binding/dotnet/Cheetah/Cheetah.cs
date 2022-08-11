@@ -66,6 +66,7 @@ namespace Pv
             IntPtr accessKey,
             IntPtr modelPath,
             float endpointDurationSec,
+            bool enableAutomaticPunctuation,
             out IntPtr handle);
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
@@ -107,10 +108,13 @@ namespace Pv
         /// Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio(with a duration specified herein) after
         /// an utterance without any speech in it. Set to `0` to disable
         /// </param>
+        /// <param name="enableAutomaticPunctuation">
+        /// Set to `true` to enable automatic punctuation insertion.
+        /// </param>
         /// <returns>An instance of Cheetah Speech-to-Text engine.</returns>
-        public static Cheetah Create(string accessKey, string modelPath = null, float endpointDurationSec = 1.0f)
+        public static Cheetah Create(string accessKey, string modelPath = null, float endpointDurationSec = 1.0f, bool enableAutomaticPunctuation = false)
         {
-            return new Cheetah(accessKey, modelPath ?? DEFAULT_MODEL_PATH, endpointDurationSec);
+            return new Cheetah(accessKey, modelPath ?? DEFAULT_MODEL_PATH, endpointDurationSec, enableAutomaticPunctuation);
         }
 
         /// <summary>
@@ -125,10 +129,14 @@ namespace Pv
         /// Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio(with a duration specified herein) after
         /// an utterance without any speech in it.Set to `0` to disable
         /// </param>
+        /// <param name="enableAutomaticPunctuation">
+        /// Set to `true` to enable automatic punctuation insertion.
+        /// </param>
         private Cheetah(
             string accessKey,
             string modelPath,
-            float endpointDurationSec = 1.0f)
+            float endpointDurationSec = 1.0f,
+            bool enableAutomaticPunctuation = false)
         {
             if (string.IsNullOrEmpty(accessKey))
             {
@@ -152,6 +160,7 @@ namespace Pv
                 accessKeyPtr,
                 modelPathPtr,
                 endpointDurationSec,
+                enableAutomaticPunctuation,
                 out _libraryPointer);
 
             Marshal.FreeHGlobal(accessKeyPtr);
