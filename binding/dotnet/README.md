@@ -115,4 +115,4 @@ Cheetah handle = Cheetah.Create(accessKey, modelPath);
 
 ## Demos
 
-The [Cheetah dotnet demo project](/demo/dotnet) is a .NET Core console app that allows for processing real-time audio (i.e. microphone) and files using Cheetah.
+The [Cheetah dotnet demo project](https://github.com/Picovoice/cheetah/tree/master/demo/dotnet) is a .NET Core console app that allows for processing real-time audio (i.e. microphone) and files using Cheetah.
