@@ -12,10 +12,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cheetah_demo/cheetah_manager.dart';
-import 'package:cheetah_flutter/cheetah.dart';
 import 'package:cheetah_flutter/cheetah_error.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() {
   runApp(MyApp());
@@ -27,7 +25,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final String accessKey = '{YOUR_ACCESS_KEY_HERE}'; // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
+  final String accessKey =
+      '{YOUR_ACCESS_KEY_HERE}'; // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -38,7 +37,7 @@ class _MyAppState extends State<MyApp> {
   String transcriptText = "";
   CheetahManager? _cheetahManager;
 
-  ScrollController _controller = ScrollController();
+  final ScrollController _controller = ScrollController();
 
   @override
   void initState() {
@@ -60,15 +59,16 @@ class _MyAppState extends State<MyApp> {
     String modelPath = "assets/models/$platform/cheetah_params.pv";
 
     try {
-      _cheetahManager = await CheetahManager.create(accessKey, modelPath, transcriptCallback, errorCallback);
+      _cheetahManager = await CheetahManager.create(
+          accessKey, modelPath, transcriptCallback, errorCallback);
     } on CheetahInvalidArgumentException catch (ex) {
       errorCallback(CheetahInvalidArgumentException(
           "${ex.message}\nEnsure your accessKey '$accessKey' is a valid access key."));
     } on CheetahActivationException {
       errorCallback(CheetahActivationException("AccessKey activation error."));
     } on CheetahActivationLimitException {
-      errorCallback(
-          CheetahActivationLimitException("AccessKey reached its device limit."));
+      errorCallback(CheetahActivationLimitException(
+          "AccessKey reached its device limit."));
     } on CheetahActivationRefusedException {
       errorCallback(CheetahActivationRefusedException("AccessKey refused."));
     } on CheetahActivationThrottledException {
@@ -80,7 +80,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   void transcriptCallback(String transcript) {
-    bool shouldScroll = _controller.position.pixels == _controller.position.maxScrollExtent;
+    bool shouldScroll =
+        _controller.position.pixels == _controller.position.maxScrollExtent;
 
     setState(() {
       transcriptText = transcriptText + transcript;
@@ -108,6 +109,7 @@ class _MyAppState extends State<MyApp> {
     try {
       await _cheetahManager!.startProcess();
       setState(() {
+        transcriptText = "";
         isProcessing = true;
       });
     } on CheetahException catch (ex) {
@@ -166,8 +168,11 @@ class _MyAppState extends State<MyApp> {
               height: 130,
               child: ElevatedButton(
                 style: buttonStyle,
-                onPressed:
-                    (isProcessing) ? _stopProcessing : _startProcessing,
+                onPressed: isError
+                    ? null
+                    : isProcessing
+                        ? _stopProcessing
+                        : _startProcessing,
                 child: Text(isProcessing ? "Stop" : "Start",
                     style: TextStyle(fontSize: 30)),
               ))),
@@ -178,25 +183,21 @@ class _MyAppState extends State<MyApp> {
     return Expanded(
         flex: 6,
         child: Container(
-          alignment: Alignment.topCenter,
-          color: Color(0xff25187e),
-          margin: EdgeInsets.all(10),
-          child: SingleChildScrollView(
-            controller: _controller,
-            scrollDirection: Axis.vertical,
-            padding: EdgeInsets.all(10),
-            physics: RangeMaintainingScrollPhysics(),
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                transcriptText,
-                textAlign: TextAlign.left,
-                style: TextStyle(color: Colors.white, fontSize: 20),
-              )
-            )
-          )
-        )
-      );
+            alignment: Alignment.topCenter,
+            color: Color(0xff25187e),
+            margin: EdgeInsets.all(10),
+            child: SingleChildScrollView(
+                controller: _controller,
+                scrollDirection: Axis.vertical,
+                padding: EdgeInsets.all(10),
+                physics: RangeMaintainingScrollPhysics(),
+                child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      transcriptText,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    )))));
   }
 
   buildErrorMessage(BuildContext context) {
@@ -228,4 +229,3 @@ class _MyAppState extends State<MyApp> {
             style: TextStyle(color: Color(0xff666666)),
           )));
 }
-

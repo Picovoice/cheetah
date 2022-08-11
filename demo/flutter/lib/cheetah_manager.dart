@@ -10,7 +10,6 @@
 //
 
 import 'dart:async';
-import 'dart:io';
 import 'package:cheetah_flutter/cheetah.dart';
 import 'package:cheetah_flutter/cheetah_error.dart';
 import 'package:flutter_voice_processor/flutter_voice_processor.dart';
@@ -30,12 +29,17 @@ class CheetahManager {
   RemoveListener? _removeErrorListener;
 
   static Future<CheetahManager> create(
-      String accessKey, String modelPath, TranscriptCallback transcriptCallback, ProcessErrorCallback processErrorCallback) async {
-    Cheetah cheetah = await Cheetah.create(accessKey, modelPath);
+      String accessKey,
+      String modelPath,
+      TranscriptCallback transcriptCallback,
+      ProcessErrorCallback processErrorCallback) async {
+    Cheetah cheetah = await Cheetah.create(accessKey, modelPath,
+        enableAutomaticPunctuation: true);
     return CheetahManager._(cheetah, transcriptCallback, processErrorCallback);
   }
 
-  CheetahManager._(this._cheetah, this._transcriptCallback, this._processErrorCallback)
+  CheetahManager._(
+      this._cheetah, this._transcriptCallback, this._processErrorCallback)
       : _voiceProcessor = VoiceProcessor.getVoiceProcessor(
             _cheetah!.frameLength, _cheetah.sampleRate) {
     if (_voiceProcessor == null) {
@@ -55,16 +59,22 @@ class CheetahManager {
 
       if (_cheetah == null) {
         throw CheetahInvalidStateException(
-          "Cannot process with Cheetah - resources have already been released");
+            "Cannot process with Cheetah - resources have already been released");
       }
 
       try {
-        CheetahTranscript cheetahTranscript = await _cheetah!.process(cheetahFrame);
-        _transcriptCallback(cheetahTranscript.transcript);
+        CheetahTranscript partialResult = await _cheetah!.process(cheetahFrame);
 
-        if (cheetahTranscript.isEndpoint) {
-          CheetahTranscript cheetahTranscript = await _cheetah!.flush();
-          _transcriptCallback(" " + (cheetahTranscript.transcript) + " ");
+        if (partialResult.isEndpoint) {
+          CheetahTranscript remainingResult = await _cheetah!.flush();
+          var finalTranscript =
+              partialResult.transcript + remainingResult.transcript;
+          if (remainingResult.transcript.isNotEmpty) {
+            finalTranscript += " ";
+          }
+          _transcriptCallback(finalTranscript);
+        } else {
+          _transcriptCallback(partialResult.transcript);
         }
       } on CheetahException catch (error) {
         _processErrorCallback(error);

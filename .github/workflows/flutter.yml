@@ -3,12 +3,12 @@ name: Flutter
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ master, v1.1 ]
     paths:
       - 'demo/flutter/pubspec.yaml'
       - '.github/workflows/flutter.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ master, v1.1 ]
     paths:
       - 'demo/flutter/pubspec.yaml'
       - '.github/workflows/flutter.yml'

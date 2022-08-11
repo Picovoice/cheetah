@@ -19,7 +19,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import ai.picovoice.cheetah.*;
+import ai.picovoice.cheetah.Cheetah;
+import ai.picovoice.cheetah.CheetahException;
+import ai.picovoice.cheetah.CheetahInvalidArgumentException;
+import ai.picovoice.cheetah.CheetahInvalidStateException;
+import ai.picovoice.cheetah.CheetahRuntimeException;
+import ai.picovoice.cheetah.CheetahTranscript;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -28,16 +33,9 @@ import io.flutter.plugin.common.MethodChannel.Result;
 
 public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
 
-  private enum Method {
-    CREATE,
-    PROCESS,
-    FLUSH,
-    DELETE
-  }
-
+  private final Map<String, Cheetah> cheetahPool = new HashMap<>();
   private Context flutterContext;
   private MethodChannel channel;
-  private final Map<String, Cheetah> cheetahPool = new HashMap<>();
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -61,109 +59,16 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
 
     switch (method) {
       case CREATE:
-        try {
-          String accessKey = call.argument("accessKey");
-          String modelPath = call.argument("modelPath");
-          double endpointDuration = call.argument("endpointDuration");
-
-          Cheetah.Builder cheetahBuilder = new Cheetah.Builder().setAccessKey(accessKey)
-                  .setModelPath(modelPath)
-                  .setEndpointDuration((float) endpointDuration);
-
-          Cheetah cheetah = cheetahBuilder.build(flutterContext);
-          cheetahPool.put(String.valueOf(System.identityHashCode(cheetah)), cheetah);
-
-          Map<String, Object> param = new HashMap<>();
-          param.put("handle", String.valueOf(System.identityHashCode(cheetah)));
-          param.put("frameLength", cheetah.getFrameLength());
-          param.put("sampleRate", cheetah.getSampleRate());
-          param.put("version", cheetah.getVersion());
-
-          result.success(param);
-        } catch (CheetahException e) {
-          result.error(e.getClass().getSimpleName(), e.getMessage(), null);
-        } catch (Exception e) {
-          result.error(CheetahException.class.getSimpleName(), e.getMessage(), null);
-        }
+        cheetahCreate(call, result);
         break;
       case PROCESS:
-        try {
-          String handle = call.argument("handle");
-          ArrayList<Integer> pcmList = call.argument("frame");
-
-          if (!cheetahPool.containsKey(handle)) {
-            result.error(
-                    CheetahInvalidStateException.class.getSimpleName(),
-                    "Invalid cheetah handle provided to native module",
-                    null);
-            return;
-          }
-
-          short[] pcm = null;
-          if (pcmList != null) {
-            pcm = new short[pcmList.size()];
-            for (int i = 0; i < pcmList.size(); i++) {
-              pcm[i] = pcmList.get(i).shortValue();
-            }
-          }
-
-          Cheetah cheetah = cheetahPool.get(handle);
-          CheetahTranscript transcriptObj = cheetah.process(pcm);
-
-          Map<String, Object> param = new HashMap<>();
-          param.put("transcript", transcriptObj.getTranscript());
-          param.put("isEndpoint", transcriptObj.getIsEndpoint());
-
-          result.success(param);
-        } catch (CheetahException e) {
-          result.error(
-                  e.getClass().getSimpleName(),
-                  e.getMessage(),
-                  null);
-        }
+        cheetahProcess(call, result);
         break;
       case FLUSH:
-        try {
-          String handle = call.argument("handle");
-
-          if (!cheetahPool.containsKey(handle)) {
-            result.error(
-                    CheetahInvalidStateException.class.getSimpleName(),
-                    "Invalid cheetah handle provided to native module",
-                    null);
-            return;
-          }
-
-          Cheetah cheetah = cheetahPool.get(handle);
-          CheetahTranscript transcriptObj = cheetah.flush();
-
-          Map<String, Object> param = new HashMap<>();
-          param.put("transcript", transcriptObj.getTranscript());
-
-          result.success(param);
-        } catch (CheetahException e) {
-          result.error(
-                  e.getClass().getSimpleName(),
-                  e.getMessage(),
-                  null);
-        }
+        cheetahFlush(call, result);
         break;
       case DELETE:
-        String handle = call.argument("handle");
-
-        if (!cheetahPool.containsKey(handle)) {
-          result.error(
-                  CheetahInvalidArgumentException.class.getSimpleName(),
-                  "Invalid Cheetah handle provided to native module.",
-                  null);
-          return;
-        }
-
-        Cheetah cheetah = cheetahPool.get(handle);
-        cheetah.delete();
-        cheetahPool.remove(handle);
-
-        result.success(null);
+        cheetahDelete(call, result);
         break;
     }
   }
@@ -171,5 +76,142 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     channel.setMethodCallHandler(null);
+  }
+
+  private void cheetahCreate(@NonNull MethodCall call, @NonNull Result result) {
+    try {
+      String accessKey = call.argument("accessKey");
+      String modelPath = call.argument("modelPath");
+      double endpointDuration = call.argument("endpointDuration");
+      boolean enableAutomaticPunctuation = call.argument("enableAutomaticPunctuation");
+
+      Cheetah.Builder cheetahBuilder = new Cheetah.Builder()
+              .setAccessKey(accessKey)
+              .setModelPath(modelPath)
+              .setEndpointDuration((float) endpointDuration)
+              .setEnableAutomaticPunctuation(enableAutomaticPunctuation);
+
+      Cheetah cheetah = cheetahBuilder.build(flutterContext);
+      cheetahPool.put(String.valueOf(System.identityHashCode(cheetah)), cheetah);
+
+      Map<String, Object> param = new HashMap<>();
+      param.put("handle", String.valueOf(System.identityHashCode(cheetah)));
+      param.put("frameLength", cheetah.getFrameLength());
+      param.put("sampleRate", cheetah.getSampleRate());
+      param.put("version", cheetah.getVersion());
+
+      result.success(param);
+    } catch (CheetahException e) {
+      result.error(e.getClass().getSimpleName(), e.getMessage(), null);
+    } catch (Exception e) {
+      result.error(CheetahException.class.getSimpleName(), e.getMessage(), null);
+    }
+  }
+
+  private void cheetahProcess(@NonNull MethodCall call, @NonNull Result result) {
+    String handle = call.argument("handle");
+    ArrayList<Integer> pcmList = call.argument("frame");
+
+    if (!cheetahPool.containsKey(handle)) {
+      result.error(
+              CheetahInvalidStateException.class.getSimpleName(),
+              "Invalid cheetah handle provided to native module",
+              null);
+      return;
+    }
+
+    Cheetah cheetah = cheetahPool.get(handle);
+    if (cheetah == null) {
+      result.error(
+              CheetahInvalidStateException.class.getSimpleName(),
+              "Instance of Cheetah no longer exists.",
+              null);
+      return;
+    }
+
+    short[] pcm = null;
+    if (pcmList != null) {
+      pcm = new short[pcmList.size()];
+      for (int i = 0; i < pcmList.size(); i++) {
+        pcm[i] = pcmList.get(i).shortValue();
+      }
+    }
+
+    try {
+      CheetahTranscript transcriptObj = cheetah.process(pcm);
+
+      Map<String, Object> resultMap = new HashMap<>();
+      resultMap.put("transcript", transcriptObj.getTranscript());
+      resultMap.put("isEndpoint", transcriptObj.getIsEndpoint());
+
+      result.success(resultMap);
+    } catch (CheetahException e) {
+      result.error(
+              e.getClass().getSimpleName(),
+              e.getMessage(),
+              null);
+    }
+  }
+
+  private void cheetahFlush(@NonNull MethodCall call, @NonNull Result result) {
+    String handle = call.argument("handle");
+
+    if (!cheetahPool.containsKey(handle)) {
+      result.error(
+              CheetahInvalidStateException.class.getSimpleName(),
+              "Invalid cheetah handle provided to native module",
+              null);
+      return;
+    }
+
+    Cheetah cheetah = cheetahPool.get(handle);
+    if (cheetah == null) {
+      result.error(
+              CheetahInvalidStateException.class.getSimpleName(),
+              "Instance of Cheetah no longer exists.",
+              null);
+      return;
+    }
+
+    try {
+      CheetahTranscript transcriptObj = cheetah.flush();
+
+      Map<String, Object> param = new HashMap<>();
+      param.put("transcript", transcriptObj.getTranscript());
+
+      result.success(param);
+    } catch (CheetahException e) {
+      result.error(
+              e.getClass().getSimpleName(),
+              e.getMessage(),
+              null);
+    }
+  }
+
+  private void cheetahDelete(@NonNull MethodCall call, @NonNull Result result) {
+    String handle = call.argument("handle");
+
+    if (!cheetahPool.containsKey(handle)) {
+      result.error(
+              CheetahInvalidArgumentException.class.getSimpleName(),
+              "Invalid Cheetah handle provided to native module.",
+              null);
+      return;
+    }
+
+    Cheetah cheetah = cheetahPool.get(handle);
+    if (cheetah != null) {
+      cheetah.delete();
+    }
+    cheetahPool.remove(handle);
+
+    result.success(null);
+  }
+
+  private enum Method {
+    CREATE,
+    PROCESS,
+    FLUSH,
+    DELETE
   }
 }
