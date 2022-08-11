@@ -15,8 +15,7 @@ dependencies:
   
   flutter_voice_processor: ^1.0.7
 
-  cheetah_flutter: 
-    path: ../../binding/flutter
+  cheetah_flutter: ^1.1.0
   
 dev_dependencies:
   flutter_test:
