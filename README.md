@@ -728,6 +728,12 @@ Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://co
 
 ## Releases
 
-### V1.0.0 — January 25th, 2022
+### v1.1.0 — August 11th, 2022
+
+* added true-casing by default for transcription results
+* added option to enable automatic punctuation insertion
+* Cheetah Web SDK release
+
+### v1.0.0 — January 25th, 2022
 
 * Initial release.
