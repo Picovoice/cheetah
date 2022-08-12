@@ -15,7 +15,7 @@ on:
       - 'lib/raspberry-pi/**'
       - 'lib/windows/**'
   pull_request:
-    branches: [master, v1.1]
+    branches: [master]
     paths:
       - '.github/workflows/python.yml'
       - 'binding/python/**'

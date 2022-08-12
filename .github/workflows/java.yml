@@ -3,7 +3,7 @@ name: Java
 on:
   workflow_dispatch:
   push:
-    branches: [ master, v1.1 ]
+    branches: [ master ]
     paths:
       - 'binding/java/**'
       - '!binding/java/README.md'
@@ -11,7 +11,7 @@ on:
       - 'lib/java/**'
       - '.github/workflows/java.yml'
   pull_request:
-    branches: [ master, v1.1 ]
+    branches: [ master ]
     paths:
       - 'binding/java/**'
       - '!binding/java/README.md'

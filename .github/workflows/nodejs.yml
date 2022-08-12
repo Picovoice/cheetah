@@ -3,7 +3,7 @@ name: Node.js
 on:
   workflow_dispatch:
   push:
-    branches: [ master, v1.1 ]
+    branches: [ master ]
     paths:
       - 'binding/nodejs/**'
       - '!binding/nodejs/README.md'
@@ -11,7 +11,7 @@ on:
       - '.github/workflows/nodejs.yml'
 
   pull_request:
-    branches: [ master, v1.1 ]
+    branches: [ master ]
     paths:
       - 'binding/nodejs/**'
       - '!binding/nodejs/README.md'

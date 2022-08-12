@@ -3,20 +3,20 @@ name: iOS AppCenter Tests
 on:
   workflow_dispatch:
   push:
-    branches: [ master, v1.1 ]
-    paths: 
+    branches: [ master ]
+    paths:
       - 'binding/ios/CheetahAppTest/Podfile.lock'
       - '.github/workflows/ios-appcenter.yml'
   pull_request:
-    branches: [ master, v1.1 ]
-    paths: 
+    branches: [ master ]
+    paths:
       - 'binding/ios/CheetahAppTest/Podfile.lock'
       - '.github/workflows/ios-appcenter.yml'
-      
+
 defaults:
   run:
     working-directory: binding/ios/CheetahAppTest
-    
+
 jobs:
   build:
     name: Run iOS Tests on AppCenter
@@ -46,19 +46,19 @@ jobs:
           CheetahAppTestUITests/CheetahAppTestUITests.swift
 
       - name: XCode Build
-        run: xcrun xcodebuild build-for-testing 
-          -configuration Debug 
-          -workspace CheetahAppTest.xcworkspace 
-          -sdk iphoneos 
+        run: xcrun xcodebuild build-for-testing
+          -configuration Debug
+          -workspace CheetahAppTest.xcworkspace
+          -sdk iphoneos
           -scheme CheetahAppTest
-          -derivedDataPath ddp 
+          -derivedDataPath ddp
           CODE_SIGNING_ALLOWED=NO
 
       - name: Run Tests on AppCenter
-        run: appcenter test run xcuitest 
+        run: appcenter test run xcuitest
           --token ${{secrets.APPCENTERAPITOKEN}}
-          --app "Picovoice/Cheetah-iOS" 
+          --app "Picovoice/Cheetah-iOS"
           --devices "Picovoice/ios-min-max"
-          --test-series "cheetah-ios" 
-          --locale "en_US" 
+          --test-series "cheetah-ios"
+          --locale "en_US"
           --build-dir ddp/Build/Products/Debug-iphoneos

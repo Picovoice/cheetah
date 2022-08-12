@@ -14,7 +14,7 @@ on:
       - 'lib/raspberry-pi/**'
       - 'lib/windows/**'
   pull_request:
-    branches: [master, v1.1]
+    branches: [master]
     paths:
       - '.github/workflows/python-perf.yml'
       - 'binding/python/test_cheetah_perf.py'

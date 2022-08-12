@@ -3,22 +3,22 @@ name: iOS Performance
 on:
   workflow_dispatch:
   push:
-    branches: [ master, v1.1 ]
-    paths: 
+    branches: [ master ]
+    paths:
       - 'lib/ios/**'
       - 'lib/common/**'
       - '.github/workflows/ios-perf.yml'
   pull_request:
-    branches: [ master, v1.1 ]
-    paths: 
+    branches: [ master ]
+    paths:
       - 'lib/ios/**'
       - 'lib/common/**'
       - '.github/workflows/ios-perf.yml'
-      
+
 defaults:
   run:
     working-directory: binding/ios/CheetahAppTest
-    
+
 jobs:
   build:
     name: Run iOS Tests on AppCenter
@@ -71,19 +71,19 @@ jobs:
           PerformanceTest/PerformanceTest.swift
 
       - name: XCode Build
-        run: xcrun xcodebuild build-for-testing 
-          -configuration Debug 
-          -workspace CheetahAppTest.xcworkspace 
-          -sdk iphoneos 
+        run: xcrun xcodebuild build-for-testing
+          -configuration Debug
+          -workspace CheetahAppTest.xcworkspace
+          -sdk iphoneos
           -scheme PerformanceTest
-          -derivedDataPath ddp 
+          -derivedDataPath ddp
           CODE_SIGNING_ALLOWED=NO
 
       - name: Run Tests on AppCenter
-        run: appcenter test run xcuitest 
+        run: appcenter test run xcuitest
           --token ${{secrets.APPCENTERAPITOKEN}}
-          --app "Picovoice/Cheetah-iOS" 
+          --app "Picovoice/Cheetah-iOS"
           --devices "Picovoice/${{ matrix.device }}"
-          --test-series "cheetah-ios" 
-          --locale "en_US" 
+          --test-series "cheetah-ios"
+          --locale "en_US"
           --build-dir ddp/Build/Products/Debug-iphoneos
