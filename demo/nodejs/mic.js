@@ -40,8 +40,8 @@ program
     Number,
     3
   )
-  .option("-s, --show_audio_devices", "show the list of available devices");
-  .option("-d, --disable_automatic_punctuation", "disable automatic punctuation")
+  .option("-s, --show_audio_devices", "show the list of available devices")
+  .option("-d, --disable_automatic_punctuation", "disable automatic punctuation");
 
 if (process.argv.length < 1) {
   program.help();
