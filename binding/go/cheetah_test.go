@@ -27,7 +27,7 @@ import (
 
 var (
 	testAccessKey string
-	cheetah       pvCheetah
+	cheetah       Cheetah
 	testAudioPath string
 )
 
