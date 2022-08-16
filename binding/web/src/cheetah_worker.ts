@@ -96,9 +96,9 @@ export class CheetahWorker {
     modelBase64: string,
     options: CheetahOptions = {},
   ): Promise<CheetahWorker> {
-    const { customWritePath = 'cheetah_model', forceWrite = false, version = 1, processErrorCallback, ...rest } = options;
+    const { customWritePath = 'cheetah_model', forceWrite = false, version = 1, ...rest } = options;
     await fromBase64(customWritePath, modelBase64, forceWrite, version);
-    return this.create(accessKey, transcriptCallback, customWritePath, processErrorCallback, rest);
+    return this.create(accessKey, transcriptCallback, customWritePath, rest);
   }
 
   /**
@@ -129,9 +129,9 @@ export class CheetahWorker {
     publicPath: string,
     options: CheetahOptions = {},
   ): Promise<CheetahWorker> {
-    const { customWritePath = 'cheetah_model', forceWrite = false, version = 1, processErrorCallback, ...rest } = options;
+    const { customWritePath = 'cheetah_model', forceWrite = false, version = 1, ...rest } = options;
     await fromPublicDirectory(customWritePath, publicPath, forceWrite, version);
-    return this.create(accessKey, transcriptCallback, customWritePath, processErrorCallback, rest);
+    return this.create(accessKey, transcriptCallback, customWritePath, rest);
   }
 
   /**
@@ -162,7 +162,6 @@ export class CheetahWorker {
    * @param accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
    * @param transcriptCallback User-defined callback to run after receiving transcript result.
    * @param modelPath Path to the model saved in indexedDB.
-   * @param processErrorCallback User-defined callback invoked if any error happens.
    * @param options Optional configuration arguments.
    * while processing the audio stream. Its only input argument is the error message.
    *
@@ -172,9 +171,10 @@ export class CheetahWorker {
     accessKey: string,
     transcriptCallback: (cheetahTranscript: CheetahTranscript) => void,
     modelPath: string,
-    processErrorCallback?: (error: string) => void,
     options: CheetahOptions = {},
   ): Promise<CheetahWorker> {
+    const { processErrorCallback } = options;
+
     const worker = new PvWorker();
     const returnPromise: Promise<CheetahWorker> = new Promise((resolve, reject) => {
       // @ts-ignore - block from GC
