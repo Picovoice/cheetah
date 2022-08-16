@@ -61,8 +61,8 @@ func (e *CheetahError) Error() string {
 	return fmt.Sprintf("%s: %s", pvStatusToString(e.StatusCode), e.Message)
 }
 
-// pvCheetah struct
-type pvCheetah struct {
+// Cheetah struct
+type Cheetah struct {
 	// handle for cheetah instance in C
 	handle unsafe.Pointer
 
@@ -95,19 +95,19 @@ var (
 )
 
 var (
-	// Number of audio samples per frame.
+	// FrameLength Number of audio samples per frame.
 	FrameLength int
 
-	// Audio sample rate accepted by Picovoice.
+	// SampleRate Audio sample rate accepted by Picovoice.
 	SampleRate int
 
-	// Cheetah version
+	// Version Cheetah version
 	Version string
 )
 
-// Returns a Cheetah struct with default parameters
-func NewCheetah(accessKey string) pvCheetah {
-	return pvCheetah{
+// NewCheetah returns a Cheetah struct with default parameters
+func NewCheetah(accessKey string) Cheetah {
+	return Cheetah{
 		AccessKey:                  accessKey,
 		ModelPath:                  defaultModelFile,
 		LibraryPath:                defaultLibPath,
@@ -117,7 +117,7 @@ func NewCheetah(accessKey string) pvCheetah {
 }
 
 // Init function for Cheetah. Must be called before attempting process
-func (cheetah *pvCheetah) Init() error {
+func (cheetah *Cheetah) Init() error {
 	if cheetah.AccessKey == "" {
 		return &CheetahError{
 			INVALID_ARGUMENT,
@@ -164,8 +164,8 @@ func (cheetah *pvCheetah) Init() error {
 	return nil
 }
 
-// Releases resources acquired by Cheetah.
-func (cheetah *pvCheetah) Delete() error {
+// Delete releases resources acquired by Cheetah.
+func (cheetah *Cheetah) Delete() error {
 	if cheetah.handle == nil {
 		return &CheetahError{
 			INVALID_STATE,
@@ -180,7 +180,7 @@ func (cheetah *pvCheetah) Delete() error {
 // detected. Upon detection of an endpoint, the client may invoke `.Flush()` to retrieve any remaining transcription.
 // Returns Any newly-transcribed speech (if none is available then an empty string is returned) and a
 // flag indicating if an endpoint has been detected.
-func (cheetah *pvCheetah) Process(pcm []int16) (string, bool, error) {
+func (cheetah *Cheetah) Process(pcm []int16) (string, bool, error) {
 	if cheetah.handle == nil {
 		return "", false, &CheetahError{
 			INVALID_STATE,
@@ -203,9 +203,9 @@ func (cheetah *pvCheetah) Process(pcm []int16) (string, bool, error) {
 	return transcript, isEndpoint, nil
 }
 
-// Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcribed text.
+// Flush marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcribed text.
 // Return any remaining transcribed text. If none is available then an empty string is returned.
-func (cheetah *pvCheetah) Flush() (string, error) {
+func (cheetah *Cheetah) Flush() (string, error) {
 	if cheetah.handle == nil {
 		return "", &CheetahError{
 			INVALID_STATE,

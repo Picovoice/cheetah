@@ -143,10 +143,10 @@ import (
 )
 
 type nativeCheetahInterface interface {
-	nativeInit(*pvCheetah)
-	nativeProcess(*pvCheetah, []int)
-	nativeFlush(*pvCheetah, string)
-	nativeDelete(*pvCheetah)
+	nativeInit(*Cheetah)
+	nativeProcess(*Cheetah, []int)
+	nativeFlush(*Cheetah, string)
+	nativeDelete(*Cheetah)
 	nativeSampleRate()
 	nativeVersion()
 }
@@ -163,7 +163,7 @@ type nativeCheetahType struct {
 	pv_sample_rate_ptr          unsafe.Pointer
 }
 
-func (nc *nativeCheetahType) nativeInit(cheetah *pvCheetah) (status PvStatus) {
+func (nc *nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
 	var (
 		accessKeyC                  = C.CString(cheetah.AccessKey)
 		modelPathC                  = C.CString(cheetah.ModelPath)
@@ -196,13 +196,13 @@ func (nc *nativeCheetahType) nativeInit(cheetah *pvCheetah) (status PvStatus) {
 	return PvStatus(ret)
 }
 
-func (nc *nativeCheetahType) nativeDelete(cheetah *pvCheetah) {
+func (nc *nativeCheetahType) nativeDelete(cheetah *Cheetah) {
 	C.pv_cheetah_delete_wrapper(
 		nc.pv_cheetah_delete_ptr,
 		cheetah.handle)
 }
 
-func (nc *nativeCheetahType) nativeProcess(cheetah *pvCheetah, pcm []int16) (status PvStatus, transcript string, isEndpoint bool) {
+func (nc *nativeCheetahType) nativeProcess(cheetah *Cheetah, pcm []int16) (status PvStatus, transcript string, isEndpoint bool) {
 	var transcriptPtr unsafe.Pointer
 
 	var ret = C.pv_cheetah_process_wrapper(nc.pv_cheetah_process_ptr,
@@ -217,7 +217,7 @@ func (nc *nativeCheetahType) nativeProcess(cheetah *pvCheetah, pcm []int16) (sta
 	return PvStatus(ret), transcript, isEndpoint
 }
 
-func (nc *nativeCheetahType) nativeFlush(cheetah *pvCheetah) (status PvStatus, transcript string) {
+func (nc *nativeCheetahType) nativeFlush(cheetah *Cheetah) (status PvStatus, transcript string) {
 
 	var transcriptPtr unsafe.Pointer
 
