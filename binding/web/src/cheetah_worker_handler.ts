@@ -13,12 +13,27 @@
 /// <reference lib="webworker" />
 
 import { Cheetah } from './cheetah';
-import { CheetahWorkerRequest } from './types';
+import { CheetahTranscript, CheetahWorkerRequest } from './types';
+
+let cheetah: Cheetah | null = null;
+
+const transcriptCallback = (cheetahTranscript: CheetahTranscript): void => {
+  self.postMessage({
+    command: 'ok',
+    cheetahTranscript: cheetahTranscript,
+  });
+};
+
+const processErrorCallback = (error: string): void => {
+  self.postMessage({
+    command: 'error',
+    message: error,
+  });
+};
 
 /**
  * Cheetah worker handler.
  */
-let cheetah: Cheetah | null = null;
 self.onmessage = async function(
   event: MessageEvent<CheetahWorkerRequest>,
 ): Promise<void> {
@@ -32,9 +47,11 @@ self.onmessage = async function(
         return;
       }
       try {
+        event.data.options.processErrorCallback = processErrorCallback;
+
         Cheetah.setWasm(event.data.wasm);
         Cheetah.setWasmSimd(event.data.wasmSimd);
-        cheetah = await Cheetah.create(event.data.accessKey, event.data.modelPath, event.data.options);
+        cheetah = await Cheetah.create(event.data.accessKey, transcriptCallback, event.data.modelPath, event.data.options);
         self.postMessage({
           command: 'ok',
           version: cheetah.version,
@@ -56,24 +73,7 @@ self.onmessage = async function(
         });
         return;
       }
-      try {
-        const cheetahTranscript = await cheetah.process(event.data.inputFrame);
-        self.postMessage({
-          command: 'ok',
-          cheetahTranscript: cheetahTranscript
-        });
-        if (cheetahTranscript.isEndpoint) {
-          self.postMessage({
-            command: 'ok',
-            cheetahTranscript: await cheetah.flush(),
-          });
-        }
-      } catch (e: any) {
-        self.postMessage({
-          command: 'error',
-          message: e.message,
-        });
-      }
+      cheetah.process(event.data.inputFrame);
       break;
     case 'flush':
       if (cheetah === null) {
@@ -83,17 +83,7 @@ self.onmessage = async function(
         });
         return;
       }
-      try {
-        self.postMessage({
-          command: 'ok',
-          cheetahTranscript: await cheetah.flush()
-        });
-      } catch (e: any) {
-        self.postMessage({
-          command: 'error',
-          message: e.message,
-        });
-      }
+      cheetah.flush();
       break;
     case 'release':
       if (cheetah !== null) {
