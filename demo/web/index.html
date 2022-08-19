@@ -5,6 +5,8 @@
     <script src="node_modules/@picovoice/cheetah-web/dist/iife/index.js"></script>
     <script src="cheetah_params.js"></script>
     <script type="application/javascript">
+      let cheetah = null;
+
       function writeMessage(message) {
         console.log(message);
         document.getElementById("status").innerHTML = message;
@@ -14,9 +16,9 @@
         writeMessage(error);
       }
 
-      function cheetahTranscriptionCallback(transcription, isEndpoint) {
-        document.getElementById("result").innerHTML += transcription;
-        if (isEndpoint) {
+      function cheetahTranscriptionCallback(cheetahTranscript) {
+        document.getElementById("result").innerHTML += cheetahTranscript.transcript;
+        if (cheetahTranscript.isEndpoint) {
           document.getElementById("result").innerHTML += "<br>";
         }
       }
@@ -24,7 +26,7 @@
       async function startCheetah(accessKey) {
         writeMessage("Cheetah is loading. Please wait...");
         try {
-          let cheetah = await CheetahWeb.CheetahWorker.fromBase64(
+          cheetah = await CheetahWeb.CheetahWorker.fromBase64(
             accessKey,
             cheetahTranscriptionCallback,
             modelParams,
@@ -36,10 +38,9 @@
           writeMessage(
             "WebVoiceProcessor initializing. Microphone permissions requested ..."
           );
-          let webVp = await window.WebVoiceProcessor.WebVoiceProcessor.init({
-            engines: [cheetah.worker],
-            start: true
-          });
+          let webVp = await window.WebVoiceProcessor.WebVoiceProcessor.instance();
+          webVp.subscribe(cheetah);
+          await webVp.start();
           writeMessage("WebVoiceProcessor ready and listening!");
         } catch (err) {
           cheetahErrorCallback(err);
