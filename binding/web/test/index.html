@@ -71,7 +71,7 @@
       engineTranscript += cheetahTranscript.transcript;
       engineCbCount += 1;
       if (cheetahTranscript.isEndpoint) {
-        workerCbCount += 1;
+        engineCbCount += 1;
       }
     }
 
@@ -114,6 +114,7 @@
         writeMessage("Checking Cheetah 'fromPublicDirectory'");
         let handle = await CheetahWeb.Cheetah.fromPublicDirectory(accessKey, transcriptCallback, "cheetah_params.pv", { forceWrite: true, enableAutomaticPunctuation: true });
         let transcript = await transcribe(handle, pcm);
+        console.log(transcript)
         assertEquals(expectedPunctuation, transcript, 'Failed to transcribe audio file');
         handle.release()
         writeMessage("Checking Cheetah 'fromPublicDirectory'... done!");
@@ -213,13 +214,13 @@
         writeMessage("Starting init performance test!");
         let start = Date.now();
         for (let i = 0; i < numIterations; i++) {
-          handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptCallback, modelParams, {forceWrite: true});
+          handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptCallback, modelParams, { forceWrite: true });
           handle.terminate();
         }
         let end = Date.now();
         writeMessage(`Init Performance: ${((end - start) / 1000) / numIterations}`);
 
-        handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptCallback, modelParams, {forceWrite: true});
+        handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptCallback, modelParams, { forceWrite: true });
         writeMessage("Starting process performance test!");
         start = Date.now();
         for (let i = 0; i < numIterations; i++) {

@@ -73,7 +73,7 @@ self.onmessage = async function(
         });
         return;
       }
-      cheetah.process(event.data.inputFrame);
+      await cheetah.process(event.data.inputFrame);
       break;
     case 'flush':
       if (cheetah === null) {
@@ -83,7 +83,7 @@ self.onmessage = async function(
         });
         return;
       }
-      cheetah.flush();
+      await cheetah.flush();
       break;
     case 'release':
       if (cheetah !== null) {

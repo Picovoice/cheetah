@@ -287,63 +287,64 @@ export class Cheetah {
       }
     }
 
-    return new Promise<void>(resolve => {
-      this._processMutex
-        .runExclusive(async () => {
-          if (this._wasmMemory === undefined) {
-            throw new Error('Attempted to call Cheetah process after release.');
-          }
+    this._processMutex
+      .runExclusive(async () => {
+        if (this._wasmMemory === undefined) {
+          throw new Error('Attempted to call Cheetah process after release.');
+        }
 
-          this._memoryBuffer.set(
-            pcm,
-            this._inputBufferAddress / Int16Array.BYTES_PER_ELEMENT,
+        this._memoryBuffer.set(
+          pcm,
+          this._inputBufferAddress / Int16Array.BYTES_PER_ELEMENT,
+        );
+
+        const status = await this._pvCheetahProcess(
+          this._objectAddress,
+          this._inputBufferAddress,
+          this._transcriptAddressAddress,
+          this._isEndpointAddress,
+        );
+        if (status !== PV_STATUS_SUCCESS) {
+          const memoryBuffer = new Uint8Array(this._wasmMemory.buffer);
+          throw new Error(
+            `process failed with status ${arrayBufferToStringAtIndex(
+              memoryBuffer,
+              await this._pvStatusToString(status),
+            )}`,
           );
+        }
 
-          const status = await this._pvCheetahProcess(
-            this._objectAddress,
-            this._inputBufferAddress,
-            this._transcriptAddressAddress,
-            this._isEndpointAddress,
-          );
-          if (status !== PV_STATUS_SUCCESS) {
-            const memoryBuffer = new Uint8Array(this._wasmMemory.buffer);
-            throw new Error(
-              `process failed with status ${arrayBufferToStringAtIndex(
-                memoryBuffer,
-                await this._pvStatusToString(status),
-              )}`,
-            );
-          }
+        const isEndpoint = this._memoryBufferView.getUint8(this._isEndpointAddress) === 1;
 
-          const isEndpoint = this._memoryBufferView.getUint8(this._isEndpointAddress) === 1;
+        const transcriptAddress = this._memoryBufferView.getInt32(
+          this._transcriptAddressAddress,
+          true,
+        );
 
-          const transcriptAddress = this._memoryBufferView.getInt32(
-            this._transcriptAddressAddress,
-            true,
-          );
+        let transcript = arrayBufferToStringAtIndex(
+          this._memoryBufferUint8,
+          transcriptAddress,
+        );
+        await this._pvFree(transcriptAddress);
 
-          const transcript = arrayBufferToStringAtIndex(
-            this._memoryBufferUint8,
-            transcriptAddress,
-          );
-          await this._pvFree(transcriptAddress);
+        this._transcriptCallback({ transcript });
 
-          return { transcript, isEndpoint };
-        })
-        .then((result: CheetahTranscript) => {
-          this._transcriptCallback(result);
-          resolve();
-        })
-        .catch((error: any) => {
-          if (this._processErrorCallback) {
-            this._processErrorCallback(error.toString());
-          } else {
-            // eslint-disable-next-line no-console
-            console.error(error);
-          }
-          resolve();
-        });
-    });
+        if (isEndpoint) {
+          transcript = await this.cheetahFlush();
+          this._transcriptCallback({
+            transcript,
+            isEndpoint: true
+          });
+        }
+      })
+      .catch((error: any) => {
+        if (this._processErrorCallback) {
+          this._processErrorCallback(error.toString());
+        } else {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        }
+      });
   }
 
   /**
@@ -355,53 +356,51 @@ export class Cheetah {
   public async flush(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this._processMutex
-        .runExclusive(async () => {
-          if (this._wasmMemory === undefined) {
-            throw new Error('Attempted to call Cheetah flush after release.');
-          }
-
-          const status = await this._pvCheetahFlush(
-            this._objectAddress,
-            this._transcriptAddressAddress,
-          );
-
-          if (status !== PV_STATUS_SUCCESS) {
-            const memoryBuffer = new Uint8Array(this._wasmMemory.buffer);
-            throw new Error(
-              `process failed with status ${arrayBufferToStringAtIndex(
-                memoryBuffer,
-                await this._pvStatusToString(status),
-              )}`,
-            );
-          }
-
-          const transcriptAddress = this._memoryBufferView.getInt32(
-            this._transcriptAddressAddress,
-            true,
-          );
-
-          const transcript = arrayBufferToStringAtIndex(
-            this._memoryBufferUint8,
-            transcriptAddress,
-          );
-          await this._pvFree(transcriptAddress);
-
-          return { transcript };
-        })
-        .then((result: CheetahTranscript) => {
-          this._transcriptCallback(result);
+        .runExclusive(async () => await this.cheetahFlush())
+        .then((transcript: string) => {
+          this._transcriptCallback({
+            transcript: transcript
+          });
           resolve();
         })
         .catch((error: any) => {
-          if (this._processErrorCallback) {
-            this._processErrorCallback(error.toString());
-          } else {
-            // eslint-disable-next-line no-console
-            console.error(error);
-          }
-          resolve();
+          reject(error);
         });
     });
+  }
+
+  private async cheetahFlush(): Promise<string> {
+    if (this._wasmMemory === undefined) {
+      throw new Error('Attempted to call Cheetah flush after release.');
+    }
+
+    const status = await this._pvCheetahFlush(
+      this._objectAddress,
+      this._transcriptAddressAddress,
+    );
+
+    if (status !== PV_STATUS_SUCCESS) {
+      const memoryBuffer = new Uint8Array(this._wasmMemory.buffer);
+      throw new Error(
+        `process failed with status ${arrayBufferToStringAtIndex(
+          memoryBuffer,
+          await this._pvStatusToString(status),
+        )}`,
+      );
+    }
+
+    const transcriptAddress = this._memoryBufferView.getInt32(
+      this._transcriptAddressAddress,
+      true,
+    );
+
+    const transcript = arrayBufferToStringAtIndex(
+      this._memoryBufferUint8,
+      transcriptAddress,
+    );
+    await this._pvFree(transcriptAddress);
+
+    return transcript;
   }
 
   /**
@@ -428,7 +427,7 @@ export class Cheetah {
   private static async initWasm(accessKey: string, wasmBase64: string, modelPath: string, options: CheetahOptions): Promise<any> {
     const { endpointDurationSec = 1.0, enableAutomaticPunctuation = false } = options;
 
-    if (!endpointDurationSec || endpointDurationSec < 0) {
+    if (typeof endpointDurationSec !== 'number' || endpointDurationSec < 0) {
       throw new Error('Cheetah endpointDurationSec must be a non-negative number');
     }
 
