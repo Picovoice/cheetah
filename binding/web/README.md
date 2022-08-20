@@ -97,56 +97,8 @@ const options = {
 }
 ```
 
-#### Initialize in Main Thread
-
-Use `Cheetah` to initialize from public directory:
-
-```typescript
-const handle = await Cheetah.fromPublicDirectory(
-  ${ACCESS_KEY},
-  ${MODEL_RELATIVE_PATH},
-  options // optional options
-);
-```
-
-or initialize using a base64 string:
-
-```typescript
-import cheetahParams from "${PATH_TO_BASE64_CHEETAH_PARAMS}";
-
-const handle = await Cheetah.fromBase64(
-  ${ACCESS_KEY},
-  cheetahParams,
-  options // optional options
-)
-```
-
-#### Process Audio Frames in Main Thread
-
-```typescript
-function getAudioData(): Int16Array {
-  ... // function to get audio data
-  return new Int16Array();
-}
-
-let transcript = "";
-for (;;) {
-  const transcriptObj = await handle.process(getAudioData());
-  transcript += transcriptObj.transcript;
-  if (transcriptObj.isEndpoint) {
-    const finalTranscriptObj = await handle.flush();
-    transcript += finalTranscriptObj.transcript;
-    transcript += "\n";
-  }
-  // break on some condition
-}
-console.log(transcript);
-```
-
-#### Initialize in Worker Thread
-
 Create a `transcriptCallback` function to get the streaming results
-from the worker:
+from the engine:
 
 ```typescript
 let transcript = "";
@@ -159,16 +111,33 @@ function transcriptCallback(cheetahTranscript: CheetahTranscript) {
 }
 ```
 
-Add to the `options` object an `processErrorCallback` function if you would like
-to catch errors:
+#### Initialize in Main Thread
+
+Use `Cheetah` to initialize from public directory:
 
 ```typescript
-function processErrorCallback(error: string) {
-  ...
-}
-
-options.processErrorCallback = processErrorCallback;
+const handle = await Cheetah.fromPublicDirectory(
+  ${ACCESS_KEY},
+  transcriptCallback,
+  ${MODEL_RELATIVE_PATH},
+  options // optional options
+);
 ```
+
+or initialize using a base64 string:
+
+```typescript
+import cheetahParams from "${PATH_TO_BASE64_CHEETAH_PARAMS}";
+
+const handle = await Cheetah.fromBase64(
+  ${ACCESS_KEY},
+  transcriptCallback,
+  cheetahParams,
+  options // optional options
+)
+```
+
+#### Initialize in Worker Thread
 
 Use `CheetahWorker` to initialize from public directory:
 
@@ -194,9 +163,9 @@ const handle = await CheetahWorker.fromBase64(
 )
 ```
 
-#### Process Audio Frames in Worker Thread
+#### Process Audio Frames
 
-In a worker thread, the `process` function will send the input frames to the worker.
+The `process` function will send the input frames to the engine.
 The transcript is received from `transcriptCallback` as mentioned above.
 
 ```typescript
@@ -220,7 +189,7 @@ Clean up used resources by `Cheetah` or `CheetahWorker`:
 await handle.release();
 ```
 
-#### Terminate
+#### Terminate (Worker only)
 
 Terminate `CheetahWorker` instance:
 

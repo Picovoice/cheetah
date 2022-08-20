@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@picovoice/cheetah-web@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-1.1.2.tgz#4b603953fd5511dddec0428396b8c4a3c2467e1b"
-  integrity sha512-D5ci1bx3FJYht7mX2myTK9h+jVp55YTERLA/Xydj98rY4BxUN2sWhc9PS6svOitkOlS08vTMheOSwLH1zyeTNA==
+"@picovoice/cheetah-web@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-1.1.3.tgz#4e32e4a798a06ac9b5f302783959635cac512395"
+  integrity sha512-z2qJn4bUNLtzje2MxtLFNLuWnwPu3GBjn2eHyxXKM/fEkA7iyFrpQ/bDfJvYD8KHpmb9pcKQDUw3Q4GwoK21IQ==
   dependencies:
     "@picovoice/web-utils" "=1.2.3"
 
@@ -16,10 +16,10 @@
   dependencies:
     commander "^9.2.0"
 
-"@picovoice/web-voice-processor@^2.2.3":
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/@picovoice/web-voice-processor/-/web-voice-processor-2.2.3.tgz#b1b7d6499a05956c917addbaa25137abc3109590"
-  integrity sha512-xlMwwRfV5DFcDGwT7rSglnfETgQnUQoThdIkGVbEW6jLhJIDAVJuNz121RSmgL1X+sI/95u7Vh0RdiXWdvMxrA==
+"@picovoice/web-voice-processor@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@picovoice/web-voice-processor/-/web-voice-processor-3.0.1.tgz#e2adf41efe31971a58fa5f5ac09f34daab7dff72"
+  integrity sha512-+B23Yj+leSm6Kk+Pv2K94X2yZF2ccapFrCOMZ90G4uJmZqeLpTkSrz7UI43vJgdxMc0dp+lS0lP2zMtpzxW5HA==
 
 ansi-styles@^4.1.0:
   version "4.3.0"
