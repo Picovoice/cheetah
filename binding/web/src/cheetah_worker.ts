@@ -109,7 +109,7 @@ export class CheetahWorker {
    *
    * @returns An instance of CheetahWorker.
    */
-  private static async create(
+  public static async create(
     accessKey: string,
     transcriptCallback: (cheetahTranscript: CheetahTranscript) => void,
     model: CheetahModel,

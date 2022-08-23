@@ -86,8 +86,10 @@ Either `base64` or `publicPath` must be set to instantiate Leopard. If both are 
 
 ```typescript
 const cheetahModel = {
-  publicPath: ${MODEL_RELATIVE_PATH}, // or
+  publicPath: ${MODEL_RELATIVE_PATH},
+  // or
   base64: ${MODEL_BASE64_STRING},
+  
   customWritePath: "cheetah_model", // Optional
   forceWrite: false, // Optional
   version: 1, // Optional
