@@ -178,7 +178,7 @@ export class Cheetah {
    * @param model.customWritePath Custom path to save the model in storage.
    * Set to a different name to use multiple models across `cheetah` instances.
    * @param model.forceWrite Flag to overwrite the model in storage even if it exists.
-   * @param model.version Cheetah model version. Set to a higher number to update the model file.
+   * @param model.version Version of the model file. Increment to update the model file in storage.
    * @param options Optional configuration arguments.
    * @param options.endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
