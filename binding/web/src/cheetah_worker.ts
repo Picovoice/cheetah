@@ -93,12 +93,12 @@ export class CheetahWorker {
    * @param accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
    * @param transcriptCallback User-defined callback to run after receiving transcript result.
    * @param model Cheetah model options.
-   * @param model.base64 The model in base64 string to initialize Leopard.
+   * @param model.base64 The model in base64 string to initialize Cheetah.
    * @param model.publicPath The model path relative to the public directory.
    * @param model.customWritePath Custom path to save the model in storage.
    * Set to a different name to use multiple models across `cheetah` instances.
    * @param model.forceWrite Flag to overwrite the model in storage even if it exists.
-   * @param model.version Leopard model version. Set to a higher number to update the model file.
+   * @param model.version Cheetah model version. Set to a higher number to update the model file.
    * @param options Optional configuration arguments.
    * @param options.endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`

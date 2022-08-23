@@ -82,7 +82,7 @@ npx pvbase64 -h
 Cheetah saves and caches your model file in IndexedDB to be used by WebAssembly. Use a different `customWritePath` variable
 to hold multiple models and set the `forceWrite` value to true to force re-save a model file.
 
-Either `base64` or `publicPath` must be set to instantiate Leopard. If both are set, Leopard will use the `base64` model.
+Either `base64` or `publicPath` must be set to instantiate Cheetah. If both are set, Cheetah will use the `base64` model.
 
 ```typescript
 const cheetahModel = {
@@ -111,6 +111,8 @@ const options = {
 }
 ```
 
+#### Initialize Cheetah
+
 Create a `transcriptCallback` function to get the streaming results
 from the engine:
 
@@ -125,9 +127,7 @@ function transcriptCallback(cheetahTranscript: CheetahTranscript) {
 }
 ```
 
-#### Initialize in Main Thread
-
-Create an instance of `Cheetah`:
+Create an instance of `Cheetah` on the main thread:
 
 ```typescript
 const handle = await Cheetah.create(
@@ -138,9 +138,7 @@ const handle = await Cheetah.create(
 );
 ```
 
-#### Initialize in Worker Thread
-
-Create an instance of `CheetahWorker`:
+Or create an instance of `Cheetah` in a worker therad:
 
 ```typescript
 const handle = await CheetahWorker.create(
