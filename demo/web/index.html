@@ -26,10 +26,10 @@
       async function startCheetah(accessKey) {
         writeMessage("Cheetah is loading. Please wait...");
         try {
-          cheetah = await CheetahWeb.CheetahWorker.fromBase64(
+          cheetah = await CheetahWeb.CheetahWorker.create(
             accessKey,
             cheetahTranscriptionCallback,
-            modelParams,
+            { base64: modelParams },
             { enableAutomaticPunctuation: true }
           );
 
@@ -38,7 +38,7 @@
           writeMessage(
             "WebVoiceProcessor initializing. Microphone permissions requested ..."
           );
-          let webVp = await window.WebVoiceProcessor.WebVoiceProcessor.instance();
+          let webVp = window.WebVoiceProcessor.WebVoiceProcessor.instance();
           webVp.subscribe(cheetah);
           await webVp.start();
           writeMessage("WebVoiceProcessor ready and listening!");

@@ -10,6 +10,16 @@
     const expectedPunctuation = "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.";
     let pcm = null;
 
+    const modelBase64 = {
+      base64: modelParams,
+      forceWrite: true,
+    }
+
+    const modelPublicPath = {
+      publicPath: "cheetah_params.pv",
+      forceWrite: true,
+    }
+
     window.onload = function () {
       const audioContext = new (window.AudioContext || window.webKitAudioContext)(
               {sampleRate: 16000}
@@ -112,7 +122,7 @@
 
       try {
         writeMessage("Checking Cheetah 'fromPublicDirectory'");
-        let handle = await CheetahWeb.Cheetah.fromPublicDirectory(accessKey, transcriptCallback, "cheetah_params.pv", { forceWrite: true, enableAutomaticPunctuation: true });
+        let handle = await CheetahWeb.Cheetah.create(accessKey, transcriptCallback, modelPublicPath, { enableAutomaticPunctuation: true });
         let transcript = await transcribe(handle, pcm);
         console.log(transcript)
         assertEquals(expectedPunctuation, transcript, 'Failed to transcribe audio file');
@@ -120,21 +130,21 @@
         writeMessage("Checking Cheetah 'fromPublicDirectory'... done!");
 
         writeMessage("Checking Cheetah 'fromBase64'");
-        handle = await CheetahWeb.Cheetah.fromBase64(accessKey, transcriptCallback, modelParams, { forceWrite: true });
+        handle = await CheetahWeb.Cheetah.create(accessKey, transcriptCallback, modelBase64);
         transcript = await transcribe(handle, pcm);
         assertEquals(expected, transcript, 'Failed to transcribe audio file');
         handle.release()
         writeMessage("Checking Cheetah 'fromBase64'... done!");
 
         writeMessage("Checking CheetahWorker 'fromPublicDirectory'");
-        handle = await CheetahWeb.CheetahWorker.fromPublicDirectory(accessKey, transcriptCallback, "cheetah_params.pv", { forceWrite: true });
+        handle = await CheetahWeb.CheetahWorker.create(accessKey, transcriptCallback, modelPublicPath);
         transcript = await transcribe(handle, pcm);
         assertEquals(expected, transcript, 'Failed to transcribe audio file');
         handle.release()
         writeMessage("Checking CheetahWorker 'fromPublicDirectory'... done!");
 
         writeMessage("Checking CheetahWorker 'fromBase64'");
-        handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptCallback, modelParams, { forceWrite: true });
+        handle = await CheetahWeb.CheetahWorker.create(accessKey, transcriptCallback, modelBase64);
         transcript = await transcribe(handle, pcm);
         assertEquals(expected, transcript, 'Failed to transcribe audio file');
         handle.release()
@@ -143,7 +153,7 @@
         writeMessage("Checking invalid public path");
         is_failed = false
         try {
-          await CheetahWeb.Cheetah.fromPublicDirectory(accessKey, transcriptCallback, "invalid", { forceWrite: true });
+          await CheetahWeb.Cheetah.create(accessKey, transcriptCallback, { publicPath: "invalid", forceWrite: true });
         } catch (e) {
           is_failed = true;
         }
@@ -151,7 +161,7 @@
 
         is_failed = false
         try {
-          await CheetahWeb.CheetahWorker.fromPublicDirectory(accessKey, transcriptCallback, "invalid", { forceWrite: true });
+          await CheetahWeb.CheetahWorker.create(accessKey, transcriptCallback, { publicPath: "invalid", forceWrite: true });
         } catch (e) {
           is_failed = true;
         }
@@ -161,7 +171,7 @@
         writeMessage("Checking invalid base64 string");
         is_failed = false
         try {
-          await CheetahWeb.Cheetah.fromBase64(accessKey, transcriptCallback, "invalid", { forceWrite: true });
+          await CheetahWeb.Cheetah.create(accessKey, transcriptCallback,{ base64: "invalid", forceWrite: true });
         } catch (e) {
           is_failed = true;
         }
@@ -169,7 +179,7 @@
 
         is_failed = false
         try {
-          await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptCallback, "invalid", { forceWrite: true });
+          await CheetahWeb.CheetahWorker.create(accessKey, transcriptCallback, { base64: "invalid", forceWrite: true });
         } catch (e) {
           is_failed = true;
         }
@@ -179,7 +189,7 @@
         writeMessage("Checking invalid access key");
         is_failed = false
         try {
-          await CheetahWeb.Cheetah.fromPublicDirectory("invalid", transcriptCallback, "cheetah_params.pv");
+          await CheetahWeb.Cheetah.create("invalid", transcriptCallback, modelPublicPath);
         } catch (e) {
           is_failed = true;
         }
@@ -187,7 +197,7 @@
 
         is_failed = false
         try {
-          await CheetahWeb.CheetahWorker.fromPublicDirectory("invalid", transcriptCallback, "cheetah_params.pv");
+          await CheetahWeb.CheetahWorker.create("invalid", transcriptCallback, modelPublicPath);
         } catch (e) {
           is_failed = true;
         }
@@ -214,13 +224,13 @@
         writeMessage("Starting init performance test!");
         let start = Date.now();
         for (let i = 0; i < numIterations; i++) {
-          handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptCallback, modelParams, { forceWrite: true });
+          handle = await CheetahWeb.CheetahWorker.create(accessKey, transcriptCallback, modelPublicPath);
           handle.terminate();
         }
         let end = Date.now();
         writeMessage(`Init Performance: ${((end - start) / 1000) / numIterations}`);
 
-        handle = await CheetahWeb.CheetahWorker.fromBase64(accessKey, transcriptCallback, modelParams, { forceWrite: true });
+        handle = await CheetahWeb.CheetahWorker.create(accessKey, transcriptCallback, modelPublicPath);
         writeMessage("Starting process performance test!");
         start = Date.now();
         for (let i = 0; i < numIterations; i++) {
