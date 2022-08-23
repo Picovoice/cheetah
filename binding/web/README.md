@@ -90,9 +90,10 @@ const cheetahModel = {
   // or
   base64: ${MODEL_BASE64_STRING},
   
-  customWritePath: "cheetah_model", // Optional
-  forceWrite: false, // Optional
-  version: 1, // Optional
+  // Optionals
+  customWritePath: "cheetah_model",
+  forceWrite: false,
+  version: 1,
 }
 ```
 
