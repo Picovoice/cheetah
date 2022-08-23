@@ -176,7 +176,7 @@ export class Cheetah {
    * @param model.base64 The model in base64 string to initialize Leopard.
    * @param model.publicPath The model path relative to the public directory.
    * @param model.customWritePath Custom path to save the model in storage.
-   * Set to a different name to use multiple models across `leopard` instances.
+   * Set to a different name to use multiple models across `cheetah` instances.
    * @param model.forceWrite Flag to overwrite the model in storage even if it exists.
    * @param model.version Leopard model version. Set to a higher number to update the model file.
    * @param options Optional configuration arguments.
