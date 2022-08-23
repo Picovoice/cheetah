@@ -2,6 +2,7 @@ import { Cheetah } from './cheetah';
 import { CheetahWorker } from './cheetah_worker';
 
 import {
+  CheetahModel,
   CheetahOptions,
   CheetahTranscript,
   CheetahWorkerInitRequest,
@@ -25,6 +26,7 @@ CheetahWorker.setWasmSimd(cheetahWasmSimd);
 
 export {
   Cheetah,
+  CheetahModel,
   CheetahOptions,
   CheetahTranscript,
   CheetahWorker,

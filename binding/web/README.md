@@ -77,25 +77,41 @@ run:
 npx pvbase64 -h
 ```
 
-#### Init options
+#### Cheetah Model
 
-Cheetah saves and caches your model file in IndexedDB to be used by Web Assembly. Use a different `customWritePath` variable
-to hold multiple model values and set the `forceWrite` value to true to force re-save the model file. Set `endpointDurationSec`
-value to 0 if you do not with to detect endpoint (moment of silence). Set `enableAutomaticPunctuation` to
-true to enable  punctuation in transcript. Set `processErrorCallback` to handle errors if an error occurs
-while transcribing. If the model file (`.pv`) changes, `version` should be incremented to force the cached model to be updated.
+Cheetah saves and caches your model file in IndexedDB to be used by WebAssembly. Use a different `customWritePath` variable
+to hold multiple models and set the `forceWrite` value to true to force re-save a model file.
+
+Either `base64` or `publicPath` must be set to instantiate Cheetah. If both are set, Cheetah will use the `base64` model.
 
 ```typescript
-// these are default
+const cheetahModel = {
+  publicPath: ${MODEL_RELATIVE_PATH},
+  // or
+  base64: ${MODEL_BASE64_STRING},
+  
+  // Optionals
+  customWritePath: "cheetah_model",
+  forceWrite: false,
+  version: 1,
+}
+```
+
+#### Init options
+
+Set `endpointDurationSec` value to 0 if you do not with to detect endpoint (moment of silence). Set `enableAutomaticPunctuation` to
+true to enable  punctuation in transcript. Set `processErrorCallback` to handle errors if an error occurs while transcribing.
+
+```typescript
+// Optional, these are default
 const options = {
   endpointDurationSec: 1.0,
   enableAutomaticPunctiation: true,
-  processErrorCallback: (error) => {},
-  customWritePath: "cheetah_model",
-  forceWrite: false,
-  version: 1
+  processErrorCallback: (error) => {}
 }
 ```
+
+#### Initialize Cheetah
 
 Create a `transcriptCallback` function to get the streaming results
 from the engine:
@@ -111,56 +127,26 @@ function transcriptCallback(cheetahTranscript: CheetahTranscript) {
 }
 ```
 
-#### Initialize in Main Thread
-
-Use `Cheetah` to initialize from public directory:
+Create an instance of `Cheetah` on the main thread:
 
 ```typescript
-const handle = await Cheetah.fromPublicDirectory(
+const handle = await Cheetah.create(
   ${ACCESS_KEY},
   transcriptCallback,
-  ${MODEL_RELATIVE_PATH},
+  cheetahModel,
   options // optional options
 );
 ```
 
-or initialize using a base64 string:
+Or create an instance of `Cheetah` in a worker therad:
 
 ```typescript
-import cheetahParams from "${PATH_TO_BASE64_CHEETAH_PARAMS}";
-
-const handle = await Cheetah.fromBase64(
+const handle = await CheetahWorker.create(
   ${ACCESS_KEY},
   transcriptCallback,
-  cheetahParams,
-  options // optional options
-)
-```
-
-#### Initialize in Worker Thread
-
-Use `CheetahWorker` to initialize from public directory:
-
-```typescript
-const handle = await CheetahWorker.fromPublicDirectory(
-  ${ACCESS_KEY},
-  transcriptCallback,
-  ${MODEL_RELATIVE_PATH},
+  cheetahModel,
   options // optional options
 );
-```
-
-or initialize using a base64 string:
-
-```typescript
-import cheetahParams from "${PATH_TO_BASE64_CHEETAH_PARAMS}";
-
-const handle = await CheetahWorker.fromBase64(
-  ${ACCESS_KEY},
-  transcriptCallback,
-  cheetahParams,
-  options // optional options
-)
 ```
 
 #### Process Audio Frames

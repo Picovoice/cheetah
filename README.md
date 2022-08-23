@@ -711,13 +711,13 @@ function getAudioData(): Int16Array {
   return new Int16Array();
 }
 
-const cheetah = await CheetahWorker.fromBase64(
+const cheetah = await CheetahWorker.create(
   "${ACCESS_KEY}",
   transcriptCallback,
-  cheetahParams
+  { base64: cheetahParams }
 );
 
-for (; ;) {
+for (;;) {
   cheetah.process(getAudioData());
   // break on some condition
 }

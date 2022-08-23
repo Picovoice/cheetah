@@ -9,6 +9,13 @@
   specific language governing permissions and limitations under the License.
 */
 
+import { PvModel } from "@picovoice/web-utils";
+
+/**
+ * CheetahModel types
+ */
+export type CheetahModel = PvModel;
+
 export type CheetahOptions = {
   /** @defaultValue 1.0 */
   endpointDurationSec?: number
@@ -16,12 +23,6 @@ export type CheetahOptions = {
   enableAutomaticPunctuation?: boolean;
   /** @defaultValue undefined */
   processErrorCallback?: (error: string) => void
-  /** @defaultValue 'cheetah_model' */
-  customWritePath?: string;
-  /** @defaultValue false */
-  forceWrite?: boolean;
-  /** @defaultValue 1 */
-  version?: number;
 };
 
 export type CheetahTranscript = {
@@ -33,9 +34,9 @@ export type CheetahWorkerInitRequest = {
   command: 'init';
   accessKey: string;
   modelPath: string;
+  options: CheetahOptions;
   wasm: string;
   wasmSimd: string;
-  options: CheetahOptions;
 };
 
 export type CheetahWorkerProcessRequest = {
