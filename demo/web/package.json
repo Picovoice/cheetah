@@ -19,7 +19,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@picovoice/cheetah-web": "^1.1.4",
-    "@picovoice/web-voice-processor": "^3.0.2"
+    "@picovoice/web-voice-processor": "^4.0.0"
   },
   "devDependencies": {
     "http-server": "^14.0.0"
