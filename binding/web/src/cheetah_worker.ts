@@ -115,7 +115,7 @@ export class CheetahWorker {
     model: CheetahModel,
     options: CheetahOptions = {},
   ): Promise<CheetahWorker> {
-    const { processErrorCallback } = options;
+    const { processErrorCallback, ...rest } = options;
 
     const customWritePath = (model.customWritePath) ? model.customWritePath : 'cheetah_model';
     const modelPath = await loadModel({ ...model, customWritePath });
@@ -163,7 +163,7 @@ export class CheetahWorker {
       command: 'init',
       accessKey: accessKey,
       modelPath: modelPath,
-      options: options,
+      options: rest,
       wasm: this._wasm,
       wasmSimd: this._wasmSimd,
     });
