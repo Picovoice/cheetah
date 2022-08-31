@@ -14,8 +14,6 @@
     // submodules
     "../../demo/c/dr_libs/**/*",
     "../../demo/c/pvrecorder/**/*",
-    "../../demo/mcu/psoc062s2/**/*",
-    "../../lib/mcu/psoc062s2/**/*",
 
     // binaries
     "**/*.a",
@@ -30,6 +28,10 @@
     "**/*.wasm",
     "**/*.wav",
     "../../lib/ios/**/*",
+
+    // .NET
+    "**/*.csproj",
+    "**/*.targets",
 
     // android & java
     "**/AndroidManifest.xml",
@@ -59,5 +61,13 @@
     "**/packages-lock.json",
     "**/tsconfig.json",
     "**/tslint.json",
+
+    // react-native
+    "**/*.keystore",
+    "**/BUCK",
+    "**/build_defs.bzl",
+
+    // rust
+    "**/Cargo.toml",
   ]
 }

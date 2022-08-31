@@ -89,7 +89,7 @@ const cheetahModel = {
   publicPath: ${MODEL_RELATIVE_PATH},
   // or
   base64: ${MODEL_BASE64_STRING},
-  
+
   // Optionals
   customWritePath: "cheetah_model",
   forceWrite: false,
@@ -106,7 +106,7 @@ true to enable  punctuation in transcript. Set `processErrorCallback` to handle 
 // Optional, these are default
 const options = {
   endpointDurationSec: 1.0,
-  enableAutomaticPunctiation: true,
+  enableAutomaticPunctuation: true,
   processErrorCallback: (error) => {}
 }
 ```
@@ -138,7 +138,7 @@ const handle = await Cheetah.create(
 );
 ```
 
-Or create an instance of `Cheetah` in a worker therad:
+Or create an instance of `Cheetah` in a worker thread:
 
 ```typescript
 const handle = await CheetahWorker.create(

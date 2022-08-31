@@ -39,7 +39,7 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 Run the following in the terminal:
 
 ```console
-cheetah_demo_file --access_key ${ACCESS_KEY} --input_audio_file_path ${AUIDO_PATH}
+cheetah_demo_file --access_key ${ACCESS_KEY} --input_audio_file_path ${AUDIO_PATH}
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${AUDIO_PATH}` with a path to an audio file you

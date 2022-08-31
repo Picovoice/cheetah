@@ -251,7 +251,7 @@ namespace Pv
         public Int32 SampleRate { get; private set; }
 
         /// <summary>
-        /// Coverts status codes to relavent .NET exceptions
+        /// Coverts status codes to relevant .NET exceptions
         /// </summary>
         /// <param name="status">Picovoice library status code.</param>
         /// <returns>.NET exception</returns>
@@ -296,7 +296,7 @@ namespace Pv
                 pv_cheetah_delete(_libraryPointer);
                 _libraryPointer = IntPtr.Zero;
 
-                // ensures finalizer doesn't trigger if already manually disposed
+                // ensures finalize doesn't trigger if already manually disposed
                 GC.SuppressFinalize(this);
             }
         }

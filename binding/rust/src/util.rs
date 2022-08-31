@@ -110,6 +110,6 @@ pub fn pv_model_path() -> PathBuf {
 }
 
 pub fn pathbuf_to_cstring<P: AsRef<Path>>(pathbuf: P) -> CString {
-    let pathstr = pathbuf.as_ref().to_str().unwrap();
-    CString::new(pathstr).unwrap()
+    let path_str = pathbuf.as_ref().to_str().unwrap();
+    CString::new(path_str).unwrap()
 }
