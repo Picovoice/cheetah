@@ -42,7 +42,7 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 
 Add the Cheetah model file to your Android application by:
 
-1. Either create a model in [Picovoice Console](https://console.picovoice.ai/) or use the [default model](/lib/common).
+1. Either create a model in [Picovoice Console](https://console.picovoice.ai/) or use the [default model](../../lib/common).
 2. Add the model as a bundled resource by placing it under the `assets` directory of your Android application.
 
 Create an instance of the engine with the Cheetah Builder class by passing in the `accessKey`, `modelPath` and Android app context:
@@ -89,4 +89,4 @@ cheetah.delete();
 
 ## Demo App
 
-For example usage refer to our [Android demo application](./demo/android).
+For example usage refer to our [Android demo application](../../demo/android).

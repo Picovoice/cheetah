@@ -33,7 +33,7 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 
 Add the Cheetah model file in `Xcode`:
 
-1. Create a model in [Picovoice Console](https://console.picovoice.ai/)  or get the [default model](/lib/common/).
+1. Create a model in [Picovoice Console](https://console.picovoice.ai/) or get the [default model](../../lib/common/).
 2. Add the model as a bundled resource by selecting Build Phases and adding it to `Copy Bundle Resources` step.
 
 Create an instance of the engine:
@@ -78,8 +78,8 @@ Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://con
 
 ## Running Unit Tests
 
-Copy your `AccessKey` into the `accessKey` variable in [`CheetahAppTestUITests.swift`](CheetahAppTest/CheetahAppTestUITests/CheetahAppTestUITests.swift). Open `CheetahAppTest.xcworkspace` with XCode and run the tests with `Product > Test`.
+Copy your `AccessKey` into the `accessKey` variable in [`CheetahAppTestUITests.swift`](./CheetahAppTest/CheetahAppTestUITests/CheetahAppTestUITests.swift). Open `CheetahAppTest.xcworkspace` with XCode and run the tests with `Product > Test`.
 
 ## Demo App
 
-For example usage refer to our [iOS demo application](./demo/ios).
+For example usage refer to our [iOS demo application](../../demo/ios).

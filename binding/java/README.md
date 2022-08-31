@@ -87,4 +87,4 @@ cheetah.delete();
 
 ## Demo App
 
-For example usage refer to our [Java demos](./demo/java).
+For example usage refer to our [Java demos](../../demo/java).
