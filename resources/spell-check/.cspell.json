@@ -1,0 +1,63 @@
+                                           {
+  "language": "en",
+  "dictionaries": [
+    "dict"
+  ],
+  "dictionaryDefinitions": [
+    {
+      "name": "dict",
+      "path": "./dict.txt",
+      "addWords": true
+    }
+  ],
+  "ignorePaths": [
+    // submodules
+    "../../demo/c/dr_libs/**/*",
+    "../../demo/c/pvrecorder/**/*",
+    "../../demo/mcu/psoc062s2/**/*",
+    "../../lib/mcu/psoc062s2/**/*",
+
+    // binaries
+    "**/*.a",
+    "**/*.dll",
+    "**/*.dylib",
+    "**/*.jar",
+    "**/*.mp3",
+    "**/*.node",
+    "**/*.ppn",
+    "**/*.pv",
+    "**/*.so",
+    "**/*.wasm",
+    "**/*.wav",
+    "../../lib/ios/**/*",
+
+    // android & java
+    "**/AndroidManifest.xml",
+    "**/activity_main.xml",
+
+    // ios
+    "**/*.xcconfig",
+    "**/*.podspec",
+    "**/Podfile",
+    "**/*.plist",
+    "**/contents.xcworkspacedata",
+    "**/*.storyboard",
+    "**/*.pbxproj",
+    "**/*.xcscheme",
+    "**/*.m",
+
+    // java
+    "**/build.gradle",
+    "**/gradle-wrapper.properties",
+    "**/gradle.properties",
+    "**/gradlew",
+    "**/gradlew.bat",
+    "**/proguard-rules.pro",
+
+    // javascript
+    "**/package.json",
+    "**/packages-lock.json",
+    "**/tsconfig.json",
+    "**/tslint.json",
+  ]
+}
