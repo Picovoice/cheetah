@@ -56,7 +56,7 @@ for {
 }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)). When done be sure
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/). When done be sure
 to explicitly release the resources using `cheetah.Delete()`.
 
 ## Demos

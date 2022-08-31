@@ -122,7 +122,7 @@ Then, using [Xcode](https://developer.apple.com/xcode/), open the generated `Che
 
 Using Android Studio, open [demo/android/CheetahDemo](./demo/android/CheetahDemo) as an Android project and then run the application.
 
-Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [MainActivity.java](./demo/android/cheetah-demo-app/src/main/java/ai/picovoice/cheetahdemo/MainActivity.java) with your `AccessKey`.
+Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [MainActivity.java](./demo/android/CheetahDemo/cheetah-demo-app/src/main/java/ai/picovoice/cheetahdemo/MainActivity.java) with your `AccessKey`.
 
 ### Flutter Demo
 
@@ -140,7 +140,7 @@ flutter run
 
 ### Go Demo
 
-The demo requires `cgo`, which on Windows may mean that you need to install a gcc compiler like [MinGW](http://mingw-w64.org/doku.php) to build it properly.
+The demo requires `cgo`, which on Windows may mean that you need to install a gcc compiler like [MinGW](https://www.mingw-w64.org/) to build it properly.
 
 From [demo/go](./demo/go) run the following command from the terminal to build and run the file demo:
 
@@ -608,7 +608,7 @@ const string accessKey = "${ACCESS_KEY}";
 Cheetah handle = Cheetah.Create(accessKey);
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)).
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/).
 
 When initialized, the valid sample rate is given by `handle.SampleRate`. Expected frame length (number of audio samples in an input array) is `handle.FrameLength`. The engine accepts 16-bit linearly-encoded PCM and operates on single-channel audio.
 
@@ -675,7 +675,7 @@ if let Ok(cheetahTranscript) = cheetah.process(&next_audio_frame()) {
 }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)).
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/).
 
 ### Web
 
@@ -724,7 +724,7 @@ for (;;) {
 cheetah.flush(); // runs transcriptionCallback on remaining data.
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)). Finally, when done release the resources using `cheetah.release()`.
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/). Finally, when done release the resources using `cheetah.release()`.
 
 ## Releases
 

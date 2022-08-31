@@ -74,7 +74,7 @@ while true {
 ```
 
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)) and `${MODEL_FILE}` with the name of the Cheetah model file name. Finally, when done be sure to explicitly release the resources using `cheetah.delete()`.
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/) and `${MODEL_FILE}` with the name of the Cheetah model file name. Finally, when done be sure to explicitly release the resources using `cheetah.delete()`.
 
 ## Running Unit Tests
 
