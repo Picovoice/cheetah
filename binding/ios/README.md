@@ -17,7 +17,7 @@ Cheetah is a streaming on-device speech-to-text engine. Cheetah is:
 
 ## Installation
 
-The Cheetah iOS binding is available via [CocoaPods](https://cocoapods.org/pods/Cheetah-iOS). To import it into your iOS project, add the following line to your Podfile: 
+The Cheetah iOS binding is available via [CocoaPods](https://cocoapods.org/pods/Cheetah-iOS). To import it into your iOS project, add the following line to your Podfile:
 
 ```ruby
 pod 'Cheetah-iOS'
@@ -47,8 +47,8 @@ let modelPath = Bundle(for: type(of: self)).path(
 
 let accessKey = "${ACCESS_KEY}" // AccessKey obtained from https://console.picovoice.ai/access_key
 let cheetah = Cheetah(
-        accessKey: accessKey, 
-        modelPath: modelPath, 
+        accessKey: accessKey,
+        modelPath: modelPath,
         endpointDuration: 1.0)
 ```
 
@@ -66,7 +66,7 @@ while true {
     if isEndpoint {
       let finalTranscript = try cheetah.flush()
     }
-  } catch let error as CheetahError { 
+  } catch let error as CheetahError {
       // handle error
   } catch { }
 }
@@ -82,4 +82,4 @@ Copy your `AccessKey` into the `accessKey` variable in [`CheetahAppTestUITests.s
 
 ## Demo App
 
-For example usage refer to our [iOS demo application](/demo/ios).
+For example usage refer to our [iOS demo application](./demo/ios).

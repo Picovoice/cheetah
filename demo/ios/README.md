@@ -8,11 +8,11 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 
 ## Running the Demo
 
-Copy your `AccessKey` into the `ACCESS_KEY` variable inside [`ViewModel.swift`](/demo/ios/CheetahDemo/CheetahDemo/ViewModel.swift#L25).
+Copy your `AccessKey` into the `ACCESS_KEY` variable inside [`ViewModel.swift`](./demo/ios/CheetahDemo/CheetahDemo/ViewModel.swift#L25).
 
 Before building the demo app, run the following from `CheetahDemo` directory to install the Cheetah CocoaPod:
 
 ```ruby
 pod install
 ```
-Open [CheetahDemo.xcworkspace](/demo/ios/CheetahDemo/CheetahDemo.xcworkspace) and run the demo.
+Open [CheetahDemo.xcworkspace](./demo/ios/CheetahDemo/CheetahDemo.xcworkspace) and run the demo.

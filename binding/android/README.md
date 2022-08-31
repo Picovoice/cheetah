@@ -89,4 +89,4 @@ cheetah.delete();
 
 ## Demo App
 
-For example usage refer to our [Android demo application](/demo/android).
+For example usage refer to our [Android demo application](./demo/android).
