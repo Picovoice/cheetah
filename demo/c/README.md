@@ -7,7 +7,7 @@
 ## Requirements
 
 - [CMake](https://cmake.org/) version 3.13 or higher
-- [MinGW](http://mingw-w64.org/doku.php) (**Windows Only**)
+- [MinGW](https://www.mingw-w64.org/) (**Windows Only**)
 
 ## AccessKey
 

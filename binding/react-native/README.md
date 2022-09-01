@@ -88,7 +88,7 @@ try {
 }
 ```
 
-Replace `${ACCESS_KEY}` with your `AccessKey` obtained from [Picovoice Console]((https://console.picovoice.ai/)) and `${MODEL_FILE}`
+Replace `${ACCESS_KEY}` with your `AccessKey` obtained from [Picovoice Console](https://console.picovoice.ai/) and `${MODEL_FILE}`
 with the file name of the Cheetah model file.
 Finally, when done be sure to explicitly release the resources using `cheetah.delete()`.
 

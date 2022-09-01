@@ -103,36 +103,36 @@ Run the demo:
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console, `${LIBRARY_PATH}` with the path to appropriate
-library under [lib](/lib), and `${MODEL_PATH}` to path to [default model file](/lib/common/cheetah_params.pv)
+library under [lib](/lib), and `${MODEL_PATH}` to path to [default model file](./lib/common/cheetah_params.pv)
 (or your custom one).
 
 ### iOS Demos
 
-To run the demo, go to [demo/ios/CheetahDemo](/demo/ios/CheetahDemo) and run:
+To run the demo, go to [demo/ios/CheetahDemo](./demo/ios/CheetahDemo) and run:
 
 ```console
 pod install
 ```
 
-Replace `let accessKey = "${YOUR_ACCESS_KEY_HERE}"` in the file [ViewModel.swift](/demo/ios/CheetahDemo/CheetahDemo/ViewModel.swift) with your `AccessKey`.
+Replace `let accessKey = "${YOUR_ACCESS_KEY_HERE}"` in the file [ViewModel.swift](./demo/ios/CheetahDemo/CheetahDemo/ViewModel.swift) with your `AccessKey`.
 
 Then, using [Xcode](https://developer.apple.com/xcode/), open the generated `CheetahDemo.xcworkspace` and run the application.
 
 ### Android Demo
 
-Using Android Studio, open [demo/android/CheetahDemo](/demo/android/CheetahDemo) as an Android project and then run the application.
+Using Android Studio, open [demo/android/CheetahDemo](./demo/android/CheetahDemo) as an Android project and then run the application.
 
-Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [MainActivity.java](/demo/android/cheetah-demo-app/src/main/java/ai/picovoice/cheetahdemo/MainActivity.java) with your `AccessKey`.
+Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [MainActivity.java](./demo/android/CheetahDemo/cheetah-demo-app/src/main/java/ai/picovoice/cheetahdemo/MainActivity.java) with your `AccessKey`.
 
 ### Flutter Demo
 
 To run the Cheetah demo on Android or iOS with Flutter, you must have the [Flutter SDK](https://flutter.dev/docs/get-started/install) installed on your system. Once installed, you can run `flutter doctor` to determine any other missing requirements for your relevant platform. Once your environment has been set up, launch a simulator or connect an Android/iOS device.
 
-Before launching the app, use the [copy_assets.sh](/demo/flutter/copy_assets.sh) script to copy the cheetah demo model file into the demo project. (**NOTE**: on Windows, Git Bash or another bash shell is required, or you will have to manually copy the context into the project.).
+Before launching the app, use the [copy_assets.sh](./demo/flutter/copy_assets.sh) script to copy the cheetah demo model file into the demo project. (**NOTE**: on Windows, Git Bash or another bash shell is required, or you will have to manually copy the context into the project.).
 
-Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [main.dart](/demo/flutter/lib/main.dart) with your `AccessKey`.
+Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [main.dart](./demo/flutter/lib/main.dart) with your `AccessKey`.
 
-Run the following command from [demo/flutter](/demo/flutter) to build and deploy the demo to your device:
+Run the following command from [demo/flutter](./demo/flutter) to build and deploy the demo to your device:
 
 ```console
 flutter run
@@ -140,9 +140,9 @@ flutter run
 
 ### Go Demo
 
-The demo requires `cgo`, which on Windows may mean that you need to install a gcc compiler like [MinGW](http://mingw-w64.org/doku.php) to build it properly.
+The demo requires `cgo`, which on Windows may mean that you need to install a gcc compiler like [MinGW](https://www.mingw-w64.org/) to build it properly.
 
-From [demo/go](/demo/go) run the following command from the terminal to build and run the file demo:
+From [demo/go](./demo/go) run the following command from the terminal to build and run the file demo:
 
 ```console
 go run micdemo/cheetah_mic_demo.go -access_key "${ACCESS_KEY}"
@@ -150,13 +150,13 @@ go run micdemo/cheetah_mic_demo.go -access_key "${ACCESS_KEY}"
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
 
-For more information about Go demos go to [demo/go](/demo/go).
+For more information about Go demos go to [demo/go](./demo/go).
 
 ### React Native Demo
 
 To run the React Native Porcupine demo app you will first need to set up your React Native environment. For this,
 please refer to [React Native's documentation](https://reactnative.dev/docs/environment-setup). Once your environment has
-been set up, navigate to [demo/react-native](/demo/react-native) to run the following commands:
+been set up, navigate to [demo/react-native](./demo/react-native) to run the following commands:
 
 For Android:
 
@@ -185,11 +185,11 @@ With a working microphone connected to your device, run the following in the ter
 cheetah-mic-demo --access_key ${ACCESS_KEY}
 ```
 
-For more information about Node.js demos go to [demo/nodejs](/demo/nodejs).
+For more information about Node.js demos go to [demo/nodejs](./demo/nodejs).
 
 ### Java Demos
 
-The [Cheetah Java demo](/demo/java) is a command-line application that lets you choose between running Cheetah on an audio file or on real-time microphone input.
+The [Cheetah Java demo](./demo/java) is a command-line application that lets you choose between running Cheetah on an audio file or on real-time microphone input.
 
 To try the real-time demo, make sure there is a working microphone connected to your device. Then invoke the following commands from the terminal:
 
@@ -199,14 +199,14 @@ cd demo/java
 cd build/libs
 java -jar cheetah-mic-demo.jar -a ${ACCESS_KEY}
 ```
-For more information about Java demos go to [demo/java](/demo/java).
+For more information about Java demos go to [demo/java](./demo/java).
 
 ### .NET Demo
 
-[Cheetah .NET demo](/demo/dotnet) is a command-line application that lets you choose between running Cheetah on an audio
+[Cheetah .NET demo](./demo/dotnet) is a command-line application that lets you choose between running Cheetah on an audio
 file or on real-time microphone input.
 
-Make sure there is a working microphone connected to your device. From [demo/dotnet/CheetahDemo](/demo/dotnet/CheetahDemo)
+Make sure there is a working microphone connected to your device. From [demo/dotnet/CheetahDemo](./demo/dotnet/CheetahDemo)
 run the following in the terminal:
 
 ```console
@@ -215,11 +215,11 @@ dotnet run -c MicDemo.Release -- --access_key ${ACCESS_KEY}
 
 Replace `${ACCESS_KEY}` with your Picovoice `AccessKey`.
 
-For more information about .NET demos, go to [demo/dotnet](/demo/dotnet).
+For more information about .NET demos, go to [demo/dotnet](./demo/dotnet).
 
 ### Rust Demo
 
-[Cheetah Rust demo](/demo/rust) is a command-line application that lets you choose between running Cheetah on an audio
+[Cheetah Rust demo](./demo/rust) is a command-line application that lets you choose between running Cheetah on an audio
 file or on real-time microphone input.
 
 Make sure there is a working microphone connected to your device. From [demo/rust/micdemo](demo/rust/micdemo)
@@ -231,11 +231,11 @@ cargo run --release -- --access_key ${ACCESS_KEY}
 
 Replace `${ACCESS_KEY}` with your Picovoice `AccessKey`.
 
-For more information about Rust demos, go to [demo/rust](/demo/rust).
+For more information about Rust demos, go to [demo/rust](./demo/rust).
 
 ### Web Demo
 
-From [demo/web](/demo/web) run the following in the terminal:
+From [demo/web](./demo/web) run the following in the terminal:
 
 ```console
 yarn
@@ -249,7 +249,7 @@ npm install
 npm run start
 ```
 
-Open [http://localhost:5000](http://localhost:5000) in your browser to try the demo.
+Open `http://localhost:5000` in your browser to try the demo.
 
 ## SDKs
 
@@ -324,7 +324,7 @@ while (true) {
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_PATH}` to path to
-[default model file](/lib/common/cheetah_params.pv) (or your custom one). Finally, when done be sure to release
+[default model file](./lib/common/cheetah_params.pv) (or your custom one). Finally, when done be sure to release
 resources acquired using `pv_cheetah_delete(handle)`.
 
 ### iOS
@@ -363,7 +363,7 @@ while true {
 }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with a custom trained model from [Picovoice Console](https://console.picovoice.ai/) or the [default model](/lib/common/).
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with a custom trained model from [Picovoice Console](https://console.picovoice.ai/) or the [default model](./lib/common/).
 
 ### Android
 
@@ -547,7 +547,7 @@ while (true) {
 }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)).
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/).
 
 When done, be sure to release resources using `release()`:
 
@@ -608,7 +608,7 @@ const string accessKey = "${ACCESS_KEY}";
 Cheetah handle = Cheetah.Create(accessKey);
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)).
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/).
 
 When initialized, the valid sample rate is given by `handle.SampleRate`. Expected frame length (number of audio samples in an input array) is `handle.FrameLength`. The engine accepts 16-bit linearly-encoded PCM and operates on single-channel audio.
 
@@ -675,7 +675,7 @@ if let Ok(cheetahTranscript) = cheetah.process(&next_audio_frame()) {
 }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)).
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/).
 
 ### Web
 
@@ -724,7 +724,7 @@ for (;;) {
 cheetah.flush(); // runs transcriptionCallback on remaining data.
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)). Finally, when done release the resources using `cheetah.release()`.
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/). Finally, when done release the resources using `cheetah.release()`.
 
 ## Releases
 

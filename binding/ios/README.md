@@ -17,7 +17,7 @@ Cheetah is a streaming on-device speech-to-text engine. Cheetah is:
 
 ## Installation
 
-The Cheetah iOS binding is available via [CocoaPods](https://cocoapods.org/pods/Cheetah-iOS). To import it into your iOS project, add the following line to your Podfile: 
+The Cheetah iOS binding is available via [CocoaPods](https://cocoapods.org/pods/Cheetah-iOS). To import it into your iOS project, add the following line to your Podfile:
 
 ```ruby
 pod 'Cheetah-iOS'
@@ -33,7 +33,7 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 
 Add the Cheetah model file in `Xcode`:
 
-1. Create a model in [Picovoice Console](https://console.picovoice.ai/)  or get the [default model](/lib/common/).
+1. Create a model in [Picovoice Console](https://console.picovoice.ai/) or get the [default model](../../lib/common/).
 2. Add the model as a bundled resource by selecting Build Phases and adding it to `Copy Bundle Resources` step.
 
 Create an instance of the engine:
@@ -47,8 +47,8 @@ let modelPath = Bundle(for: type(of: self)).path(
 
 let accessKey = "${ACCESS_KEY}" // AccessKey obtained from https://console.picovoice.ai/access_key
 let cheetah = Cheetah(
-        accessKey: accessKey, 
-        modelPath: modelPath, 
+        accessKey: accessKey,
+        modelPath: modelPath,
         endpointDuration: 1.0)
 ```
 
@@ -66,7 +66,7 @@ while true {
     if isEndpoint {
       let finalTranscript = try cheetah.flush()
     }
-  } catch let error as CheetahError { 
+  } catch let error as CheetahError {
       // handle error
   } catch { }
 }
@@ -74,12 +74,12 @@ while true {
 ```
 
 
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console]((https://console.picovoice.ai/)) and `${MODEL_FILE}` with the name of the Cheetah model file name. Finally, when done be sure to explicitly release the resources using `cheetah.delete()`.
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/) and `${MODEL_FILE}` with the name of the Cheetah model file name. Finally, when done be sure to explicitly release the resources using `cheetah.delete()`.
 
 ## Running Unit Tests
 
-Copy your `AccessKey` into the `accessKey` variable in [`CheetahAppTestUITests.swift`](CheetahAppTest/CheetahAppTestUITests/CheetahAppTestUITests.swift). Open `CheetahAppTest.xcworkspace` with XCode and run the tests with `Product > Test`.
+Copy your `AccessKey` into the `accessKey` variable in [`CheetahAppTestUITests.swift`](./CheetahAppTest/CheetahAppTestUITests/CheetahAppTestUITests.swift). Open `CheetahAppTest.xcworkspace` with XCode and run the tests with `Product > Test`.
 
 ## Demo App
 
-For example usage refer to our [iOS demo application](/demo/ios).
+For example usage refer to our [iOS demo application](../../demo/ios).
