@@ -210,6 +210,9 @@ func (nc *nativeCheetahType) nativeProcess(cheetah *Cheetah, pcm []int16) (statu
 		(*C.int16_t)(unsafe.Pointer(&pcm[0])),
 		(**C.char)(unsafe.Pointer(&transcriptPtr)),
 		(*C.bool)(unsafe.Pointer(&isEndpoint)))
+	if (PvStatus(ret) != SUCCESS) {
+		return PvStatus(ret), "", false
+	}
 
 	transcript = C.GoString((*C.char)(transcriptPtr))
 	C.free(transcriptPtr)
@@ -224,6 +227,9 @@ func (nc *nativeCheetahType) nativeFlush(cheetah *Cheetah) (status PvStatus, tra
 	var ret = C.pv_cheetah_flush_wrapper(nc.pv_cheetah_flush_ptr,
 		cheetah.handle,
 		(**C.char)(unsafe.Pointer(&transcriptPtr)))
+	if (PvStatus(ret) != SUCCESS) {
+		return PvStatus(ret), ""
+	}
 
 	transcript = C.GoString((*C.char)(transcriptPtr))
 	C.free(transcriptPtr)
