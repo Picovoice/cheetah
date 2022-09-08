@@ -452,19 +452,18 @@ export class Cheetah {
     }
     memoryBufferUint8[accessKeyAddress + accessKey.length] = 0;
 
+    const modelPathEncoded = new TextEncoder().encode(modelPath);
     const modelPathAddress = await aligned_alloc(
       Uint8Array.BYTES_PER_ELEMENT,
-      (modelPath.length + 1) * Uint8Array.BYTES_PER_ELEMENT,
+      (modelPathEncoded.length + 1) * Uint8Array.BYTES_PER_ELEMENT,
     );
 
     if (modelPathAddress === 0) {
       throw new Error('malloc failed: Cannot allocate memory');
     }
 
-    for (let i = 0; i < modelPath.length; i++) {
-      memoryBufferUint8[modelPathAddress + i] = modelPath.charCodeAt(i);
-    }
-    memoryBufferUint8[modelPathAddress + modelPath.length] = 0;
+    memoryBufferUint8.set(modelPathEncoded, modelPathAddress);
+    memoryBufferUint8[modelPathAddress + modelPathEncoded.length] = 0;
 
     const status = await pv_cheetah_init(
       accessKeyAddress,
