@@ -205,7 +205,7 @@
         writeMessage("Checking invalid access key... done!");
 
         writeMessage("Test UTF-8 path...");
-        handle = await CheetahWeb.CheetahWorker.create(accessKey, {
+        handle = await CheetahWeb.CheetahWorker.create(accessKey, transcriptCallback, {
           base64: modelParams,
           forceWrite: true,
           customWritePath: "테스트"
