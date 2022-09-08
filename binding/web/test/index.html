@@ -204,6 +204,15 @@
         assertEquals(true, is_failed, 'Failed to handle invalid access key');
         writeMessage("Checking invalid access key... done!");
 
+        writeMessage("Test UTF-8 path...");
+        handle = await CheetahWeb.CheetahWorker.create(accessKey, transcriptCallback, {
+          base64: modelParams,
+          forceWrite: true,
+          customWritePath: "테스트"
+        });
+        handle.terminate();
+        writeMessage("Test UTF-8 path... done!")
+
         writeMessage("Test passed!")
       } catch (error) {
         writeMessage(error);
