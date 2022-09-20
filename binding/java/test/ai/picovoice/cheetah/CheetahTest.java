@@ -64,19 +64,18 @@ public class CheetahTest {
         byte[] pcm = new byte[frameLen * byteDepth];
         short[] cheetahFrame = new short[frameLen];
 
-        String transcript = "";
+        StringBuilder transcript = new StringBuilder();
         int numBytesRead = 0;
-        boolean isFinalized = false;
         while ((numBytesRead = audioInputStream.read(pcm)) != -1) {
             if (numBytesRead / byteDepth == frameLen) {
                 ByteBuffer.wrap(pcm).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(cheetahFrame);
                 CheetahTranscript transcriptObj = cheetah.process(cheetahFrame);
-                transcript += transcriptObj.getTranscript();
+                transcript.append(transcriptObj.getTranscript());
             }
         }
         CheetahTranscript finalTranscriptObj = cheetah.flush();
-        transcript += finalTranscriptObj.getTranscript();
-        assertEquals(referenceTranscript, transcript);
+        transcript.append(finalTranscriptObj.getTranscript());
+        assertEquals(referenceTranscript, transcript.toString());
 
         cheetah.delete();
     }
