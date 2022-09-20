@@ -29,7 +29,7 @@ public class Cheetah {
         System.loadLibrary("pv_cheetah");
     }
 
-    private final long handle;
+    private long handle;
 
     /**
      * Constructor.
@@ -47,7 +47,7 @@ public class Cheetah {
             String modelPath,
             float endpointDuration,
             boolean enableAutomaticPunctuation) throws CheetahException {
-        handle = init(
+        handle = CheetahNative.init(
                 accessKey,
                 modelPath,
                 endpointDuration,
@@ -72,7 +72,10 @@ public class Cheetah {
      * Releases resources acquired by Cheetah.
      */
     public void delete() {
-        delete(handle);
+        if (handle != 0) {
+            CheetahNative.delete(handle);
+            handle = 0;
+        }
     }
 
     /**
@@ -86,7 +89,20 @@ public class Cheetah {
      * @throws CheetahException if there is an error while processing the audio frame.
      */
     public CheetahTranscript process(short[] pcm) throws CheetahException {
-        return process(handle, pcm);
+        if (handle == 0) {
+            throw new CheetahInvalidStateException("Attempted to call Cheetah process after delete.");
+        }
+
+        if (pcm == null) {
+            throw new CheetahInvalidArgumentException("Passed null frame to Cheetah process.");
+        }
+
+        if (pcm.length != getFrameLength()) {
+            throw new CheetahInvalidArgumentException(
+                    String.format("Cheetah process requires frames of length %d. " +
+                            "Received frame of size %d.", getFrameLength(), pcm.length));
+        }
+        return CheetahNative.process(handle, pcm);
     }
 
     /**
@@ -96,7 +112,10 @@ public class Cheetah {
      * @throws CheetahException if there is an error while processing the audio frame.
      */
     public CheetahTranscript flush() throws CheetahException {
-        return flush(handle);
+        if (handle == 0) {
+            throw new CheetahInvalidStateException("Attempted to call Cheetah flush after delete.");
+        }
+        return CheetahNative.flush(handle);
     }
 
     /**
@@ -104,33 +123,27 @@ public class Cheetah {
      *
      * @return Required number of audio samples per frame.
      */
-    public native int getFrameLength();
+    public int getFrameLength() {
+        return CheetahNative.getFrameLength();
+    }
 
     /**
      * Getter for required audio sample rate for PCM data.
      *
      * @return Required audio sample rate for PCM data.
      */
-    public native int getSampleRate();
+    public int getSampleRate() {
+        return CheetahNative.getSampleRate();
+    }
 
     /**
      * Getter for Cheetah version.
      *
      * @return Cheetah version.
      */
-    public native String getVersion();
-
-    private native long init(
-            String accessKey,
-            String modelPath,
-            float endpointDuration,
-            boolean enableAutomaticPunctuation);
-
-    private native void delete(long object);
-
-    private native CheetahTranscript process(long object, short[] pcm);
-
-    private native CheetahTranscript flush(long object);
+    public String getVersion() {
+        return CheetahNative.getVersion();
+    }
 
     public static class Builder {
 
