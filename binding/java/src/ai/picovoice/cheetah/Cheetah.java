@@ -13,15 +13,8 @@
 package ai.picovoice.cheetah;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.stream.*;
-import java.util.logging.Logger;
 
 public class Cheetah {
-
-    private final long libraryHandle;
 
     public static final String LIBRARY_PATH;
     public static final String MODEL_PATH;
@@ -31,15 +24,17 @@ public class Cheetah {
         MODEL_PATH = Utils.getPackagedModelPath();
     }
 
+    private long handle;
+
     /**
      * Constructor.
      *
-     * @param accessKey     AccessKey obtained from Picovoice Console.
-     * @param modelPath     Absolute path to the file containing model parameters.
-     * @param libraryPath   Absolute path to the native Cheetah library.
-     * @param endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
-     *                         chunk of audio (with a duration specified herein) after an utterance without
-     *                         any speech in it. Set duration to 0 to disable this. Default is 1 second in the Builder.
+     * @param accessKey                  AccessKey obtained from Picovoice Console.
+     * @param modelPath                  Absolute path to the file containing model parameters.
+     * @param libraryPath                Absolute path to the native Cheetah library.
+     * @param endpointDurationSec        Duration of endpoint in seconds. A speech endpoint is detected when there is a
+     *                                   chunk of audio (with a duration specified herein) after an utterance without
+     *                                   any speech in it. Set duration to 0 to disable this. Default is 1 second in the Builder.
      * @param enableAutomaticPunctuation Set to `true` to enable automatic punctuation insertion.
      * @throws CheetahException if there is an error while initializing Cheetah.
      */
@@ -54,7 +49,7 @@ public class Cheetah {
         } catch (Exception exception) {
             throw new CheetahException(exception);
         }
-        libraryHandle = init(
+        handle = CheetahNative.init(
                 accessKey,
                 modelPath,
                 endpointDurationSec,
@@ -65,7 +60,10 @@ public class Cheetah {
      * Releases resources acquired by Cheetah.
      */
     public void delete() {
-        delete(libraryHandle);
+        if (handle != 0) {
+            CheetahNative.delete(handle);
+            handle = 0;
+        }
     }
 
     /**
@@ -79,7 +77,20 @@ public class Cheetah {
      * @throws CheetahException if there is an error while processing the audio frame.
      */
     public CheetahTranscript process(short[] pcm) throws CheetahException {
-        return process(libraryHandle, pcm);
+        if (handle == 0) {
+            throw new CheetahInvalidStateException("Attempted to call Cheetah process after delete.");
+        }
+
+        if (pcm == null) {
+            throw new CheetahInvalidArgumentException("Passed null frame to Cheetah process.");
+        }
+
+        if (pcm.length != getFrameLength()) {
+            throw new CheetahInvalidArgumentException(
+                    String.format("Cheetah process requires frames of length %d. " +
+                            "Received frame of size %d.", getFrameLength(), pcm.length));
+        }
+        return CheetahNative.process(handle, pcm);
     }
 
     /**
@@ -89,7 +100,10 @@ public class Cheetah {
      * @throws CheetahException if there is an error while processing the audio frame.
      */
     public CheetahTranscript flush() throws CheetahException {
-        return flush(libraryHandle);
+        if (handle == 0) {
+            throw new CheetahInvalidStateException("Attempted to call Cheetah flush after delete.");
+        }
+        return CheetahNative.flush(handle);
     }
 
     /**
@@ -97,33 +111,27 @@ public class Cheetah {
      *
      * @return Required number of audio samples per frame.
      */
-    public native int getFrameLength();
+    public int getFrameLength() {
+        return CheetahNative.getFrameLength();
+    }
 
     /**
      * Getter for required audio sample rate for PCM data.
      *
      * @return Required audio sample rate for PCM data.
      */
-    public native int getSampleRate();
+    public int getSampleRate() {
+        return CheetahNative.getSampleRate();
+    }
 
     /**
      * Getter for Cheetah version.
      *
      * @return Cheetah version.
      */
-    public native String getVersion();
-
-    private native long init(
-            String accessKey,
-            String modelPath,
-            float endpointDurationSec,
-            boolean enableAutomaticPunctuation);
-
-    private native void delete(long object);
-
-    private native CheetahTranscript process(long object, short[] pcm);
-
-    private native CheetahTranscript flush(long object);
+    public String getVersion() {
+        return CheetahNative.getVersion();
+    }
 
     public static class Builder {
         private String accessKey = null;
