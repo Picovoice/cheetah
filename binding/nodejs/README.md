@@ -35,7 +35,7 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 Create an instance of the engine and transcribe audio :
 
 ```javascript
-const Cheetah = require("@picovoice/cheetah-node");
+const {Cheetah} = require("@picovoice/cheetah-node");
 
 const accessKey = "${ACCESS_KEY}"; // Obtained from the Picovoice Console (https://console.picovoice.ai/)
 const endpointDurationSec = 2.0;
