@@ -20,7 +20,7 @@ yarn start
 (or)
 
 ```console
-npm
+npm install
 npm run start
 ```
 
