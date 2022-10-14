@@ -23,8 +23,8 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
 ### Restrictions
 
-IndexedDB is required to use `Porcupine` in a worker thread. Browsers without IndexedDB support
-(i.e. Firefox Incognito Mode) should use `Porcupine` in the main thread.
+IndexedDB is required to use `Cheetah` in a worker thread. Browsers without IndexedDB support
+(i.e. Firefox Incognito Mode) should use `Cheetah` in the main thread.
 
 ## Installation
 
