@@ -43,7 +43,7 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 Add the Cheetah model file to your Android application by:
 
 1. Either create a model in [Picovoice Console](https://console.picovoice.ai/) or use the [default model](../../lib/common).
-2. Add the model as a bundled resource by placing it under the `assets` directory of your Android application.
+2. Add the model as a bundled resource by placing it under the assets directory of your Android project (`src/main/assets`).
 
 Create an instance of the engine with the Cheetah Builder class by passing in the `accessKey`, `modelPath` and Android app context:
 
@@ -51,7 +51,7 @@ Create an instance of the engine with the Cheetah Builder class by passing in th
 import ai.picovoice.cheetah.*;
 
 final String accessKey = "${ACCESS_KEY}"; // AccessKey provided by Picovoice Console (https://console.picovoice.ai/)
-final String modelPath = "${MODEL_FILE}";
+final String modelPath = "${MODEL_PATH}"; // relative path to assets directory
 try {
     Cheetah cheetah = new Cheetah.Builder()
         .setAccessKey(accessKey)
@@ -81,7 +81,7 @@ while true {
 }
 ```
 
-When done resources have to be released explicitly:
+When done, resources have to be released explicitly:
 
 ```java
 cheetah.delete();
