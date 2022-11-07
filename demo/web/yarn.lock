@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@picovoice/cheetah-web@~1.1.7":
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-1.1.7.tgz#75ce9c21d0389b3525ec2bc5ec0e6156d544942c"
-  integrity sha512-+txTPkXYcRoUPhEhdv/ZURY2WTq6XT8/kkgAVdPW+W2O5ou4xdj3/fclqBo2HrpGhQxrv2gYkfUkgkhvzUwUAQ==
+"@picovoice/cheetah-web@latest":
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-1.1.8.tgz#71fac321a7ee9d142e872c708b7df6863bfac45d"
+  integrity sha512-ISKtM58vW0iSYJ4syJH3+V2m5EQ9fehBGh2vdBmGqudX9nRqWziTJamZwCNP7Osa1gKoVt8+Wh56yn2JKYkJnw==
   dependencies:
     "@picovoice/web-utils" "=1.2.8"
 
