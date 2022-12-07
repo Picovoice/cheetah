@@ -71,6 +71,8 @@ flutter:
 String modelPath = "assets/cheetah_model.pv";
 ```
 
+Alternatively, if the model file is deployed to the device with a different method, the absolute path to the file on device can be used.
+
 ## Usage
 
 An instance of [`Cheetah`](https://picovoice.ai/docs/api/cheetah-flutter/#cheetah) is created by passing a model file path into its static constructor `create`:
@@ -78,11 +80,12 @@ An instance of [`Cheetah`](https://picovoice.ai/docs/api/cheetah-flutter/#cheeta
 ```dart
 import 'package:cheetah_flutter/cheetah.dart';
 
-const accessKey = "{ACCESS_KEY}"  // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
+String accessKey = '{ACCESS_KEY}' // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
+String modelPath = '{CHEETAH_MODEL_PATH}' // path relative to the assets folder or absolute path to file on device
 
 void createCheetah() async {
     try{
-        _cheetah = await Cheetah.create(accessKey, '{CHEETAH_MODEL_PATH}');
+        _cheetah = await Cheetah.create(accessKey, modelPath);
     } on CheetahException catch (err) {
         // handle Cheetah init error
     }

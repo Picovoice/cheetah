@@ -52,6 +52,8 @@ let cheetah = Cheetah(
         endpointDuration: 1.0)
 ```
 
+Alternatively, you can provide `modelPath` as an absolute path to the model file on device.
+
 Transcribe an audio:
 
 ```swift
