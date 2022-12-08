@@ -50,7 +50,7 @@ Cheetah requires a valid Picovoice `AccessKey` at initialization. `AccessKey` ac
 You can get your `AccessKey` for free. Make sure to keep your `AccessKey` secret.
 Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get your `AccessKey`.
 
-## Adding custom Cheetah models
+## Adding Cheetah Models
 
 Create a custom model using the [Picovoice Console](https://console.picovoice.ai/) or use the [default model](https://github.com/Picovoice/cheetah/tree/master/lib/common/).
 
@@ -64,7 +64,24 @@ To add a Leopard model file to your iOS application, add the file as a bundled r
 
 ## Usage
 
-Transcribe audio:
+Create an instance of `Cheetah`:
+
+```typescript
+import {Cheetah, CheetahErrors} from '@picovoice/cheetah-react-native';
+
+const accessKey = "${ACCESS_KEY}" // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
+const modelPath = "${CHEETAH_MODEL_PATH}" // path relative to the assets folder or absolute path to file on device
+
+try {
+    const cheetah = await Cheetah.create(accessKey, modelPath)
+} catch (err: any) {
+  if (err instanceof CheetahErrors) {
+    // handle error
+  }
+}
+```
+
+Transcribe real-time audio:
 
 ```typescript
 import {Cheetah, CheetahErrors} from '@picovoice/cheetah-react-native';
@@ -73,12 +90,14 @@ const getAudioFrame = () => {
   // get audio frames
 }
 
+let transcript = ""
 try {
   while (1) {
-    const cheetah = await Cheetah.create("${ACCESS_KEY}", "${MODEL_FILE}")
-    const {transcript, isEndpoint} = await cheetah.process(getAudioFrame())
-    if (isEndpoint) {
-      const {transcript} = await cheetah.flush()
+    const partialResult = await cheetah.process(getAudioFrame())
+    transcript += partialResult.transcript
+    if (partialResult.isEndpoint) {
+      const finalResult = await cheetah.flush()
+      transcript += finalTranscript.transcript
     }
   }
 } catch (err: any) {
@@ -88,8 +107,6 @@ try {
 }
 ```
 
-Replace `${ACCESS_KEY}` with your `AccessKey` obtained from [Picovoice Console](https://console.picovoice.ai/) and `${MODEL_FILE}`
-with the file name of the Cheetah model file.
 Finally, when done be sure to explicitly release the resources using `cheetah.delete()`.
 
 ## Demo App

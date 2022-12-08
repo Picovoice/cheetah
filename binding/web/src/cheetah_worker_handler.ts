@@ -34,8 +34,8 @@ const processErrorCallback = (error: string): void => {
 /**
  * Cheetah worker handler.
  */
-self.onmessage = async function(
-  event: MessageEvent<CheetahWorkerRequest>,
+self.onmessage = async function (
+  event: MessageEvent<CheetahWorkerRequest>
 ): Promise<void> {
   switch (event.data.command) {
     case 'init':
@@ -47,11 +47,14 @@ self.onmessage = async function(
         return;
       }
       try {
-        event.data.options.processErrorCallback = processErrorCallback;
-
         Cheetah.setWasm(event.data.wasm);
         Cheetah.setWasmSimd(event.data.wasmSimd);
-        cheetah = await Cheetah._init(event.data.accessKey, transcriptCallback, event.data.modelPath, event.data.options);
+        cheetah = await Cheetah._init(
+          event.data.accessKey,
+          transcriptCallback,
+          event.data.modelPath,
+          { ...event.data.options, processErrorCallback }
+        );
         self.postMessage({
           command: 'ok',
           version: cheetah.version,

@@ -51,7 +51,7 @@ Create an instance of the engine with the Cheetah Builder class by passing in th
 import ai.picovoice.cheetah.*;
 
 final String accessKey = "${ACCESS_KEY}"; // AccessKey provided by Picovoice Console (https://console.picovoice.ai/)
-final String modelPath = "${MODEL_PATH}"; // relative path to assets directory
+final String modelPath = "${MODEL_PATH}"; // relative path to assets directory or absolute path to file on device
 try {
     Cheetah cheetah = new Cheetah.Builder()
         .setAccessKey(accessKey)
