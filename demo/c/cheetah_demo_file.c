@@ -287,7 +287,7 @@ int main(int argc, char *argv[]) {
 
     LPWSTR *wargv = CommandLineToArgvW(GetCommandLineW(), &argc);
     if (wargv == NULL) {
-        fprintf(stderr, "CommandLineToArgvW failed\n");
+        fprintf(stderr, "`CommandLineToArgvW` failed\n");
         exit(1);
     }
 
