@@ -6,6 +6,7 @@ binding/nodejs/** linguist-detectable=false
 binding/react-native/** linguist-detectable=false
 binding/web/test/** linguist-detectable=false
 demo/** linguist-detectable=false
+demo/python/** linguist-detectable=true
 lib/** linguist-detectable=false
 resources/** linguist-detectable=false
 *.py linguist-detectable=true
