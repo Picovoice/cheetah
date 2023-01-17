@@ -1,0 +1,9 @@
+binding/android/** linguist-detectable=false
+binding/flutter/** linguist-detectable=false
+binding/ios/CheetahAppTest/** linguist-detectable=false
+binding/nodejs/** linguist-detectable=false
+binding/react-native/** linguist-detectable=false
+demo/** linguist-detectable=false
+lib/** linguist-detectable=false
+resources/** linguist-detectable=false
+*.py linguist-detectable=true

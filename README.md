@@ -363,7 +363,8 @@ while true {
 }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with a custom trained model from [Picovoice Console](https://console.picovoice.ai/) or the [default model](./lib/common/).
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with a custom trained model from 
+[Picovoice Console](https://console.picovoice.ai/) or the [default model](./lib/common/cheetah_params.pv).
 
 ### Android
 
@@ -446,7 +447,7 @@ try{
 } on CheetahException catch (err) { }
 ```
 
-Replace `${ACCESS_KEY}` with your `AccessKey` obtained from [Picovoice Console](https://console.picovoice.ai/) and `${CHEETAH_MODEL_PATH}` with the the path a custom trained model from [Picovoice Console](https://console.picovoice.ai/) or the [default model](lib/common/).
+Replace `${ACCESS_KEY}` with your `AccessKey` obtained from [Picovoice Console](https://console.picovoice.ai/) and `${CHEETAH_MODEL_PATH}` with the the path a custom trained model from [Picovoice Console](https://console.picovoice.ai/) or the [default model](lib/common/cheetah_params.pv).
 
 ### Go
 
