@@ -29,12 +29,21 @@ If using HTTPS, clone the repository with:
 git clone --recurse-submodules https://github.com/Picovoice/cheetah.git
 ```
 
-### Build
+### Build Linux/MacOS
 
 Build the demos by running this from the root of the repository:
 
 ```console
 cmake -S demo/c/ -B demo/c/build
+cmake --build demo/c/build
+```
+
+### Build Windows
+
+Build the demo by running this from the root of the repository:
+
+```console
+cmake -S demo/c/ -B demo/c/build -G "MinGW Makefiles"
 cmake --build demo/c/build
 ```
 

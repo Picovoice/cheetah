@@ -176,6 +176,12 @@ int picovoice_main(int argc, char **argv) {
         exit(1);
     }
 
+    void (*pv_free_func)(void *) = load_symbol(dl_handle, "pv_free");
+    if (!pv_free_func) {
+        print_dl_error("failed to load `pv_free`");
+        exit(1);
+    }
+
     struct timeval before;
     gettimeofday(&before, NULL);
 
@@ -247,7 +253,7 @@ int picovoice_main(int argc, char **argv) {
 
             fprintf(stdout, "%s", partial_transcript);
             fflush(stdout);
-            free(partial_transcript);
+            pv_free_func(partial_transcript);
         }
 
         gettimeofday(&before, NULL);
@@ -264,7 +270,7 @@ int picovoice_main(int argc, char **argv) {
         proc_sec += ((double) (after.tv_sec - before.tv_sec)) + (((double) (after.tv_usec - before.tv_usec)) * 1e-6);
 
         fprintf(stdout, "%s\n", final_transcript);
-        free(final_transcript);
+        pv_free_func(final_transcript);
 
         drwav_uninit(&f);
     }
