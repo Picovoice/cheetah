@@ -221,6 +221,12 @@ int picovoice_main(int argc, char *argv[]) {
         exit(1);
     }
 
+    void (*pv_free_func)(void *) = load_symbol(dl_handle, "pv_free");
+    if (!pv_free_func) {
+        print_dl_error("failed to load `pv_free_func`");
+        exit(1);
+    }
+
     pv_cheetah_t *cheetah = NULL;
     pv_status_t status = pv_cheetah_init_func(access_key, model_path, endpoint_duration_sec, enable_automatic_punctuation, &cheetah);
     if (status != PV_STATUS_SUCCESS) {
@@ -270,7 +276,7 @@ int picovoice_main(int argc, char *argv[]) {
         }
         fprintf(stdout, "%s", partial_transcript);
         fflush(stdout);
-        free(partial_transcript);
+        pv_free_func(partial_transcript);
         if (is_endpoint) {
             char *final_transcript = NULL;
             status = pv_cheetah_flush_func(cheetah, &final_transcript);
@@ -279,7 +285,7 @@ int picovoice_main(int argc, char *argv[]) {
                 exit(1);
             }
             fprintf(stdout, "%s\n", final_transcript);
-            free(final_transcript);
+            pv_free_func(final_transcript);
         }
     }
     fprintf(stdout, "\n");
