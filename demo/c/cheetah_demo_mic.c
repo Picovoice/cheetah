@@ -223,7 +223,7 @@ int picovoice_main(int argc, char *argv[]) {
 
     void (*pv_free_func)(void *) = load_symbol(dl_handle, "pv_free");
     if (!pv_free_func) {
-        print_dl_error("failed to load `pv_free_func`");
+        print_dl_error("failed to load `pv_free`");
         exit(1);
     }
 
