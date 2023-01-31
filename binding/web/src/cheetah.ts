@@ -1,5 +1,5 @@
 /*
-  Copyright 2022 Picovoice Inc.
+  Copyright 2022-2023 Picovoice Inc.
 
   You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
   file accompanying this source.
@@ -19,9 +19,8 @@ import {
   buildWasm,
   arrayBufferToStringAtIndex,
   isAccessKeyValid,
-  fromBase64,
-  fromPublicDirectory,
   loadModel,
+  PvError
 } from '@picovoice/web-utils';
 
 import { simd } from 'wasm-feature-detect';
@@ -59,6 +58,7 @@ type CheetahWasmOutput = {
   inputBufferAddress: number;
   isEndpointAddress: number;
   transcriptAddressAddress: number;
+  pvError: PvError;
 };
 
 const PV_STATUS_SUCCESS = 10000;
@@ -78,7 +78,6 @@ export class Cheetah {
 
   private readonly _objectAddress: number;
   private readonly _inputBufferAddress: number;
-  private readonly _alignedAlloc: CallableFunction;
   private readonly _isEndpointAddress: number;
   private readonly _transcriptAddressAddress: number;
 
@@ -92,6 +91,8 @@ export class Cheetah {
 
   private readonly _transcriptCallback: (cheetahTranscript: CheetahTranscript) => void;
   private readonly _processErrorCallback?: (error: string) => void;
+
+  private readonly _pvError: PvError;
 
   private constructor(
     handleWasm: CheetahWasmOutput,
@@ -111,13 +112,14 @@ export class Cheetah {
     this._pvFree = handleWasm.pvFree;
     this._objectAddress = handleWasm.objectAddress;
     this._inputBufferAddress = handleWasm.inputBufferAddress;
-    this._alignedAlloc = handleWasm.aligned_alloc;
     this._isEndpointAddress = handleWasm.isEndpointAddress;
     this._transcriptAddressAddress = handleWasm.transcriptAddressAddress;
 
     this._memoryBuffer = new Int16Array(handleWasm.memory.buffer);
     this._memoryBufferUint8 = new Uint8Array(handleWasm.memory.buffer);
     this._memoryBufferView = new DataView(handleWasm.memory.buffer);
+
+    this._pvError = handleWasm.pvError;
     this._processMutex = new Mutex();
 
     this._transcriptCallback = transcriptCallback;
@@ -271,11 +273,13 @@ export class Cheetah {
         );
         if (status !== PV_STATUS_SUCCESS) {
           const memoryBuffer = new Uint8Array(this._wasmMemory.buffer);
+          const msg = `process failed with status ${arrayBufferToStringAtIndex(
+            memoryBuffer,
+            await this._pvStatusToString(status),
+          )}`;
+
           throw new Error(
-            `process failed with status ${arrayBufferToStringAtIndex(
-              memoryBuffer,
-              await this._pvStatusToString(status),
-            )}`,
+            `${msg}\nDetails: ${this._pvError.getErrorString()}`
           );
         }
 
@@ -346,11 +350,13 @@ export class Cheetah {
 
     if (status !== PV_STATUS_SUCCESS) {
       const memoryBuffer = new Uint8Array(this._wasmMemory.buffer);
+      const msg = `flush failed with status ${arrayBufferToStringAtIndex(
+        memoryBuffer,
+        await this._pvStatusToString(status),
+      )}`;
+
       throw new Error(
-        `process failed with status ${arrayBufferToStringAtIndex(
-          memoryBuffer,
-          await this._pvStatusToString(status),
-        )}`,
+        `${msg}\nDetails: ${this._pvError.getErrorString()}`
       );
     }
 
@@ -401,7 +407,9 @@ export class Cheetah {
 
     const memoryBufferUint8 = new Uint8Array(memory.buffer);
 
-    const exports = await buildWasm(memory, wasmBase64);
+    const pvError = new PvError();
+
+    const exports = await buildWasm(memory, wasmBase64, pvError);
 
     const aligned_alloc = exports.aligned_alloc as aligned_alloc_type;
     const pv_free = exports.pv_free as pv_free_type;
@@ -472,11 +480,13 @@ export class Cheetah {
       (enableAutomaticPunctuation) ? 1 : 0,
       objectAddressAddress);
     if (status !== PV_STATUS_SUCCESS) {
+      const msg = `'pv_cheetah_init' failed with status ${arrayBufferToStringAtIndex(
+        memoryBufferUint8,
+        await pv_status_to_string(status),
+      )}`;
+
       throw new Error(
-        `'pv_cheetah_init' failed with status ${arrayBufferToStringAtIndex(
-          memoryBufferUint8,
-          await pv_status_to_string(status),
-        )}`,
+        `${msg}\nDetails: ${pvError.getErrorString()}`
       );
     }
     const memoryBufferView = new DataView(memory.buffer);
@@ -513,6 +523,7 @@ export class Cheetah {
       inputBufferAddress: inputBufferAddress,
       isEndpointAddress: isEndpointAddress,
       transcriptAddressAddress: transcriptAddressAddress,
+      pvError: pvError
     };
   }
 }
