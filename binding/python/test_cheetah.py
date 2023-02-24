@@ -17,8 +17,8 @@ import wave
 
 from parameterized import parameterized
 
-from cheetah import Cheetah
-from util import *
+from _cheetah import Cheetah
+from _util import *
 
 TEST_PARAMS = [
     [False, "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel"],
