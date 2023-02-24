@@ -11,8 +11,8 @@
 
 from typing import Optional
 
-from _cheetah import Cheetah
-from _util import default_library_path, default_model_path
+from ._cheetah import Cheetah
+from ._util import default_library_path, default_model_path
 
 
 def create(
