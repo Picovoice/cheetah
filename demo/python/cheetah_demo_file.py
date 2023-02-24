@@ -26,11 +26,11 @@ def main():
         help='Absolute path to dynamic library. Default: using the library provided by `pvcheetah`')
     parser.add_argument(
         '--model_path',
-        help='Absolute path to Cheetah model. Default: using the model provided by `pvcheetah]`')
+        help='Absolute path to Cheetah model. Default: using the model provided by `pvcheetah`')
     parser.add_argument(
         '--disable_automatic_punctuation',
         action='store_true',
-        help='Do not insert automatic punctuation')
+        help='Disable insertion of automatic punctuation')
     parser.add_argument(
         '--wav_paths',
         nargs='+',

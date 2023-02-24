@@ -25,7 +25,7 @@ def main():
         help='Absolute path to dynamic library. Default: using the library provided by `pvcheetah`')
     parser.add_argument(
         '--model_path',
-        help='Absolute path to Cheetah model. Default: using the model provided by `pvcheetah]`')
+        help='Absolute path to Cheetah model. Default: using the model provided by `pvcheetah`')
     parser.add_argument(
         '--endpoint_duration_sec',
         type=float,
@@ -34,7 +34,7 @@ def main():
     parser.add_argument(
         '--disable_automatic_punctuation',
         action='store_true',
-        help='Do not insert automatic punctuation')
+        help='Disable insertion of automatic punctuation')
     parser.add_argument('--audio_device_index', type=int, default=-1, help='Index of input audio device')
     parser.add_argument('--show_audio_devices', action='store_true', help='Only list available devices and exit')
     args = parser.parse_args()
