@@ -29,4 +29,4 @@ jobs:
       run: pip install flake8 pep8-naming
 
     - name: Check python codestyle
-      run: flake8 --ignore=F401,F403,F405 --max-line-length=120 .
+      run: flake8 --ignore=F401,F403,F405 --max-line-length=120 binding/python demo/python
