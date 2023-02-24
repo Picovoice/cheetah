@@ -10,77 +10,70 @@
 #
 
 import argparse
-from threading import Thread
 
-from pvcheetah import *
+from pvcheetah import CheetahActivationLimitError, create
 from pvrecorder import PvRecorder
-
-
-class Demo(Thread):
-    def __init__(
-            self,
-            access_key: str,
-            model_path: Optional[str],
-            library_path: Optional[str],
-            endpoint_duration_sec: float,
-            enable_automatic_punctuation: bool):
-        super(Demo, self).__init__()
-
-        self._access_key = access_key
-        self._model_path = model_path
-        self._library_path = library_path
-        self._endpoint_duration_sec = endpoint_duration_sec
-        self._enable_automatic_punctuation = enable_automatic_punctuation
-        self._is_recording = False
-        self._stop = False
-
-    def run(self):
-        self._is_recording = True
-
-        o = None
-        recorder = None
-
-        try:
-            o = create(
-                access_key=self._access_key,
-                library_path=self._library_path,
-                model_path=self._model_path,
-                endpoint_duration_sec=self._endpoint_duration_sec)
-            recorder = PvRecorder(device_index=-1, frame_length=o.frame_length)
-            recorder.start()
-
-            print('Cheetah version : %s' % o.version)
-
-            while True:
-                partial_transcript, is_endpoint = o.process(recorder.read())
-                print(partial_transcript, end='', flush=True)
-                if is_endpoint:
-                    print(o.flush())
-        except KeyboardInterrupt:
-            pass
-        finally:
-            if recorder is not None:
-                recorder.stop()
-
-            if o is not None:
-                o.delete()
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--access_key', required=True)
-    parser.add_argument('--library_path', default=None)
-    parser.add_argument('--model_path', default=None)
-    parser.add_argument('--endpoint_duration_sec', type=float, default=1.)
-    parser.add_argument('--disable_automatic_punctuation', action='store_true')
+    parser.add_argument(
+        '--access_key',
+        help='AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)')
+    parser.add_argument(
+        '--library_path',
+        help='Absolute path to dynamic library. Default: using the library provided by `pvcheetah`')
+    parser.add_argument(
+        '--model_path',
+        help='Absolute path to Cheetah model. Default: using the model provided by `pvcheetah]`')
+    parser.add_argument(
+        '--endpoint_duration_sec',
+        type=float,
+        default=1.,
+        help='Duration in seconds for speechless audio to be considered an endpoint')
+    parser.add_argument(
+        '--disable_automatic_punctuation',
+        action='store_true',
+        help='Do not insert automatic punctuation')
+    parser.add_argument('--audio_device_index', type=int, default=-1, help='Index of input audio device')
+    parser.add_argument('--show_audio_devices', action='store_true', help='Only list available devices and exit')
     args = parser.parse_args()
 
-    Demo(
+    if args.show_audio_devices:
+        for index, name in enumerate(PvRecorder.get_audio_devices()):
+            print('Device #%d: %s' % (index, name))
+        return
+
+    cheetah = create(
         access_key=args.access_key,
         library_path=args.library_path,
         model_path=args.model_path,
         endpoint_duration_sec=args.endpoint_duration_sec,
-        enable_automatic_punctuation=not args.disable_automatic_punctuation).run()
+        enable_automatic_punctuation=not args.disable_automatic_punctuation)
+
+    try:
+        print('Cheetah version : %s' % cheetah.version)
+
+        recorder = PvRecorder(device_index=-1, frame_length=cheetah.frame_length)
+        recorder.start()
+        print('Listening... (press Ctrl+C to stop)')
+
+        try:
+            while True:
+                partial_transcript, is_endpoint = cheetah.process(recorder.read())
+                print(partial_transcript, end='', flush=True)
+                if is_endpoint:
+                    print(cheetah.flush())
+        finally:
+            print()
+            recorder.stop()
+
+    except KeyboardInterrupt:
+        pass
+    except CheetahActivationLimitError:
+        print('AccessKey has reached its processing limit.')
+    finally:
+        cheetah.delete()
 
 
 if __name__ == '__main__':

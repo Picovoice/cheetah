@@ -13,16 +13,30 @@ import argparse
 import struct
 import wave
 
-from pvcheetah import *
+from pvcheetah import CheetahActivationLimitError, create
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--access_key', required=True)
-    parser.add_argument('--model_path', default=None)
-    parser.add_argument('--library_path', default=None)
-    parser.add_argument('--disable_automatic_punctuation', action='store_true')
-    parser.add_argument('--wav_paths', nargs='+', required=True)
+    parser.add_argument(
+        '--access_key',
+        help='AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)')
+    parser.add_argument(
+        '--library_path',
+        help='Absolute path to dynamic library. Default: using the library provided by `pvcheetah`')
+    parser.add_argument(
+        '--model_path',
+        help='Absolute path to Cheetah model. Default: using the model provided by `pvcheetah]`')
+    parser.add_argument(
+        '--disable_automatic_punctuation',
+        action='store_true',
+        help='Do not insert automatic punctuation')
+    parser.add_argument(
+        '--wav_paths',
+        nargs='+',
+        required=True,
+        metavar='PATH',
+        help='Absolute paths to `.wav` files to be transcribed')
     args = parser.parse_args()
 
     o = create(
@@ -39,6 +53,9 @@ def main():
                         "invalid sample rate of `%d`. cheetah only accepts `%d`" % (f.getframerate(), o.sample_rate))
                 if f.getnchannels() != 1:
                     raise ValueError("this demo can only process single-channel WAV files")
+                if f.getsampwidth() != 2:
+                    raise ValueError("this demo can only process 16-bit WAV files")
+
                 buffer = f.readframes(f.getnframes())
                 audio = struct.unpack('%dh' % (len(buffer) / struct.calcsize('h')), buffer)
 
@@ -49,10 +66,12 @@ def main():
                 partial_transcript, _ = o.process(frame)
                 print(partial_transcript, end='', flush=True)
                 transcript += partial_transcript
+
             final_transcript = o.flush()
             print(final_transcript)
+
     except CheetahActivationLimitError:
-        print("AccessKey `%s` has reached it's processing limit." % args.access_key)
+        print('AccessKey has reached its processing limit.')
     finally:
         o.delete()
 
