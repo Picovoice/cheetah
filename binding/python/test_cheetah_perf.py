@@ -16,8 +16,8 @@ import time
 import unittest
 import wave
 
-from cheetah import Cheetah
-from util import *
+from _cheetah import Cheetah
+from _util import *
 
 
 class CheetahPerformanceTestCase(unittest.TestCase):
@@ -31,13 +31,13 @@ class CheetahPerformanceTestCase(unittest.TestCase):
 
         perf_results = list()
         for i in range(self.NUM_TEST_ITERATIONS + 1):
-            start = time.time()
+            start = time.perf_counter()
             cheetah = Cheetah(
                 access_key=self.ACCESS_KEY,
                 library_path=default_library_path('../..'),
                 model_path=default_model_path('../..')
             )
-            init_time = time.time() - start
+            init_time = time.perf_counter() - start
 
             if i > 0:
                 perf_results.append(init_time)
@@ -66,9 +66,9 @@ class CheetahPerformanceTestCase(unittest.TestCase):
             total_proc_time = 0
             for j in range(num_frames):
                 frame = pcm[j * cheetah.frame_length:(j + 1) * cheetah.frame_length]
-                start = time.time()
+                start = time.perf_counter()
                 cheetah.process(frame)
-                total_proc_time += time.time() - start
+                total_proc_time += time.perf_counter() - start
 
             if i > 0:
                 perf_results.append(total_proc_time)

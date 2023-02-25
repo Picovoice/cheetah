@@ -22,8 +22,9 @@ os.mkdir(package_folder)
 shutil.copy(os.path.join(os.path.dirname(__file__), '../../LICENSE'), package_folder)
 
 shutil.copy(os.path.join(os.path.dirname(__file__), '__init__.py'), os.path.join(package_folder, '__init__.py'))
-shutil.copy(os.path.join(os.path.dirname(__file__), 'cheetah.py'), os.path.join(package_folder, 'cheetah.py'))
-shutil.copy(os.path.join(os.path.dirname(__file__), 'util.py'), os.path.join(package_folder, 'util.py'))
+shutil.copy(os.path.join(os.path.dirname(__file__), '_cheetah.py'), os.path.join(package_folder, '_cheetah.py'))
+shutil.copy(os.path.join(os.path.dirname(__file__), '_factory.py'), os.path.join(package_folder, '_factory.py'))
+shutil.copy(os.path.join(os.path.dirname(__file__), '_util.py'), os.path.join(package_folder, '_util.py'))
 
 platforms = ('jetson', 'linux', 'mac', 'raspberry-pi', 'windows')
 
@@ -36,8 +37,9 @@ for platform in ('common',) + platforms:
 MANIFEST_IN = """
 include pvcheetah/LICENSE
 include pvcheetah/__init__.py
-include pvcheetah/cheetah.py
-include pvcheetah/util.py
+include pvcheetah/_cheetah.py
+include pvcheetah/_factory.py
+include pvcheetah/_util.py
 recursive-include pvcheetah/lib/ *
 """
 
@@ -49,7 +51,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md'), 'r') as f:
 
 setuptools.setup(
     name="pvcheetah",
-    version="1.1.1",
+    version="1.1.2",
     author="Picovoice",
     author_email="hello@picovoice.ai",
     description="Cheetah Speech-to-Text Engine.",
