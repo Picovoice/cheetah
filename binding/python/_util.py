@@ -14,14 +14,16 @@ import platform
 import subprocess
 
 
+def _is_64bit():
+    return '64bit' in platform.architecture()[0]
+
+
 def _linux_machine():
     machine = platform.machine()
     if machine == 'x86_64':
         return machine
-    elif machine == 'aarch64':
-        arch_info = '-' + machine
-    elif machine == 'armv7l':
-        arch_info = ''
+    elif machine in ['aarch64', 'armv7l']:
+        arch_info = ('-' + machine) if _is_64bit() else ''
     else:
         raise NotImplementedError("Unsupported CPU architecture: `%s`" % machine)
 
