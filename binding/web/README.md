@@ -104,14 +104,14 @@ const cheetahModel = {
 
 #### Init options
 
-Set `endpointDurationSec` value to 0 if you do not with to detect endpoint (moment of silence). Set `enableAutomaticPunctuation` to
+Set `endpointDurationSec` value to 0 if you do not wish to detect endpoint (moment of silence). Set `enableAutomaticPunctuation` to
 true to enable  punctuation in transcript. Set `processErrorCallback` to handle errors if an error occurs while transcribing.
 
 ```typescript
 // Optional, these are default
 const options = {
   endpointDurationSec: 1.0,
-  enableAutomaticPunctuation: true,
+  enableAutomaticPunctuation: false,
   processErrorCallback: (error) => {}
 }
 ```
