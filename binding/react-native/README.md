@@ -1,4 +1,4 @@
-# Cheetah Binding for iOS
+# Cheetah Binding for React Native
 
 ## Cheetah Speech-to-Text Engine
 
@@ -84,8 +84,6 @@ try {
 Transcribe real-time audio:
 
 ```typescript
-import {Cheetah, CheetahErrors} from '@picovoice/cheetah-react-native';
-
 const getAudioFrame = () => {
   // get audio frames
 }
