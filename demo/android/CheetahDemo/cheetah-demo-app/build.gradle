@@ -83,7 +83,7 @@ dependencies {
 task copyParams(type: Copy) {
     from("${rootDir}/../../../lib/common")
     include('cheetah_params.pv')
-    into("${rootDir}/leopard-demo-app/src/main/assets")
+    into("${rootDir}/cheetah-demo-app/src/main/assets")
 }
 
 preBuild.dependsOn(copyParams)
