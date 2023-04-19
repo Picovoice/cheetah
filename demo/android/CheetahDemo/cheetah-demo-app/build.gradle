@@ -79,3 +79,11 @@ dependencies {
 
     androidTestImplementation('com.microsoft.appcenter:espresso-test-extension:1.4')
 }
+
+task copyParams(type: Copy) {
+    from("${rootDir}/../../../lib/common")
+    include('cheetah_params.pv')
+    into("${rootDir}/cheetah-demo-app/src/main/assets")
+}
+
+preBuild.dependsOn(copyParams)

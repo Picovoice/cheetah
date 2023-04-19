@@ -8,3 +8,4 @@
 .externalNativeBuild
 release
 test_resources
+cheetah_params.pv
