@@ -12,8 +12,8 @@
   ],
   "ignorePaths": [
     // submodules
-    "../../demo/c/dr_libs/**/*",
-    "../../demo/c/pvrecorder/**/*",
+    "../../../demo/c/dr_libs/**/*",
+    "../../../demo/c/pvrecorder/**/*",
 
     // binaries
     "**/*.a",
@@ -27,7 +27,7 @@
     "**/*.so",
     "**/*.wasm",
     "**/*.wav",
-    "../../lib/ios/**/*",
+    "../../../lib/ios/**/*",
 
     // .NET
     "**/*.csproj",
