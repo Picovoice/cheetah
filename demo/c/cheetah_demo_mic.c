@@ -1,5 +1,5 @@
 /*
-    Copyright 2018-2022 Picovoice Inc.
+    Copyright 2018-2023 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -16,8 +16,8 @@
 #endif
 
 #include <getopt.h>
-#include <stdbool.h>
 #include <signal.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -48,7 +48,6 @@ static void *open_dl(const char *dl_path) {
     return dlopen(dl_path, RTLD_NOW);
 
 #endif
-
 }
 
 static void *load_symbol(void *handle, const char *symbol) {
@@ -62,7 +61,6 @@ static void *load_symbol(void *handle, const char *symbol) {
     return dlsym(handle, symbol);
 
 #endif
-
 }
 
 static void close_dl(void *handle) {
@@ -76,7 +74,6 @@ static void close_dl(void *handle) {
     dlclose(handle);
 
 #endif
-
 }
 
 static void print_dl_error(const char *message) {
@@ -90,7 +87,6 @@ static void print_dl_error(const char *message) {
     fprintf(stderr, "%s with `%s`.\n", message, dlerror());
 
 #endif
-
 }
 
 static void show_audio_devices(void) {
@@ -184,7 +180,7 @@ int picovoice_main(int argc, char *argv[]) {
     }
 
     pv_status_t (*pv_cheetah_init_func)(const char *, const char *, float, bool, pv_cheetah_t **) =
-    load_symbol(dl_handle, "pv_cheetah_init");
+            load_symbol(dl_handle, "pv_cheetah_init");
     if (!pv_cheetah_init_func) {
         print_dl_error("failed to load `pv_cheetah_init`");
         exit(1);
@@ -197,7 +193,7 @@ int picovoice_main(int argc, char *argv[]) {
     }
 
     pv_status_t (*pv_cheetah_process_func)(pv_cheetah_t *, const int16_t *, char **, bool *) =
-    load_symbol(dl_handle, "pv_cheetah_process");
+            load_symbol(dl_handle, "pv_cheetah_process");
     if (!pv_cheetah_process_func) {
         print_dl_error("failed to load `pv_cheetah_process`");
         exit(1);
@@ -309,7 +305,7 @@ int main(int argc, char *argv[]) {
 #if defined(_WIN32) || defined(_WIN64)
 
 #define UTF8_COMPOSITION_FLAG (0)
-#define NULL_TERMINATED (-1)
+#define NULL_TERMINATED       (-1)
 
     LPWSTR *wargv = CommandLineToArgvW(GetCommandLineW(), &argc);
     if (wargv == NULL) {
