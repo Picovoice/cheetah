@@ -58,7 +58,13 @@ func TestVersion(t *testing.T) {
 	if err != nil {
 		log.Fatalf("Failed to init cheetah with: %v", err)
 	}
-	defer cheetah.Delete()
+
+	defer func() {
+		err := cheetah.Delete()
+		if err != nil {
+			log.Fatalf("Failed to release resources: %s", err)
+		}
+	}()
 
 	if reflect.TypeOf(Version).Name() != "string" {
 		t.Fatal("Unexpected version format.")
@@ -79,7 +85,13 @@ func runProcessTestCase(
 	if err != nil {
 		log.Fatalf("Failed to init cheetah with: %v", err)
 	}
-	defer cheetah.Delete()
+
+	defer func() {
+		err := cheetah.Delete()
+		if err != nil {
+			log.Fatalf("Failed to release resources: %s", err)
+		}
+	}()
 
 	data, err := ioutil.ReadFile(testAudioPath)
 	if err != nil {
