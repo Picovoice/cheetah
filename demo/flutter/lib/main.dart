@@ -87,7 +87,7 @@ class _MyAppState extends State<MyApp> {
       transcriptText = transcriptText + transcript;
     });
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (shouldScroll && !_controller.position.atEdge) {
         _controller.jumpTo(_controller.position.maxScrollExtent);
       }
