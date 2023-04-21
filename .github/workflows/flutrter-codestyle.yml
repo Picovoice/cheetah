@@ -29,6 +29,10 @@ jobs:
       run: flutter analyze --no-fatal-infos --no-fatal-warnings
       working-directory: binding/flutter
 
+    - name: Copy Demo Assets
+      run: ./copy_assets.sh
+      working-directory: demo/flutter
+
     - name: Run Demo Analyzer
       run: flutter analyze --no-fatal-infos --no-fatal-warnings
       working-directory: demo/flutter
