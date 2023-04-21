@@ -21,7 +21,7 @@ enum Method: String {
 }
 
 public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
-    private var cheetahPool: Dictionary<String, Cheetah> = [:]
+    private var cheetahPool: [String: Cheetah] = [:]
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let instance = SwiftCheetahPlugin()
@@ -37,7 +37,7 @@ public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
         }
         let args = call.arguments as! [String: Any]
 
-        switch (method) {
+        switch method {
         case .CREATE:
             do {
                 if let accessKey = args["accessKey"] as? String,
@@ -63,14 +63,14 @@ public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
                     ]
                     result(param)
                 } else {
-                    result(errorToFlutterError(CheetahInvalidArgumentError("missing required arguments 'accessKey' and 'modelPath'")))
+                    result(errorToFlutterError(
+                        CheetahInvalidArgumentError("missing required arguments 'accessKey' and 'modelPath'")))
                 }
             } catch let error as CheetahError {
                 result(errorToFlutterError(error))
             } catch {
                 result(errorToFlutterError(CheetahError(error.localizedDescription)))
             }
-            break
         case .PROCESS:
             do {
                 if let handle = args["handle"] as? String,
@@ -84,28 +84,30 @@ public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
                         ]
                         result(results)
                     } else {
-                        result(errorToFlutterError(CheetahInvalidStateError("Invalid handle provided to Cheetah 'process'")))
+                        result(errorToFlutterError(
+                            CheetahInvalidStateError("Invalid handle provided to Cheetah 'process'")))
                     }
                 } else {
-                    result(errorToFlutterError(CheetahInvalidArgumentError("missing required arguments 'handle' and 'frame'")))
+                    result(errorToFlutterError(
+                        CheetahInvalidArgumentError("missing required arguments 'handle' and 'frame'")))
                 }
             } catch let error as CheetahError {
                 result(errorToFlutterError(error))
             } catch {
                 result(errorToFlutterError(CheetahError(error.localizedDescription)))
             }
-            break
         case .FLUSH:
             do {
                 if let handle = args["handle"] as? String {
                     if let cheetah = cheetahPool[handle] {
                         let transcript = try cheetah.flush()
                         let results: [String: Any] = [
-                            "transcript": transcript,
+                            "transcript": transcript
                         ]
                         result(results)
                     } else {
-                        result(errorToFlutterError(CheetahInvalidStateError("Invalid handle provided to Cheetah 'process'")))
+                        result(errorToFlutterError(
+                            CheetahInvalidStateError("Invalid handle provided to Cheetah 'process'")))
                     }
                 } else {
                     result(errorToFlutterError(CheetahInvalidArgumentError("missing required arguments 'handle'")))
@@ -115,18 +117,18 @@ public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
             } catch {
                 result(errorToFlutterError(CheetahError(error.localizedDescription)))
             }
-            break
         case .DELETE:
             if let handle = args["handle"] as? String {
                 if let cheetah = cheetahPool.removeValue(forKey: handle) {
                     cheetah.delete()
                 }
             }
-            break
         }
     }
 
     private func errorToFlutterError(_ error: CheetahError) -> FlutterError {
-        return FlutterError(code: error.name.replacingOccurrences(of: "Error", with: "Exception"), message: error.localizedDescription, details: nil)
+        return FlutterError(
+            code: error.name.replacingOccurrences(of: "Error", with: "Exception"),
+            message: error.localizedDescription, details: nil)
     }
 }

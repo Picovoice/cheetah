@@ -48,12 +48,12 @@ class PerformanceTest: XCTestCase {
             }
             cheetah?.delete()
         }
-        
+
         let avgNSec = results.reduce(0.0, +) / Double(numTestIterations)
         let avgSec = Double(round(avgNSec * 1000) / 1000)
         XCTAssertLessThanOrEqual(avgSec, initPerformanceThresholdSec!)
     }
-    
+
     func testProcessPerformance() throws {
         try XCTSkipIf(procThresholdString == "{PROC_PERFORMANCE_THRESHOLD_SEC}")
 
@@ -66,21 +66,23 @@ class PerformanceTest: XCTestCase {
         let modelURL = bundle.url(forResource: "cheetah_params", withExtension: "pv")!
         let cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL)
 
-        let fileURL:URL = bundle.url(forResource: "test", withExtension: "wav")!
-        
+        let fileURL: URL = bundle.url(forResource: "test", withExtension: "wav")!
+
         let data = try Data(contentsOf: fileURL)
         let frameLengthBytes = Int(Cheetah.frameLength) * 2
-        var pcmBuffer = Array<Int16>(repeating: 0, count: Int(Cheetah.frameLength))
+        var pcmBuffer = [Int16](repeating: 0, count: Int(Cheetah.frameLength))
 
         var results: [Double] = []
         for i in 0...numTestIterations {
             var totalNSec = 0.0
-            
+
             var index = 44
-            while(index + frameLengthBytes < data.count) {
-                _ = pcmBuffer.withUnsafeMutableBytes { data.copyBytes(to: $0, from: index..<(index + frameLengthBytes)) }
+            while index + frameLengthBytes < data.count {
+                _ = pcmBuffer.withUnsafeMutableBytes {
+                    data.copyBytes(to: $0, from: index..<(index + frameLengthBytes))
+                }
                 let before = CFAbsoluteTimeGetCurrent()
-                let _ = try cheetah!.process(pcmBuffer)
+                _ = try cheetah!.process(pcmBuffer)
                 let after = CFAbsoluteTimeGetCurrent()
                 totalNSec += (after - before)
                 index += frameLengthBytes
@@ -91,7 +93,7 @@ class PerformanceTest: XCTestCase {
             }
         }
         cheetah?.delete()
-        
+
         let avgNSec = results.reduce(0.0, +) / Double(numTestIterations)
         let avgSec = Double(round(avgNSec * 1000) / 1000)
         XCTAssertLessThanOrEqual(avgSec, procPerformanceThresholdSec!)

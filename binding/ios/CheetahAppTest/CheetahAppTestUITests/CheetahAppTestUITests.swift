@@ -14,7 +14,8 @@ import Cheetah
 class CheetahDemoUITests: XCTestCase {
     let accessKey: String = "{TESTING_ACCESS_KEY_HERE}"
     let transcript: String = "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel"
-    let transcriptWithPunctuation: String = "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.";
+    let transcriptWithPunctuation: String =
+        "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel."
 
     let modelURL = Bundle(for: CheetahDemoUITests.self).url(forResource: "cheetah_params", withExtension: "pv")!
 
@@ -34,11 +35,11 @@ class CheetahDemoUITests: XCTestCase {
         let data = try Data(contentsOf: fileURL)
         let frameLengthBytes = Int(Cheetah.frameLength) * 2
 
-        var pcmBuffer = Array<Int16>(repeating: 0, count: Int(Cheetah.frameLength))
+        var pcmBuffer = [Int16](repeating: 0, count: Int(Cheetah.frameLength))
 
         var index = 0
         var res = ""
-        while (index + frameLengthBytes < data.count) {
+        while index + frameLengthBytes < data.count {
             _ = pcmBuffer.withUnsafeMutableBytes { data.copyBytes(to: $0, from: index..<(index + frameLengthBytes)) }
             let (partial, _) = try cheetah.process(pcmBuffer)
             res += partial
