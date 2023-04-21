@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2022 Picovoice Inc.
+    Copyright 2022-2023 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -41,9 +41,9 @@ namespace CheetahDemo
         {
             // init Cheetah speech-to-text engine
             using Cheetah cheetah = Cheetah.Create(
-                accessKey:accessKey,
-                modelPath:modelPath,
-                enableAutomaticPunctuation : enableAutomaticPunctuation);
+                accessKey: accessKey,
+                modelPath: modelPath,
+                enableAutomaticPunctuation: enableAutomaticPunctuation);
 
             using BinaryReader reader = new BinaryReader(File.Open(inputAudioPath, FileMode.Open));
             ValidateWavFile(reader, cheetah.SampleRate, 16, out short numChannels);
@@ -199,9 +199,9 @@ namespace CheetahDemo
             }
 
             RunDemo(
-                accessKey, 
-                inputAudioPath, 
-                modelPath, 
+                accessKey,
+                inputAudioPath,
+                modelPath,
                 enableAutomaticPunctuation);
         }
 
