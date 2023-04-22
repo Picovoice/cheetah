@@ -1,5 +1,5 @@
 /*
-    Copyright 2022 Picovoice Inc.
+    Copyright 2022-2023 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -116,7 +116,10 @@ public class MicDemo {
 
                 // need to transfer to input stream to write
                 ByteArrayInputStream writeArray = new ByteArrayInputStream(outputStream.toByteArray());
-                AudioInputStream writeStream = new AudioInputStream(writeArray, format, totalBytesCaptured / format.getFrameSize());
+                AudioInputStream writeStream = new AudioInputStream(
+                        writeArray,
+                        format,
+                        totalBytesCaptured / format.getFrameSize());
 
                 try {
                     AudioSystem.write(writeStream, AudioFileFormat.Type.WAVE, outputFile);
@@ -156,7 +159,10 @@ public class MicDemo {
         return (TargetDataLine) AudioSystem.getLine(dataLineInfo);
     }
 
-    private static TargetDataLine getAudioDevice(int deviceIndex, DataLine.Info dataLineInfo) throws LineUnavailableException {
+    private static TargetDataLine getAudioDevice(
+            int deviceIndex,
+            DataLine.Info dataLineInfo
+    ) throws LineUnavailableException {
         if (deviceIndex >= 0) {
             try {
                 Mixer.Info mixerInfo = AudioSystem.getMixerInfo()[deviceIndex];
@@ -165,8 +171,8 @@ public class MicDemo {
                 if (mixer.isLineSupported(dataLineInfo)) {
                     return (TargetDataLine) mixer.getLine(dataLineInfo);
                 } else {
-                    System.err.printf("Audio capture device at index %s does not support the audio format required by " +
-                            "Picovoice. Using default capture device.", deviceIndex);
+                    System.err.printf("Audio capture device at index %s does not support the audio format " +
+                            "required by Picovoice. Using default capture device.", deviceIndex);
                 }
             } catch (Exception e) {
                 System.err.printf("No capture device found at index %s. Using default capture device.", deviceIndex);
@@ -178,7 +184,7 @@ public class MicDemo {
     }
 
     public static void main(String[] args) {
-        Options options = BuildCommandLineOptions();
+        Options options = buildCommandLineOptions();
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
 
@@ -261,7 +267,7 @@ public class MicDemo {
                 outputPath);
     }
 
-    private static Options BuildCommandLineOptions() {
+    private static Options buildCommandLineOptions() {
         Options options = new Options();
 
         options.addOption(Option.builder("a")

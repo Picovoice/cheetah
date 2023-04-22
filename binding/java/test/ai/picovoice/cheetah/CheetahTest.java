@@ -1,5 +1,5 @@
 /*
-    Copyright 2022 Picovoice Inc.
+    Copyright 2022-2023 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -82,8 +82,10 @@ public class CheetahTest {
 
     private static Stream<Arguments> transcribeProvider() {
         return Stream.of(
-                Arguments.of(true, "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel."),
-                Arguments.of(false, "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel")
+                Arguments.of(true, 
+                        "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel."),
+                Arguments.of(false, 
+                        "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel")
         );
     }
 }

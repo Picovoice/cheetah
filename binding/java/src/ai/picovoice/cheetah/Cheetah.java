@@ -1,5 +1,5 @@
 /*
-    Copyright 2022 Picovoice Inc.
+    Copyright 2022-2023 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -14,6 +14,9 @@ package ai.picovoice.cheetah;
 
 import java.io.File;
 
+/**
+ * Cheetah Class.
+ */
 public class Cheetah {
 
     public static final String LIBRARY_PATH;
@@ -34,7 +37,8 @@ public class Cheetah {
      * @param libraryPath                Absolute path to the native Cheetah library.
      * @param endpointDurationSec        Duration of endpoint in seconds. A speech endpoint is detected when there is a
      *                                   chunk of audio (with a duration specified herein) after an utterance without
-     *                                   any speech in it. Set duration to 0 to disable this. Default is 1 second in the Builder.
+     *                                   any speech in it. Set duration to 0 to disable this. 
+     *                                   Default is 1 second in the Builder.
      * @param enableAutomaticPunctuation Set to `true` to enable automatic punctuation insertion.
      * @throws CheetahException if there is an error while initializing Cheetah.
      */
@@ -133,6 +137,9 @@ public class Cheetah {
         return CheetahNative.getVersion();
     }
 
+    /**
+     * Builder for creating an instance of Cheetah with a mixture of default arguments.
+     */
     public static class Builder {
         private String accessKey = null;
         private String libraryPath = null;
@@ -173,7 +180,7 @@ public class Cheetah {
         }
 
         /**
-         * Setter for enabling automatic punctuation insertion
+         * Setter for enabling automatic punctuation insertion.
          *
          * @param enableAutomaticPunctuation Set to `true` to enable automatic punctuation insertion.
          */
@@ -182,8 +189,13 @@ public class Cheetah {
             return this;
         }
 
+        /**
+         * Validates properties and creates an instance of the Cheetah speech-to-text engine.
+         *
+         * @return An instance of Cheetah Engine
+         * @throws CheetahException if there is an error while initializing Cheetah.
+         */
         public Cheetah build() throws CheetahException {
-
             if (!Utils.isEnvironmentSupported()) {
                 throw new CheetahRuntimeException("Could not initialize Cheetah. " +
                         "Execution environment not currently supported by Cheetah Java.");

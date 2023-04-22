@@ -1,5 +1,5 @@
 /*
-    Copyright 2022 Picovoice Inc.
+    Copyright 2022-2023 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -100,7 +100,7 @@ public class FileDemo {
     }
 
     public static void main(String[] args) {
-        Options options = BuildCommandLineOptions();
+        Options options = buildCommandLineOptions();
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
 
@@ -129,7 +129,7 @@ public class FileDemo {
             throw new IllegalArgumentException("AccessKey is required for Cheetah.");
         }
 
-        if(inputAudioPath == null){
+        if (inputAudioPath == null) {
             throw new IllegalArgumentException("No input audio file provided. This is a required argument.");
         }
         File inputAudioFile = new File(inputAudioPath);
@@ -153,7 +153,7 @@ public class FileDemo {
                 inputAudioFile);
     }
 
-    private static Options BuildCommandLineOptions() {
+    private static Options buildCommandLineOptions() {
         Options options = new Options();
 
         options.addOption(Option.builder("a")

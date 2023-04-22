@@ -1,5 +1,5 @@
 /*
-    Copyright 2022 Picovoice Inc.
+    Copyright 2022-2023 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -29,8 +29,10 @@ import ai.picovoice.cheetah.CheetahException;
 @RunWith(AndroidJUnit4.class)
 public class CheetahTest extends BaseTest {
 
-    private final String transcript = "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel";
-    private final String transcriptWithPunctuation = "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.";
+    private final String transcript =
+            "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel";
+    private final String transcriptWithPunctuation =
+            "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.";
 
     @Test
     public void testTranscribe() throws Exception {
