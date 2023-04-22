@@ -67,7 +67,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer c.Delete()
+	
+
+	defer func() {
+		err := c.Delete()
+		if err != nil {
+			log.Fatalf("Failed to release resources: %s", err)
+		}
+	}()
 
 	var outputWav *wav.Encoder
 	if *outputPathArg != "" {
@@ -142,7 +149,10 @@ waitLoop:
 			// write to debug file
 			if outputWav != nil {
 				for outputBufIndex := range pcm {
-					outputWav.WriteFrame(pcm[outputBufIndex])
+					err := outputWav.WriteFrame(pcm[outputBufIndex])
+					if err != nil {
+						log.Fatal(err)
+					}
 				}
 			}
 		}

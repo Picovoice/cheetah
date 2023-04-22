@@ -65,12 +65,17 @@ func main() {
 		c.ModelPath = modelPath
 	}
 
-	defer c.Delete()
-
 	err = c.Init()
 	if err != nil {
 		log.Fatalf("Failed to initialize: %v\n", err)
 	}
+
+	defer func() {
+		err := c.Delete()
+		if err != nil {
+			log.Fatalf("Failed to release resources: %s", err)
+		}
+	}()
 
 	log.Println("Processing audio file...")
 
@@ -108,7 +113,7 @@ func main() {
 		if err != nil {
 			log.Fatalf("Failed to process: %v\n", err)
 		}
-		fmt.Printf(partial)
+		fmt.Print(partial)
 		if isEndpoint {
 			final, err := c.Flush()
 			if err != nil {
