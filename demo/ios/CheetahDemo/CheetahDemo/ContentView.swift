@@ -126,18 +126,24 @@ struct ContentView: View {
 
             Button(action: {
                 viewModel.toggleRecording()
-            }) {
+            }, label: {
                 Text(viewModel.state == .RECORDING ? "STOP" : "START")
                         .padding()
                         .background(interactionDisabled ? Color.gray : activeBlue)
                         .foregroundColor(Color.white)
                         .font(.largeTitle)
-            }.disabled(interactionDisabled)
-        }.onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification), perform: { output in
+            }).disabled(interactionDisabled)
+        }.onReceive(
+            NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification),
+            perform: { _ in
                 viewModel.initialize()
-        }).onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification), perform: { output in
+            }
+        ).onReceive(
+            NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification),
+            perform: { _ in
                 viewModel.destroy()
-        })
+            }
+        )
                 .padding()
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                 .background(Color.white)

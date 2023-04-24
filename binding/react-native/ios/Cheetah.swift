@@ -13,7 +13,7 @@ import Cheetah
 
 @objc(PvCheetah)
 class PvCheetah: NSObject {
-    private var cheetahPool: Dictionary<String, Cheetah> = [:]
+    private var cheetahPool: [String: Cheetah] = [:]
 
     @objc(create:modelPath:endpointDuration:enableAutomaticPunctuation:resolver:rejecter:)
     func create(
@@ -22,7 +22,7 @@ class PvCheetah: NSObject {
             endpointDuration: Float32,
             enableAutomaticPunctuation: Bool,
             resolver resolve: RCTPromiseResolveBlock,
-            rejecter reject: RCTPromiseRejectBlock) -> Void {
+            rejecter reject: RCTPromiseRejectBlock) {
 
         do {
             let cheetah = try Cheetah(
@@ -51,7 +51,7 @@ class PvCheetah: NSObject {
     }
 
     @objc(delete:)
-    func delete(handle: String) -> Void {
+    func delete(handle: String) {
         if let cheetah = cheetahPool.removeValue(forKey: handle) {
             cheetah.delete()
         }
@@ -62,7 +62,7 @@ class PvCheetah: NSObject {
             handle: String,
             pcm: [Int16],
             resolver resolve: RCTPromiseResolveBlock,
-            rejecter reject: RCTPromiseRejectBlock) -> Void {
+            rejecter reject: RCTPromiseRejectBlock) {
         do {
             if let cheetah = cheetahPool[handle] {
                 let (transcript, isEndpoint) = try cheetah.process(pcm)
@@ -73,7 +73,8 @@ class PvCheetah: NSObject {
                 ]
                 resolve(param)
             } else {
-                let (code, message) = errorToCodeAndMessage(CheetahRuntimeError("Invalid handle provided to Cheetah 'process'"))
+                let (code, message) = errorToCodeAndMessage(
+                    CheetahRuntimeError("Invalid handle provided to Cheetah 'process'"))
                 reject(code, message, nil)
             }
         } catch let error as CheetahError {
@@ -89,16 +90,17 @@ class PvCheetah: NSObject {
     func flush(
             handle: String,
             resolver resolve: RCTPromiseResolveBlock,
-            rejecter reject: RCTPromiseRejectBlock) -> Void {
+            rejecter reject: RCTPromiseRejectBlock) {
         do {
             if let cheetah = cheetahPool[handle] {
                 let transcript = try cheetah.flush()
                 var result: [String: Any] = [
-                    "transcript": transcript,
+                    "transcript": transcript
                 ]
                 resolve(result)
             } else {
-                let (code, message) = errorToCodeAndMessage(CheetahRuntimeError("Invalid handle provided to Cheetah 'process'"))
+                let (code, message) = errorToCodeAndMessage(
+                    CheetahRuntimeError("Invalid handle provided to Cheetah 'process'"))
                 reject(code, message, nil)
             }
         } catch let error as CheetahError {

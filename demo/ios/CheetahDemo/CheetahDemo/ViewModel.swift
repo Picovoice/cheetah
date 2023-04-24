@@ -46,7 +46,7 @@ class ViewModel: ObservableObject {
                     modelPath: modelPath,
                     enableAutomaticPunctuation: true)
             state = UIState.READY
-        } catch let error as CheetahInvalidArgumentError{
+        } catch let error as CheetahInvalidArgumentError {
             errorMessage = "\(error.localizedDescription)\nEnsure your AccessKey '\(ACCESS_KEY)' is valid."
         } catch is CheetahActivationError {
             errorMessage = "ACCESS_KEY activation error"
@@ -54,7 +54,7 @@ class ViewModel: ObservableObject {
             errorMessage = "ACCESS_KEY activation refused"
         } catch is CheetahActivationLimitError {
             errorMessage = "ACCESS_KEY reached its limit"
-        } catch is CheetahActivationThrottledError  {
+        } catch is CheetahActivationThrottledError {
             errorMessage = "ACCESS_KEY is throttled"
         } catch {
             errorMessage = "\(error)"

@@ -7,42 +7,40 @@
 //  specific language governing permissions and limitations under the License.
 //
 
-public class CheetahError : LocalizedError {
-    private let message: String;
-    
+public class CheetahError: LocalizedError {
+    private let message: String
+
     public init (_ message: String) {
         self.message = message
     }
-    
+
     public var errorDescription: String? {
         return message
     }
 
     public var name: String {
-        get {
-            return String(describing: type(of: self))
-        }
+        return String(describing: type(of: self))
     }
 }
 
-public class CheetahMemoryError : CheetahError {}
+public class CheetahMemoryError: CheetahError {}
 
-public class CheetahIOError : CheetahError {}
+public class CheetahIOError: CheetahError {}
 
-public class CheetahInvalidArgumentError : CheetahError {}
+public class CheetahInvalidArgumentError: CheetahError {}
 
-public class CheetahStopIterationError : CheetahError {}
+public class CheetahStopIterationError: CheetahError {}
 
-public class CheetahKeyError : CheetahError {}
+public class CheetahKeyError: CheetahError {}
 
-public class CheetahInvalidStateError : CheetahError {}
+public class CheetahInvalidStateError: CheetahError {}
 
-public class CheetahRuntimeError : CheetahError {}
+public class CheetahRuntimeError: CheetahError {}
 
-public class CheetahActivationError : CheetahError {}
+public class CheetahActivationError: CheetahError {}
 
-public class CheetahActivationLimitError : CheetahError {}
+public class CheetahActivationLimitError: CheetahError {}
 
-public class CheetahActivationThrottledError : CheetahError {}
+public class CheetahActivationThrottledError: CheetahError {}
 
-public class CheetahActivationRefusedError : CheetahError {}
+public class CheetahActivationRefusedError: CheetahError {}

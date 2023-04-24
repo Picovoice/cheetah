@@ -13,7 +13,7 @@ import PvCheetah
 public class Cheetah {
 
     private var handle: OpaquePointer?
-    
+
     /// The number of audio samples per frame.
     public static let frameLength = UInt32(pv_cheetah_frame_length())
 
@@ -106,13 +106,15 @@ public class Cheetah {
     /// - Throws: CheetahError
     /// - Returns: Tuple of any newly-transcribed speech (if none is available then an empty string is returned) and a
     ///   flag indicating if an endpoint has been detected.
-    public func process(_ pcm:[Int16]) throws -> (String, Bool) {
+    public func process(_ pcm: [Int16]) throws -> (String, Bool) {
         if handle == nil {
             throw CheetahInvalidStateError("Cheetah must be initialized before processing")
         }
 
         if pcm.count != Cheetah.frameLength {
-            throw CheetahInvalidArgumentError("Frame of audio data must contain \(Cheetah.frameLength) samples - given frame contained \(pcm.count)")
+            throw CheetahInvalidArgumentError(
+                "Frame of audio data must contain \(Cheetah.frameLength) samples
+                 - given frame contained \(pcm.count)")
         }
 
         var cPartialTranscript: UnsafeMutablePointer<Int8>?
@@ -153,12 +155,15 @@ public class Cheetah {
     /// - Returns: The full path of the resource.
     private func getResourcePath(_ filePath: String) throws -> String {
         if let resourcePath = Bundle(for: type(of: self)).resourceURL?.appendingPathComponent(filePath).path {
-            if (FileManager.default.fileExists(atPath: resourcePath)) {
+            if FileManager.default.fileExists(atPath: resourcePath) {
                 return resourcePath
             }
         }
 
-        throw CheetahIOError("Could not find file at path '\(filePath)'. If this is a packaged asset, ensure you have added it to your xcode project.")
+        throw CheetahIOError(
+            "Could not find file at path '\(filePath)'. If this is a packaged asset,
+             ensure you have added it to your xcode project."
+        )
     }
 
     private func checkStatus(_ status: pv_status_t, _ message: String) throws {
