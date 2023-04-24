@@ -1,5 +1,5 @@
 /*
-    Copyright 2022 Picovoice Inc.
+    Copyright 2022-2023 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -95,7 +95,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean hasRecordPermission() {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) ==
+                PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestRecordPermission() {
@@ -104,7 +105,11 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(
+            int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length == 0 || grantResults[0] == PackageManager.PERMISSION_DENIED) {
             ToggleButton toggleButton = findViewById(R.id.recordButton);
@@ -149,7 +154,9 @@ public class MainActivity extends AppCompatActivity {
                 TextView transcriptTextView = findViewById(R.id.transcriptTextView);
                 transcriptTextView.append(transcript);
 
-                final int scrollAmount = transcriptTextView.getLayout().getLineTop(transcriptTextView.getLineCount()) - transcriptTextView.getHeight() + transcriptTextView.getLineHeight();
+                final int scrollAmount = transcriptTextView.getLayout().getLineTop(transcriptTextView.getLineCount()) -
+                        transcriptTextView.getHeight() +
+                        transcriptTextView.getLineHeight();
 
                 if (scrollAmount > 0) {
                     transcriptTextView.scrollTo(0, scrollAmount);
