@@ -26,12 +26,9 @@ jobs:
 
     strategy:
       matrix:
-        device: [iOS-14.5, iOS-32bit]
+        device: [ios-perf]
         include:
-        - device: iOS-14.5
-          initPerformanceThresholdSec: 1.5
-          procPerformanceThresholdSec: 0.2
-        - device: iOS-32bit
+        - device: ios-perf
           initPerformanceThresholdSec: 1.5
           procPerformanceThresholdSec: 0.2
 
@@ -63,11 +60,11 @@ jobs:
           PerformanceTest/PerformanceTest.swift
 
       - name: Inject Performance Threshold
-        run: sed -i '.bak' 's:{INIT_PERFORMANCE_THRESHOLD_SEC}:${{ matrix.indexPerformanceThresholdSec }}:'
+        run: sed -i '.bak' 's:{INIT_PERFORMANCE_THRESHOLD_SEC}:${{ matrix.initPerformanceThresholdSec }}:'
           PerformanceTest/PerformanceTest.swift
 
       - name: Inject Performance Threshold
-        run: sed -i '.bak' 's:{PROC_PERFORMANCE_THRESHOLD_SEC}:${{ matrix.searchPerformanceThresholdSec }}:'
+        run: sed -i '.bak' 's:{PROC_PERFORMANCE_THRESHOLD_SEC}:${{ matrix.procPerformanceThresholdSec }}:'
           PerformanceTest/PerformanceTest.swift
 
       - name: XCode Build
