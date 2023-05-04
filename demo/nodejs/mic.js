@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 //
-// Copyright 2022 Picovoice Inc.
+// Copyright 2022-2023 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -14,7 +14,7 @@
 const { program } = require("commander");
 const readline = require("readline");
 
-const PvRecorder = require("@picovoice/pvrecorder-node");
+const { PvRecorder } = require("@picovoice/pvrecorder-node");
 
 const { Cheetah, CheetahActivationLimitReachedError } = require("@picovoice/cheetah-node");
 
