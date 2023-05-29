@@ -28,6 +28,7 @@ export type CheetahOptions = {
 export type CheetahTranscript = {
   transcript: string;
   isEndpoint?: boolean;
+  isFlushed?: boolean;
 };
 
 export type CheetahWorkerInitRequest = {

@@ -127,7 +127,10 @@ let transcript = "";
 function transcriptCallback(cheetahTranscript: CheetahTranscript) {
   transcript += cheetahTranscript.transcript;
   if (cheetahTranscript.isEndpoint) {
-    transcript += "\n";
+    transcript += ". ";
+  }
+  if (cheetahTranscript.isFlushed) {
+    transcript += "\n"
   }
 }
 ```
