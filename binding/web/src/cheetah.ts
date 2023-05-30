@@ -302,7 +302,7 @@ export class Cheetah {
           transcript = await this.cheetahFlush();
           this._transcriptCallback({
             transcript,
-            isEndpoint: true
+            isEndpoint: true,
           });
         }
       })
@@ -328,7 +328,8 @@ export class Cheetah {
         .runExclusive(async () => await this.cheetahFlush())
         .then((transcript: string) => {
           this._transcriptCallback({
-            transcript: transcript
+            transcript: transcript,
+            isFlushed: true,
           });
           resolve();
         })

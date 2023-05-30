@@ -1,5 +1,5 @@
 /*
-  Copyright 2022 Picovoice Inc.
+  Copyright 2022-2023 Picovoice Inc.
 
   You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
   file accompanying this source.
@@ -28,6 +28,7 @@ export type CheetahOptions = {
 export type CheetahTranscript = {
   transcript: string;
   isEndpoint?: boolean;
+  isFlushed?: boolean;
 };
 
 export type CheetahWorkerInitRequest = {
