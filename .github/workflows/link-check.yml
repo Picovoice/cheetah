@@ -5,13 +5,13 @@ on:
   push:
     branches: [ master ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, 'v[0-9]+.[0-9]+' ]
 
 jobs:
   markdown-link-check:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v3
     - uses: gaurav-nelson/github-action-markdown-link-check@1.0.14
       with:
         use-quiet-mode: 'yes'

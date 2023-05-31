@@ -49,10 +49,10 @@ jobs:
           proc_performance_threshold_sec: 0.8
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up Python 3.10
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
@@ -90,7 +90,7 @@ jobs:
           proc_performance_threshold_sec: 1.9
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Machine state before
       working-directory: resources/scripts
