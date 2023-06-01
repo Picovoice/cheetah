@@ -365,7 +365,7 @@ while true {
 }
 ```
 
-Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with a custom trained model from 
+Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_FILE}` with a custom trained model from
 [Picovoice Console](https://console.picovoice.ai/) or the [default model](./lib/common/cheetah_params.pv).
 
 ### Android

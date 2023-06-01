@@ -10,7 +10,7 @@ on:
       - 'lib/wasm/**'
       - '.github/workflows/web.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ master, 'v[0-9]+.[0-9]+' ]
     paths:
       - 'binding/web/**'
       - '!binding/web/README.md'
@@ -28,18 +28,18 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
-        node-version: [lts/*]
+        node-version: [14.x, 16.x, 18.x, 20.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
 

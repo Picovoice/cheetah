@@ -3,7 +3,7 @@ name: C Demos
 on:
   workflow_dispatch:
   push:
-    branches: [master]
+    branches: [ master ]
     paths:
       - '.github/workflows/c-demos.yml'
       - 'demo/c/**'
@@ -16,7 +16,7 @@ on:
       - 'lib/raspberry-pi/**'
       - 'lib/windows/**'
   pull_request:
-    branches: [master]
+    branches: [ master, 'v[0-9]+.[0-9]+' ]
     paths:
       - '.github/workflows/c-demos.yml'
       - 'demo/c/**'
@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -60,7 +60,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -86,7 +86,7 @@ jobs:
         shell: cmd
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -113,7 +113,7 @@ jobs:
     runs-on: jetson
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -135,7 +135,7 @@ jobs:
     runs-on: rpi4-32
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -157,7 +157,7 @@ jobs:
     runs-on: rpi4-64
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -179,7 +179,7 @@ jobs:
     runs-on: rpi3-32
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -201,7 +201,7 @@ jobs:
     runs-on: rpi3-64
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 

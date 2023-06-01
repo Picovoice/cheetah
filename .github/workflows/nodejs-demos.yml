@@ -11,7 +11,7 @@ on:
       - '.github/workflows/nodejs-demos.yml'
 
   pull_request:
-    branches: [ master ]
+    branches: [ master, 'v[0-9]+.[0-9]+' ]
     paths:
       - 'demo/nodejs/**'
       - '!demo/nodejs/README.md'
@@ -29,13 +29,13 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [14.x, 16.x, 18.x, 20.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
 
@@ -56,7 +56,7 @@ jobs:
         machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Pre-build dependencies
       run: npm install --global yarn

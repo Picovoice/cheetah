@@ -8,7 +8,7 @@ on:
       - 'demo/flutter/pubspec.yaml'
       - '.github/workflows/flutter.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ master, 'v[0-9]+.[0-9]+' ]
     paths:
       - 'demo/flutter/pubspec.yaml'
       - '.github/workflows/flutter.yml'
@@ -29,10 +29,10 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Set up JDK 11
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v3
       with:
         java-version: '11'
-        distribution: 'adopt'
+        distribution: 'temurin'
 
     - name: Install Flutter ${{ matrix.flutter-version }}
       uses: subosito/flutter-action@v2
