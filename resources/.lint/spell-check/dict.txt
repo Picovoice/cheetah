@@ -31,6 +31,7 @@ instanceof
 IntelliJ
 Itertools
 Jetson
+jsbundle
 LDFLAGS
 libc
 libloading
@@ -41,6 +42,7 @@ Makefiles
 micdemo
 NETCOREAPP
 NumChans
+NSURL
 Okhttp
 pathbuf
 pico
