@@ -64,7 +64,8 @@
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [
-      "<rootDir>/lib/"
+      "<rootDir>/lib/",
+      "<rootDir>/test-app/"
     ]
   },
   "commitlint": {
@@ -109,7 +110,8 @@
   },
   "eslintIgnore": [
     "node_modules/",
-    "lib/"
+    "lib/",
+    "test-app/"
   ],
   "prettier": {
     "quoteProps": "consistent",
@@ -122,7 +124,8 @@
   "files": [
     "*",
     "!node_modules",
-    "!pkg"
+    "!pkg",
+    "!test-app"
   ],
   "react-native-builder-bob": {
     "source": "src",
