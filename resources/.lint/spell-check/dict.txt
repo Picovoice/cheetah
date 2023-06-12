@@ -8,7 +8,9 @@ Cdecl
 cheetahdemo
 cheetahfiledemo
 cheetahmicdemo
+cheetahtestapp
 cmake
+cocoapods
 codesign
 Compat
 constraintlayout
