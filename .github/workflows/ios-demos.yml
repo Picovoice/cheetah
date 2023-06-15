@@ -47,5 +47,6 @@ jobs:
           -configuration Debug
           -workspace CheetahDemo.xcworkspace
           -sdk iphoneos
+          -scheme CheetahDemo
           -derivedDataPath ddp
           CODE_SIGNING_ALLOWED=NO
