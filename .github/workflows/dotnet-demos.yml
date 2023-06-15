@@ -20,14 +20,18 @@ defaults:
     working-directory: demo/dotnet/CheetahDemo
 
 jobs:
-  build-micdemo:
-    runs-on: ubuntu-latest
+  build-github-hosted:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v3
 
     - name: Setup .NET 6.0
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
 
@@ -37,19 +41,30 @@ jobs:
     - name: Dotnet build micdemo
       run: dotnet build -c MicDemo.Release
 
-  build-filedemo:
-    runs-on: ubuntu-latest
+    - name: Dotnet build filedemo
+      run: dotnet build -c FileDemo.Release
+
+    - name: Run Dotnet filedemo
+      run: dotnet run -c FileDemo.Release -- --input_audio_path ../../../resources/audio_samples/test.wav --access_key ${{secrets.PV_VALID_ACCESS_KEY}}
+
+  build-self-hosted:
+    runs-on: ${{ matrix.machine }}
+
+    strategy:
+      matrix:
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Setup .NET 6.0
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.x
-
     - name: Package restore
       run: dotnet restore
 
+    - name: Dotnet build micdemo
+      run: dotnet build -c MicDemo.Release
+
     - name: Dotnet build filedemo
       run: dotnet build -c FileDemo.Release
+
+    - name: Run Dotnet filedemo
+      run: dotnet run -c FileDemo.Release -- --input_audio_path ../../../resources/audio_samples/test.wav --access_key ${{secrets.PV_VALID_ACCESS_KEY}}
