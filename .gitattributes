@@ -1,4 +1,5 @@
 binding/android/** linguist-detectable=false
+binding/dotnet/CheetahTest/** linguist-detectable=false
 binding/flutter/** linguist-detectable=false
 binding/ios/CheetahAppTest/** linguist-detectable=false
 binding/java/test/** linguist-detectable=false
