@@ -1,5 +1,5 @@
 //
-// Copyright 2022 Picovoice Inc.
+// Copyright 2022-2023 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -9,30 +9,31 @@
 // specific language governing permissions and limitations under the License.
 //
 
-import * as fs from "fs";
-import * as path from "path";
-import * as assert from "assert";
+import * as fs from 'fs';
+import * as path from 'path';
+import * as assert from 'assert';
 
-import PvStatus from "./pv_status_t";
+import PvStatus from './pv_status_t';
 
 import {
   CheetahInvalidArgumentError,
   CheetahInvalidStateError,
   pvStatusToException,
-} from "./errors";
+} from './errors';
 
-import {
-  CheetahOptions,
-} from "./types";
+import { CheetahOptions } from './types';
 
-import {getSystemLibraryPath} from "./platforms";
+import { getSystemLibraryPath } from './platforms';
 
-const DEFAULT_MODEL_PATH = "../lib/common/cheetah_params.pv";
+const DEFAULT_MODEL_PATH = '../lib/common/cheetah_params.pv';
 
 type CheetahHandleAndStatus = { handle: any; status: PvStatus };
 type TranscriptAndStatus = { transcript: string; status: PvStatus };
-type PartialTranscriptAndStatus = { transcript: string; is_endpoint: number, status: PvStatus };
-
+type PartialTranscriptAndStatus = {
+  transcript: string;
+  is_endpoint: number;
+  status: PvStatus;
+};
 
 /**
  * Node.js binding for Cheetah streaming speech-to-text engine
@@ -60,10 +61,8 @@ export default class Cheetah {
    * to disable endpoint detection.
    * @param {boolean} options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
    */
-  constructor(
-    accessKey: string,
-    options: CheetahOptions = {}) {
-    assert(typeof accessKey === "string");
+  constructor(accessKey: string, options: CheetahOptions = {}) {
+    assert(typeof accessKey === 'string');
     if (
       accessKey === null ||
       accessKey === undefined ||
@@ -76,7 +75,7 @@ export default class Cheetah {
       modelPath = path.resolve(__dirname, DEFAULT_MODEL_PATH),
       libraryPath = getSystemLibraryPath(),
       endpointDurationSec = 1.0,
-      enableAutomaticPunctuation = false
+      enableAutomaticPunctuation = false,
     } = options;
 
     if (endpointDurationSec < 0) {
@@ -97,7 +96,7 @@ export default class Cheetah {
       );
     }
 
-    const pvCheetah = require(libraryPath);
+    const pvCheetah = require(libraryPath); // eslint-disable-line
 
     let cheetahHandleAndStatus: CheetahHandleAndStatus | null = null;
     try {
@@ -113,7 +112,7 @@ export default class Cheetah {
 
     const status = cheetahHandleAndStatus!.status;
     if (status !== PvStatus.SUCCESS) {
-      pvStatusToException(status, "Cheetah failed to initialize");
+      pvStatusToException(status, 'Cheetah failed to initialize');
     }
 
     this._handle = cheetahHandleAndStatus!.handle;
@@ -152,7 +151,7 @@ export default class Cheetah {
    *
    * @param {Int16Array} pcm Audio data. The audio needs to have a sample rate equal to `Cheetah.sampleRate` and be 16-bit linearly-encoded.
    * The specific array length can be attained by calling `Cheetah.frameLength`. This function operates on single-channel audio.
-   * @returns {string, bool} Inferred transcription, and a flag indicating if an endpoint has been detected.
+   * @returns {string, boolean} Inferred transcription, and a flag indicating if an endpoint has been detected.
    */
   process(pcm: Int16Array): [string, boolean] {
     assert(pcm instanceof Int16Array);
@@ -162,7 +161,7 @@ export default class Cheetah {
       this._handle === null ||
       this._handle === undefined
     ) {
-      throw new CheetahInvalidStateError("Cheetah is not initialized");
+      throw new CheetahInvalidStateError('Cheetah is not initialized');
     }
 
     if (pcm === undefined || pcm === null) {
@@ -184,12 +183,12 @@ export default class Cheetah {
 
     const status = partialTranscriptAndStatus!.status;
     if (status !== PvStatus.SUCCESS) {
-      pvStatusToException(status, "Cheetah failed to process the audio frame");
+      pvStatusToException(status, 'Cheetah failed to process the audio frame');
     }
 
     return [
       partialTranscriptAndStatus!.transcript,
-      partialTranscriptAndStatus!.is_endpoint === 0 ? false : true,
+      partialTranscriptAndStatus!.is_endpoint !== 0,
     ];
   }
 
@@ -204,7 +203,7 @@ export default class Cheetah {
       this._handle === null ||
       this._handle === undefined
     ) {
-      throw new CheetahInvalidStateError("Cheetah is not initialized");
+      throw new CheetahInvalidStateError('Cheetah is not initialized');
     }
 
     let transcriptAndStatus: TranscriptAndStatus | null = null;
@@ -216,7 +215,7 @@ export default class Cheetah {
 
     const status = transcriptAndStatus!.status;
     if (status !== PvStatus.SUCCESS) {
-      pvStatusToException(status, "Cheetah failed to process the audio frame");
+      pvStatusToException(status, 'Cheetah failed to process the audio frame');
     }
 
     return transcriptAndStatus!.transcript;
@@ -228,7 +227,7 @@ export default class Cheetah {
    * Be sure to call this when finished with the instance
    * to reclaim the memory that was allocated by the C library.
    */
-  release() {
+  release(): void {
     if (this._handle !== 0) {
       try {
         this._pvCheetah.delete(this._handle);
@@ -237,7 +236,8 @@ export default class Cheetah {
       }
       this._handle = 0;
     } else {
-      console.warn("Cheetah is not initialized");
+      // eslint-disable-next-line no-console
+      console.warn('Cheetah is not initialized');
     }
   }
 }

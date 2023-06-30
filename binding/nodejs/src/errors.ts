@@ -1,5 +1,5 @@
 //
-// Copyright 2022 Picovoice Inc.
+// Copyright 2022-2023 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -8,9 +8,9 @@
 // an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 //
-"use strict";
+'use strict';
 
-import PvStatus from "./pv_status_t";
+import PvStatus from './pv_status_t';
 
 export class CheetahError extends Error {}
 
@@ -26,7 +26,10 @@ export class CheetahActivationLimitReached extends CheetahError {}
 export class CheetahActivationThrottled extends CheetahError {}
 export class CheetahActivationRefused extends CheetahError {}
 
-export function pvStatusToException(pvStatus: PvStatus, errorMessage: string) {
+export function pvStatusToException(
+  pvStatus: PvStatus,
+  errorMessage: string
+): CheetahError {
   switch (pvStatus) {
     case PvStatus.OUT_OF_MEMORY:
       throw new CheetahOutOfMemoryError(errorMessage);
@@ -51,6 +54,7 @@ export function pvStatusToException(pvStatus: PvStatus, errorMessage: string) {
     case PvStatus.ACTIVATION_REFUSED:
       throw new CheetahActivationRefused(errorMessage);
     default:
+      // eslint-disable-next-line no-console
       console.warn(`Unmapped error code: ${pvStatus}`);
       throw new CheetahError(errorMessage);
   }
