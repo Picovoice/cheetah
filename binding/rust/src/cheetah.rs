@@ -1,5 +1,5 @@
 /*
-    Copyright 2022 Picovoice Inc.
+    Copyright 2022-2023 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -103,6 +103,12 @@ pub struct CheetahBuilder {
     library_path: PathBuf,
     endpoint_duration_sec: f32,
     enable_automatic_punctuation: bool,
+}
+
+impl Default for CheetahBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl CheetahBuilder {
@@ -266,7 +272,7 @@ impl CheetahInner {
         endpoint_duration_sec: f32,
         enable_automatic_punctuation: bool,
     ) -> Result<Self, CheetahError> {
-        if access_key == "" {
+        if access_key.is_empty() {
             return Err(CheetahError::new(
                 CheetahErrorStatus::ArgumentError,
                 "AccessKey is empty",
