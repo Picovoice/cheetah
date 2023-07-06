@@ -1,5 +1,5 @@
 /*
-    Copyright 2022 Picovoice Inc.
+    Copyright 2022-2023 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -15,7 +15,6 @@ use std::sync::atomic::{AtomicBool, Ordering};
 
 use cheetah::CheetahBuilder;
 use clap::{App, Arg, ArgGroup};
-use ctrlc;
 use pv_recorder::RecorderBuilder;
 
 static RECORDING: AtomicBool = AtomicBool::new(false);

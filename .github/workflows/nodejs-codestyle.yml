@@ -1,22 +1,22 @@
-name: Web Codestyle
+name: Node.js Codestyle
 
 on:
   workflow_dispatch:
   push:
     branches: [ master ]
     paths:
-      - '**/web/*.js'
-      - '**/web/*.ts'
-      - '.github/workflows/web-codestyle.yml'
+      - '**/nodejs/*.js'
+      - '**/nodejs/*.ts'
+      - '.github/workflows/nodejs-codestyle.yml'
   pull_request:
     branches: [ master, 'v[0-9]+.[0-9]+' ]
     paths:
-      - '**/web/*.js'
-      - '**/web/*.ts'
-      - '.github/workflows/web-codestyle.yml'
+      - '**/nodejs/*.js'
+      - '**/nodejs/*.ts'
+      - '.github/workflows/nodejs-codestyle.yml'
 
 jobs:
-  check-web-codestyle:
+  check-nodejs-codestyle:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,4 +32,4 @@ jobs:
 
     - name: Run Binding Linter
       run: yarn && yarn lint
-      working-directory: binding/web
+      working-directory: binding/nodejs
