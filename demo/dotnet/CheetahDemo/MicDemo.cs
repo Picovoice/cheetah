@@ -10,7 +10,6 @@
 */
 
 using System;
-using System.Collections.Generic;
 
 using Pv;
 
@@ -43,40 +42,38 @@ namespace CheetahDemo
             int audioDeviceIndex)
         {
 
-            Cheetah cheetah = null;
-
-            cheetah = Cheetah.Create(
+            using Cheetah cheetah = Cheetah.Create(
                 accessKey: accessKey,
                 modelPath: modelPath,
                 endpointDurationSec: endpointDurationSec,
                 enableAutomaticPunctuation: enableAutomaticPunctuation);
 
-            PvRecorder recorder = PvRecorder.Create(audioDeviceIndex, cheetah.FrameLength);
-            recorder.Start();
-            List<short> audioFrame = new List<short>();
-
-
-            Console.CancelKeyPress += (s, o) =>
+            // create recorder
+            using PvRecorder recorder = PvRecorder.Create(cheetah.FrameLength, audioDeviceIndex);
+            Console.WriteLine($"Using device: {recorder.SelectedDevice}");
+            Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e)
             {
+                e.Cancel = true;
+                recorder.Stop();
                 Console.WriteLine("Stopping...");
             };
 
 
-            Console.WriteLine($"\nUsing device: {recorder.SelectedDevice}");
+            recorder.Start();
             Console.WriteLine(">>> Press `CTRL+C` to exit:\n");
 
             try
             {
-                while (true)
+                while (recorder.IsRecording)
                 {
-                    short[] pcm = recorder.Read();
+                    short[] frame = recorder.Read();
 
-                    CheetahTranscript transcriptObj = cheetah.Process(pcm);
-                    if (!String.IsNullOrEmpty(transcriptObj.Transcript))
+                    CheetahTranscript result = cheetah.Process(frame);
+                    if (!string.IsNullOrEmpty(result.Transcript))
                     {
-                        Console.Write(transcriptObj.Transcript);
+                        Console.Write(result.Transcript);
                     }
-                    if (transcriptObj.IsEndpoint)
+                    if (result.IsEndpoint)
                     {
                         CheetahTranscript finalTranscriptObj = cheetah.Flush();
                         Console.WriteLine(finalTranscriptObj.Transcript);
@@ -88,12 +85,6 @@ namespace CheetahDemo
             {
                 Console.WriteLine($"AccessKey '{accessKey}' has reached its processing limit.");
             }
-            finally
-            {
-                cheetah.Dispose();
-                recorder.Dispose();
-            }
-
         }
 
         /// <summary>
@@ -101,7 +92,7 @@ namespace CheetahDemo
         /// </summary>
         public static void ShowAudioDevices()
         {
-            string[] devices = PvRecorder.GetAudioDevices();
+            string[] devices = PvRecorder.GetAvailableDevices();
             for (int i = 0; i < devices.Length; i++)
             {
                 Console.WriteLine($"index: {i}, device name: {devices[i]}");
