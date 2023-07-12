@@ -1,4 +1,4 @@
-// Copyright 2022 Picovoice Inc.
+// Copyright 2022-2023 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is
 // located in the "LICENSE" file accompanying this source.
@@ -19,7 +19,7 @@ import (
 	"path/filepath"
 
 	cheetah "github.com/Picovoice/cheetah/binding/go"
-	pvrecorder "github.com/Picovoice/pvrecorder/sdk/go"
+	pvrecorder "github.com/Picovoice/pvrecorder/binding/go"
 	"github.com/go-audio/wav"
 )
 
@@ -89,12 +89,8 @@ func main() {
 		defer outputWav.Close()
 	}
 
-	recorder := pvrecorder.PvRecorder{
-		DeviceIndex:    *audioDeviceIndex,
-		FrameLength:    cheetah.FrameLength,
-		BufferSizeMSec: 1000,
-		LogOverflow:    0,
-	}
+	recorder := pvrecorder.NewPvRecorder(cheetah.FrameLength)
+	recorder.DeviceIndex = *audioDeviceIndex
 
 	if err := recorder.Init(); err != nil {
 		log.Fatalf("Error: %s.\n", err.Error())
@@ -160,7 +156,7 @@ waitLoop:
 }
 
 func printAudioDevices() {
-	if devices, err := pvrecorder.GetAudioDevices(); err != nil {
+	if devices, err := pvrecorder.GetAvailableDevices(); err != nil {
 		log.Fatalf("Error: %s.\n", err.Error())
 	} else {
 		for i, device := range devices {

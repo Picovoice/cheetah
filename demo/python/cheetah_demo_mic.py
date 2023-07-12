@@ -40,8 +40,12 @@ def main():
     args = parser.parse_args()
 
     if args.show_audio_devices:
-        for index, name in enumerate(PvRecorder.get_audio_devices()):
+        for index, name in enumerate(PvRecorder.get_available_devices()):
             print('Device #%d: %s' % (index, name))
+        return
+
+    if not args.access_key:
+        print('--access_key is required.')
         return
 
     cheetah = create(
@@ -54,7 +58,7 @@ def main():
     try:
         print('Cheetah version : %s' % cheetah.version)
 
-        recorder = PvRecorder(device_index=-1, frame_length=cheetah.frame_length)
+        recorder = PvRecorder(frame_length=cheetah.frame_length, device_index=args.audio_device_index)
         recorder.start()
         print('Listening... (press Ctrl+C to stop)')
 
