@@ -47,7 +47,7 @@ namespace CheetahDemo
                 modelPath: modelPath,
                 endpointDurationSec: endpointDurationSec,
                 enableAutomaticPunctuation: enableAutomaticPunctuation);
-                        
+
             // create recorder
             using PvRecorder recorder = PvRecorder.Create(cheetah.FrameLength, audioDeviceIndex);
             Console.WriteLine($"Using device: {recorder.SelectedDevice}");
