@@ -43,7 +43,7 @@ def main():
         for index, name in enumerate(PvRecorder.get_available_devices()):
             print('Device #%d: %s' % (index, name))
         return
-    
+
     if not args.access_key:
         print('--access_key is required.')
         return
