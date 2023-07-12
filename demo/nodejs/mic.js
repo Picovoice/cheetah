@@ -62,7 +62,7 @@ async function micDemo() {
   let showAudioDevicesDefined = showAudioDevices !== undefined;
 
   if (showAudioDevicesDefined) {
-    const devices = PvRecorder.getAudioDevices();
+    const devices = PvRecorder.getAvailableDevices();
     for (let i = 0; i < devices.length; i++) {
       console.log(`index: ${i}, device name: ${devices[i]}`);
     }
@@ -83,7 +83,7 @@ async function micDemo() {
       enableAutomaticPunctuation: !disableAutomaticPunctuation
     });
 
-  const recorder = new PvRecorder(audioDeviceIndex, engineInstance.frameLength);
+  const recorder = new PvRecorder(engineInstance.frameLength, audioDeviceIndex);
   recorder.start();
 
   console.log(`Using device: ${recorder.getSelectedDevice()}`);
