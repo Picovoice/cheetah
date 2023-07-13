@@ -15,7 +15,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 
 use cheetah::CheetahBuilder;
 use clap::{App, Arg, ArgGroup};
-use pv_recorder::RecorderBuilder;
+use pv_recorder::PvRecorderBuilder;
 
 static RECORDING: AtomicBool = AtomicBool::new(false);
 
@@ -39,9 +39,8 @@ fn cheetah_demo(
         .init()
         .expect("Failed to create Cheetah");
 
-    let recorder = RecorderBuilder::new()
+    let recorder = PvRecorderBuilder::new(cheetah.frame_length() as i32)
         .device_index(audio_device_index)
-        .frame_length(cheetah.frame_length() as i32)
         .init()
         .expect("Failed to initialize pvrecorder");
 
@@ -55,10 +54,8 @@ fn cheetah_demo(
     RECORDING.store(true, Ordering::SeqCst);
     recorder.start().expect("Failed to start audio recording");
     while RECORDING.load(Ordering::SeqCst) {
-        let mut pcm = vec![0; recorder.frame_length()];
-        recorder.read(&mut pcm).expect("Failed to read audio frame");
-
-        let partial_transcript = cheetah.process(&pcm).unwrap();
+        let frame = recorder.read().expect("Failed to read audio frame");
+        let partial_transcript = cheetah.process(&frame).unwrap();
         print!("{}", partial_transcript.transcript);
         stdout().flush().expect("Failed to flush");
         if partial_transcript.is_endpoint {
@@ -72,10 +69,7 @@ fn cheetah_demo(
 }
 
 fn show_audio_devices() {
-    let audio_devices = RecorderBuilder::new()
-        .init()
-        .expect("Failed to initialize pvrecorder")
-        .get_audio_devices();
+    let audio_devices = PvRecorderBuilder::default().get_available_devices();
     match audio_devices {
         Ok(audio_devices) => {
             for (idx, device) in audio_devices.iter().enumerate() {
