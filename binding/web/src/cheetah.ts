@@ -313,18 +313,7 @@ export class Cheetah {
         }
       })
       .catch(async (error: any) => {
-        if (this._memoryBuffer.length === 0) {
-          this._isDetached = true;
-          await this.release();
-          if (this._processErrorCallback) {
-            this._processErrorCallback(new Error("Cheetah resources has been automatically cleaned by the browser."));
-          }
-        } else if (this._processErrorCallback) {
-          this._processErrorCallback(error);
-        } else {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        }
+        await this._errorHandler(error);
       });
   }
 
@@ -340,7 +329,7 @@ export class Cheetah {
     }
 
     // eslint-disable-next-line consistent-return
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<void>((resolve) => {
       this._processMutex
         .runExclusive(async () => await this.cheetahFlush())
         .then((transcript: string) => {
@@ -351,14 +340,8 @@ export class Cheetah {
           resolve();
         })
         .catch(async (error: any) => {
-          if (this._memoryBuffer.length === 0) {
-            this._isDetached = true;
-            await this.release();
-            if (this._processErrorCallback) {
-              this._processErrorCallback(new Error("Cheetah resources has been automatically cleaned by the browser."));
-            }
-          }
-          reject(error);
+          await this._errorHandler(error);
+          resolve();
         });
     });
   }
@@ -417,6 +400,21 @@ export class Cheetah {
       default:
         // eslint-disable-next-line no-console
         console.warn(`Unrecognized command: ${e.data.command}`);
+    }
+  }
+
+  private async _errorHandler(error: Error): Promise<void> {
+    if (this._memoryBuffer.length === 0) {
+      this._isDetached = true;
+      await this.release();
+      if (this._processErrorCallback) {
+        this._processErrorCallback(new Error("Cheetah resources has been automatically cleaned by the browser."));
+      }
+    } else if (this._processErrorCallback) {
+      this._processErrorCallback(error);
+    } else {
+      // eslint-disable-next-line no-console
+      console.error(error);
     }
   }
 
