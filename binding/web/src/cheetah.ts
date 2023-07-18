@@ -350,7 +350,14 @@ export class Cheetah {
           });
           resolve();
         })
-        .catch((error: any) => {
+        .catch(async (error: any) => {
+          if (this._memoryBuffer.length === 0) {
+            this._isDetached = true;
+            await this.release();
+            if (this._processErrorCallback) {
+              this._processErrorCallback(new Error("Cheetah resources has been automatically cleaned by the browser."));
+            }
+          }
           reject(error);
         });
     });
