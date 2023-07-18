@@ -89,6 +89,8 @@ export class Cheetah {
 
   private static _cheetahMutex = new Mutex();
 
+  private _isWasmMemoryDetached: boolean = false;
+
   private readonly _transcriptCallback: (cheetahTranscript: CheetahTranscript) => void;
   private readonly _processErrorCallback?: (error: string) => void;
 
@@ -244,6 +246,10 @@ export class Cheetah {
    * @param pcm A frame of audio with properties described above.
    */
   public async process(pcm: Int16Array): Promise<void> {
+    if (this._isWasmMemoryDetached) {
+      return;
+    }
+
     if (!(pcm instanceof Int16Array)) {
       const error = new Error('The argument \'pcm\' must be provided as an Int16Array');
       if (this._processErrorCallback) {
@@ -306,13 +312,8 @@ export class Cheetah {
           });
         }
       })
-      .catch((error: any) => {
-        if (this._processErrorCallback) {
-          this._processErrorCallback(error.toString());
-        } else {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        }
+      .catch(async (error: any) => {
+        await this._errorHandler(error);
       });
   }
 
@@ -323,7 +324,12 @@ export class Cheetah {
    * @return Any remaining transcribed text. If none is available then an empty string is returned.
    */
   public async flush(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
+    if (this._isWasmMemoryDetached) {
+      return;
+    }
+
+    // eslint-disable-next-line consistent-return
+    return new Promise<void>((resolve) => {
       this._processMutex
         .runExclusive(async () => await this.cheetahFlush())
         .then((transcript: string) => {
@@ -333,8 +339,9 @@ export class Cheetah {
           });
           resolve();
         })
-        .catch((error: any) => {
-          reject(error);
+        .catch(async (error: any) => {
+          await this._errorHandler(error);
+          resolve();
         });
     });
   }
@@ -393,6 +400,21 @@ export class Cheetah {
       default:
         // eslint-disable-next-line no-console
         console.warn(`Unrecognized command: ${e.data.command}`);
+    }
+  }
+
+  private async _errorHandler(error: Error): Promise<void> {
+    if (this._memoryBuffer.length === 0) {
+      this._isWasmMemoryDetached = true;
+      await this.release();
+      if (this._processErrorCallback) {
+        this._processErrorCallback("Invalid memory state: browser might have cleaned resources automatically. Re-initialize Cheetah.");
+      }
+    } else if (this._processErrorCallback) {
+      this._processErrorCallback(error.toString());
+    } else {
+      // eslint-disable-next-line no-console
+      console.error(error);
     }
   }
 
