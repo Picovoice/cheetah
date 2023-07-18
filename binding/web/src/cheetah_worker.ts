@@ -135,7 +135,7 @@ export class CheetahWorker {
                 case 'failed':
                 case 'error':
                   if (processErrorCallback) {
-                    processErrorCallback(ev.data.message);
+                    processErrorCallback(new Error(ev.data.message));
                   } else {
                     // eslint-disable-next-line no-console
                     console.error(ev.data.message);

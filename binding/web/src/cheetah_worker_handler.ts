@@ -24,7 +24,7 @@ const transcriptCallback = (cheetahTranscript: CheetahTranscript): void => {
   });
 };
 
-const processErrorCallback = (error: string): void => {
+const processErrorCallback = (error: Error): void => {
   self.postMessage({
     command: 'error',
     message: error,

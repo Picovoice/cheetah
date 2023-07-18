@@ -89,15 +89,17 @@ export class Cheetah {
 
   private static _cheetahMutex = new Mutex();
 
+  private _isDetached: boolean = false;
+
   private readonly _transcriptCallback: (cheetahTranscript: CheetahTranscript) => void;
-  private readonly _processErrorCallback?: (error: string) => void;
+  private readonly _processErrorCallback?: (error: Error) => void;
 
   private readonly _pvError: PvError;
 
   private constructor(
     handleWasm: CheetahWasmOutput,
     transcriptCallback: (cheetahTranscript: CheetahTranscript) => void,
-    processErrorCallback?: (error: string) => void,
+    processErrorCallback?: (error: Error) => void,
   ) {
     Cheetah._frameLength = handleWasm.frameLength;
     Cheetah._sampleRate = handleWasm.sampleRate;
@@ -244,10 +246,14 @@ export class Cheetah {
    * @param pcm A frame of audio with properties described above.
    */
   public async process(pcm: Int16Array): Promise<void> {
+    if (this._isDetached) {
+      return;
+    }
+
     if (!(pcm instanceof Int16Array)) {
       const error = new Error('The argument \'pcm\' must be provided as an Int16Array');
       if (this._processErrorCallback) {
-        this._processErrorCallback(error.toString());
+        this._processErrorCallback(error);
       } else {
         // eslint-disable-next-line no-console
         console.error(error);
@@ -306,9 +312,15 @@ export class Cheetah {
           });
         }
       })
-      .catch((error: any) => {
-        if (this._processErrorCallback) {
-          this._processErrorCallback(error.toString());
+      .catch(async (error: any) => {
+        if (this._memoryBuffer.length === 0) {
+          this._isDetached = true;
+          await this.release();
+          if (this._processErrorCallback) {
+            this._processErrorCallback(new Error("Cheetah resources has been automatically cleaned by the browser."));
+          }
+        } else if (this._processErrorCallback) {
+          this._processErrorCallback(error);
         } else {
           // eslint-disable-next-line no-console
           console.error(error);
@@ -323,6 +335,11 @@ export class Cheetah {
    * @return Any remaining transcribed text. If none is available then an empty string is returned.
    */
   public async flush(): Promise<void> {
+    if (this._isDetached) {
+      return;
+    }
+
+    // eslint-disable-next-line consistent-return
     return new Promise<void>((resolve, reject) => {
       this._processMutex
         .runExclusive(async () => await this.cheetahFlush())
