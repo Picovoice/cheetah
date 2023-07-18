@@ -22,7 +22,7 @@ export type CheetahOptions = {
   /** @defaultValue false */
   enableAutomaticPunctuation?: boolean;
   /** @defaultValue undefined */
-  processErrorCallback?: (error: Error) => void
+  processErrorCallback?: (error: string) => void
 };
 
 export type CheetahTranscript = {
