@@ -408,7 +408,7 @@ export class Cheetah {
       this._isDetached = true;
       await this.release();
       if (this._processErrorCallback) {
-        this._processErrorCallback(new Error("Cheetah resources has been automatically cleaned by the browser."));
+        this._processErrorCallback(new Error("Invalid memory state: browser might have cleaned resources automatically. Re-initialize Cheetah."));
       }
     } else if (this._processErrorCallback) {
       this._processErrorCallback(error);
