@@ -70,10 +70,8 @@ export class Cheetah {
   private readonly _pvStatusToString: pv_status_to_string_type;
 
   private _wasmMemory: WebAssembly.Memory | undefined;
+
   private readonly _pvFree: pv_free_type;
-  private readonly _memoryBuffer: Int16Array;
-  private readonly _memoryBufferUint8: Uint8Array;
-  private readonly _memoryBufferView: DataView;
   private readonly _processMutex: Mutex;
 
   private readonly _objectAddress: number;
@@ -88,8 +86,6 @@ export class Cheetah {
   private static _wasmSimd: string;
 
   private static _cheetahMutex = new Mutex();
-
-  private _isWasmMemoryDetached: boolean = false;
 
   private readonly _transcriptCallback: (cheetahTranscript: CheetahTranscript) => void;
   private readonly _processErrorCallback?: (error: string) => void;
@@ -116,10 +112,6 @@ export class Cheetah {
     this._inputBufferAddress = handleWasm.inputBufferAddress;
     this._isEndpointAddress = handleWasm.isEndpointAddress;
     this._transcriptAddressAddress = handleWasm.transcriptAddressAddress;
-
-    this._memoryBuffer = new Int16Array(handleWasm.memory.buffer);
-    this._memoryBufferUint8 = new Uint8Array(handleWasm.memory.buffer);
-    this._memoryBufferView = new DataView(handleWasm.memory.buffer);
 
     this._pvError = handleWasm.pvError;
     this._processMutex = new Mutex();
@@ -246,10 +238,6 @@ export class Cheetah {
    * @param pcm A frame of audio with properties described above.
    */
   public async process(pcm: Int16Array): Promise<void> {
-    if (this._isWasmMemoryDetached) {
-      return;
-    }
-
     if (!(pcm instanceof Int16Array)) {
       const error = new Error('The argument \'pcm\' must be provided as an Int16Array');
       if (this._processErrorCallback) {
@@ -266,7 +254,9 @@ export class Cheetah {
           throw new Error('Attempted to call Cheetah process after release.');
         }
 
-        this._memoryBuffer.set(
+        const memoryBuffer = new Int16Array(this._wasmMemory.buffer);
+
+        memoryBuffer.set(
           pcm,
           this._inputBufferAddress / Int16Array.BYTES_PER_ELEMENT,
         );
@@ -277,10 +267,14 @@ export class Cheetah {
           this._transcriptAddressAddress,
           this._isEndpointAddress,
         );
+
+        // Important that these get initialized after await so `_wasmMemory` is unchanged.
+        const memoryBufferUint8 = new Uint8Array(this._wasmMemory.buffer);
+        const memoryBufferView = new DataView(this._wasmMemory.buffer);
+
         if (status !== PV_STATUS_SUCCESS) {
-          const memoryBuffer = new Uint8Array(this._wasmMemory.buffer);
           const msg = `process failed with status ${arrayBufferToStringAtIndex(
-            memoryBuffer,
+            memoryBufferUint8,
             await this._pvStatusToString(status),
           )}`;
 
@@ -289,15 +283,15 @@ export class Cheetah {
           );
         }
 
-        const isEndpoint = this._memoryBufferView.getUint8(this._isEndpointAddress) === 1;
+        const isEndpoint = memoryBufferView.getUint8(this._isEndpointAddress) === 1;
 
-        const transcriptAddress = this._memoryBufferView.getInt32(
+        const transcriptAddress = memoryBufferView.getInt32(
           this._transcriptAddressAddress,
           true,
         );
 
         let transcript = arrayBufferToStringAtIndex(
-          this._memoryBufferUint8,
+          memoryBufferUint8,
           transcriptAddress,
         );
         await this._pvFree(transcriptAddress);
@@ -313,7 +307,12 @@ export class Cheetah {
         }
       })
       .catch(async (error: any) => {
-        await this._errorHandler(error);
+        if (this._processErrorCallback) {
+          this._processErrorCallback(error.toString());
+        } else {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        }
       });
   }
 
@@ -324,12 +323,8 @@ export class Cheetah {
    * @return Any remaining transcribed text. If none is available then an empty string is returned.
    */
   public async flush(): Promise<void> {
-    if (this._isWasmMemoryDetached) {
-      return;
-    }
-
     // eslint-disable-next-line consistent-return
-    return new Promise<void>((resolve) => {
+    return new Promise<void>((resolve, reject) => {
       this._processMutex
         .runExclusive(async () => await this.cheetahFlush())
         .then((transcript: string) => {
@@ -340,8 +335,7 @@ export class Cheetah {
           resolve();
         })
         .catch(async (error: any) => {
-          await this._errorHandler(error);
-          resolve();
+          reject(error);
         });
     });
   }
@@ -356,10 +350,12 @@ export class Cheetah {
       this._transcriptAddressAddress,
     );
 
+    const memoryBufferUint8 = new Uint8Array(this._wasmMemory.buffer);
+    const memoryBufferView = new DataView(this._wasmMemory.buffer);
+
     if (status !== PV_STATUS_SUCCESS) {
-      const memoryBuffer = new Uint8Array(this._wasmMemory.buffer);
       const msg = `flush failed with status ${arrayBufferToStringAtIndex(
-        memoryBuffer,
+        memoryBufferUint8,
         await this._pvStatusToString(status),
       )}`;
 
@@ -368,13 +364,13 @@ export class Cheetah {
       );
     }
 
-    const transcriptAddress = this._memoryBufferView.getInt32(
+    const transcriptAddress = memoryBufferView.getInt32(
       this._transcriptAddressAddress,
       true,
     );
 
     const transcript = arrayBufferToStringAtIndex(
-      this._memoryBufferUint8,
+      memoryBufferUint8,
       transcriptAddress,
     );
     await this._pvFree(transcriptAddress);
@@ -400,21 +396,6 @@ export class Cheetah {
       default:
         // eslint-disable-next-line no-console
         console.warn(`Unrecognized command: ${e.data.command}`);
-    }
-  }
-
-  private async _errorHandler(error: Error): Promise<void> {
-    if (this._memoryBuffer.length === 0) {
-      this._isWasmMemoryDetached = true;
-      await this.release();
-      if (this._processErrorCallback) {
-        this._processErrorCallback("Invalid memory state: browser might have cleaned resources automatically. Re-initialize Cheetah.");
-      }
-    } else if (this._processErrorCallback) {
-      this._processErrorCallback(error.toString());
-    } else {
-      // eslint-disable-next-line no-console
-      console.error(error);
     }
   }
 
