@@ -115,8 +115,9 @@ void main() {
       String partialTranscript = "";
       List<int> pcm = await loadAudioFile(audioFile);
 
-      for (var i = 0; i < pcm.length; i += cheetah.frameLength) {
-        CheetahTranscript res = await cheetah.process(pcm);
+      final int frameLength = cheetah.frameLength;
+      for (var i = 0; i < (pcm.length - frameLength); i += frameLength) {
+        CheetahTranscript res = await cheetah.process(pcm.sublist(i, i + frameLength));
         partialTranscript += res.transcript;
       }
       CheetahTranscript res = await cheetah.flush();
