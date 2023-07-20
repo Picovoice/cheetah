@@ -15,11 +15,7 @@ package ai.picovoice.cheetahdemo;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Process;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.TextView;
@@ -29,10 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
-
+import ai.picovoice.android.voiceprocessor.VoiceProcessor;
+import ai.picovoice.android.voiceprocessor.VoiceProcessorException;
 import ai.picovoice.cheetah.Cheetah;
 import ai.picovoice.cheetah.CheetahActivationException;
 import ai.picovoice.cheetah.CheetahActivationLimitException;
@@ -44,9 +38,11 @@ import ai.picovoice.cheetah.CheetahTranscript;
 
 public class MainActivity extends AppCompatActivity {
     private static final String ACCESS_KEY = "${YOUR_ACCESS_KEY_HERE}";
+
     private static final String MODEL_FILE = "cheetah_params.pv";
 
-    private final MicrophoneReader microphoneReader = new MicrophoneReader();
+    private final VoiceProcessor voiceProcessor = VoiceProcessor.getInstance();
+
     public Cheetah cheetah;
 
     @Override
@@ -77,6 +73,24 @@ public class MainActivity extends AppCompatActivity {
         } catch (CheetahException e) {
             displayError("Failed to initialize Cheetah " + e.getMessage());
         }
+
+        voiceProcessor.addFrameListener(frame -> {
+            try {
+                final CheetahTranscript partialResult = cheetah.process(frame);
+                updateTranscriptView(partialResult.getTranscript());
+
+                if (partialResult.getIsEndpoint()) {
+                    final CheetahTranscript finalResult = cheetah.flush();
+                    updateTranscriptView(finalResult.getTranscript() + " ");
+                }
+            } catch (CheetahException e) {
+                runOnUiThread(() -> displayError(e.toString()));
+            }
+        });
+
+        voiceProcessor.addErrorListener(error -> {
+            runOnUiThread(() -> displayError(error.toString()));
+        });
     }
 
     @Override
@@ -94,13 +108,11 @@ public class MainActivity extends AppCompatActivity {
         recordButton.setEnabled(false);
     }
 
-    private boolean hasRecordPermission() {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) ==
-                PackageManager.PERMISSION_GRANTED;
-    }
-
     private void requestRecordPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 0);
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.RECORD_AUDIO},
+                0);
     }
 
     @SuppressLint("SetTextI18n")
@@ -117,7 +129,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             TextView recordingTextView = findViewById(R.id.recordingTextView);
             recordingTextView.setText("Recording...");
-            microphoneReader.start();
+            try {
+                voiceProcessor.start(cheetah.getFrameLength(), cheetah.getSampleRate());
+            } catch (VoiceProcessorException e) {
+                displayError(e.toString());
+            }
         }
     }
 
@@ -133,18 +149,20 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             if (recordButton.isChecked()) {
-                if (hasRecordPermission()) {
+                if (voiceProcessor.hasRecordAudioPermission(this)) {
                     recordingTextView.setText("Recording...");
-                    microphoneReader.start();
+                    voiceProcessor.start(cheetah.getFrameLength(), cheetah.getSampleRate());
                 } else {
                     requestRecordPermission();
                 }
             } else {
                 recordingTextView.setText("");
-                microphoneReader.stop();
+                voiceProcessor.stop();
+                final CheetahTranscript result = cheetah.flush();
+                updateTranscriptView(result.getTranscript() + " ");
             }
-        } catch (InterruptedException e) {
-            displayError("Audio stop command interrupted\n" + e);
+        } catch (VoiceProcessorException | CheetahException e) {
+            displayError(e.toString());
         }
     }
 
@@ -163,92 +181,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private class MicrophoneReader {
-        private final AtomicBoolean started = new AtomicBoolean(false);
-        private final AtomicBoolean stop = new AtomicBoolean(false);
-        private final AtomicBoolean stopped = new AtomicBoolean(false);
-
-        void start() {
-            if (started.get()) {
-                return;
-            }
-
-            started.set(true);
-
-            Executors.newSingleThreadExecutor().submit((Callable<Void>) () -> {
-                Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_AUDIO);
-                read();
-                return null;
-            });
-        }
-
-        void stop() throws InterruptedException {
-            if (!started.get()) {
-                return;
-            }
-
-            stop.set(true);
-
-            synchronized (stopped) {
-                while (!stopped.get()) {
-                    stopped.wait(500);
-                }
-            }
-
-            started.set(false);
-            stop.set(false);
-            stopped.set(false);
-        }
-
-        private void read() throws CheetahException {
-            final int minBufferSize = AudioRecord.getMinBufferSize(
-                    cheetah.getSampleRate(),
-                    AudioFormat.CHANNEL_IN_MONO,
-                    AudioFormat.ENCODING_PCM_16BIT);
-            final int bufferSize = Math.max(cheetah.getSampleRate() / 2, minBufferSize);
-
-            AudioRecord audioRecord = null;
-
-            short[] buffer = new short[cheetah.getFrameLength()];
-
-            try {
-                audioRecord = new AudioRecord(
-                        MediaRecorder.AudioSource.MIC,
-                        cheetah.getSampleRate(),
-                        AudioFormat.CHANNEL_IN_MONO,
-                        AudioFormat.ENCODING_PCM_16BIT,
-                        bufferSize);
-                audioRecord.startRecording();
-
-
-                while (!stop.get()) {
-                    if (audioRecord.read(buffer, 0, buffer.length) == buffer.length) {
-                        CheetahTranscript transcriptObj = cheetah.process(buffer);
-                        updateTranscriptView(transcriptObj.getTranscript());
-
-                        if (transcriptObj.getIsEndpoint()) {
-                            transcriptObj = cheetah.flush();
-                            updateTranscriptView(transcriptObj.getTranscript() + " ");
-                        }
-                    }
-                }
-
-                final CheetahTranscript transcriptObj = cheetah.flush();
-                updateTranscriptView(transcriptObj.getTranscript());
-
-                audioRecord.stop();
-            } catch (IllegalArgumentException | IllegalStateException | SecurityException e) {
-                throw new CheetahException(e);
-            } finally {
-                if (audioRecord != null) {
-                    audioRecord.release();
-                }
-
-                stopped.set(true);
-                stopped.notifyAll();
-            }
-        }
     }
 }
