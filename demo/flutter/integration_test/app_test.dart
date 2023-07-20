@@ -1,5 +1,4 @@
-import 'dart:convert';
-import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart' show rootBundle;
@@ -9,23 +8,18 @@ import 'package:integration_test/integration_test.dart';
 import 'package:cheetah_flutter/cheetah.dart';
 import 'package:cheetah_flutter/cheetah_error.dart';
 
-const testParam = {
-  language: 'en',
-  audio_file: 'test.wav',
-  transcript: 'Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.',
-  punctuations: ['.'],
-  error_rate: 0.025,
+Map testParam = {
+  'language': 'en',
+  'audio_file': 'test.wav',
+  'transcript': 'Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.',
+  'punctuations': ['.'],
+  'error_rate': 0.025,
 };
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   final String accessKey = "{TESTING_ACCESS_KEY_HERE}";
-  final String platform = Platform.isAndroid
-      ? "android"
-      : Platform.isIOS
-          ? "ios"
-          : throw ("Unsupported platform");
 
   String getModelPath(String language) {
     return "assets/test_resources/model_files/cheetah_params${language != "en" ? "_$language" : ""}.pv";
@@ -112,19 +106,19 @@ void main() {
         return;
       }
 
-      String transcript = "";
+      String partialTranscript = "";
       List<int> pcm = await loadAudioFile(audioFile);
 
       for (var i = 0; i < pcm.length; i += cheetah.frameLength) {
         CheetahTranscript res = await cheetah.process(pcm);
-        transcript += res.transcript;
+        partialTranscript += res.transcript;
       }
       CheetahTranscript res = await cheetah.flush();
-      transcript += res.transcript;
+      partialTranscript += res.transcript;
 
       cheetah.delete();
 
-      expect(characterErrorRate(transcript, normTranscript),
+      expect(characterErrorRate(partialTranscript, normTranscript),
           lessThanOrEqualTo(errorRate),
           reason: "Character error rate was incorrect");
     }
