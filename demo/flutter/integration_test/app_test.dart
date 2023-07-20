@@ -105,7 +105,7 @@ void main() {
       Cheetah cheetah;
       try {
         cheetah = await Cheetah.create(accessKey, modelPath,
-            enableAutomaticPunctuation: testPunctuations);
+            {enableAutomaticPunctuation: testPunctuations});
       } on CheetahException catch (ex) {
         expect(ex, equals(null),
             reason: "Failed to initialize Cheetah: $ex");
@@ -140,6 +140,19 @@ void main() {
 
       await runCheetahProcess(
           language, transcript, punctuations, false, errorRate, audioFile);
+    });
+
+    testWidgets('Test Process with Punctuation', (tester) async {
+      String language = testParam['language'];
+      String transcript = testParam['transcript'];
+      List<dynamic> punctuationsRaw = testParam['punctuations'];
+      List<String> punctuations =
+          punctuationsRaw.map((p) => p.toString()).toList();
+      double errorRate = testParam['error_rate'];
+      String audioFile = testParam['audio_file'];
+
+      await runCheetahProcess(
+          language, transcript, punctuations, true, errorRate, audioFile);
     });
   });
 }
