@@ -38,6 +38,7 @@ import ai.picovoice.cheetah.CheetahTranscript;
 
 public class MainActivity extends AppCompatActivity {
     private static final String ACCESS_KEY = "${YOUR_ACCESS_KEY_HERE}";
+
     private static final String MODEL_FILE = "cheetah_params.pv";
 
     private final VoiceProcessor voiceProcessor = VoiceProcessor.getInstance();

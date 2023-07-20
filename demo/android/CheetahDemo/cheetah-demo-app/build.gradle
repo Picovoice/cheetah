@@ -67,7 +67,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'ai.picovoice:cheetah-android:1.1.2'
-    implementation 'ai.picovoice:android-voice-processor:1.0.1'
+    implementation 'ai.picovoice:android-voice-processor:1.0.2'
 
     // Espresso UI Testing
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
