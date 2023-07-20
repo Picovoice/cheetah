@@ -25,7 +25,13 @@ void main() {
     return "assets/test_resources/model_files/cheetah_params${language != "en" ? "_$language" : ""}.pv";
   }
 
-  Future<List<int>> loadAudioFile(String audioPath) async {
+  String getAudioPath(String audioFile) {
+    return "assets/test_resources/audio_samples/$audioFile";
+  }
+
+  Future<List<int>> loadAudioFile(String audioFile) async {
+    String audioPath = getAudioPath(audioFile);
+
     List<int> pcm = [];
     var audioFileData = await rootBundle.load(audioPath);
     for (int i = 44; i < audioFileData.lengthInBytes; i += 2) {
