@@ -67,6 +67,7 @@ signup
 stdbool
 stdint
 stdlib
+sublist
 tmpdir
 uppercased
 vtable
