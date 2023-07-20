@@ -27,3 +27,6 @@ flutter:
   assets:
     - assets/models/android/cheetah_params.pv
     - assets/models/ios/cheetah_params.pv
+    - assets/test_resources/
+    - assets/test_resources/audio_samples/
+    - assets/test_resources/model_files/
