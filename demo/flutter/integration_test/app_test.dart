@@ -105,7 +105,7 @@ void main() {
       Cheetah cheetah;
       try {
         cheetah = await Cheetah.create(accessKey, modelPath,
-            {enableAutomaticPunctuation: testPunctuations});
+            enableAutomaticPunctuation: testPunctuations);
       } on CheetahException catch (ex) {
         expect(ex, equals(null),
             reason: "Failed to initialize Cheetah: $ex");
