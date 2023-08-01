@@ -45,10 +45,10 @@ class ViewModel: ObservableObject {
                     accessKey: ACCESS_KEY,
                     modelPath: modelPath,
                     enableAutomaticPunctuation: true)
-            
+
             VoiceProcessor.instance.addFrameListener(VoiceProcessorFrameListener(audioCallback))
             VoiceProcessor.instance.addErrorListener(VoiceProcessorErrorListener(errorCallback))
-            
+
             state = UIState.READY
         } catch let error as CheetahInvalidArgumentError {
             errorMessage = "\(error.localizedDescription)\nEnsure your AccessKey '\(ACCESS_KEY)' is valid."
@@ -85,8 +85,7 @@ class ViewModel: ObservableObject {
             try VoiceProcessor.instance.stop()
             state = UIState.FINALIZED
             isListening = false
-        }
-        catch {
+        } catch {
             errorMessage = "\(error.localizedDescription)"
         }
     }
@@ -129,7 +128,7 @@ class ViewModel: ObservableObject {
     public func setAutoScroll(_ value: Bool) {
         autoScroll = value
     }
-    
+
     private func audioCallback(frame: [Int16]) {
         guard let cheetah = self.cheetah else {
             return
@@ -151,7 +150,7 @@ class ViewModel: ObservableObject {
             }
         }
     }
-    
+
     private func errorCallback(error: VoiceProcessorError) {
         DispatchQueue.main.async {
             self.errorMessage = "\(error)"
