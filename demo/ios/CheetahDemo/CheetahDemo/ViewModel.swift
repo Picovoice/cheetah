@@ -1,5 +1,5 @@
 //
-//  Copyright 2022 Picovoice Inc.
+//  Copyright 2023 Picovoice Inc.
 //  You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 //  file accompanying this source.
 //  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
@@ -45,6 +45,10 @@ class ViewModel: ObservableObject {
                     accessKey: ACCESS_KEY,
                     modelPath: modelPath,
                     enableAutomaticPunctuation: true)
+            
+            VoiceProcessor.instance.addFrameListener(VoiceProcessorFrameListener(audioCallback))
+            VoiceProcessor.instance.addErrorListener(VoiceProcessorErrorListener(errorCallback))
+            
             state = UIState.READY
         } catch let error as CheetahInvalidArgumentError {
             errorMessage = "\(error.localizedDescription)\nEnsure your AccessKey '\(ACCESS_KEY)' is valid."
@@ -77,22 +81,37 @@ class ViewModel: ObservableObject {
     }
 
     public func toggleRecordingOff() {
-        VoiceProcessor.shared.stop()
-        state = UIState.FINALIZED
-        isListening = false
+        do {
+            try VoiceProcessor.instance.stop()
+            state = UIState.FINALIZED
+            isListening = false
+        }
+        catch {
+            errorMessage = "\(error.localizedDescription)"
+        }
     }
 
     public func toggleRecordingOn() {
         do {
-            guard try VoiceProcessor.shared.hasPermissions() else {
-                errorMessage = "Microphone permissions denied"
+            guard VoiceProcessor.hasRecordAudioPermission else {
+                VoiceProcessor.requestRecordAudioPermission { isGranted in
+                    guard isGranted else {
+                        DispatchQueue.main.async {
+                            self.errorMessage = "Demo requires microphone permission"
+                        }
+                        return
+                    }
+
+                    DispatchQueue.main.async {
+                        self.toggleRecordingOn()
+                    }
+                }
                 return
             }
 
-            try VoiceProcessor.shared.start(
+            try VoiceProcessor.instance.start(
                     frameLength: Cheetah.frameLength,
-                    sampleRate: Cheetah.sampleRate,
-                    audioCallback: audioCallback
+                    sampleRate: Cheetah.sampleRate
             )
 
             result = ""
@@ -110,16 +129,16 @@ class ViewModel: ObservableObject {
     public func setAutoScroll(_ value: Bool) {
         autoScroll = value
     }
-
-    private func audioCallback(pcm: [Int16]) {
-        guard cheetah != nil else {
+    
+    private func audioCallback(frame: [Int16]) {
+        guard let cheetah = self.cheetah else {
             return
         }
 
         do {
-            var (transcription, endpoint) = try cheetah!.process(pcm)
+            var (transcription, endpoint) = try cheetah.process(frame)
             if endpoint {
-                transcription += "\(try cheetah!.flush()) "
+                transcription += "\(try cheetah.flush()) "
             }
             if transcription.count > 0 {
                 DispatchQueue.main.async {
@@ -127,7 +146,15 @@ class ViewModel: ObservableObject {
                 }
             }
         } catch {
-            errorMessage = "\(error.localizedDescription)"
+            DispatchQueue.main.async {
+                self.errorMessage = "\(error)"
+            }
+        }
+    }
+    
+    private func errorCallback(error: VoiceProcessorError) {
+        DispatchQueue.main.async {
+            self.errorMessage = "\(error)"
         }
     }
 }
