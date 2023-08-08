@@ -1,5 +1,5 @@
 //
-// Copyright 2022 Picovoice Inc.
+// Copyright 2022-2023 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -20,13 +20,10 @@ typedef TranscriptCallback = Function(String transcript);
 typedef ProcessErrorCallback = Function(CheetahException error);
 
 class CheetahManager {
-  final VoiceProcessor? _voiceProcessor;
+  VoiceProcessor? _voiceProcessor;
   Cheetah? _cheetah;
 
   final TranscriptCallback _transcriptCallback;
-  final ProcessErrorCallback _processErrorCallback;
-  RemoveListener? _removeVoiceProcessorListener;
-  RemoveListener? _removeErrorListener;
 
   static Future<CheetahManager> create(
       String accessKey,
@@ -38,36 +35,25 @@ class CheetahManager {
     return CheetahManager._(cheetah, transcriptCallback, processErrorCallback);
   }
 
-  CheetahManager._(
-      this._cheetah, this._transcriptCallback, this._processErrorCallback)
-      : _voiceProcessor = VoiceProcessor.getVoiceProcessor(
-            _cheetah!.frameLength, _cheetah.sampleRate) {
-    if (_voiceProcessor == null) {
-      throw CheetahRuntimeException("flutter_voice_processor not available.");
-    }
-    _removeVoiceProcessorListener =
-        _voiceProcessor!.addListener((buffer) async {
-      List<int> cheetahFrame;
-      try {
-        cheetahFrame = (buffer as List<dynamic>).cast<int>();
-      } on Error {
-        CheetahException castError = CheetahException(
-            "flutter_voice_processor sent an unexpected data type.");
-        _processErrorCallback(castError);
+  CheetahManager._(this._cheetah, this._transcriptCallback,
+      ProcessErrorCallback processErrorCallback)
+      : _voiceProcessor = VoiceProcessor.instance {
+    _voiceProcessor?.addFrameListener((List<int> frame) async {
+      if (!(await _voiceProcessor?.isRecording() ?? false)) {
+        return;
+      }
+      if (_cheetah == null) {
+        processErrorCallback(CheetahInvalidStateException(
+            "Cannot process with Cheetah - resources have already been released"));
         return;
       }
 
-      if (_cheetah == null) {
-        throw CheetahInvalidStateException(
-            "Cannot process with Cheetah - resources have already been released");
-      }
-
       try {
-        CheetahTranscript partialResult = await _cheetah!.process(cheetahFrame);
+        CheetahTranscript partialResult = await _cheetah!.process(frame);
 
         if (partialResult.isEndpoint) {
           CheetahTranscript remainingResult = await _cheetah!.flush();
-          var finalTranscript =
+          String finalTranscript =
               partialResult.transcript + remainingResult.transcript;
           if (remainingResult.transcript.isNotEmpty) {
             finalTranscript += " ";
@@ -77,17 +63,20 @@ class CheetahManager {
           _transcriptCallback(partialResult.transcript);
         }
       } on CheetahException catch (error) {
-        _processErrorCallback(error);
+        processErrorCallback(error);
       }
     });
 
-    _removeErrorListener = _voiceProcessor!.addErrorListener((errorMsg) {
-      CheetahException nativeError = CheetahException(errorMsg as String);
-      _processErrorCallback(nativeError);
+    _voiceProcessor?.addErrorListener((VoiceProcessorException error) {
+      processErrorCallback(CheetahException(error.message));
     });
   }
 
   Future<void> startProcess() async {
+    if (await _voiceProcessor?.isRecording() ?? false) {
+      return;
+    }
+
     if (_cheetah == null || _voiceProcessor == null) {
       throw CheetahInvalidStateException(
           "Cannot start Cheetah - resources have already been released");
@@ -95,10 +84,11 @@ class CheetahManager {
 
     if (await _voiceProcessor?.hasRecordAudioPermission() ?? false) {
       try {
-        await _voiceProcessor!.start();
-      } on PlatformException {
+        await _voiceProcessor?.start(
+            _cheetah!.frameLength, _cheetah!.sampleRate);
+      } on PlatformException catch (e) {
         throw CheetahRuntimeException(
-            "Audio engine failed to start. Hardware may not be supported.");
+            "Failed to start audio recording: ${e.message}");
       }
     } else {
       throw CheetahRuntimeException(
@@ -112,8 +102,13 @@ class CheetahManager {
           "Cannot start Cheetah - resources have already been released");
     }
 
-    if (_voiceProcessor?.isRecording ?? false) {
-      await _voiceProcessor!.stop();
+    if (await _voiceProcessor?.isRecording() ?? false) {
+      try {
+        await _voiceProcessor?.stop();
+      } on PlatformException catch (e) {
+        throw CheetahRuntimeException(
+            "Failed to stop audio recording: ${e.message}");
+      }
 
       CheetahTranscript cheetahTranscript = await _cheetah!.flush();
       _transcriptCallback((cheetahTranscript.transcript) + " ");
@@ -121,11 +116,9 @@ class CheetahManager {
   }
 
   Future<void> delete() async {
-    if (_voiceProcessor?.isRecording ?? false) {
-      await _voiceProcessor!.stop();
-    }
-    _removeVoiceProcessorListener?.call();
-    _removeErrorListener?.call();
+    await stopProcess();
+    _voiceProcessor = null;
+
     _cheetah?.delete();
     _cheetah = null;
   }

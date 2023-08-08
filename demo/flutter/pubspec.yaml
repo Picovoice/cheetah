@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_voice_processor: ^1.0.7
+  flutter_voice_processor: ^1.1.0
 
   cheetah_flutter: ^1.1.0
 
@@ -27,8 +27,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/
-    - assets/models/
+    - assets/models/ios/
+    - assets/models/android/
     - assets/test_resources/
     - assets/test_resources/audio_samples/
     - assets/test_resources/model_files/
