@@ -1,5 +1,5 @@
 //
-// Copyright 2022 Picovoice Inc.
+// Copyright 2022-2023 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -113,7 +113,7 @@ class _MyAppState extends State<MyApp> {
         isProcessing = true;
       });
     } on CheetahException catch (ex) {
-      print("Failed to start audio capture: ${ex.message}");
+      errorCallback(ex);
     }
   }
 
@@ -128,7 +128,7 @@ class _MyAppState extends State<MyApp> {
         isProcessing = false;
       });
     } on CheetahException catch (ex) {
-      print("Failed to start audio capture: ${ex.message}");
+      errorCallback(ex);
     }
   }
 
