@@ -11,11 +11,7 @@
 
 import React, {Component} from 'react';
 import {
-  EventSubscription,
-  NativeEventEmitter,
   NativeScrollEvent,
-  PermissionsAndroid,
-  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -26,7 +22,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {Cheetah, CheetahErrors} from '@picovoice/cheetah-react-native';
 import {
   VoiceProcessor,
-  BufferEmitter,
+  VoiceProcessorError,
 } from '@picovoice/react-native-voice-processor';
 
 enum UIState {
@@ -50,8 +46,6 @@ export default class App extends Component<Props, State> {
   _accessKey: string = '${YOUR_ACCESS_KEY_HERE}'; // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
 
   _voiceProcessor?: VoiceProcessor;
-  _bufferListener?: EventSubscription;
-  _bufferEmitter?: NativeEventEmitter;
   _scrollView: ScrollView | null = null;
 
   constructor(props: Props) {
@@ -64,16 +58,16 @@ export default class App extends Component<Props, State> {
     };
   }
 
-  componentDidMount() {
-    this.init();
+  async componentDidMount() {
+    await this.init();
   }
 
-  componentWillUnmount() {
+  async componentWillUnmount() {
     if (this.state.appState === UIState.recording) {
-      this._stopProcessing();
+      await this._stopProcessing();
     }
     if (this._cheetah !== undefined) {
-      this._cheetah.delete();
+      await this._cheetah.delete();
       this._cheetah = undefined;
     }
   }
@@ -85,43 +79,47 @@ export default class App extends Component<Props, State> {
         'cheetah_params.pv',
         {enableAutomaticPunctuation: true},
       );
-      this._voiceProcessor = VoiceProcessor.getVoiceProcessor(
-        this._cheetah.frameLength,
-        this._cheetah.sampleRate,
-      );
-      this._bufferEmitter = new NativeEventEmitter(BufferEmitter);
-      this._bufferListener = this._bufferEmitter.addListener(
-        BufferEmitter.BUFFER_EMITTER_KEY,
-        async (buffer: number[]) => {
-          if (this._cheetah !== undefined) {
-            const partialResult = await this._cheetah.process(buffer);
-            if (partialResult.isEndpoint) {
-              const remainingResult = await this._cheetah.flush();
-              let transcriptText =
-                this.state.transcription +
-                partialResult.transcript +
-                remainingResult.transcript;
-              if (remainingResult.transcript.length > 0) {
-                transcriptText += ' ';
-              }
-              this.setState({
-                transcription: transcriptText,
-              });
-            } else {
-              this.setState({
-                transcription:
-                  this.state.transcription + partialResult.transcript,
-              });
-            }
-          }
-        },
-      );
-      this.setState({
-        appState: UIState.init,
-      });
     } catch (err: any) {
       this.handleError(err);
+      return;
     }
+
+    this._voiceProcessor = VoiceProcessor.instance;
+    this._voiceProcessor.addFrameListener(async (buffer: number[]) => {
+      if (!this._cheetah || !(await this._voiceProcessor?.isRecording())) {
+        return;
+      }
+
+      try {
+        const partialResult = await this._cheetah.process(buffer);
+        if (partialResult.isEndpoint) {
+          const remainingResult = await this._cheetah.flush();
+          let transcriptText =
+            this.state.transcription +
+            partialResult.transcript +
+            remainingResult.transcript;
+          if (remainingResult.transcript.length > 0) {
+            transcriptText += ' ';
+          }
+          this.setState({
+            transcription: transcriptText,
+          });
+        } else {
+          this.setState({
+            transcription: this.state.transcription + partialResult.transcript,
+          });
+        }
+      } catch (e: any) {
+        this.handleError(e);
+      }
+    });
+
+    this._voiceProcessor.addErrorListener((error: VoiceProcessorError) => {
+      this.handleError(error);
+    });
+    this.setState({
+      appState: UIState.init,
+    });
   }
 
   handleError(err: any) {
@@ -146,82 +144,53 @@ export default class App extends Component<Props, State> {
     });
   }
 
-  _startProcessing() {
+  async _startProcessing() {
     this.setState({
       appState: UIState.recording,
       transcription: '',
       isBottom: true,
     });
 
-    let recordAudioRequest;
-    if (Platform.OS === 'android') {
-      recordAudioRequest = this._requestRecordAudioPermission();
-    } else {
-      recordAudioRequest = new Promise(function (resolve, _) {
-        resolve(true);
-      });
+    try {
+      await this._voiceProcessor?.start(
+        this._cheetah!.frameLength,
+        this._cheetah!.sampleRate,
+      );
+    } catch (err: any) {
+      this.handleError(err);
     }
-
-    recordAudioRequest.then(async (hasPermission) => {
-      if (!hasPermission) {
-        this.handleError(
-          'Required permissions (Microphone) were not found. Please add to platform code.',
-        );
-        return;
-      }
-
-      try {
-        await this._voiceProcessor?.start();
-      } catch (err: any) {
-        this.handleError(err);
-      }
-    });
   }
 
-  _stopProcessing() {
+  async _stopProcessing() {
     this.setState({
       appState: UIState.stopping,
     });
 
-    this._voiceProcessor?.stop().then(async () => {
-      try {
-        const result = await this._cheetah?.flush();
-        if (result !== undefined) {
-          this.setState({
-            transcription: this.state.transcription + result.transcript,
-            appState: UIState.init,
-          });
-        }
-      } catch (err: any) {
-        this.handleError(err);
-      }
-    });
-  }
+    try {
+      await this._voiceProcessor?.stop();
+    } catch (err: any) {
+      this.handleError(err);
+      return;
+    }
 
-  _toggleListening() {
-    if (this.state.appState === UIState.recording) {
-      this._stopProcessing();
-    } else if (this.state.appState === UIState.init) {
-      this._startProcessing();
+    try {
+      const result = await this._cheetah?.flush();
+      if (result !== undefined) {
+        this.setState({
+          transcription: this.state.transcription + result.transcript,
+          appState: UIState.init,
+        });
+      }
+    } catch (err: any) {
+      this.handleError(err);
     }
   }
 
-  async _requestRecordAudioPermission() {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-        {
-          title: 'Microphone Permission',
-          message: 'Cheetah needs access to your microphone to record audio',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      return granted === PermissionsAndroid.RESULTS.GRANTED;
-    } catch (err: any) {
-      this.handleError(err);
-      return false;
+  async _toggleListening() {
+    if (this.state.appState === UIState.recording) {
+      await this._stopProcessing();
+    } else if (this.state.appState === UIState.init) {
+      await this._startProcessing();
     }
   }
 
