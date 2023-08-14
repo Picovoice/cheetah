@@ -42,9 +42,6 @@ type State = {
 };
 
 export default class App extends Component<Props, State> {
-  _frameLength = 512;
-  _sampleRate = 16000;
-
   _cheetah?: Cheetah;
   _accessKey: string = '${YOUR_ACCESS_KEY_HERE}'; // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
 
@@ -155,7 +152,10 @@ export default class App extends Component<Props, State> {
     });
 
     try {
-      await this._voiceProcessor?.start(this._frameLength, this._sampleRate);
+      await this._voiceProcessor?.start(
+        this._cheetah!.frameLength,
+        this._cheetah!.sampleRate,
+      );
     } catch (err: any) {
       this.handleError(err);
     }
