@@ -12,8 +12,6 @@
 import React, {Component} from 'react';
 import {
   NativeScrollEvent,
-  PermissionsAndroid,
-  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
