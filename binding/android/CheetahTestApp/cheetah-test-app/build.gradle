@@ -127,14 +127,6 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-intents:3.5.1')
 }
 
-task copyParams(type: Copy) {
-    from("${rootDir}/../../../lib/common")
-    include('cheetah_params.pv')
-    into("${rootDir}/cheetah-test-app/src/main/assets")
-}
-
-preBuild.dependsOn(copyParams)
-
 afterEvaluate {
     tasks."mergeDebugAssets".dependsOn "copyParams"
     tasks."mergeReleaseAssets".dependsOn "copyParams"
