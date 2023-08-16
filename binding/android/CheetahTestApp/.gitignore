@@ -1,0 +1,15 @@
+*.iml
+.gradle
+/local.properties
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+release
+test_resources
+cheetah_params.pv
+
+*.wav
+*.jks
+!.dummy.jks

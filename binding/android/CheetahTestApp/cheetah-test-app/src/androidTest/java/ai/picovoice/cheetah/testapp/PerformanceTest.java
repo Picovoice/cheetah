@@ -1,4 +1,4 @@
-package ai.picovoice.cheetahdemo;
+package ai.picovoice.cheetah.testapp;
 
 import static org.junit.Assert.assertTrue;
 
