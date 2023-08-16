@@ -58,6 +58,7 @@ pvcheetahdemo
 pvrecorder
 reactnative
 reactnative
+Readables
 Realtek
 repr
 RGBO
@@ -68,6 +69,7 @@ stdbool
 stdint
 stdlib
 sublist
+testapp
 tmpdir
 uppercased
 vtable
