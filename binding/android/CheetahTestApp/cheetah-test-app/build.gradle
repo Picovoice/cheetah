@@ -89,6 +89,11 @@ android {
         }
     }
 
+    task("copyParams", type: Copy) {
+        from("$projectDir/../../../../lib/common/")
+        include("cheetah_params.pv")
+        into("$projectDir/src/main/assets/models")
+    }
     task("copyAudio", type: Copy) {
         description = "Copy audio resources"
         from("$projectDir/../../../../resources/audio_samples/")
@@ -131,6 +136,8 @@ task copyParams(type: Copy) {
 preBuild.dependsOn(copyParams)
 
 afterEvaluate {
+    tasks."mergeDebugAssets".dependsOn "copyParams"
+    tasks."mergeReleaseAssets".dependsOn "copyParams"
     tasks."mergeDebugAssets".dependsOn "copyAudio"
     tasks."mergeReleaseAssets".dependsOn "copyAudio"
 }
