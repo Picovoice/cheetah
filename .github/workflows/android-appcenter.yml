@@ -39,10 +39,6 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
-    - name: Binding pre-build
-      run: ./gradlew assemble
-      working-directory: binding/android
-
     - name: Copy test_resources
       run: ./copy_test_resources.sh
 
