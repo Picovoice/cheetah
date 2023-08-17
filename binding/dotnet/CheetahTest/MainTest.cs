@@ -54,7 +54,8 @@ namespace CheetahTest
         [TestMethod]
         public void TestVersion()
         {
-            using (Cheetah cheetah = Cheetah.Create(ACCESS_KEY)) {
+            using (Cheetah cheetah = Cheetah.Create(ACCESS_KEY))
+            {
                 Assert.IsFalse(string.IsNullOrWhiteSpace(cheetah?.Version), "Cheetah did not return a valid version number.");
             }
         }
@@ -62,7 +63,8 @@ namespace CheetahTest
         [TestMethod]
         public void TestSampleRate()
         {
-            using (Cheetah cheetah = Cheetah.Create(ACCESS_KEY)) {
+            using (Cheetah cheetah = Cheetah.Create(ACCESS_KEY))
+            {
                 int num = 0;
                 Assert.IsTrue(int.TryParse(cheetah.SampleRate.ToString(), out num), "Cheetah did not return a valid sample rate.");
             }
@@ -71,7 +73,8 @@ namespace CheetahTest
         [TestMethod]
         public void TestFrameLength()
         {
-            using (Cheetah cheetah = Cheetah.Create(ACCESS_KEY)) {
+            using (Cheetah cheetah = Cheetah.Create(ACCESS_KEY))
+            {
                 int num = 0;
                 Assert.IsTrue(int.TryParse(cheetah.FrameLength.ToString(), out num), "Cheetah did not return a valid frame length.");
             }
@@ -85,7 +88,8 @@ namespace CheetahTest
             using (Cheetah cheetah = Cheetah.Create(
                 accessKey: ACCESS_KEY,
                 endpointDurationSec: 0.2f,
-                enableAutomaticPunctuation: enableAutomaticPunctuation)) {
+                enableAutomaticPunctuation: enableAutomaticPunctuation))
+            {
                 string testAudioPath = Path.Combine(_relativeDir, "resources/audio_samples/test.wav");
                 List<short> pcm = GetPcmFromFile(testAudioPath, cheetah.SampleRate);
 
@@ -118,7 +122,8 @@ namespace CheetahTest
             using (Cheetah cheetah = Cheetah.Create(
                 accessKey: ACCESS_KEY,
                 modelPath: testModelPath,
-                enableAutomaticPunctuation: enableAutomaticPunctuation)) {
+                enableAutomaticPunctuation: enableAutomaticPunctuation))
+            {
                 string testAudioPath = Path.Combine(_relativeDir, "resources/audio_samples/test.wav");
                 List<short> pcm = GetPcmFromFile(testAudioPath, cheetah.SampleRate);
 
