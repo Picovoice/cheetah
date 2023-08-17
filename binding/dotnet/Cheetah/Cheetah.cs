@@ -47,20 +47,27 @@ namespace Pv
 
         static Cheetah()
         {
-#if NETCOREAPP3_1_OR_GREATER
+
+#if NETCOREAPP3_0_OR_GREATER
+
             NativeLibrary.SetDllImportResolver(typeof(Cheetah).Assembly, ImportResolver);
+
 #endif
+
             DEFAULT_MODEL_PATH = Utils.PvModelPath();
         }
 
-#if NETCOREAPP3_1_OR_GREATER
+#if NETCOREAPP3_0_OR_GREATER
+
         private static IntPtr ImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
         {
             IntPtr libHandle = IntPtr.Zero;
             NativeLibrary.TryLoad(Utils.PvLibraryPath(libraryName), out libHandle);
             return libHandle;
         }
+
 #endif
+
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern PvStatus pv_cheetah_init(
             IntPtr accessKey,
