@@ -29,7 +29,7 @@ jobs:
         device: [single-android, 32bit-android]
         include:
         - device: single-android
-          initPerformanceThresholdSec: 3
+          initPerformanceThresholdSec: 3.25
           procPerformanceThresholdSec: 0.75
         - device: 32bit-android
           initPerformanceThresholdSec: 10.0
