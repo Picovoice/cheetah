@@ -67,10 +67,10 @@ jobs:
         dotnet-version: ${{ matrix.dotnet-version }}
 
     - name: Build binding
-      run: dotnet build Cheetah/Cheetah.csproj --framework ${{ matrix.binding-framework }}
+      run: dotnet build Cheetah/Cheetah.csproj --framework ${{ matrix.binding-framework }} -v n
 
     - name: Test
-      run: dotnet test --framework ${{ matrix.test-framework }}
+      run: dotnet test --framework ${{ matrix.test-framework }} -v n
 
   build-self-hosted:
     runs-on: ${{ matrix.machine }}
@@ -85,7 +85,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Build binding
-      run: dotnet build Cheetah/Cheetah.csproj --framework net6.0
+      run: dotnet build Cheetah/Cheetah.csproj --framework net6.0 -v n
 
     - name: Test
-      run: dotnet test --framework net6.0
+      run: dotnet test --framework net6.0 -v n
