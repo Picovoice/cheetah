@@ -10,7 +10,7 @@
     limitations under the License.
 */
 
-package ai.picovoice.cheetahdemo;
+package ai.picovoice.cheetah.testapp;
 
 import android.content.Context;
 import android.content.res.AssetManager;

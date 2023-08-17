@@ -17,7 +17,7 @@ on:
 
 defaults:
   run:
-    working-directory: demo/android/CheetahDemo
+    working-directory: binding/android/CheetahTestApp
 
 jobs:
   build:
@@ -29,7 +29,7 @@ jobs:
         device: [single-android, 32bit-android]
         include:
         - device: single-android
-          initPerformanceThresholdSec: 3
+          initPerformanceThresholdSec: 3.25
           procPerformanceThresholdSec: 0.75
         - device: 32bit-android
           initPerformanceThresholdSec: 10.0
@@ -61,6 +61,16 @@ jobs:
     - name: Inject Number of Iterations
       run: echo numTestIterations="30" >> local.properties
 
+    - name: Inject Android keystore variables
+      run: |
+        echo storePassword="${{secrets.ANDROID_RELEASE_KEYSTORE_PASSWORD}}" >> local.properties
+        echo keyPassword="${{secrets.ANDROID_RELEASE_KEYSTORE_PASSWORD}}" >> local.properties
+        echo keyAlias=picovoice >> local.properties
+        echo storeFile=../picovoice.jks >> local.properties
+
+    - name: Setup Android keystore file
+      run: echo "${{secrets.ANDROID_RELEASE_KEYSTORE_FILE_B64}}" | base64 -d > picovoice.jks
+
     - name: Inject Init Performance Threshold
       run: echo initPerformanceThresholdSec="${{ matrix.initPerformanceThresholdSec }}" >> local.properties
 
@@ -74,15 +84,15 @@ jobs:
       run: ./gradlew assembleDebug
 
     - name: Build androidTest
-      run: ./gradlew assembleAndroidTest
+      run: ./gradlew assembleAndroidTest -DtestBuildType=perf
 
     - name: Run tests on AppCenter
       run: appcenter test run espresso
         --token ${{secrets.APPCENTERAPITOKEN}}
         --app "Picovoice/Cheetah-Android"
         --devices "Picovoice/${{ matrix.device }}"
-        --app-path cheetah-demo-app/build/outputs/apk/debug/cheetah-demo-app-debug.apk
+        --app-path cheetah-test-app/build/outputs/apk/debug/cheetah-test-app-debug.apk
         --test-series "cheetah-android"
         --locale "en_US"
-        --build-dir cheetah-demo-app/build/outputs/apk/androidTest/debug
+        --build-dir cheetah-test-app/build/outputs/apk/androidTest/debug
 

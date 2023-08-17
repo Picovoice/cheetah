@@ -10,7 +10,7 @@
     limitations under the License.
 */
 
-package ai.picovoice.cheetahdemo;
+package ai.picovoice.cheetah.testapp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
