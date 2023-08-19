@@ -24,13 +24,13 @@
 		<PackageId>$(Authors).$(AssemblyName)</PackageId>
 	</PropertyGroup>
 	<ItemGroup>
-		<Content Include="Cheetah.netstandard2.0.targets">
+		<Content Include="Picovoice.Cheetah.netstandard2.0.targets">
 		  <PackagePath>
-				build/netstandard2.0/Cheetah.targets;
+				build/netstandard2.0/Picovoice.Cheetah.targets;
 			</PackagePath>
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-		<Content Include="Cheetah.targets">
+		<Content Include="Picovoice.Cheetah.targets">
 			<PackagePath>
 				build/netcoreapp3.0;
 				build/net6.0;
