@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'cheetah_flutter'
-  s.version          = '1.1.0'
+  s.version          = '1.1.1'
   s.summary          = 'A Flutter package plugin for Picovoice\'s Cheetah Speech-to-Text engine'
   s.description      = <<-DESC
   A Flutter package plugin for Picovoice\'s Cheetah Speech-to-Text engine
@@ -13,6 +13,6 @@ Pod::Spec.new do |s|
   s.platform = :ios, '9.0'
   s.dependency 'Flutter'
   s.dependency 'Cheetah-iOS', '~> 1.1.0'
-  
+
   s.swift_version = '5.0'
 end
