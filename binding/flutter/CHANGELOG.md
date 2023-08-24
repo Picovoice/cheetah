@@ -9,3 +9,6 @@
 
 ## [1.1.0] - 2022-08-10
 * True-casing and automatic punctuation insertion enabled.
+
+## [1.1.1] - 2023-08-24
+* Native packages updated.
