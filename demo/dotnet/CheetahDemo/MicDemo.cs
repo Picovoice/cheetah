@@ -42,48 +42,52 @@ namespace CheetahDemo
             int audioDeviceIndex)
         {
 
-            using Cheetah cheetah = Cheetah.Create(
+            using (Cheetah cheetah = Cheetah.Create(
                 accessKey: accessKey,
                 modelPath: modelPath,
                 endpointDurationSec: endpointDurationSec,
-                enableAutomaticPunctuation: enableAutomaticPunctuation);
-
-            // create recorder
-            using PvRecorder recorder = PvRecorder.Create(cheetah.FrameLength, audioDeviceIndex);
-            Console.WriteLine($"Using device: {recorder.SelectedDevice}");
-            Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e)
+                enableAutomaticPunctuation: enableAutomaticPunctuation))
             {
-                e.Cancel = true;
-                recorder.Stop();
-                Console.WriteLine("Stopping...");
-            };
 
-
-            recorder.Start();
-            Console.WriteLine(">>> Press `CTRL+C` to exit:\n");
-
-            try
-            {
-                while (recorder.IsRecording)
+                // create recorder
+                using (PvRecorder recorder = PvRecorder.Create(cheetah.FrameLength, audioDeviceIndex))
                 {
-                    short[] frame = recorder.Read();
-
-                    CheetahTranscript result = cheetah.Process(frame);
-                    if (!string.IsNullOrEmpty(result.Transcript))
+                    Console.WriteLine($"Using device: {recorder.SelectedDevice}");
+                    Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e)
                     {
-                        Console.Write(result.Transcript);
-                    }
-                    if (result.IsEndpoint)
-                    {
-                        CheetahTranscript finalTranscriptObj = cheetah.Flush();
-                        Console.WriteLine(finalTranscriptObj.Transcript);
-                    }
+                        e.Cancel = true;
+                        recorder.Stop();
+                        Console.WriteLine("Stopping...");
+                    };
 
+
+                    recorder.Start();
+                    Console.WriteLine(">>> Press `CTRL+C` to exit:\n");
+
+                    try
+                    {
+                        while (recorder.IsRecording)
+                        {
+                            short[] frame = recorder.Read();
+
+                            CheetahTranscript result = cheetah.Process(frame);
+                            if (!string.IsNullOrEmpty(result.Transcript))
+                            {
+                                Console.Write(result.Transcript);
+                            }
+                            if (result.IsEndpoint)
+                            {
+                                CheetahTranscript finalTranscriptObj = cheetah.Flush();
+                                Console.WriteLine(finalTranscriptObj.Transcript);
+                            }
+
+                        }
+                    }
+                    catch (CheetahActivationLimitException)
+                    {
+                        Console.WriteLine($"AccessKey '{accessKey}' has reached its processing limit.");
+                    }
                 }
-            }
-            catch (CheetahActivationLimitException)
-            {
-                Console.WriteLine($"AccessKey '{accessKey}' has reached its processing limit.");
             }
         }
 
