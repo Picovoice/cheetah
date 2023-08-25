@@ -1,7 +1,7 @@
 PODS:
   - boost (1.76.0)
   - Cheetah-iOS (1.1.0)
-  - cheetah-react-native (1.1.0):
+  - cheetah-react-native (1.1.1):
     - Cheetah-iOS (~> 1.1.0)
     - React
   - DoubleConversion (1.1.6)
@@ -417,7 +417,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
   Cheetah-iOS: 6fb7be693878f5b1dec0ea5b6534fbba30954afc
-  cheetah-react-native: 596d90dd6954266786632f73afccb7ba80d20f29
+  cheetah-react-native: a7b750ffeff3fbcab49335a5f0d84f06cbce4815
   DoubleConversion: 831926d9b8bf8166fd87886c4abab286c2422662
   FBLazyVector: 2b47ff52037bd9ae07cc9b051c9975797814b736
   FBReactNativeSpec: 0e0d384ef17a33b385f13f0c7f97702c7cd17858
