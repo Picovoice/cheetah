@@ -12,7 +12,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -25,7 +24,7 @@ namespace CheetahTest
     {
         private static string ACCESS_KEY;
 
-        private static readonly string _relativeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        private static readonly string _relativeDir = AppContext.BaseDirectory;
 
         private List<short> GetPcmFromFile(string audioFilePath, int expectedSampleRate)
         {

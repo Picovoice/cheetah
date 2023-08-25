@@ -40,53 +40,56 @@ namespace CheetahDemo
             bool enableAutomaticPunctuation)
         {
             // init Cheetah speech-to-text engine
-            using Cheetah cheetah = Cheetah.Create(
+            using (Cheetah cheetah = Cheetah.Create(
                 accessKey: accessKey,
                 modelPath: modelPath,
-                enableAutomaticPunctuation: enableAutomaticPunctuation);
-
-            using BinaryReader reader = new BinaryReader(File.Open(inputAudioPath, FileMode.Open));
-            ValidateWavFile(reader, cheetah.SampleRate, 16, out short numChannels);
-
-            short[] cheetahFrame = new short[cheetah.FrameLength];
-            int frameIndex = 0;
-
-            while (reader.BaseStream.Position != reader.BaseStream.Length)
+                enableAutomaticPunctuation: enableAutomaticPunctuation))
             {
-                cheetahFrame[frameIndex++] = reader.ReadInt16();
 
-                if (frameIndex == cheetahFrame.Length)
+                using (BinaryReader reader = new BinaryReader(File.Open(inputAudioPath, FileMode.Open)))
                 {
-                    try
+                    ValidateWavFile(reader, cheetah.SampleRate, 16, out short numChannels);
+
+                    short[] cheetahFrame = new short[cheetah.FrameLength];
+                    int frameIndex = 0;
+
+                    while (reader.BaseStream.Position != reader.BaseStream.Length)
                     {
-                        CheetahTranscript transcriptObj = cheetah.Process(cheetahFrame);
-                        if (!String.IsNullOrEmpty(transcriptObj.Transcript))
+                        cheetahFrame[frameIndex++] = reader.ReadInt16();
+
+                        if (frameIndex == cheetahFrame.Length)
                         {
-                            Console.Write(transcriptObj.Transcript);
+                            try
+                            {
+                                CheetahTranscript transcriptObj = cheetah.Process(cheetahFrame);
+                                if (!string.IsNullOrEmpty(transcriptObj.Transcript))
+                                {
+                                    Console.Write(transcriptObj.Transcript);
+                                }
+                            }
+                            catch (CheetahActivationLimitException)
+                            {
+                                cheetah.Dispose();
+                                Console.WriteLine($"AccessKey '{accessKey}' has reached its processing limit.");
+                            }
+
+                            frameIndex = 0;
+                        }
+
+                        // skip right channel
+                        if (numChannels == 2)
+                        {
+                            reader.ReadInt16();
                         }
                     }
-                    catch (CheetahActivationLimitException)
+                    CheetahTranscript finalTranscriptObj = cheetah.Flush();
+                    string transcript = finalTranscriptObj.Transcript;
+                    if (!string.IsNullOrEmpty(transcript))
                     {
-                        cheetah.Dispose();
-                        Console.WriteLine($"AccessKey '{accessKey}' has reached its processing limit.");
+                        Console.WriteLine(transcript);
                     }
-
-                    frameIndex = 0;
-                }
-
-                // skip right channel
-                if (numChannels == 2)
-                {
-                    reader.ReadInt16();
                 }
             }
-            CheetahTranscript finalTranscriptObj = cheetah.Flush();
-            string transcript = finalTranscriptObj.Transcript;
-            if (!String.IsNullOrEmpty(transcript))
-            {
-                Console.WriteLine(transcript);
-            }
-
         }
 
 
