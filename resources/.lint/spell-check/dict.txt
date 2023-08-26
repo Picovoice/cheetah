@@ -33,6 +33,7 @@ instanceof
 IntelliJ
 Itertools
 Jetson
+jiwer
 LDFLAGS
 libc
 libloading
