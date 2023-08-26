@@ -5,216 +5,151 @@ on:
   push:
     branches: [ master ]
     paths:
+      - '!demo/c/README.md'
       - '.github/workflows/c-demos.yml'
       - 'demo/c/**'
-      - '!demo/c/README.md'
       - 'include/**'
       - 'lib/common/**'
-      - 'lib/linux/**'
       - 'lib/jetson/**'
+      - 'lib/linux/**'
       - 'lib/mac/**'
       - 'lib/raspberry-pi/**'
       - 'lib/windows/**'
+      - 'resources/audio_samples/**'
   pull_request:
     branches: [ master, 'v[0-9]+.[0-9]+' ]
     paths:
+      - '!demo/c/README.md'
       - '.github/workflows/c-demos.yml'
       - 'demo/c/**'
-      - '!demo/c/README.md'
       - 'include/**'
       - 'lib/common/**'
-      - 'lib/linux/**'
       - 'lib/jetson/**'
+      - 'lib/linux/**'
       - 'lib/mac/**'
       - 'lib/raspberry-pi/**'
       - 'lib/windows/**'
+      - 'resources/audio_samples/**'
 
 defaults:
   run:
-    working-directory: .
+    working-directory: demo/c
 
 jobs:
-  ubuntu:
-    runs-on: ubuntu-latest
+  build-micdemo-github-hosted:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: recursive
 
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build
+    - name: Create build directory
+      run: cmake -B ./build
 
-    - name: Build
-      run: cmake --build demo/c/build
+    - name: Build micdemo
+      run: cmake --build ./build --target cheetah_demo_mic
 
-    - name: Test
-      run: |
-        ./demo/c/build/cheetah_demo_file \
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
-        -l lib/linux/x86_64/libpv_cheetah.so \
-        -m lib/common/cheetah_params.pv \
-        resources/audio_samples/test.wav
+  build-micdemo-self-hosted:
+    runs-on: ${{ matrix.machine }}
 
-  macos:
-    runs-on: macos-latest
+    strategy:
+      matrix:
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
 
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: recursive
 
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build
+    - name: Create build directory
+      run: cmake -B ./build
 
-    - name: Build
-      run: cmake --build demo/c/build
+    - name: Build micdemo
+      run: cmake --build ./build --target cheetah_demo_mic
 
-    - name: Test
-      run: |
-        ./demo/c/build/cheetah_demo_file \
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
-        -l lib/mac/x86_64/libpv_cheetah.dylib \
-        -m lib/common/cheetah_params.pv \
-        resources/audio_samples/test.wav
+  build-filedemo-github-hosted:
+    runs-on: ${{ matrix.os }}
 
-  windows:
-    runs-on: windows-latest
-
-    defaults:
-      run:
-        shell: cmd
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-
-    - name: Set up MinGW
-      uses: egor-tensin/setup-mingw@v2
-      with:
-        platform: x64
-
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build -G "MinGW Makefiles"
-
-    - name: Build
-      run: cmake --build demo/c/build
-
-    - name: Test
-      run: |
-        demo\\c\\build\\cheetah_demo_file.exe ^
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} ^
-        -l lib\\windows\\amd64\\libpv_cheetah.dll ^
-        -m lib\\common\\cheetah_params.pv ^
-        resources\\audio_samples\\test.wav
-
-  jetson:
-    runs-on: jetson
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            arch: x86_64
+            make_file: "Unix Makefiles"
+          - os: windows-latest
+            platform: windows
+            arch: amd64
+            make_file: "MinGW Makefiles"
+          - os: macos-latest
+            platform: mac
+            arch: x86_64
+            make_file: "Unix Makefiles"
 
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build
+      - name: Set up Python '3.10'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Build
-      run: cmake --build demo/c/build
+      - name: Create build directory
+        run: cmake -G "${{ matrix.make_file }}" -B ./build
 
-    - name: Test
-      run: |
-        ./demo/c/build/cheetah_demo_file \
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
-        -l lib/jetson/cortex-a57-aarch64/libpv_cheetah.so \
-        -m lib/common/cheetah_params.pv \
-        resources/audio_samples/test.wav
+      - name: Build demo
+        run: cmake --build ./build --target cheetah_demo_file
 
-  rpi4-32:
-    runs-on: rpi4-32
+      - name: Install dependencies
+        run: pip install -r test/requirements.txt
 
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
+      - name: Test
+        run: python test/test_cheetah_c.py ${{secrets.PV_VALID_ACCESS_KEY}} ${{ matrix.platform }} ${{ matrix.arch }}
 
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build
+  build-filedemo-self-hosted:
+    runs-on: ${{ matrix.machine }}
 
-    - name: Build
-      run: cmake --build demo/c/build
-
-    - name: Test
-      run: |
-        ./demo/c/build/cheetah_demo_file \
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
-        -l lib/raspberry-pi/cortex-a72/libpv_cheetah.so \
-        -m lib/common/cheetah_params.pv \
-        resources/audio_samples/test.wav
-
-  rpi4-64:
-    runs-on: rpi4-64
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build
-
-    - name: Build
-      run: cmake --build demo/c/build
-
-    - name: Test
-      run: |
-        ./demo/c/build/cheetah_demo_file \
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
-        -l lib/raspberry-pi/cortex-a72-aarch64/libpv_cheetah.so \
-        -m lib/common/cheetah_params.pv \
-        resources/audio_samples/test.wav
-
-  rpi3-32:
-    runs-on: rpi3-32
+    strategy:
+      matrix:
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
+        include:
+          - machine: rpi3-32
+            platform: raspberry-pi
+            arch: cortex-a53
+          - machine: rpi3-64
+            platform: raspberry-pi
+            arch: cortex-a53-aarch64
+          - machine: rpi4-32
+            platform: raspberry-pi
+            arch: cortex-a72
+          - machine: rpi4-64
+            platform: raspberry-pi
+            arch: cortex-a72-aarch64
+          - machine: jetson
+            platform: jetson
+            arch: cortex-a57-aarch64
 
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
 
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build
+      - name: Create build directory
+        run: cmake -B ./build
 
-    - name: Build
-      run: cmake --build demo/c/build
+      - name: Build demo
+        run: cmake --build ./build --target cheetah_demo_file
 
-    - name: Test
-      run: |
-        ./demo/c/build/cheetah_demo_file \
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
-        -l lib/raspberry-pi/cortex-a53/libpv_cheetah.so \
-        -m lib/common/cheetah_params.pv \
-        resources/audio_samples/test.wav
+      - name: Install dependencies
+        run: pip install -r test/requirements.txt
 
-  rpi3-64:
-    runs-on: rpi3-64
-
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-
-    - name: CMake
-      run: cmake -S demo/c/ -B demo/c/build
-
-    - name: Build
-      run: cmake --build demo/c/build
-
-    - name: Test
-      run: |
-        ./demo/c/build/cheetah_demo_file \
-        -a ${{secrets.PV_VALID_ACCESS_KEY}} \
-        -l lib/raspberry-pi/cortex-a53-aarch64/libpv_cheetah.so \
-        -m lib/common/cheetah_params.pv \
-        resources/audio_samples/test.wav
+      - name: Test
+        run: python3 test/test_cheetah_c.py ${{secrets.PV_VALID_ACCESS_KEY}} ${{ matrix.platform }} ${{ matrix.arch }}
