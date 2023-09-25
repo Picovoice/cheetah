@@ -20,7 +20,7 @@
     "@picovoice/react-native-voice-processor": "^1.2.0",
     "@react-native-picker/picker": "^1.9.2",
     "react": "^17.0.2",
-    "react-native": "0.68.5",
+    "react-native": "0.68.7",
     "react-native-fs": "^2.20.0"
   },
   "devDependencies": {
