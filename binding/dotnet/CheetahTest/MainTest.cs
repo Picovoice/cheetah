@@ -187,7 +187,7 @@ namespace CheetahTest
         }
 
         [TestMethod]
-        public void TestProcessMessageStack()
+        public void TestProcessFlushMessageStack()
         {
             string modelPath = Path.Combine(_relativeDir, "lib/common/cheetah_params.pv");
 
@@ -206,7 +206,18 @@ namespace CheetahTest
                 CheetahTranscript res = c.Process(testPcm);
                 Assert.IsTrue(res.Transcript.Length == -1);
             }
-            catch (PorcupineException e)
+            catch (CheetahException e)
+            {
+                Assert.IsTrue(0 < e.MessageStack.Length);
+                Assert.IsTrue(e.MessageStack.Length < 8);
+            }
+
+            try
+            {
+                CheetahTranscript res = c.Flush();
+                Assert.IsTrue(res.Transcript.Length == -1);
+            }
+            catch (CheetahException e)
             {
                 Assert.IsTrue(0 < e.MessageStack.Length);
                 Assert.IsTrue(e.MessageStack.Length < 8);
