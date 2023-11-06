@@ -90,7 +90,7 @@ class CheetahTestCase(unittest.TestCase):
             self.assertEqual(len(error), len(e.message_stack))
             self.assertListEqual(list(error), list(e.message_stack))
 
-    def test_process_message_stack(self):
+    def test_process_flush_message_stack(self):
         c = Cheetah(
             access_key=sys.argv[1],
             library_path=default_library_path(relative),
@@ -103,6 +103,13 @@ class CheetahTestCase(unittest.TestCase):
 
         try:
             res = c.process(test_pcm)
+            self.assertIsNone(res)
+        except CheetahError as e:
+            self.assertGreater(len(e.message_stack), 0)
+            self.assertLess(len(e.message_stack), 8)
+
+        try:
+            res = c.flush()
             self.assertIsNone(res)
         except CheetahError as e:
             self.assertGreater(len(e.message_stack), 0)
