@@ -1,5 +1,5 @@
 #
-#    Copyright 2018-2022 Picovoice Inc.
+#    Copyright 2018-2023 Picovoice Inc.
 #
 #    You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 #    file accompanying this source.
@@ -61,6 +61,54 @@ class CheetahTestCase(unittest.TestCase):
         o = self._create_cheetah(False)
         self.assertIsInstance(o.version, str)
         self.assertGreater(len(o.version), 0)
+
+    def test_message_stack(self):
+        relative = '../../'
+
+        error = None
+        try:
+            c = Cheetah(
+                access_key='invalid',
+                library_path=default_library_path(relative),
+                model_path=get_model_path_by_language(relative),
+                enable_automatic_punctuation=True)
+            self.assertIsNone(c)
+        except CheetahError as e:
+            error = e.message_stack
+
+        self.assertIsNotNone(error)
+        self.assertGreater(len(error), 0)
+
+        try:
+            c = Cheetah(
+                access_key='invalid',
+                library_path=default_library_path(relative),
+                model_path=get_model_path_by_language(relative),
+                enable_automatic_punctuation=True)
+            self.assertIsNone(c)
+        except CheetahError as e:
+            self.assertEqual(len(error), len(e.message_stack))
+            self.assertListEqual(list(error), list(e.message_stack))
+
+    def test_process_message_stack(self):
+        c = Cheetah(
+            access_key=sys.argv[1],
+            library_path=default_library_path(relative),
+            model_path=get_model_path_by_language(relative),
+            enable_automatic_punctuation=True)
+        test_pcm = [0] * c._frame_length
+
+        address = c._handle
+        c._handle = None
+
+        try:
+            res = c.process(test_pcm)
+            self.assertIsNone(res)
+        except CheetahError as e:
+            self.assertGreater(len(e.message_stack), 0)
+            self.assertLess(len(e.message_stack), 8)
+
+        o._handle = address
 
 
 if __name__ == '__main__':

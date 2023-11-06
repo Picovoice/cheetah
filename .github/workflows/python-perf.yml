@@ -3,7 +3,7 @@ name: Python performance
 on:
   workflow_dispatch:
   push:
-    branches: [master]
+    branches: [ master ]
     paths:
       - '.github/workflows/python-perf.yml'
       - 'binding/python/test_cheetah_perf.py'
@@ -14,7 +14,7 @@ on:
       - 'lib/raspberry-pi/**'
       - 'lib/windows/**'
   pull_request:
-    branches: [master]
+    branches: [ master ]
     paths:
       - '.github/workflows/python-perf.yml'
       - 'binding/python/test_cheetah_perf.py'

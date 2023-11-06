@@ -16,7 +16,27 @@ from typing import *
 
 
 class CheetahError(Exception):
-    pass
+    def __init__(self, message: str = '', message_stack: Sequence[str] = None):
+        super().__init__(message)
+
+        self._message = message
+        self._message_stack = list() if message_stack is None else message_stack
+
+    def __str__(self):
+        message = self._message
+        if len(self._message_stack) > 0:
+            message += ':'
+            for i in range(len(self._message_stack)):
+                message += '\n  [%d] %s' % (i, self._message_stack[i])
+        return message
+
+    @property
+    def message(self) -> str:
+        return self._message
+
+    @property
+    def message_stack(self) -> Sequence[str]:
+        return self._message_stack
 
 
 class CheetahMemoryError(CheetahError):
@@ -122,13 +142,27 @@ class Cheetah(object):
         if not os.path.exists(library_path):
             raise CheetahIOError("Could not find Cheetah's dynamic library at `%s`." % library_path)
 
-        library = cdll.LoadLibrary(library_path)
-
         if not os.path.exists(model_path):
             raise CheetahIOError("Could not find model file at `%s`." % model_path)
 
         if endpoint_duration_sec is not None and not endpoint_duration_sec > 0.:
             raise CheetahInvalidArgumentError("`endpoint_duration_sec` must be either `None` or a positive number")
+
+        library = cdll.LoadLibrary(library_path)
+
+        set_sdk_func = library.pv_set_sdk
+        set_sdk_func.argtypes = [c_char_p]
+        set_sdk_func.restype = None
+
+        set_sdk_func('python'.encode('utf-8'))
+
+        self._get_error_stack_func = library.pv_get_error_stack
+        self._get_error_stack_func.argtypes = [POINTER(POINTER(c_char_p)), POINTER(c_int)]
+        self._get_error_stack_func.restype = self.PicovoiceStatuses
+
+        self._free_error_stack_func = library.pv_free_error_stack
+        self._free_error_stack_func.argtypes = [POINTER(c_char_p)]
+        self._free_error_stack_func.restype = None
 
         init_func = library.pv_cheetah_init
         init_func.argtypes = [c_char_p, c_char_p, c_float, c_bool, POINTER(POINTER(self.CCheetah))]
@@ -143,7 +177,9 @@ class Cheetah(object):
             enable_automatic_punctuation,
             byref(self._handle))
         if status is not self.PicovoiceStatuses.SUCCESS:
-            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status]()
+            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](
+                message='Initialization failed',
+                message_stack=self._get_error_stack())
 
         self._delete_func = library.pv_cheetah_delete
         self._delete_func.argtypes = [POINTER(self.CCheetah)]
@@ -192,7 +228,9 @@ class Cheetah(object):
             byref(c_partial_transcript),
             byref(is_endpoint))
         if status is not self.PicovoiceStatuses.SUCCESS:
-            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status]()
+            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](
+                message='Process failed',
+                message_stack=self._get_error_stack())
 
         return c_partial_transcript.value.decode('utf-8'), is_endpoint.value
 
@@ -207,7 +245,9 @@ class Cheetah(object):
         c_final_transcript = c_char_p()
         status = self._flush_func(self._handle, byref(c_final_transcript))
         if status is not self.PicovoiceStatuses.SUCCESS:
-            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status]()
+            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](
+                message='Flush failed',
+                message_stack=self._get_error_stack())
 
         return c_final_transcript.value.decode('utf-8')
 
@@ -233,6 +273,21 @@ class Cheetah(object):
         """Number of audio samples per frame expected by C library."""
 
         return self._frame_length
+
+    def _get_error_stack(self) -> Sequence[str]:
+        message_stack_ref = POINTER(c_char_p)()
+        message_stack_depth = c_int()
+        status = self._get_error_stack_func(byref(message_stack_ref), byref(message_stack_depth))
+        if status is not self.PicovoiceStatuses.SUCCESS:
+            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](message='Unable to get Porcupine error state')
+
+        message_stack = list()
+        for i in range(message_stack_depth.value):
+            message_stack.append(message_stack_ref[i].decode('utf-8'))
+
+        self._free_error_stack_func(message_stack_ref)
+
+        return message_stack
 
 
 __all__ = [
