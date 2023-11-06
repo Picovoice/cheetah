@@ -142,5 +142,78 @@ namespace CheetahTest
                 Assert.AreEqual(transcript, expectedTranscript);
             }
         }
+
+        [TestMethod]
+        public void TestMessageStack()
+        {
+            string modelPath = Path.Combine(_relativeDir, "lib/common/cheetah_params.pv");
+
+            Cheetah c;
+            string[] messageList = new string[] { };
+
+            try
+            {
+                c = Cheetah.Create(
+                    accessKey: 'invalid',
+                    modelPath: modelPath,
+                    enableAutomaticPunctuation: true);
+                Assert.IsNull(c);
+                c.Dispose();
+            }
+            catch (CheetahException e)
+            {
+                messageList = e.MessageStack;
+            }
+
+            Assert.IsTrue(0 < messageList.Length);
+            Assert.IsTrue(messageList.Length < 8);
+
+            try
+            {
+                c = Cheetah.Create(
+                    accessKey: 'invalid',
+                    modelPath: modelPath,
+                    enableAutomaticPunctuation: true);
+                Assert.IsNull(c);
+                c.Dispose();
+            }
+            catch (CheetahException e)
+            {
+                for (int i = 0; i < messageList.Length; i++)
+                {
+                    Assert.AreEqual(messageList[i], e.MessageStack[i]);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void TestProcessMessageStack()
+        {
+            string modelPath = Path.Combine(_relativeDir, "lib/common/cheetah_params.pv");
+
+            Cheetah c = Cheetah.Create(
+                accessKey: ACCESS_KEY,
+                modelPath: modelPath,
+                enableAutomaticPunctuation: enableAutomaticPunctuation);
+            short[] testPcm = new short[c.FrameLength];
+
+            var obj = typeof(Cheetah).GetField("_libraryPointer", BindingFlags.NonPublic | BindingFlags.Instance);
+            IntPtr address = (IntPtr)obj.GetValue(c);
+            obj.SetValue(c, IntPtr.Zero);
+
+            try
+            {
+                CheetahTranscript res = c.Process(testPcm);
+                Assert.IsTrue(res.Transcript.Length == -1);
+            }
+            catch (PorcupineException e)
+            {
+                Assert.IsTrue(0 < e.MessageStack.Length);
+                Assert.IsTrue(e.MessageStack.Length < 8);
+            }
+
+            obj.SetValue(c, address);
+            c.Dispose();
+        }
     }
 }
