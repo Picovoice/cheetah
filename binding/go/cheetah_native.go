@@ -1,4 +1,4 @@
-// Copyright 2022 Picovoice Inc.
+// Copyright 2022-2023 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is
 // located in the "LICENSE" file accompanying this source.
@@ -135,6 +135,24 @@ typedef void (*pv_cheetah_delete_func)(void *);
 void pv_cheetah_delete_wrapper(void *f, void *object) {
 	return ((pv_cheetah_delete_func) f)(object);
 }
+
+typedef void (*pv_set_sdk_func)(const char *);
+void pv_set_sdk_wrapper(void *f, const char *sdk) {
+	return ((pv_set_sdk_func) f)(sdk);
+}
+typedef int32_t (*pv_get_error_stack_func)(char ***, int32_t *);
+int32_t pv_get_error_stack_wrapper(
+	void *f,
+	char ***message_stack,
+	int32_t *message_stack_depth) {
+	return ((pv_get_error_stack_func) f)(message_stack, message_stack_depth);
+}
+typedef void (*pv_free_error_stack_func)(char **);
+void pv_free_error_stack_wrapper(
+	void *f,
+	char **message_stack) {
+	return ((pv_free_error_stack_func) f)(message_stack);
+}
 */
 import "C"
 
@@ -149,6 +167,7 @@ type nativeCheetahInterface interface {
 	nativeDelete(*Cheetah)
 	nativeSampleRate()
 	nativeVersion()
+	nativeGetErrorStack()
 }
 
 type nativeCheetahType struct {
@@ -161,6 +180,9 @@ type nativeCheetahType struct {
 	pv_cheetah_version_ptr      unsafe.Pointer
 	pv_cheetah_frame_length_ptr unsafe.Pointer
 	pv_sample_rate_ptr          unsafe.Pointer
+	pv_set_sdk_ptr              unsafe.Pointer
+	pv_get_error_stack_ptr      unsafe.Pointer
+	pv_free_error_stack_ptr     unsafe.Pointer
 }
 
 func (nc *nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
@@ -184,6 +206,13 @@ func (nc *nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
 	nc.pv_cheetah_version_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_cheetah_version"))
 	nc.pv_cheetah_frame_length_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_cheetah_frame_length"))
 	nc.pv_sample_rate_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_sample_rate"))
+	nc.pv_set_sdk_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_set_sdk"))
+	nc.pv_get_error_stack_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_get_error_stack"))
+	nc.pv_free_error_stack_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_free_error_stack"))
+
+	C.pv_set_sdk_wrapper(
+		nc.pv_set_sdk_ptr,
+		C.CString("go"))
 
 	var ret = C.pv_cheetah_init_wrapper(
 		nc.pv_cheetah_init_ptr,
@@ -247,4 +276,32 @@ func (nc nativeCheetahType) nativeFrameLength() (frameLength int) {
 
 func (nc nativeCheetahType) nativeVersion() (version string) {
 	return C.GoString(C.pv_cheetah_version_wrapper(nc.pv_cheetah_version_ptr))
+}
+
+func (nc *nativeCheetahType) nativeGetErrorStack() (status PvStatus, messageStack []string) {
+	var messageStackDepthRef C.int32_t
+	var messageStackRef **C.char
+
+	var ret = C.pv_get_error_stack_wrapper(nc.pv_get_error_stack_ptr,
+		&messageStackRef,
+		&messageStackDepthRef)
+
+	if PvStatus(ret) != SUCCESS {
+		return PvStatus(ret), []string{}
+	}
+
+	defer C.pv_free_error_stack_wrapper(
+		nc.pv_free_error_stack_ptr,
+		messageStackRef)
+
+	messageStackDepth := int(messageStackDepthRef)
+	messageStackSlice := (*[1 << 28]*C.char)(unsafe.Pointer(messageStackRef))[:messageStackDepth:messageStackDepth]
+
+	messageStack = make([]string, messageStackDepth)
+
+	for i := 0; i < messageStackDepth; i++ {
+		messageStack[i] = C.GoString(messageStackSlice[i])
+	}
+
+	return PvStatus(ret), messageStack
 }

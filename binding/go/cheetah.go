@@ -53,12 +53,23 @@ const (
 )
 
 type CheetahError struct {
-	StatusCode PvStatus
-	Message    string
+	StatusCode   PvStatus
+	Message      string
+	MessageStack []string
 }
 
 func (e *CheetahError) Error() string {
-	return fmt.Sprintf("%s: %s", pvStatusToString(e.StatusCode), e.Message)
+	var message strings.Builder
+	message.WriteString(fmt.Sprintf("%s: %s", pvStatusToString(e.StatusCode), e.Message))
+
+	if len(e.MessageStack) > 0 {
+		message.WriteString(":")
+	}
+
+	for i, value := range e.MessageStack {
+		message.WriteString(fmt.Sprintf("\n  [%d] %s", i, value))
+	}
+	return message.String()
 }
 
 // Cheetah struct
@@ -120,8 +131,8 @@ func NewCheetah(accessKey string) Cheetah {
 func (cheetah *Cheetah) Init() error {
 	if cheetah.AccessKey == "" {
 		return &CheetahError{
-			INVALID_ARGUMENT,
-			"No AccessKey provided to Cheetah"}
+			StatusCode: INVALID_ARGUMENT,
+			Message:    "No AccessKey provided to Cheetah"}
 	}
 
 	if cheetah.ModelPath == "" {
@@ -134,27 +145,37 @@ func (cheetah *Cheetah) Init() error {
 
 	if _, err := os.Stat(cheetah.ModelPath); os.IsNotExist(err) {
 		return &CheetahError{
-			INVALID_ARGUMENT,
-			fmt.Sprintf("Specified model file could not be found at %s", cheetah.ModelPath)}
+			StatusCode: INVALID_ARGUMENT,
+			Message:    fmt.Sprintf("Specified model file could not be found at %s", cheetah.ModelPath)}
 	}
 
 	if _, err := os.Stat(cheetah.LibraryPath); os.IsNotExist(err) {
 		return &CheetahError{
-			INVALID_ARGUMENT,
-			fmt.Sprintf("Specified library file could not be found at %s", cheetah.LibraryPath)}
+			StatusCode: INVALID_ARGUMENT,
+			Message:    fmt.Sprintf("Specified library file could not be found at %s", cheetah.LibraryPath)}
 	}
 
 	if cheetah.EndpointDuration < 0 {
 		return &CheetahError{
-			INVALID_ARGUMENT,
-			"Endpoint duration must be non-negative"}
+			StatusCode: INVALID_ARGUMENT,
+			Message:    "Endpoint duration must be non-negative"}
 	}
 
 	ret := nativeCheetah.nativeInit(cheetah)
 	if PvStatus(ret) != SUCCESS {
+		errorStatus, messageStack := nativeCheetah.nativeGetErrorStack()
+		if errorStatus != SUCCESS {
+			return &CheetahError{
+				StatusCode:   errorStatus,
+				Message:      "Unable to get Cheetah error state",
+			}
+		}
+
 		return &CheetahError{
-			PvStatus(ret),
-			"Cheetah init failed."}
+			StatusCode:   ret,
+			Message:      "Cheetah init failed",
+			MessageStack: messageStack,
+		}
 	}
 
 	FrameLength = nativeCheetah.nativeFrameLength()
@@ -168,8 +189,8 @@ func (cheetah *Cheetah) Init() error {
 func (cheetah *Cheetah) Delete() error {
 	if cheetah.handle == nil {
 		return &CheetahError{
-			INVALID_STATE,
-			"Cheetah has not been initialized or has already been deleted"}
+			StatusCode: INVALID_STATE,
+			Message:    "Cheetah has not been initialized or has already been deleted"}
 	}
 
 	nativeCheetah.nativeDelete(cheetah)
@@ -183,21 +204,31 @@ func (cheetah *Cheetah) Delete() error {
 func (cheetah *Cheetah) Process(pcm []int16) (string, bool, error) {
 	if cheetah.handle == nil {
 		return "", false, &CheetahError{
-			INVALID_STATE,
-			"Cheetah has not been initialized or has already been deleted"}
+			StatusCode: INVALID_STATE,
+			Message:    "Cheetah has not been initialized or has already been deleted"}
 	}
 
 	if len(pcm) != FrameLength {
 		return "", false, &CheetahError{
-			INVALID_ARGUMENT,
-			fmt.Sprintf("Input data frame size (%d) does not match required size of %d", len(pcm), FrameLength)}
+			StatusCode: INVALID_ARGUMENT,
+			Message:    fmt.Sprintf("Input data frame size (%d) does not match required size of %d", len(pcm), FrameLength)}
 	}
 
 	ret, transcript, isEndpoint := nativeCheetah.nativeProcess(cheetah, pcm)
 	if PvStatus(ret) != SUCCESS {
-		return "", false, &CheetahError{
-			PvStatus(ret),
-			"Cheetah process failed."}
+		errorStatus, messageStack := nativeCheetah.nativeGetErrorStack()
+		if errorStatus != SUCCESS {
+			return "", false, &CheetahError{
+				StatusCode:   errorStatus,
+				Message:      "Unable to get Cheetah error state",
+			}
+		}
+
+		return"", false, &CheetahError{
+			StatusCode:   ret,
+			Message:      "Cheetah process failed",
+			MessageStack: messageStack,
+		}
 	}
 
 	return transcript, isEndpoint, nil
@@ -208,15 +239,25 @@ func (cheetah *Cheetah) Process(pcm []int16) (string, bool, error) {
 func (cheetah *Cheetah) Flush() (string, error) {
 	if cheetah.handle == nil {
 		return "", &CheetahError{
-			INVALID_STATE,
-			"Cheetah has not been initialized or has already been deleted"}
+			StatusCode: INVALID_STATE,
+			Message:    "Cheetah has not been initialized or has already been deleted"}
 	}
 
 	ret, transcript := nativeCheetah.nativeFlush(cheetah)
 	if PvStatus(ret) != SUCCESS {
-		return "", &CheetahError{
-			PvStatus(ret),
-			"Cheetah flush failed."}
+		errorStatus, messageStack := nativeCheetah.nativeGetErrorStack()
+		if errorStatus != SUCCESS {
+			return "", &CheetahError{
+				StatusCode:   errorStatus,
+				Message:      "Unable to get Cheetah error state",
+			}
+		}
+
+		return"", &CheetahError{
+			StatusCode:   ret,
+			Message:      "Cheetah flush failed",
+			MessageStack: messageStack,
+		}
 	}
 
 	return transcript, nil

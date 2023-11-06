@@ -134,3 +134,53 @@ func TestProcess(t *testing.T) {
 		runProcessTestCase(t, test.enableAutomaticPunctuation, test.transcript)
 	}
 }
+
+func TestMessageStack(t *testing.T) {
+	cheetah = NewCheetah("invalid")
+	cheetah.EnableAutomaticPunctuation = true
+	err := cheetah.Init()
+	if err != nil {
+		log.Fatalf("Failed to init cheetah with: %v", err)
+	}
+
+	err = cheetah.Init()
+	err2 := cheetah.Init()
+
+	if len(err.Error()) > 1024 {
+		t.Fatalf("length of error is full: '%d'", len(err.Error()))
+	}
+
+	if len(err2.Error()) != len(err.Error()) {
+		t.Fatalf("length of 1st init '%d' does not match 2nd init '%d'", len(err.Error()), len(err2.Error()))
+	}
+}
+
+func TestProcessFlushMessageStack(t *testing.T) {
+	cheetah = NewCheetah(testAccessKey)
+	cheetah.EnableAutomaticPunctuation = true
+	err := cheetah.Init()
+	if err != nil {
+		log.Fatalf("Failed to init cheetah with: %v", err)
+	}
+
+	address := cheetah.handle
+	cheetah.handle = nil
+
+	testPcm := make([]int16, FrameLength)
+	
+	_, _, err = cheetah.Process(testPcm)
+	if err == nil {
+		t.Fatalf("Expected cheetah process to fail")
+	}
+	
+	_, err = cheetah.Flush()
+	if err == nil {
+		t.Fatalf("Expected cheetah flush to fail")
+	}
+
+	cheetah.handle = address
+	delErr := cheetah.Delete()
+	if delErr != nil {
+		t.Fatalf("%v", delErr)
+	}
+}
