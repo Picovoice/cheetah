@@ -21,7 +21,10 @@ import {
 } from '@picovoice/cheetah-web';
 
 export const useCheetah = (): {
-  result: CheetahTranscript | null;
+  result: {
+    partialTranscript: string;
+    isComplete: boolean | undefined;
+  } | null;
   isLoaded: boolean;
   isListening: boolean;
   error: Error | null;
@@ -30,14 +33,16 @@ export const useCheetah = (): {
     model: CheetahModel,
     options?: CheetahOptions
   ) => Promise<void>;
-  start: () => void;
-  stop: () => void;
-  flush: () => void;
-  release: () => void;
+  start: () => Promise<void>;
+  stop: () => Promise<void>;
+  release: () => Promise<void>;
 } => {
   const cheetahRef = useRef<CheetahWorker | null>(null);
 
-  const [result, setResult] = useState<CheetahTranscript | null>(null);
+  const [result, setResult] = useState<{
+    partialTranscript: string;
+    isComplete: boolean | undefined;
+  } | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isListening, setIsListening] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
@@ -46,9 +51,19 @@ export const useCheetah = (): {
     setError(new Error(e));
   }, []);
 
-  const transcriptCallback = (cheetahTranscript: CheetahTranscript) => {
-    setResult(cheetahTranscript);
-  };
+  const transcriptCallback = useCallback(
+    (cheetahTranscript: CheetahTranscript): void => {
+      if (cheetahTranscript.isEndpoint) {
+        cheetahRef.current?.flush();
+      }
+
+      setResult({
+        partialTranscript: cheetahTranscript.transcript,
+        isComplete: cheetahTranscript.isFlushed,
+      });
+    },
+    []
+  );
 
   const init = useCallback(
     async (
@@ -109,21 +124,12 @@ export const useCheetah = (): {
       }
 
       await WebVoiceProcessor.unsubscribe(cheetahRef.current);
+      cheetahRef.current?.flush();
       setError(null);
       setIsListening(false);
     } catch (e: any) {
       setError(e);
       setIsListening(false);
-    }
-  }, []);
-
-  const flush = useCallback(async (): Promise<void> => {
-    try {
-      if (cheetahRef.current) {
-        cheetahRef.current?.flush();
-      }
-    } catch (e: any) {
-      setError(e);
     }
   }, []);
 
@@ -132,10 +138,7 @@ export const useCheetah = (): {
       await stop();
       cheetahRef.current?.terminate();
       cheetahRef.current = null;
-
-      setError(null);
       setIsLoaded(false);
-      setIsListening(false);
     }
   }, []);
 
@@ -158,7 +161,6 @@ export const useCheetah = (): {
     init,
     start,
     stop,
-    flush,
     release,
   };
 };

@@ -1,18 +1,15 @@
 import { renderHook } from '@testing-library/react-hooks/dom';
 
-import { useLeopard } from '../src';
+import { useCheetah } from '../src';
 
 // @ts-ignore
 import cheetahParams from '@/cheetah_params.js';
-
-// @ts-ignore
-import testData from './test_data.json';
 
 const ACCESS_KEY = Cypress.env('ACCESS_KEY');
 
 describe('Cheetah binding', () => {
   it('should be able to init via public path', () => {
-    const { result } = renderHook(() => useLeopard());
+    const { result } = renderHook(() => useCheetah());
 
     cy.wrapHook(() =>
       result.current.init(ACCESS_KEY, {
@@ -35,7 +32,7 @@ describe('Cheetah binding', () => {
   });
 
   it('should be able to init via base64', () => {
-    const { result } = renderHook(() => useLeopard());
+    const { result } = renderHook(() => useCheetah());
 
     cy.wrapHook(() =>
       result.current.init(ACCESS_KEY, {
@@ -51,7 +48,7 @@ describe('Cheetah binding', () => {
   });
 
   it('should show invalid model path error message', () => {
-    const { result } = renderHook(() => useLeopard());
+    const { result } = renderHook(() => useCheetah());
 
     cy.wrapHook(() =>
       result.current.init(ACCESS_KEY, {
@@ -67,7 +64,7 @@ describe('Cheetah binding', () => {
   });
 
   it('should show invalid access key error message', () => {
-    const { result } = renderHook(() => useLeopard());
+    const { result } = renderHook(() => useCheetah());
 
     cy.wrapHook(() =>
       result.current.init('', {
@@ -80,55 +77,51 @@ describe('Cheetah binding', () => {
     });
   });
 
-  for (const testInfo of testData.tests.parameters) {
-    it.only(`should be able to process audio (${testInfo.language})`, () => {
-      const { result } = renderHook(() => useLeopard());
+  it(`should be able to process audio (en)`, () => {
+    const { result } = renderHook(() => useCheetah());
 
-      cy.wrapHook(() =>
-        result.current.init(
-          ACCESS_KEY,
-          {
-            publicPath:
-              testInfo.language === 'en'
-                ? `/test/cheetah_params.pv`
-                : `/test/cheetah_params_${testInfo.language}.pv`,
-            forceWrite: true,
-          },
-          {
-            enableAutomaticPunctuation: true,
-          }
-        )
-      ).then(() => {
-        expect(
-          result.current.isLoaded,
-          `Failed to load ${testInfo.audio_file} (${testInfo.language}) with ${result.current.error}`
-        ).to.be.true;
-      });
-
-      cy.getFramesFromFile(`audio_samples/${testInfo.audio_file}`).then(
-        async (pcm: Int16Array) => {
-          cy.wrapHook(() => result.current.process(pcm)).then(() => {
-            const transcript = result.current.transcript?.transcript;
-            expect(transcript).to.be.eq(testInfo.transcript);
-            result.current.transcript?.words.forEach(
-              ({ word, startSec, endSec, confidence }) => {
-                const wordRegex = new RegExp(`${word}`, 'i');
-                expect(transcript).to.match(wordRegex);
-                expect(startSec).to.be.gt(0);
-                expect(endSec).to.be.gt(0);
-                expect(confidence).to.be.gt(0).and.lt(1);
-              }
-            );
-          });
-        }
-      );
-
-      cy.wrapHook(result.current.release).then(() => {
-        expect(
-          result.current.isLoaded,
-          `Failed to release cheetah with ${result.current.error}`
-        ).to.be.false;
-      });
+    cy.wrapHook(() =>
+      result.current.init(
+        ACCESS_KEY,
+        {
+          publicPath: '/test/cheetah_params.pv',
+          forceWrite: true,
+        },
+        { enableAutomaticPunctuation: true }
+      )
+    ).then(() => {
+      expect(
+        result.current.isLoaded,
+        `Failed to load 'cheetah_params.pv' with ${result.current.error}`
+      ).to.be.true;
     });
-  }
+
+    cy.wrapHook(result.current.start).then(() => {
+      expect(result.current.isListening).to.be.true;
+    });
+
+    cy.mockRecording('audio_samples/test.wav');
+
+    cy.wrapHook(result.current.stop).then(() => {
+      expect(result.current.isListening).to.be.false;
+
+      let completeTranscript = '';
+      result.all.forEach(resultObg => {
+        if ('result' in resultObg && resultObg.result !== null) {
+          completeTranscript += resultObg.result.partialTranscript;
+        }
+      });
+
+      expect(completeTranscript).to.eq(
+        'Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.'
+      );
+    });
+
+    cy.wrapHook(result.current.release).then(() => {
+      expect(
+        result.current.isLoaded,
+        `Failed to release cheetah with ${result.current.error}`
+      ).to.be.false;
+    });
+  });
 });

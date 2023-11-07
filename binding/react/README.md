@@ -23,8 +23,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
 ### Restrictions
 
-IndexedDB is required to use `Cheetah` in a worker thread. Browsers without IndexedDB support
-(e.g. Firefox Incognito Mode) should use the [`CheetahWeb binding`](https://github.com/Picovoice/cheetah/tree/master/binding/web) in the main thread.
+IndexedDB and WebWorkers are required to use `Cheetah React`. Browsers without support (e.g. Firefox Incognito Mode) should use the [`CheetahWeb binding`](https://github.com/Picovoice/cheetah/tree/master/binding/web) main thread method.
 
 ## AccessKey
 
@@ -48,13 +47,11 @@ npm install --save @picovoice/cheetah-react @picovoice/web-voice-processor
 
 ## Usage
 
-### Cheetah Model
-
 Cheetah requires a model file (`.pv`) at initialization. Use one of the default language models found in [lib/common](../../lib/common), or create a custom Cheetah model (`.pv`) in the [Picovoice Console](https://console.picovoice.ai/) for the target platform `Web (WASM)`.
 
 There are two methods to initialize Cheetah.
 
-#### Public Directory
+### Public Directory
 
 **NOTE**: Due to modern browser limitations of using a file URL, this method does __not__ work if used without hosting a server.
 
@@ -64,7 +61,7 @@ This method fetches the model file from the public directory and feeds it to Che
 cp ${CHEETAH_MODEL_FILE} ${PATH_TO_PUBLIC_DIRECTORY}
 ```
 
-#### Base64
+### Base64
 
 **NOTE**: This method works without hosting a server, but increases the size of the model file roughly by 33%.
 
@@ -82,7 +79,7 @@ run:
 npx pvbase64 -h
 ```
 
-#### Model Object
+### Cheetah Model
 
 Cheetah saves and caches your model file in IndexedDB to be used by WebAssembly. Use a different `customWritePath` variable to hold multiple models and set the `forceWrite` value to true to force re-save a model file.
 If the model file changes, `version` should be incremented to force the cached models to be updated.
@@ -101,9 +98,7 @@ const cheetahModel = {
 }
 ```
 
-### Init options
-
-Set `endpointDurationSec` value to 0 if you do not wish to detect endpoint (moment of silence). Set `enableAutomaticPunctuation` to true to enable  punctuation in transcript.
+Additional engine options are provided via the `options` parameter. Set `endpointDurationSec` value to 0 if you do not wish to detect endpoint (period of silence). Set `enableAutomaticPunctuation` to true to enable punctuation in the transcript.
 
 ```typescript
 // Optional - below are default values
@@ -126,7 +121,6 @@ const {
   init,
   start,
   stop,
-  flush,
   release,
 } = useCheetah();
 
@@ -156,12 +150,14 @@ Use the `result` state to get transcription results:
 ```typescript
 useEffect(() => {
   if (result !== null) {
-    console.log(result.transcript);
-    console.log(result.isEndpoint);
-    console.log(result.isFlushed);
+    console.log(result.partialTranscript);
+    console.log(result.isComplete);
   }
 }, [result])
 ```
+
+- `result.partialTranscript`: transcript returned from Cheetah
+- `result.isComplete`: whether the corresponding `partialTranscript` marks the end of a transcript (i.e. the end of a sentence)
 
 ### Stop
 
