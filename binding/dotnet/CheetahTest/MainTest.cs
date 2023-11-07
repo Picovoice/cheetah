@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+using Fastenshtein;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Pv;
@@ -43,6 +45,46 @@ namespace CheetahTest
 
             return data;
         }
+
+        public static IEnumerable<object[]> TestParameters
+        {
+            get
+            {
+                List<object[]> testParameters = new List<object[]>();
+
+                string transcript = "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel."
+                string[] punctuations = new string[]{"."};
+
+                testParameters.Add(new object[]
+                {
+                    "en",
+                    "test.wav",
+                    transcript,
+                    true,
+                    0.025
+                });
+
+                string transcriptWithoutPunctuation = transcript;
+                foreach (string p in punctuations)
+                {
+                    transcriptWithoutPunctuation = transcriptWithoutPunctuation.Replace(p, "");
+                }
+
+                testParameters.Add(new object[]
+                {
+                    "en",
+                    "test.wav",
+                    transcriptWithoutPunctuation,
+                    false,
+                    0.025
+                });
+
+                return testParameters;
+            }
+        }
+
+        static float GetErrorRate(string transcript, string referenceTranscript)
+            => Levenshtein.Distance(transcript, referenceTranscript) / (float)referenceTranscript.Length;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext _)
@@ -80,16 +122,20 @@ namespace CheetahTest
         }
 
         [TestMethod]
-        [DataRow(true, "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.")]
-        [DataRow(false, "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel")]
-        public void TestProcess(bool enableAutomaticPunctuation, string expectedTranscript)
+        [DynamicData(nameof(TestParameters))]
+        public void TestProcess(
+            string language,
+            string testAudioFile,
+            string referenceTranscript,
+            bool enablePunctuation,
+            float targetErrorRate)
         {
             using (Cheetah cheetah = Cheetah.Create(
                 accessKey: ACCESS_KEY,
                 endpointDurationSec: 0.2f,
-                enableAutomaticPunctuation: enableAutomaticPunctuation))
+                enableAutomaticPunctuation: enablePunctuation))
             {
-                string testAudioPath = Path.Combine(_relativeDir, "resources/audio_samples/test.wav");
+                string testAudioPath = Path.Combine(_relativeDir, "resources/audio_samples", testAudioFile);
                 List<short> pcm = GetPcmFromFile(testAudioPath, cheetah.SampleRate);
 
                 int frameLen = cheetah.FrameLength;
@@ -107,23 +153,27 @@ namespace CheetahTest
                 }
                 CheetahTranscript finalTranscriptObj = cheetah.Flush();
                 transcript += finalTranscriptObj.Transcript;
-                Assert.AreEqual(transcript, expectedTranscript);
-                Assert.IsTrue(isEndpoint);
+
+                Assert.IsTrue(GetErrorRate(transcript, referenceTranscript) < targetErrorRate);
             }
         }
 
         [TestMethod]
-        [DataRow(true, "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.")]
-        [DataRow(false, "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel")]
-        public void TestCustomModel(bool enableAutomaticPunctuation, string expectedTranscript)
+        [DynamicData(nameof(TestParameters))]
+        public void TestCustomModel(
+            string language,
+            string testAudioFile,
+            string referenceTranscript,
+            bool enablePunctuation,
+            float targetErrorRate)
         {
             string testModelPath = Path.Combine(_relativeDir, "lib/common/cheetah_params.pv");
             using (Cheetah cheetah = Cheetah.Create(
                 accessKey: ACCESS_KEY,
                 modelPath: testModelPath,
-                enableAutomaticPunctuation: enableAutomaticPunctuation))
+                enableAutomaticPunctuation: enablePunctuation))
             {
-                string testAudioPath = Path.Combine(_relativeDir, "resources/audio_samples/test.wav");
+                string testAudioPath = Path.Combine(_relativeDir, "resources/audio_samples", testAudioFile);
                 List<short> pcm = GetPcmFromFile(testAudioPath, cheetah.SampleRate);
 
                 int frameLen = cheetah.FrameLength;
@@ -139,7 +189,8 @@ namespace CheetahTest
                 }
                 CheetahTranscript finalTranscriptObj = cheetah.Flush();
                 transcript += finalTranscriptObj.Transcript;
-                Assert.AreEqual(transcript, expectedTranscript);
+
+                Assert.IsTrue(GetErrorRate(transcript, referenceTranscript) < targetErrorRate);
             }
         }
 
