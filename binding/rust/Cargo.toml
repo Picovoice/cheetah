@@ -30,5 +30,7 @@ libc = "0.2"
 libloading = "0.7"
 
 [dev-dependencies]
-rodio = "0.15"
+distance = "0.4.0"
 itertools = "0.10"
+rodio = "0.15"
+serde_json = "1.0.91"
