@@ -13,20 +13,20 @@
 import {
   Cheetah,
   CheetahInvalidArgumentError,
-  getInt16Frames,
-  checkWaveFile,
 } from '../src';
 import * as fs from 'fs';
-import * as path from 'path';
 import { WaveFile } from 'wavefile';
 
 import { getSystemLibraryPath } from '../src/platforms';
 
-const MODEL_PATH = './lib/common/cheetah_params.pv';
+import {
+  getAudioFile,
+  getModelPath,
+  getTestParameters,
+} from './test_utils';
 
-const WAV_PATH = '../../../resources/audio_samples/test.wav';
-const TRANSCRIPT =
-  'Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel';
+const MODEL_PATH = getModelPath();
+const TEST_PARAMETERS = getTestParameters();
 
 const libraryPath = getSystemLibraryPath();
 
@@ -34,30 +34,60 @@ const ACCESS_KEY = process.argv
   .filter(x => x.startsWith('--access_key='))[0]
   .split('--access_key=')[1];
 
-function cheetahProcessWaveFile(
-  engineInstance: Cheetah,
-  relativeWaveFilePath: string
-): [string, boolean] {
-  const waveFilePath = path.join(__dirname, relativeWaveFilePath);
+const levenshteinDistance = (words1: string[], words2: string[]) => {
+  const res = Array.from(
+    Array(words1.length + 1),
+    () => new Array(words2.length + 1)
+  );
+  for (let i = 0; i <= words1.length; i++) {
+    res[i][0] = i;
+  }
+  for (let j = 0; j <= words2.length; j++) {
+    res[0][j] = j;
+  }
+  for (let i = 1; i <= words1.length; i++) {
+    for (let j = 1; j <= words2.length; j++) {
+      res[i][j] = Math.min(
+        res[i - 1][j] + 1,
+        res[i][j - 1] + 1,
+        res[i - 1][j - 1] +
+          (words1[i - 1].toUpperCase() === words2[j - 1].toUpperCase() ? 0 : 1)
+      );
+    }
+  }
+  return res[words1.length][words2.length];
+};
+
+const characterErrorRate = (
+  transcript: string,
+  expectedTranscript: string
+): number => {
+  const ed = levenshteinDistance(
+    transcript.split(''),
+    expectedTranscript.split('')
+  );
+  return ed / expectedTranscript.length;
+};
+
+const loadPcm = (audioFile: string): Int16Array => {
+  const waveFilePath = getAudioFile(audioFile);
   const waveBuffer = fs.readFileSync(waveFilePath);
   const waveAudioFile = new WaveFile(waveBuffer);
 
-  if (!checkWaveFile(waveAudioFile, engineInstance.sampleRate)) {
-    // eslint-disable-next-line no-console
-    console.error(
-      'Audio file did not meet requirements. Wave file must be 16KHz, 16-bit, linear PCM (mono).'
-    );
-    return ['', false];
-  }
+  const pcm: any = waveAudioFile.getSamples(false, Int16Array);
+  return pcm;
+};
 
-  const frames = getInt16Frames(waveAudioFile, engineInstance.frameLength);
+const cheetahProcessWaveFile = (
+  engineInstance: Cheetah,
+  audioFile: string
+): [string, boolean] => {
+  const pcm = loadPcm(audioFile);
 
   let transcript = '';
   let isEndpoint = false;
-  for (let i = 0; i < frames.length; i++) {
-    const frame = frames[i];
-    const [partialTranscript, partialIsEndpoint] =
-      engineInstance.process(frame);
+  for (let i = 0; i < pcm.length; i += engineInstance.frameLength) {
+    const [partialTranscript, partialIsEndpoint] =engineInstance.process(pcm.slice(i, i + engineInstance.frameLength));
     transcript += partialTranscript;
     isEndpoint = partialIsEndpoint;
   }
@@ -67,35 +97,78 @@ function cheetahProcessWaveFile(
   return [transcript, isEndpoint];
 }
 
+
+const testCheetahProcess = (
+  _: string,
+  transcript: string,
+  punctuations: string[],
+  testPunctuation: boolean,
+  errorRate: number,
+  audioFile: string
+) => {
+  let normTranscript = transcript;
+  if (!testPunctuation) {
+    for (const punctuation of punctuations) {
+      normTranscript = normTranscript.replace(new RegExp(`[${punctuation}]`, "g"), '');
+    }
+  }
+
+  let cheetahEngine = new Cheetah(ACCESS_KEY, {
+    enableAutomaticPunctuation: testPunctuation,
+  });
+
+  let [res, __] = cheetahProcessWaveFile(cheetahEngine, audioFile);
+
+  expect(
+    characterErrorRate(res, normTranscript) < errorRate
+  ).toBeTruthy();
+
+  cheetahEngine.release();
+};
+
+describe('successful processes', () => {
+  it.each(TEST_PARAMETERS)(
+    'testing process `%p`',
+    (
+      language: string,
+      transcript: string,
+      punctuations: string[],
+      errorRate: number,
+      audioFile: string
+    ) => {
+      testCheetahProcess(
+        language,
+        transcript,
+        punctuations,
+        false,
+        errorRate,
+        audioFile
+      );
+    }
+  );
+
+  it.each(TEST_PARAMETERS)(
+    'testing process `%p` with punctuation',
+    (
+      language: string,
+      transcript: string,
+      punctuations: string[],
+      errorRate: number,
+      audioFile: string
+    ) => {
+      testCheetahProcess(
+        language,
+        transcript,
+        punctuations,
+        true,
+        errorRate,
+        audioFile
+      );
+    }
+  );
+});
+
 describe('Defaults', () => {
-  test('successful process', () => {
-    let cheetahEngine = new Cheetah(ACCESS_KEY);
-
-    let [transcript, isEndpoint] = cheetahProcessWaveFile(
-      cheetahEngine,
-      WAV_PATH
-    );
-
-    expect(transcript).toBe(TRANSCRIPT);
-    expect(isEndpoint).toBe(false);
-
-    cheetahEngine.release();
-  });
-
-  test('successful process with endpoint detection', () => {
-    let cheetahEngine = new Cheetah(ACCESS_KEY, { endpointDurationSec: 0.2 });
-
-    let [transcript, isEndpoint] = cheetahProcessWaveFile(
-      cheetahEngine,
-      WAV_PATH
-    );
-
-    expect(transcript).toBe(TRANSCRIPT);
-    expect(isEndpoint).toBe(true);
-
-    cheetahEngine.release();
-  });
-
   test('Empty AccessKey', () => {
     expect(() => {
       new Cheetah('');
@@ -120,7 +193,7 @@ describe('manual paths', () => {
 
   test('manual model and library path', () => {
     let cheetahEngine = new Cheetah(ACCESS_KEY, {
-      modelPath: MODEL_PATH,
+      modelPath:  MODEL_PATH,
       libraryPath: libraryPath,
       endpointDurationSec: 0.2,
     });
