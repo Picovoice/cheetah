@@ -1,5 +1,5 @@
 /*
-    Copyright 2022 Picovoice Inc.
+    Copyright 2022-2023 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -109,5 +109,31 @@ mod tests {
             .expect("Unable to create Cheetah");
 
         assert_ne!(cheetah.version(), "")
+    }
+
+    #[test]
+    fn test_error_stack() {
+        let mut error_stack = Vec::new();
+
+        let res = CheetahBuilder::new()
+            .access_key("invalid")
+            .enable_automatic_punctuation(true)
+            .init();
+        if let Err(err) = res {
+            error_stack = err.message_stack
+        }
+
+        assert!(0 < error_stack.len() && error_stack.len() <= 8);
+
+        let res = CheetahBuilder::new()
+            .access_key("invalid")
+            .enable_automatic_punctuation(true)
+            .init();
+        if let Err(err) = res {
+            assert_eq!(error_stack.len(), err.message_stack.len());
+            for i in 0..error_stack.len() {
+                assert_eq!(error_stack[i], err.message_stack[i])
+            }
+        }
     }
 }
