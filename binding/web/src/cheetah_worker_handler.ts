@@ -13,7 +13,8 @@
 /// <reference lib="webworker" />
 
 import { Cheetah } from './cheetah';
-import { CheetahTranscript, CheetahWorkerRequest } from './types';
+import { CheetahTranscript, CheetahWorkerRequest, PvStatus } from './types';
+import { CheetahError } from "./cheetah_errors";
 
 let cheetah: Cheetah | null = null;
 
@@ -24,10 +25,12 @@ const transcriptCallback = (cheetahTranscript: CheetahTranscript): void => {
   });
 };
 
-const processErrorCallback = (error: string): void => {
+const processErrorCallback = (error: CheetahError): void => {
   self.postMessage({
     command: 'error',
-    message: error,
+    status: error.status,
+    shortMessage: error.shortMessage,
+    messageStack: error.messageStack
   });
 };
 
@@ -42,7 +45,8 @@ self.onmessage = async function (
       if (cheetah !== null) {
         self.postMessage({
           command: 'error',
-          message: 'Cheetah already initialized',
+          status: PvStatus.INVALID_STATE,
+          shortMessage: 'Cheetah already initialized',
         });
         return;
       }
@@ -62,17 +66,28 @@ self.onmessage = async function (
           sampleRate: cheetah.sampleRate,
         });
       } catch (e: any) {
-        self.postMessage({
-          command: 'error',
-          message: e.message,
-        });
+        if (e instanceof CheetahError) {
+          self.postMessage({
+            command: 'error',
+            status: e.status,
+            shortMessage: e.shortMessage,
+            messageStack: e.messageStack
+          });
+        } else {
+          self.postMessage({
+            command: 'error',
+            status: PvStatus.RUNTIME_ERROR,
+            shortMessage: e.message
+          });
+        }
       }
       break;
     case 'process':
       if (cheetah === null) {
         self.postMessage({
           command: 'error',
-          message: 'Cheetah not initialized',
+          status: PvStatus.INVALID_STATE,
+          shortMessage: 'Cheetah not initialized',
         });
         return;
       }
@@ -82,7 +97,8 @@ self.onmessage = async function (
       if (cheetah === null) {
         self.postMessage({
           command: 'error',
-          message: 'Cheetah not initialized',
+          status: PvStatus.INVALID_STATE,
+          shortMEssage: 'Cheetah not initialized',
         });
         return;
       }
@@ -101,8 +117,9 @@ self.onmessage = async function (
     default:
       self.postMessage({
         command: 'failed',
+        status: PvStatus.RUNTIME_ERROR,
         // @ts-ignore
-        message: `Unrecognized command: ${event.data.command}`,
+        shortMessage: `Unrecognized command: ${event.data.command}`,
       });
   }
 };

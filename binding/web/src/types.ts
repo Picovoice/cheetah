@@ -10,6 +10,22 @@
 */
 
 import { PvModel } from "@picovoice/web-utils";
+import { CheetahError } from "./cheetah_errors";
+
+export enum PvStatus {
+  SUCCESS = 10000,
+  OUT_OF_MEMORY,
+  IO_ERROR,
+  INVALID_ARGUMENT,
+  STOP_ITERATION,
+  KEY_ERROR,
+  INVALID_STATE,
+  RUNTIME_ERROR,
+  ACTIVATION_ERROR,
+  ACTIVATION_LIMIT_REACHED,
+  ACTIVATION_THROTTLED,
+  ACTIVATION_REFUSED,
+}
 
 /**
  * CheetahModel types
@@ -22,7 +38,7 @@ export type CheetahOptions = {
   /** @defaultValue false */
   enableAutomaticPunctuation?: boolean;
   /** @defaultValue undefined */
-  processErrorCallback?: (error: string) => void
+  processErrorCallback?: (error: CheetahError) => void
 };
 
 export type CheetahTranscript = {
@@ -38,6 +54,7 @@ export type CheetahWorkerInitRequest = {
   options: CheetahOptions;
   wasm: string;
   wasmSimd: string;
+  sdk: string;
 };
 
 export type CheetahWorkerProcessRequest = {
@@ -61,7 +78,9 @@ export type CheetahWorkerRequest =
 
 export type CheetahWorkerFailureResponse = {
   command: 'failed' | 'error';
-  message: string;
+  status: PvStatus;
+  shortMessage: string;
+  messageStack: string[];
 };
 
 export type CheetahWorkerInitResponse = CheetahWorkerFailureResponse | {
