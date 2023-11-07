@@ -97,26 +97,28 @@ export default class Cheetah {
     }
 
     const pvCheetah = require(libraryPath); // eslint-disable-line
+    this._pvCheetah = pvCheetah;
 
     let cheetahHandleAndStatus: CheetahHandleAndStatus | null = null;
-    try {
+    try {      
+      pvCheetah.set_sdk("nodejs");
+
       cheetahHandleAndStatus = pvCheetah.init(
         accessKey,
         modelPath,
         endpointDurationSec,
         enableAutomaticPunctuation
       );
-    } catch (err: any) {
-      pvStatusToException(<PvStatus>err.code, err);
+    } catch (err: any) {      
+      pvStatusToException(PvStatus[err.code as keyof typeof PvStatus], err);
     }
 
     const status = cheetahHandleAndStatus!.status;
     if (status !== PvStatus.SUCCESS) {
-      pvStatusToException(status, 'Cheetah failed to initialize');
+      this.handlePvStatus(status, 'Cheetah failed to initialize');
     }
 
     this._handle = cheetahHandleAndStatus!.handle;
-    this._pvCheetah = pvCheetah;
     this._sampleRate = pvCheetah.sample_rate();
     this._frameLength = pvCheetah.frame_length();
     this._version = pvCheetah.version();
@@ -178,12 +180,12 @@ export default class Cheetah {
     try {
       partialTranscriptAndStatus = this._pvCheetah.process(this._handle, pcm);
     } catch (err: any) {
-      pvStatusToException(<PvStatus>err.code, err);
+      pvStatusToException(PvStatus[err.code as keyof typeof PvStatus], err);
     }
 
     const status = partialTranscriptAndStatus!.status;
     if (status !== PvStatus.SUCCESS) {
-      pvStatusToException(status, 'Cheetah failed to process the audio frame');
+      this.handlePvStatus(status, 'Cheetah failed to process the audio frame');
     }
 
     return [
@@ -210,12 +212,12 @@ export default class Cheetah {
     try {
       transcriptAndStatus = this._pvCheetah.flush(this._handle);
     } catch (err: any) {
-      pvStatusToException(<PvStatus>err.code, err);
+      pvStatusToException(PvStatus[err.code as keyof typeof PvStatus], err);
     }
 
     const status = transcriptAndStatus!.status;
     if (status !== PvStatus.SUCCESS) {
-      pvStatusToException(status, 'Cheetah failed to process the audio frame');
+      this.handlePvStatus(status, 'Cheetah failed to flush');
     }
 
     return transcriptAndStatus!.transcript;
@@ -238,6 +240,15 @@ export default class Cheetah {
     } else {
       // eslint-disable-next-line no-console
       console.warn('Cheetah is not initialized');
+    }
+  }
+
+  private handlePvStatus(status: PvStatus, message: string): void {
+    const errorObject = this._pvCheetah.get_error_stack();
+    if (errorObject.status === PvStatus.SUCCESS) {
+      pvStatusToException(status, message, errorObject.message_stack);
+    } else {
+      pvStatusToException(status, "Unable to get Cheetah error state");
     }
   }
 }
