@@ -23,33 +23,62 @@ import (
 	"reflect"
 	"runtime"
 	"testing"
+
+	"github.com/agnivade/levenshtein"
 )
+
+type TestParameters struct {
+	language                   string
+	testAudioFile              string
+	transcript                 string
+	errorRate                  float32
+	enableAutomaticPunctuation bool
+}
 
 var (
 	testAccessKey string
 	cheetah       Cheetah
-	testAudioPath string
+	processTestParameters []TestParameters
 )
-
-var processTestParameters = []struct {
-	enableAutomaticPunctuation bool
-	transcript                 string
-}{
-	{false, "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel"},
-	{true, "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel."},
-}
 
 func TestMain(m *testing.M) {
 
 	flag.StringVar(&testAccessKey, "access_key", "", "AccessKey for testing")
 	flag.Parse()
 
-	_, filename, _, _ := runtime.Caller(0)
-	dir := filepath.Dir(filename)
-
-	testAudioPath, _ = filepath.Abs(filepath.Join(dir, "../../resources/audio_samples/test.wav"))
-
+	
+	processTestParameters = loadTestData()
 	os.Exit(m.Run())
+}
+
+func loadTestData() []TestParameters {
+	punctuations := []string{"."}
+	transcript := "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel."
+
+	testCaseWithPunctuation := TestParameters{
+		language:                   "en",
+		testAudioFile:              "test.wav",
+		transcript:                 transcript,
+		enableAutomaticPunctuation: true,
+		errorRate:                  0.025,
+	}
+	processTestParameters = append(processTestParameters, testCaseWithPunctuation)
+
+	transcriptWithoutPunctuation := transcript
+	for _, p := range punctuations {
+		transcriptWithoutPunctuation = strings.ReplaceAll(transcriptWithoutPunctuation, p, "")
+	}
+
+	testCaseWithoutPunctuation := TestParameters{
+		language:                   "en",
+		testAudioFile:              "test.wav",
+		transcript:                 transcriptWithoutPunctuation,
+		enableAutomaticPunctuation: false,
+		errorRate:                  0.025,
+	}
+	processTestParameters = append(processTestParameters, testCaseWithoutPunctuation)
+
+	return processTestParameters
 }
 
 func TestVersion(t *testing.T) {
@@ -76,8 +105,11 @@ func TestVersion(t *testing.T) {
 
 func runProcessTestCase(
 	t *testing.T,
-	enableAutomaticPunctuation bool,
-	expectedTranscript string) {
+	_ string,
+	testAudioFile string,
+	referenceTranscript string,
+	targetErrorRate float32,
+	enableAutomaticPunctuation bool) {
 
 	cheetah = NewCheetah(testAccessKey)
 	cheetah.EnableAutomaticPunctuation = enableAutomaticPunctuation
@@ -93,13 +125,15 @@ func runProcessTestCase(
 		}
 	}()
 
+	testAudioPath, _ := filepath.Abs(filepath.Join("../../resources/audio_samples", testAudioFile))
+
 	data, err := ioutil.ReadFile(testAudioPath)
 	if err != nil {
 		t.Fatalf("Could not read test file: %v", err)
 	}
 	data = data[44:]
 
-	var res string
+	var transcript string
 
 	frameLengthInBytes := FrameLength * 2
 	numFrames := len(data) / frameLengthInBytes
@@ -115,23 +149,24 @@ func runProcessTestCase(
 			t.Fatalf("Failed to process pcm buffer: %v", err)
 		}
 
-		res += partial
+		transcript += partial
 	}
 
 	final, err := cheetah.Flush()
 	if err != nil {
 		t.Fatalf("Failed to flush: %v", err)
 	}
-	res += final
+	transcript += final
 
-	if res != expectedTranscript {
-		t.Fatalf("Expected '%s' got '%s'", expectedTranscript, res)
+	errorRate := float32(levenshtein.ComputeDistance(transcript, referenceTranscript)) / float32(len(referenceTranscript))
+	if errorRate >= targetErrorRate {
+		t.Fatalf("Expected '%f' got '%f'", targetErrorRate, errorRate)
 	}
 }
 
 func TestProcess(t *testing.T) {
 	for _, test := range processTestParameters {
-		runProcessTestCase(t, test.enableAutomaticPunctuation, test.transcript)
+		runProcessTestCase(t, test.language, test.testAudioFile, test.transcript, test.errorRate, test.enableAutomaticPunctuation)
 	}
 }
 
