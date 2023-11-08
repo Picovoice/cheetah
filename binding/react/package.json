@@ -1,6 +1,6 @@
 {
   "name": "@picovoice/cheetah-react",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "React hook for Cheetah Web SDK",
   "entry": "src/index.ts",
   "module": "dist/esm/index.js",
@@ -15,8 +15,11 @@
     "recognition",
     "ai",
     "speech-to-text",
+    "real-time",
     "transcription",
     "offline",
+    "hooks",
+    "react",
     "dom"
   ],
   "author": "Picovoice Inc",

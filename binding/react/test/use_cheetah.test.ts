@@ -106,9 +106,9 @@ describe('Cheetah binding', () => {
       expect(result.current.isListening).to.be.false;
 
       let completeTranscript = '';
-      result.all.forEach(resultObg => {
-        if ('result' in resultObg && resultObg.result !== null) {
-          completeTranscript += resultObg.result.partialTranscript;
+      result.all.forEach(resultObj => {
+        if ('result' in resultObj && resultObj.result !== null) {
+          completeTranscript += resultObj.result.partialTranscript;
         }
       });
 

@@ -47,7 +47,7 @@ npm install --save @picovoice/cheetah-react @picovoice/web-voice-processor
 
 ## Usage
 
-Cheetah requires a model file (`.pv`) at initialization. Use one of the default language models found in [lib/common](../../lib/common), or create a custom Cheetah model (`.pv`) in the [Picovoice Console](https://console.picovoice.ai/) for the target platform `Web (WASM)`.
+Cheetah requires a model file (`.pv`) at initialization. Use the default language model found in [lib/common](../../lib/common), or create a custom Cheetah model (`.pv`) in the [Picovoice Console](https://console.picovoice.ai/) for the target platform `Web (WASM)`.
 
 There are two methods to initialize Cheetah.
 

@@ -25,5 +25,5 @@ yarn-error.log*
 src/lib/*
 !src/lib/.gitkeep
 
-# Leopard params
+# Cheetah params
 public/models/*

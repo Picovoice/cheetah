@@ -9,7 +9,7 @@ export default function VoiceWidget() {
   const { result, isLoaded, isListening, error, init, start, stop, release } =
     useCheetah();
 
-  const [transcript, setTranscript] = useState("");
+  const [transcript, setTranscript] = useState<string>("");
 
   useEffect(() => {
     if (result !== null) {
