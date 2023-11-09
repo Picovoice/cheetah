@@ -143,10 +143,12 @@ export const useCheetah = (): {
 
   const release = useCallback(async (): Promise<void> => {
     if (cheetahRef.current) {
-      await stop();
+      await WebVoiceProcessor.unsubscribe(cheetahRef.current);
       cheetahRef.current?.terminate();
       cheetahRef.current = null;
+      setError(null);
       setIsLoaded(false);
+      setIsListening(false);
     }
   }, []);
 
