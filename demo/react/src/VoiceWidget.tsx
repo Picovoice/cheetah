@@ -6,10 +6,11 @@ import cheetahModel from "./lib/cheetahModel";
 export default function VoiceWidget() {
   const accessKeyRef = useRef<string>("");
 
+  const [isBusy, setIsBusy] = useState<boolean>(false)
+  const [transcript, setTranscript] = useState<string>("");
+
   const { result, isLoaded, isListening, error, init, start, stop, release } =
     useCheetah();
-
-  const [transcript, setTranscript] = useState<string>("");
 
   useEffect(() => {
     if (result !== null) {
@@ -30,17 +31,21 @@ export default function VoiceWidget() {
       return;
     }
 
+    setIsBusy(true)
     await init(accessKeyRef.current, cheetahModel, {
       enableAutomaticPunctuation: true,
     });
+    setIsBusy(false)
   }, [init]);
 
   const toggleRecord = async () => {
+    setIsBusy(true)
     if (isListening) {
       await stop();
     } else {
       await start();
     }
+    setIsBusy(false)
   };
 
   return (
@@ -53,6 +58,7 @@ export default function VoiceWidget() {
           <input
             type="text"
             name="accessKey"
+            disabled={isLoaded || isBusy}
             onChange={(e) => {
               accessKeyRef.current = e.target.value;
             }}
@@ -60,14 +66,14 @@ export default function VoiceWidget() {
           <button
             className="init-button"
             onClick={initEngine}
-            disabled={isLoaded}
+            disabled={isLoaded || isBusy}
           >
             Init Cheetah
           </button>
           <button
             className="release-button"
             onClick={release}
-            disabled={error !== null || !isLoaded}
+            disabled={!isLoaded || isBusy}
           >
             Release
           </button>
@@ -81,7 +87,7 @@ export default function VoiceWidget() {
       <label htmlFor="record-audio">Record audio to transcribe: </label>
       <br />
       <br />
-      <button id="record-audio" onClick={toggleRecord}>
+      <button id="record-audio" onClick={toggleRecord} disabled={!isLoaded || isBusy}>
         {isListening ? "Stop Recording" : "Start Recording"}
       </button>
       <h3>Transcript:</h3>

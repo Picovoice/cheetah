@@ -9,8 +9,7 @@ on:
       - '!binding/react/README.md'
       - 'lib/common/**'
       - 'lib/wasm/**'
-      - 'resources/**'
-      - '!resources/.lint/**'
+      - 'resources/audio_samples/**'
       - '.github/workflows/react.yml'
   pull_request:
     branches: [ master, 'v[0-9]+.[0-9]+' ]
@@ -19,8 +18,7 @@ on:
       - '!binding/react/README.md'
       - 'lib/common/**'
       - 'lib/wasm/**'
-      - 'resources/**'
-      - '!resources/.lint/**'
+      - 'resources/audio_samples/**'
       - '.github/workflows/react.yml'
 
 defaults:

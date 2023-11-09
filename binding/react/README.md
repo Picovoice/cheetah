@@ -135,10 +135,10 @@ const initCheetah = async () => {
 
 In case of any errors, use the `error` state variable to check the error message. Use the `isLoaded` state variable to check if `Cheetah` has loaded.
 
-### Process Audio Frames
+### Transcribe Audio
 
-Cheetah React binding uses [WebVoiceProcessor](https://github.com/Picovoice/web-voice-processor) to record audio.
-To start recording and transcribing speech-to-text, run the `start` function:
+Cheetah React binding uses [WebVoiceProcessor](https://github.com/Picovoice/web-voice-processor) to record audio with a microphone.
+To start recording and transcribing, run the `start` function:
 
 ```typescript
 await start();

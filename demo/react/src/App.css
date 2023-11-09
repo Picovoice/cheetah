@@ -11,7 +11,7 @@ button {
 .init-button,
 .release-button {
   padding: 0;
-  margin: 0;
+  margin: 0 0.25rem;
   font-size: medium;
 }
 

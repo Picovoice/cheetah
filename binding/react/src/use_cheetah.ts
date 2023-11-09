@@ -1,14 +1,14 @@
-// /*
-//   Copyright 2023 Picovoice Inc.
-//
-//   You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
-//   file accompanying this source.
-//
-//   Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
-//   an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
-//   specific language governing permissions and limitations under the License.
-// */
-//
+/*
+  Copyright 2023 Picovoice Inc.
+
+  You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
+  file accompanying this source.
+
+  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+  an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+  specific language governing permissions and limitations under the License.
+*/
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { WebVoiceProcessor } from '@picovoice/web-voice-processor';
@@ -105,6 +105,10 @@ export const useCheetah = (): {
         return;
       }
 
+      if (isListening) {
+        return;
+      }
+
       await WebVoiceProcessor.subscribe(cheetahRef.current);
       setError(null);
       setIsListening(true);
@@ -112,7 +116,7 @@ export const useCheetah = (): {
       setError(e);
       setIsListening(false);
     }
-  }, []);
+  }, [isListening]);
 
   const stop = useCallback(async (): Promise<void> => {
     try {
@@ -120,6 +124,10 @@ export const useCheetah = (): {
         setError(
           new Error('Cheetah has not been initialized or has been released')
         );
+        return;
+      }
+
+      if (!isListening) {
         return;
       }
 
@@ -131,7 +139,7 @@ export const useCheetah = (): {
       setError(e);
       setIsListening(false);
     }
-  }, []);
+  }, [isListening]);
 
   const release = useCallback(async (): Promise<void> => {
     if (cheetahRef.current) {
