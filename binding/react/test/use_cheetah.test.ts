@@ -90,8 +90,6 @@ const runProcTest = async (
   cy.mockRecording('audio_samples/test.wav');
 
   cy.wrapHook(result.current.stop).then(() => {
-    expect(result.current.isListening).to.be.false;
-
     let normalizedTranscript = expectedTranscript;
     if (enablePunctuation) {
       for (const punctuation of punctuations) {
@@ -113,6 +111,8 @@ const runProcTest = async (
     );
     expect(errorRate).to.be.lt(expectedErrorRate);
   });
+
+  expect(result.current.isListening).to.be.false;
 
   cy.wrapHook(result.current.release).then(() => {
     expect(
