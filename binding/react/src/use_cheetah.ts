@@ -1,5 +1,5 @@
 // /*
-//   Copyright 2021-2023 Picovoice Inc.
+//   Copyright 2023 Picovoice Inc.
 //
 //   You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 //   file accompanying this source.
@@ -23,7 +23,7 @@ import {
 export const useCheetah = (): {
   result: {
     partialTranscript: string;
-    isComplete: boolean | undefined;
+    isComplete?: boolean;
   } | null;
   isLoaded: boolean;
   isListening: boolean;
