@@ -18,7 +18,5 @@
     "noImplicitAny": true,
     "types": ["cypress", "node"]
   },
-  "include": [
-    "src"
-  ],
+  "include": ["src"]
 }

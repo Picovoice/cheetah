@@ -1,4 +1,4 @@
-import "./commands";
+import './commands';
 
 declare global {
   namespace Cypress {
