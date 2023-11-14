@@ -6,7 +6,7 @@ import cheetahModel from "./lib/cheetahModel";
 export default function VoiceWidget() {
   const accessKeyRef = useRef<string>("");
 
-  const [isBusy, setIsBusy] = useState<boolean>(false)
+  const [isBusy, setIsBusy] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>("");
 
   const { result, isLoaded, isListening, error, init, start, stop, release } =
@@ -15,10 +15,10 @@ export default function VoiceWidget() {
   useEffect(() => {
     if (result !== null) {
       setTranscript((prev) => {
-        let newTranscript = prev + result.partialTranscript;
+        let newTranscript = prev + result.transcript;
 
         if (result.isComplete) {
-          newTranscript += " ";
+          newTranscript += "\n";
         }
 
         return newTranscript;
@@ -31,21 +31,22 @@ export default function VoiceWidget() {
       return;
     }
 
-    setIsBusy(true)
+    setIsBusy(true);
     await init(accessKeyRef.current, cheetahModel, {
       enableAutomaticPunctuation: true,
     });
-    setIsBusy(false)
+    setIsBusy(false);
   }, [init]);
 
   const toggleRecord = async () => {
-    setIsBusy(true)
+    setIsBusy(true);
     if (isListening) {
       await stop();
     } else {
+      setTranscript("");
       await start();
     }
-    setIsBusy(false)
+    setIsBusy(false);
   };
 
   return (
@@ -87,11 +88,15 @@ export default function VoiceWidget() {
       <label htmlFor="record-audio">Record audio to transcribe: </label>
       <br />
       <br />
-      <button id="record-audio" onClick={toggleRecord} disabled={!isLoaded || isBusy}>
+      <button
+        id="record-audio"
+        onClick={toggleRecord}
+        disabled={!isLoaded || isBusy}
+      >
         {isListening ? "Stop Recording" : "Start Recording"}
       </button>
       <h3>Transcript:</h3>
-      <p>{transcript}</p>
+      <p className="transcript">{transcript}</p>
     </div>
   );
 }

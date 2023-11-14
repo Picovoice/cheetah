@@ -35,7 +35,9 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [Node.js](#nodejs-demo)
         - [.Net](#net-demo)
         - [Rust](#rust-demo)
-        - [Web](#web-demo)
+        - [Web](#web-demos)
+          - [Vanilla JavaScript and HTML](#vanilla-javascript-and-html)
+          - [React](#react-demo)
     - [SDKs](#sdks)
         - [Python](#python)
         - [C](#c)
@@ -49,6 +51,8 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [.Net](#net)
         - [Rust](#rust)
         - [Web](#web)
+          - [Vanilla JavaScript and HTML (ES Modules)](#vanilla-javascript-and-html-es-modules)
+          - [React](#react)
     - [Releases](#releases)
 
 ## AccessKey
@@ -235,7 +239,9 @@ Replace `${ACCESS_KEY}` with your Picovoice `AccessKey`.
 
 For more information about Rust demos, go to [demo/rust](./demo/rust).
 
-### Web Demo
+### Web Demos
+
+#### Vanilla JavaScript and HTML
 
 From [demo/web](./demo/web) run the following in the terminal:
 
@@ -252,6 +258,24 @@ npm run start
 ```
 
 Open `http://localhost:5000` in your browser to try the demo.
+
+#### React Demo
+
+From [demo/react](demo/react) run the following in the terminal:
+
+```console
+yarn
+yarn start
+```
+
+(or)
+
+```console
+npm install
+npm run start
+```
+
+Open `http://localhost:3000` in your browser to try the demo.
 
 ## SDKs
 
@@ -682,6 +706,8 @@ Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://con
 
 ### Web
 
+#### Vanilla JavaScript and HTML (ES Modules)
+
 Install the web SDK using yarn:
 
 ```console
@@ -710,7 +736,7 @@ function transcriptCallback(cheetahTranscript: CheetahTranscript) {
 }
 
 function getAudioData(): Int16Array {
-... // function to get audio data
+  // ... function to get audio data
   return new Int16Array();
 }
 
@@ -728,6 +754,57 @@ cheetah.flush(); // runs transcriptionCallback on remaining data.
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/). Finally, when done release the resources using `cheetah.release()`.
+
+#### React
+
+```console
+yarn add @picovoice/cheetah-react @picovoice/web-voice-processor
+```
+
+(or)
+
+```console
+npm install @picovoice/cheetah-react @picovoice/web-voice-processor
+```
+
+```typescript
+import { useCheetah } from "@picovoice/cheetah-react";
+
+function App(props) {
+  const {
+    result,
+    isLoaded,
+    isListening,
+    error,
+    init,
+    start,
+    stop,
+    release,
+  } = useCheetah();
+
+  const initEngine = async () => {
+    await init(
+      "${ACCESS_KEY}",
+      cheetahModel,
+    );
+  };
+
+  const toggleRecord = async () => {
+    if (isListening) {
+      await stop();
+    } else {
+      await start();
+    }
+  };
+
+  useEffect(() => {
+    if (result !== null) {
+      console.log(result.transcript);
+      console.log(result.isComplete);
+    }
+  }, [result])
+}
+```
 
 ## Releases
 

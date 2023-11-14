@@ -22,7 +22,7 @@ import {
 
 export const useCheetah = (): {
   result: {
-    partialTranscript: string;
+    transcript: string;
     isComplete?: boolean;
   } | null;
   isLoaded: boolean;
@@ -40,7 +40,7 @@ export const useCheetah = (): {
   const cheetahRef = useRef<CheetahWorker | null>(null);
 
   const [result, setResult] = useState<{
-    partialTranscript: string;
+    transcript: string;
     isComplete: boolean | undefined;
   } | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -58,7 +58,7 @@ export const useCheetah = (): {
       }
 
       setResult({
-        partialTranscript: cheetahTranscript.transcript,
+        transcript: cheetahTranscript.transcript,
         isComplete: cheetahTranscript.isFlushed,
       });
     },

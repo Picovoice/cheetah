@@ -20,6 +20,10 @@ button {
   padding: 2rem;
 }
 
+.transcript {
+  white-space: pre-wrap;
+}
+
 .error-message {
   background-color: maroon;
   color: white;

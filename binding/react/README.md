@@ -47,7 +47,7 @@ npm install --save @picovoice/cheetah-react @picovoice/web-voice-processor
 
 ## Usage
 
-Cheetah requires a model file (`.pv`) at initialization. Use the default language model found in [lib/common](../../lib/common), or create a custom Cheetah model (`.pv`) in the [Picovoice Console](https://console.picovoice.ai/) for the target platform `Web (WASM)`.
+Cheetah requires a model file (`.pv`) at initialization. Use the default language model found in [lib/common](https://github.com/Picovoice/cheetah/tree/master/lib/common), or create a custom Cheetah model (`.pv`) in the [Picovoice Console](https://console.picovoice.ai/) for the target platform `Web (WASM)`.
 
 There are two methods to initialize Cheetah.
 
@@ -150,14 +150,14 @@ Use the `result` state to get transcription results:
 ```typescript
 useEffect(() => {
   if (result !== null) {
-    console.log(result.partialTranscript);
+    console.log(result.transcript);
     console.log(result.isComplete);
   }
 }, [result])
 ```
 
-- `result.partialTranscript`: transcript returned from Cheetah
-- `result.isComplete`: whether the corresponding `partialTranscript` marks the end of a transcript (i.e. the end of a sentence)
+- `result.transcript`: transcript returned from Cheetah
+- `result.isComplete`: whether the corresponding `transcript` marks the end of a transcript (i.e. the end of a sentence)
 
 ### Stop
 
@@ -190,4 +190,4 @@ supported languages are available [here](https://github.com/Picovoice/cheetah/tr
 
 ## Demo
 
-[//]: # (For example usage refer to our [React demo application]&#40;https://github.com/Picovoice/cheetah/tree/master/demo/react&#41;.)
+For example usage refer to our [React demo application](https://github.com/Picovoice/cheetah/tree/master/demo/react).

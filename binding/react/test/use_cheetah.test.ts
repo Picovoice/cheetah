@@ -100,7 +100,7 @@ const runProcTest = async (
     let completeTranscript = '';
     result.all.forEach(resultObj => {
       if ('result' in resultObj && resultObj.result !== null) {
-        completeTranscript += resultObj.result.partialTranscript;
+        completeTranscript += resultObj.result.transcript;
       }
     });
 
