@@ -25,11 +25,17 @@ import java.io.OutputStream;
  */
 public class Cheetah {
 
+    private static String _sdk = "android";
+
     static {
         System.loadLibrary("pv_cheetah");
     }
 
     private long handle;
+
+    public static void setSdk(String sdk) {
+        Cheetah._sdk = sdk;
+    }
 
     /**
      * Constructor.
@@ -48,6 +54,8 @@ public class Cheetah {
             String modelPath,
             float endpointDuration,
             boolean enableAutomaticPunctuation) throws CheetahException {
+        CheetahNative.setSdk(Porcupine._sdk);
+
         handle = CheetahNative.init(
                 accessKey,
                 modelPath,
