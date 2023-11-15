@@ -1,5 +1,5 @@
 //
-//  Copyright 2022 Picovoice Inc.
+//  Copyright 2022-2023 Picovoice Inc.
 //  You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 //  file accompanying this source.
 //  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
@@ -101,5 +101,38 @@ class CheetahDemoUITests: XCTestCase {
 
     func testVersion() throws {
         XCTAssertGreaterThan(Cheetah.version, "")
+    }
+
+    func testMessageStack() throws {
+        var first_error: String = ""
+        do {
+            let cheetah = try Cheetah.init(accessKey: "invalid", modelURL: modelURL)
+            XCTAssertNil(cheetah)
+        } catch {
+            first_error = "\(error.localizedDescription)"
+            XCTAssert(first_error.count < 1024)
+        }
+
+        do {
+            let cheetah = try Cheetah.init(accessKey: "invalid", modelURL: modelURL)
+            XCTAssertNil(cheetah)
+        } catch {
+            XCTAssert("\(error.localizedDescription)".count == first_error.count)
+        }
+    }
+
+    func testProcessMessageStack() throws {
+        let cheetah = try Cheetah(accessKey: accessKey, modelURL: modelURL)
+        cheetah.delete()
+
+        var testPcm: [Int16] = []
+        testPcm.reserveCapacity(Int(Cheetah.frameLength))
+
+        do {
+            let res = try cheetah.process(testPcm)
+            XCTAssertNil(res)
+        } catch {
+            XCTAssert("\(error.localizedDescription)".count > 0)
+        }
     }
 }
