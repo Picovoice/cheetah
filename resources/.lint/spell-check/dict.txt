@@ -76,4 +76,5 @@ uppercased
 vtable
 wargv
 wavefile
+webfonts
 xcworkspace
