@@ -1,5 +1,5 @@
 //
-// Copyright 2022 Picovoice Inc.
+// Copyright 2022-2023 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -14,6 +14,11 @@ import Cheetah
 @objc(PvCheetah)
 class PvCheetah: NSObject {
     private var cheetahPool: [String: Cheetah] = [:]
+
+    override init() {
+        super.init()
+        Cheetah.setSdk(sdk: "react-native")
+    }
 
     @objc(create:modelPath:endpointDuration:enableAutomaticPunctuation:resolver:rejecter:)
     func create(

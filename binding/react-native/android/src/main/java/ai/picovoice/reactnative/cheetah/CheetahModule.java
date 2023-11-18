@@ -42,6 +42,8 @@ public class CheetahModule extends ReactContextBaseJavaModule {
     public CheetahModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+
+        Cheetah.setSdk("react-native");
     }
 
     @NonNull
