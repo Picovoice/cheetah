@@ -17,7 +17,7 @@ import wave
 
 from parameterized import parameterized
 
-from _cheetah import Cheetah
+from _cheetah import Cheetah, CheetahError
 from _util import *
 from test_util import *
 
@@ -124,7 +124,7 @@ class CheetahTestCase(unittest.TestCase):
             c = Cheetah(
                 access_key='invalid',
                 library_path=default_library_path(relative),
-                model_path=get_model_path_by_language(relative),
+                model_path=default_model_path(relative),
                 enable_automatic_punctuation=True)
             self.assertIsNone(c)
         except CheetahError as e:
@@ -137,7 +137,7 @@ class CheetahTestCase(unittest.TestCase):
             c = Cheetah(
                 access_key='invalid',
                 library_path=default_library_path(relative),
-                model_path=get_model_path_by_language(relative),
+                model_path=default_model_path(relative),
                 enable_automatic_punctuation=True)
             self.assertIsNone(c)
         except CheetahError as e:
@@ -145,10 +145,12 @@ class CheetahTestCase(unittest.TestCase):
             self.assertListEqual(list(error), list(e.message_stack))
 
     def test_process_flush_message_stack(self):
+        relative = '../../'
+
         c = Cheetah(
             access_key=sys.argv[1],
             library_path=default_library_path(relative),
-            model_path=get_model_path_by_language(relative),
+            model_path=default_model_path(relative),
             enable_automatic_punctuation=True)
         test_pcm = [0] * c._frame_length
 
@@ -169,7 +171,7 @@ class CheetahTestCase(unittest.TestCase):
             self.assertGreater(len(e.message_stack), 0)
             self.assertLess(len(e.message_stack), 8)
 
-        o._handle = address
+        c._handle = address
 
 
 if __name__ == '__main__':
