@@ -44,7 +44,7 @@ jobs:
       working-directory: binding/dotnet
 
     - name: Add binding to demo
-      run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Cheetah
+      run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Picovoice.Cheetah
     # ******************************************************
 
     - name: Dotnet build micdemo
@@ -75,7 +75,7 @@ jobs:
       working-directory: binding/dotnet
 
     - name: Add binding to demo
-      run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Cheetah
+      run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Picovoice.Cheetah
     # ******************************************************
 
     - name: Dotnet build micdemo

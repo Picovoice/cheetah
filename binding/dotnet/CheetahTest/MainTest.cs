@@ -143,7 +143,7 @@ namespace CheetahTest
                 Assert.IsTrue(GetErrorRate(transcript, referenceTranscript) < targetErrorRate);
             }
         }
-        
+
         [TestMethod]
         [DynamicData(nameof(TestParameters))]
         public void TestProcessWithPunctuation(

@@ -171,7 +171,7 @@ namespace Pv
 
             IntPtr accessKeyPtr = Utils.GetPtrFromUtf8String(accessKey);
             IntPtr modelPathPtr = Utils.GetPtrFromUtf8String(modelPath);
-            
+
             pv_set_sdk("dotnet");
 
             CheetahStatus status = pv_cheetah_init(

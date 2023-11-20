@@ -16,7 +16,7 @@ namespace Pv
     public class CheetahException : Exception
     {
         private readonly string[] _messageStack;
-        
+
         public CheetahException() { }
 
         public CheetahException(string message) : base(message) { }
