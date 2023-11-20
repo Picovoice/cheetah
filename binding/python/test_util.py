@@ -16,7 +16,13 @@ from typing import *
 
 def load_test_data() -> List[Tuple[str, str, str, List[str], float]]:
     parameters = [
-        ("en", "test.wav", "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.", ["."], 0.025)
+        (
+            "en",
+            "test.wav",
+            "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.",
+            ["."],
+            0.025
+        )
     ]
 
     return parameters
