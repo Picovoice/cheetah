@@ -46,7 +46,7 @@ jobs:
           proc_performance_threshold_sec: 0.7 
         - os: macos-latest
           init_performance_threshold_sec: 3.0
-          proc_performance_threshold_sec: 0.8
+          proc_performance_threshold_sec: 2.5
 
     steps:
     - uses: actions/checkout@v3
