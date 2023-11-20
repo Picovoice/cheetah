@@ -1,4 +1,4 @@
-// Copyright 2022 Picovoice Inc.
+// Copyright 2022-2023 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is
 // located in the "LICENSE" file accompanying this source.
@@ -21,7 +21,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-	"runtime"
+	"strings"
 	"testing"
 
 	"github.com/agnivade/levenshtein"
@@ -174,8 +174,8 @@ func TestMessageStack(t *testing.T) {
 	cheetah = NewCheetah("invalid")
 	cheetah.EnableAutomaticPunctuation = true
 	err := cheetah.Init()
-	if err != nil {
-		log.Fatalf("Failed to init cheetah with: %v", err)
+	if err == nil {
+		log.Fatalf("Expected Cheetah init failure")
 	}
 
 	err = cheetah.Init()
