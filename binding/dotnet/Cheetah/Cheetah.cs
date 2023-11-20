@@ -187,7 +187,7 @@ namespace Pv
             if (status != CheetahStatus.SUCCESS)
             {
                 string[] messageStack = GetMessageStack();
-                throw CheetahStatusToException(status, messageStack);
+                throw CheetahStatusToException(status, "Cheetah init failed", messageStack);
             }
 
             Version = Utils.GetUtf8StringFromPtr(pv_cheetah_version());
@@ -279,7 +279,7 @@ namespace Pv
         /// <param name="messageStack">Error stack returned from Picovoice library.</param>
         /// <returns>.NET exception</returns>
         private static Exception CheetahStatusToException(
-            CheetahStatus status
+            CheetahStatus status,
             string message = "",
             string[] messageStack = null)
         {
