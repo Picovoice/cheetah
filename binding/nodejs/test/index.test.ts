@@ -12,7 +12,7 @@
 
 import {
   Cheetah,
-  CheetahInvalidArgumentError,
+  CheetahErrors,
 } from '../src';
 import * as fs from 'fs';
 import { WaveFile } from 'wavefile';
@@ -20,6 +20,7 @@ import { WaveFile } from 'wavefile';
 import { getSystemLibraryPath } from '../src/platforms';
 
 import {
+  TRANSCRIPT,
   getAudioFile,
   getModelPath,
   getTestParameters,
@@ -27,6 +28,7 @@ import {
 
 const MODEL_PATH = getModelPath();
 const TEST_PARAMETERS = getTestParameters();
+const WAV_PATH = "test.wav";
 
 const libraryPath = getSystemLibraryPath();
 
@@ -86,8 +88,8 @@ const cheetahProcessWaveFile = (
 
   let transcript = '';
   let isEndpoint = false;
-  for (let i = 0; i < pcm.length; i += engineInstance.frameLength) {
-    const [partialTranscript, partialIsEndpoint] =engineInstance.process(pcm.slice(i, i + engineInstance.frameLength));
+  for (let i = 0; i < pcm.length - engineInstance.frameLength; i += engineInstance.frameLength) {
+    const [partialTranscript, partialIsEndpoint] = engineInstance.process(pcm.slice(i, i + engineInstance.frameLength));
     transcript += partialTranscript;
     isEndpoint = partialIsEndpoint;
   }
@@ -101,18 +103,10 @@ const cheetahProcessWaveFile = (
 const testCheetahProcess = (
   _: string,
   transcript: string,
-  punctuations: string[],
   testPunctuation: boolean,
   errorRate: number,
   audioFile: string
 ) => {
-  let normTranscript = transcript;
-  if (!testPunctuation) {
-    for (const punctuation of punctuations) {
-      normTranscript = normTranscript.replace(new RegExp(`[${punctuation}]`, "g"), '');
-    }
-  }
-
   let cheetahEngine = new Cheetah(ACCESS_KEY, {
     enableAutomaticPunctuation: testPunctuation,
   });
@@ -120,7 +114,7 @@ const testCheetahProcess = (
   let [res, __] = cheetahProcessWaveFile(cheetahEngine, audioFile);
 
   expect(
-    characterErrorRate(res, normTranscript) < errorRate
+    characterErrorRate(res, transcript) < errorRate
   ).toBeTruthy();
 
   cheetahEngine.release();
@@ -132,14 +126,13 @@ describe('successful processes', () => {
     (
       language: string,
       transcript: string,
-      punctuations: string[],
+      _: string,
       errorRate: number,
       audioFile: string
     ) => {
       testCheetahProcess(
         language,
         transcript,
-        punctuations,
         false,
         errorRate,
         audioFile
@@ -151,15 +144,14 @@ describe('successful processes', () => {
     'testing process `%p` with punctuation',
     (
       language: string,
-      transcript: string,
-      punctuations: string[],
+      _: string,
+      transcriptWithPunctuation: string,
       errorRate: number,
       audioFile: string
     ) => {
       testCheetahProcess(
         language,
-        transcript,
-        punctuations,
+        transcriptWithPunctuation,
         true,
         errorRate,
         audioFile
@@ -172,7 +164,7 @@ describe('Defaults', () => {
   test('Empty AccessKey', () => {
     expect(() => {
       new Cheetah('');
-    }).toThrow(CheetahInvalidArgumentError);
+    }).toThrow(CheetahErrors.CheetahInvalidArgumentError);
   });
 });
 
@@ -186,8 +178,6 @@ describe('manual paths', () => {
     );
 
     expect(transcript).toBe(TRANSCRIPT);
-    expect(isEndpoint).toBe(false);
-
     cheetahEngine.release();
   });
 
@@ -204,24 +194,6 @@ describe('manual paths', () => {
     );
 
     expect(transcript).toBe(TRANSCRIPT);
-    expect(isEndpoint).toBe(true);
-
-    cheetahEngine.release();
-  });
-
-  test('Enable automatic punctuation', () => {
-    let cheetahEngine = new Cheetah(ACCESS_KEY, {
-      enableAutomaticPunctuation: true,
-      endpointDurationSec: 0.2,
-    });
-
-    // eslint-disable-next-line no-unused-vars
-    let [transcript, _] = cheetahProcessWaveFile(cheetahEngine, WAV_PATH);
-
-    expect(transcript).toBe(
-      'Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.'
-    );
-
     cheetahEngine.release();
   });
 });

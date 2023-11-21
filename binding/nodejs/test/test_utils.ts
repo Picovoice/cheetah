@@ -11,8 +11,11 @@
 import * as path from 'path';
 
 const ROOT_DIR = path.join(__dirname, '../../..');
+
 export const TRANSCRIPT =
   'Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel';
+  export const TRANSCRIPT_WITH_PUNCTUATION =
+    'Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.';
 
 export function getModelPath(): string {
   return path.join(
@@ -28,11 +31,11 @@ export function getAudioFile(audioFile: string): string {
 export function getTestParameters(): [
   string,
   string,
-  string[],
+  string,
   number,
   string
 ][] {
   return [
-    ["en", TRANSCRIPT, ["."], 0.025, "test.wav"]
+    ["en", TRANSCRIPT, TRANSCRIPT_WITH_PUNCTUATION, 0.025, "test.wav"]
   ];
 }
