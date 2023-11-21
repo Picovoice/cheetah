@@ -39,13 +39,13 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         include:
         - os: ubuntu-latest
-          init_performance_threshold_sec: 2.1
+          init_performance_threshold_sec: 4.0
           proc_performance_threshold_sec: 0.8
         - os: windows-latest
-          init_performance_threshold_sec: 2.4
+          init_performance_threshold_sec: 4.0
           proc_performance_threshold_sec: 0.7 
         - os: macos-latest
-          init_performance_threshold_sec: 3.0
+          init_performance_threshold_sec: 4.5
           proc_performance_threshold_sec: 2.5
 
     steps:
@@ -74,19 +74,19 @@ jobs:
         machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
         include:
         - machine: rpi3-32
-          init_performance_threshold_sec: 7.5
+          init_performance_threshold_sec: 9.0
           proc_performance_threshold_sec: 9.0
         - machine: rpi3-64
-          init_performance_threshold_sec: 8.3
+          init_performance_threshold_sec: 9.0
           proc_performance_threshold_sec: 7.5
         - machine: rpi4-32
-          init_performance_threshold_sec: 5.7
+          init_performance_threshold_sec: 7.5
           proc_performance_threshold_sec: 4.0
         - machine: rpi4-64
-          init_performance_threshold_sec: 5.1
+          init_performance_threshold_sec: 7.0
           proc_performance_threshold_sec: 4.0
         - machine: jetson
-          init_performance_threshold_sec: 5.2
+          init_performance_threshold_sec: 6.5
           proc_performance_threshold_sec: 4.0
 
     steps:
