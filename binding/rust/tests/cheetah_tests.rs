@@ -14,7 +14,7 @@ mod tests {
     use distance::*;
     use itertools::Itertools;
     use rodio::{source::Source, Decoder};
-    use serde_json::Value;
+    use serde_json::{json, Value};
     use std::env;
     use std::fs::File;
     use std::io::BufReader;
@@ -24,11 +24,11 @@ mod tests {
     fn load_test_data() -> Value {
         let test_json: Value = json!([{
             "language": "en",
-            "transcript": "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.",
-            "punctuations": ["."],
+            "transcript": "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel",
+            "transcript_with_punctuation": "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.",
             "error_rate": 0.025,
             "audio_file": "test.wav"
-        }])
+        }]);
         test_json
     }
 
@@ -38,9 +38,8 @@ mod tests {
     }
 
     fn run_test_process(
-        language: &str,
+        _: &str,
         transcript: &str,
-        punctuations: Vec<&str>,
         test_punctuation: bool,
         error_rate: f32,
         test_audio: &str,
@@ -54,13 +53,6 @@ mod tests {
             "/../../resources/audio_samples/",
             test_audio
         );
-
-        let mut norm_transcript = transcript.to_string();
-        if !test_punctuation {
-            punctuations.iter().for_each(|p| {
-                norm_transcript = norm_transcript.replace(p, "");
-            });
-        }
 
         let audio_file = BufReader::new(File::open(&audio_path).expect(&audio_path));
         let source = Decoder::new(audio_file).unwrap();
@@ -85,22 +77,16 @@ mod tests {
         let final_transcript = cheetah.flush().unwrap();
         result = format!("{}{}", result, final_transcript.transcript);
 
-        assert!(character_error_rate(&result, &norm_transcript) < error_rate);
+        assert!(character_error_rate(&result, &transcript) < error_rate);
     }
 
     #[test]
     fn test_process() {
         let test_json: Value = load_test_data();
 
-        for t in test_json["tests"]["parameters"].as_array().unwrap() {
+        for t in test_json.as_array().unwrap() {
             let language = t["language"].as_str().unwrap();
             let transcript = t["transcript"].as_str().unwrap();
-            let punctuations = t["punctuations"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|v| v.as_str().unwrap())
-                .collect_vec();
             let error_rate = t["error_rate"].as_f64().unwrap() as f32;
 
             let test_audio = t["audio_file"].as_str().unwrap();
@@ -108,42 +94,32 @@ mod tests {
             run_test_process(
                 language,
                 transcript,
-                punctuations,
                 false,
                 error_rate,
                 &test_audio,
             );
         }
-        Ok(())
     }
 
     #[test]
     fn test_process_punctuation() {
         let test_json: Value = load_test_data();
 
-        for t in test_json["tests"]["parameters"].as_array().unwrap() {
+        for t in test_json.as_array().unwrap() {
             let language = t["language"].as_str().unwrap();
-            let transcript = t["transcript"].as_str().unwrap();
-            let punctuations = t["punctuations"]
-                .as_array()
-                .unwrap()
-                .iter()
-                .map(|v| v.as_str().unwrap())
-                .collect_vec();
+            let transcript_with_punctuation = t["transcript_with_punctuation"].as_str().unwrap();
             let error_rate = t["error_rate"].as_f64().unwrap() as f32;
 
             let test_audio = t["audio_file"].as_str().unwrap();
 
             run_test_process(
                 language,
-                transcript,
-                punctuations,
+                transcript_with_punctuation,
                 true,
                 error_rate,
                 &test_audio,
             );
         }
-        Ok(())
     }
 
     #[test]

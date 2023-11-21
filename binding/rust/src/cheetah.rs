@@ -252,7 +252,11 @@ unsafe fn load_library_fn<T>(
         })
 }
 
-fn check_fn_call_status(status: PvStatus, function_name: &str) -> Result<(), CheetahError> {
+fn check_fn_call_status(
+    vtable: &CheetahInnerVTable,
+    status: PvStatus,
+    function_name: &str,
+) -> Result<(), CheetahError> {
     match status {
         PvStatus::SUCCESS => Ok(()),
         _ => unsafe {
@@ -410,13 +414,6 @@ impl CheetahInner {
         let (frame_length, sample_rate, version) = unsafe {
             (vtable.pv_set_sdk)(sdk_string.as_ptr());
 
-            let pv_cheetah_init = load_library_fn::<PvCheetahInitFn>(&lib, b"pv_cheetah_init")?;
-            let pv_cheetah_frame_length =
-                load_library_fn::<PvCheetahFrameLengthFn>(&lib, b"pv_cheetah_frame_length")?;
-            let pv_sample_rate = load_library_fn::<PvSampleRateFn>(&lib, b"pv_sample_rate")?;
-            let pv_cheetah_version =
-                load_library_fn::<PvCheetahVersionFn>(&lib, b"pv_cheetah_version")?;
-
             let status = (vtable.pv_cheetah_init)(
                 access_key.as_ptr(),
                 pv_model_path.as_ptr(),
@@ -431,8 +428,8 @@ impl CheetahInner {
                 .into_owned();
 
             (
-                (vtable.pv_sample_rate)(),
                 (vtable.pv_cheetah_frame_length)(),
+                (vtable.pv_sample_rate)(),
                 version,
             )
         };
@@ -532,7 +529,6 @@ impl Drop for CheetahInner {
 #[cfg(test)]
 mod tests {
     use std::env;
-    use std::path::PathBuf;
 
     use crate::util::{pv_library_path, pv_model_path};
     use crate::cheetah::{CheetahInner};
@@ -544,8 +540,8 @@ mod tests {
         
         let mut inner = CheetahInner::init(
             &access_key.as_str(),
-            pv_library_path(),
             pv_model_path(),
+            pv_library_path(),
             1.0,
             true,
         ).expect("Unable to create Cheetah");
@@ -561,7 +557,7 @@ mod tests {
             assert!(err.message_stack.len() > 0);
             assert!(err.message_stack.len() < 8);
         } else {
-            assert!(res.unwrap() == 100);
+            assert!(res.unwrap().transcript.len() == 0);
         }
     }
 }
