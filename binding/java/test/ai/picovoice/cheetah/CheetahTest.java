@@ -126,10 +126,6 @@ public class CheetahTest {
                 Arguments.of(true, 
                         "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel."),
                 Arguments.of(false, 
-                        "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel"),
-                Arguments.of(true,
-                        "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel."),
-                Arguments.of(false,
                         "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel")
         );
     }
