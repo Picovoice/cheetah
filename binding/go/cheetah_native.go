@@ -137,21 +137,32 @@ void pv_cheetah_delete_wrapper(void *f, void *object) {
 }
 
 typedef void (*pv_set_sdk_func)(const char *);
+
 void pv_set_sdk_wrapper(void *f, const char *sdk) {
 	return ((pv_set_sdk_func) f)(sdk);
 }
+
 typedef int32_t (*pv_get_error_stack_func)(char ***, int32_t *);
+
 int32_t pv_get_error_stack_wrapper(
 	void *f,
 	char ***message_stack,
 	int32_t *message_stack_depth) {
 	return ((pv_get_error_stack_func) f)(message_stack, message_stack_depth);
 }
+
 typedef void (*pv_free_error_stack_func)(char **);
+
 void pv_free_error_stack_wrapper(
 	void *f,
 	char **message_stack) {
 	return ((pv_free_error_stack_func) f)(message_stack);
+}
+
+typedef void (*pv_free_func)(void *);
+
+void pv_free_wrapper(void* f, void *ptr) {
+	((pv_free_func) f)(ptr);
 }
 */
 import "C"
@@ -183,6 +194,7 @@ type nativeCheetahType struct {
 	pv_set_sdk_ptr              unsafe.Pointer
 	pv_get_error_stack_ptr      unsafe.Pointer
 	pv_free_error_stack_ptr     unsafe.Pointer
+	pv_free_ptr					unsafe.Pointer
 }
 
 func (nc *nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
@@ -209,6 +221,7 @@ func (nc *nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
 	nc.pv_set_sdk_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_set_sdk"))
 	nc.pv_get_error_stack_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_get_error_stack"))
 	nc.pv_free_error_stack_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_free_error_stack"))
+	nc.pv_free_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_free"))
 
 	C.pv_set_sdk_wrapper(
 		nc.pv_set_sdk_ptr,
@@ -244,7 +257,7 @@ func (nc *nativeCheetahType) nativeProcess(cheetah *Cheetah, pcm []int16) (statu
 	}
 
 	transcript = C.GoString((*C.char)(transcriptPtr))
-	C.free(transcriptPtr)
+	C.pv_free_wrapper(nc.pv_free_ptr, transcriptPtr)
 
 	return PvStatus(ret), transcript, isEndpoint
 }
@@ -261,7 +274,7 @@ func (nc *nativeCheetahType) nativeFlush(cheetah *Cheetah) (status PvStatus, tra
 	}
 
 	transcript = C.GoString((*C.char)(transcriptPtr))
-	C.free(transcriptPtr)
+	C.pv_free_wrapper(nc.pv_free_ptr, transcriptPtr)
 
 	return PvStatus(ret), transcript
 }
