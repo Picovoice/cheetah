@@ -35,7 +35,7 @@ import ai.picovoice.cheetah.CheetahTranscript;
  * CheetahModule Class.
  */
 public class CheetahModule extends ReactContextBaseJavaModule {
-  
+
     private final ReactApplicationContext reactContext;
     private final Map<String, Cheetah> cheetahPool = new HashMap<>();
 
