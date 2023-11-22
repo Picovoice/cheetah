@@ -159,10 +159,10 @@ void pv_free_error_stack_wrapper(
 	return ((pv_free_error_stack_func) f)(message_stack);
 }
 
-typedef void (*pv_free_func)(void *);
+typedef void (*pv_cheetah_transcript_delete_func)(void *);
 
-void pv_free_wrapper(void* f, void *ptr) {
-	((pv_free_func) f)(ptr);
+void pv_cheetah_transcript_delete_wrapper(void* f, char *transcript) {
+	((pv_cheetah_transcript_delete_func) f)(transcript);
 }
 */
 import "C"
@@ -184,17 +184,17 @@ type nativeCheetahInterface interface {
 type nativeCheetahType struct {
 	libraryPath unsafe.Pointer
 
-	pv_cheetah_init_ptr         unsafe.Pointer
-	pv_cheetah_process_ptr      unsafe.Pointer
-	pv_cheetah_flush_ptr        unsafe.Pointer
-	pv_cheetah_delete_ptr       unsafe.Pointer
-	pv_cheetah_version_ptr      unsafe.Pointer
-	pv_cheetah_frame_length_ptr unsafe.Pointer
-	pv_sample_rate_ptr          unsafe.Pointer
-	pv_set_sdk_ptr              unsafe.Pointer
-	pv_get_error_stack_ptr      unsafe.Pointer
-	pv_free_error_stack_ptr     unsafe.Pointer
-	pv_free_ptr					unsafe.Pointer
+	pv_cheetah_init_ptr         		unsafe.Pointer
+	pv_cheetah_process_ptr      		unsafe.Pointer
+	pv_cheetah_flush_ptr        		unsafe.Pointer
+	pv_cheetah_delete_ptr       		unsafe.Pointer
+	pv_cheetah_version_ptr      		unsafe.Pointer
+	pv_cheetah_frame_length_ptr 		unsafe.Pointer
+	pv_sample_rate_ptr          		unsafe.Pointer
+	pv_set_sdk_ptr              		unsafe.Pointer
+	pv_get_error_stack_ptr      		unsafe.Pointer
+	pv_free_error_stack_ptr     		unsafe.Pointer
+	pv_cheetah_transcript_delete_ptr	unsafe.Pointer
 }
 
 func (nc *nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
@@ -221,7 +221,7 @@ func (nc *nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
 	nc.pv_set_sdk_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_set_sdk"))
 	nc.pv_get_error_stack_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_get_error_stack"))
 	nc.pv_free_error_stack_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_free_error_stack"))
-	nc.pv_free_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_free"))
+	nc.pv_cheetah_transcript_delete_ptr = C.load_symbol(nc.libraryPath, C.CString("pv_cheetah_transcript_delete"))
 
 	C.pv_set_sdk_wrapper(
 		nc.pv_set_sdk_ptr,
@@ -257,7 +257,7 @@ func (nc *nativeCheetahType) nativeProcess(cheetah *Cheetah, pcm []int16) (statu
 	}
 
 	transcript = C.GoString((*C.char)(transcriptPtr))
-	C.pv_free_wrapper(nc.pv_free_ptr, transcriptPtr)
+	C.pv_cheetah_transcript_delete_wrapper(nc.pv_cheetah_transcript_delete_ptr, (*C.char)(transcriptPtr))
 
 	return PvStatus(ret), transcript, isEndpoint
 }
@@ -274,7 +274,7 @@ func (nc *nativeCheetahType) nativeFlush(cheetah *Cheetah) (status PvStatus, tra
 	}
 
 	transcript = C.GoString((*C.char)(transcriptPtr))
-	C.pv_free_wrapper(nc.pv_free_ptr, transcriptPtr)
+	C.pv_cheetah_transcript_delete_wrapper(nc.pv_cheetah_transcript_delete_ptr, (*C.char)(transcriptPtr))
 
 	return PvStatus(ret), transcript
 }
