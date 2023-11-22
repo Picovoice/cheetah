@@ -95,15 +95,16 @@ namespace Pv
             out IntPtr transcriptPtr);
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void pv_cheetah_transcript_delete(IntPtr transcriptPtr);
+
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr pv_cheetah_version();
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern Int32 pv_cheetah_frame_length();
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
-        private static extern void pv_free(IntPtr memoryPtr);
 
-        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern void pv_set_sdk(string sdk);
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
@@ -228,7 +229,8 @@ namespace Pv
             }
 
             string transcript = Utils.GetUtf8StringFromPtr(transcriptPtr);
-            pv_free(transcriptPtr);
+            pv_cheetah_transcript_delete(transcriptPtr);
+
             return new CheetahTranscript(transcript, isEndpoint);
         }
 
@@ -249,7 +251,8 @@ namespace Pv
             }
 
             string transcript = Utils.GetUtf8StringFromPtr(transcriptPtr);
-            pv_free(transcriptPtr);
+            pv_cheetah_transcript_delete(transcriptPtr);
+
             return new CheetahTranscript(transcript, false);
         }
 
