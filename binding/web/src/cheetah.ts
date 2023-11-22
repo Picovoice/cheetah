@@ -36,6 +36,7 @@ import { pvStatusToException } from './cheetah_errors';
 type pv_cheetah_init_type = (accessKey: number, modelPath: number, endpointDurationSec: number, enableAutomaticPunctuation: number, object: number) => Promise<number>;
 type pv_cheetah_process_type = (object: number, pcm: number, transcript: number, isEndpoint: number) => Promise<number>;
 type pv_cheetah_flush_type = (object: number, transcript: number) => Promise<number>;
+type pv_cheetah_transcript_delete_type = (transcript: number) => Promise<void>;
 type pv_cheetah_delete_type = (object: number) => Promise<void>;
 type pv_status_to_string_type = (status: number) => Promise<number>
 type pv_cheetah_frame_length_type = () => Promise<number>;
@@ -68,6 +69,7 @@ type CheetahWasmOutput = {
   pvCheetahDelete: pv_cheetah_delete_type;
   pvCheetahProcess: pv_cheetah_process_type;
   pvCheetahFlush: pv_cheetah_flush_type;
+  pvCheetahTranscriptDelete: pv_cheetah_transcript_delete_type;
   pvGetErrorStack: pv_get_error_stack_type;
   pvFreeErrorStack: pv_free_error_stack_type;
 };
@@ -78,6 +80,7 @@ export class Cheetah {
   private readonly _pvCheetahDelete: pv_cheetah_delete_type;
   private readonly _pvCheetahProcess: pv_cheetah_process_type;
   private readonly _pvCheetahFlush: pv_cheetah_flush_type;
+  private readonly _pvCheetahTranscriptDelete: pv_cheetah_transcript_delete_type;
   private readonly _pvGetErrorStack: pv_get_error_stack_type;
   private readonly _pvFreeErrorStack: pv_free_error_stack_type;
 
@@ -117,6 +120,7 @@ export class Cheetah {
     this._pvCheetahDelete = handleWasm.pvCheetahDelete;
     this._pvCheetahProcess = handleWasm.pvCheetahProcess;
     this._pvCheetahFlush = handleWasm.pvCheetahFlush;
+    this._pvCheetahTranscriptDelete = handleWasm.pvCheetahTranscriptDelete;
     this._pvGetErrorStack = handleWasm.pvGetErrorStack;
     this._pvFreeErrorStack = handleWasm.pvFreeErrorStack;
 
@@ -322,7 +326,7 @@ export class Cheetah {
           memoryBufferUint8,
           transcriptAddress,
         );
-        await this._pvFree(transcriptAddress);
+        await this._pvCheetahTranscriptDelete(transcriptAddress);
 
         this._transcriptCallback({ transcript });
 
@@ -408,7 +412,7 @@ export class Cheetah {
       memoryBufferUint8,
       transcriptAddress,
     );
-    await this._pvFree(transcriptAddress);
+    await this._pvCheetahTranscriptDelete(transcriptAddress);
 
     return transcript;
   }
@@ -459,9 +463,9 @@ export class Cheetah {
     const pv_cheetah_version = exports.pv_cheetah_version as pv_cheetah_version_type;
     const pv_cheetah_process = exports.pv_cheetah_process as pv_cheetah_process_type;
     const pv_cheetah_flush = exports.pv_cheetah_flush as pv_cheetah_flush_type;
+    const pv_cheetah_transcript_delete = exports.pv_cheetah_transcript_delete as pv_cheetah_transcript_delete_type;
     const pv_cheetah_delete = exports.pv_cheetah_delete as pv_cheetah_delete_type;
     const pv_cheetah_init = exports.pv_cheetah_init as pv_cheetah_init_type;
-    const pv_status_to_string = exports.pv_status_to_string as pv_status_to_string_type;
     const pv_cheetah_frame_length = exports.pv_cheetah_frame_length as pv_cheetah_frame_length_type;
     const pv_sample_rate = exports.pv_sample_rate as pv_sample_rate_type;
     const pv_set_sdk = exports.pv_set_sdk as pv_set_sdk_type;
@@ -606,6 +610,7 @@ export class Cheetah {
       pvCheetahDelete: pv_cheetah_delete,
       pvCheetahProcess: pv_cheetah_process,
       pvCheetahFlush: pv_cheetah_flush,
+      pvCheetahTranscriptDelete: pv_cheetah_transcript_delete,
       pvGetErrorStack: pv_get_error_stack,
       pvFreeErrorStack: pv_free_error_stack,
     };
