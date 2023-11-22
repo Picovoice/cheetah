@@ -91,6 +91,13 @@ PV_API pv_status_t pv_cheetah_process(pv_cheetah_t *object, const int16_t *pcm, 
 PV_API pv_status_t pv_cheetah_flush(pv_cheetah_t *object, char **transcript);
 
 /**
+ * Deletes transcript returned from `pv_cheetah_process()` or `pv_cheetah_flush()`
+ *
+ * @param transcript transcription string returned from `pv_cheetah_process()` or `pv_cheetah_flush()`
+ */
+PV_API void pv_cheetah_transcript_delete(char *transcript);
+
+/**
  * Getter for version.
  *
  * @return Version.
