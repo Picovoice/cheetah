@@ -446,7 +446,7 @@ export class Cheetah {
     }
 
     // A WebAssembly page has a constant size of 64KiB. -> 1MiB ~= 16 pages
-    const memory = new WebAssembly.Memory({ initial: 3370 });
+    const memory = new WebAssembly.Memory({ initial: 3700 });
 
     const memoryBufferUint8 = new Uint8Array(memory.buffer);
 
