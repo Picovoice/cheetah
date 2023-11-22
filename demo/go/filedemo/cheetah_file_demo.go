@@ -1,4 +1,4 @@
-// Copyright 2022 Picovoice Inc.
+// Copyright 2022-2023 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is
 // located in the "LICENSE" file accompanying this source.
@@ -17,7 +17,7 @@ import (
 	"os"
 	"path/filepath"
 
-	cheetah "github.com/Picovoice/cheetah/binding/go"
+	cheetah "github.com/Picovoice/cheetah/binding/go/v2"
 	"github.com/go-audio/audio"
 	"github.com/go-audio/wav"
 )
