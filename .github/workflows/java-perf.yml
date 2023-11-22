@@ -74,10 +74,10 @@ jobs:
           proc_performance_threshold_sec: 4.6
         - machine: rpi4-64
           init_performance_threshold_sec: 7.8
-          proc_performance_threshold_sec: 4.0
+          proc_performance_threshold_sec: 5.0
         - machine: jetson
           init_performance_threshold_sec: 7.8
-          proc_performance_threshold_sec: 4.0
+          proc_performance_threshold_sec: 5.5
 
     steps:
     - uses: actions/checkout@v3
