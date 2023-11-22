@@ -194,6 +194,10 @@ class Cheetah(object):
         self._flush_func.argtypes = [POINTER(self.CCheetah), POINTER(c_char_p)]
         self._flush_func.restype = self.PicovoiceStatuses
 
+        self._transcript_delete_func = library.pv_cheetah_transcript_delete
+        self._transcript_delete_func.argtypes = [c_char_p]
+        self._transcript_delete_func.restype = None
+
         version_func = library.pv_cheetah_version
         version_func.argtypes = []
         version_func.restype = c_char_p
@@ -232,7 +236,10 @@ class Cheetah(object):
                 message='Process failed',
                 message_stack=self._get_error_stack())
 
-        return c_partial_transcript.value.decode('utf-8'), is_endpoint.value
+        partial_transcript = c_partial_transcript.value.decode('utf-8')
+        self._transcript_delete_func(c_partial_transcript)
+
+        return partial_transcript, is_endpoint.value
 
     def flush(self) -> str:
         """
@@ -249,7 +256,10 @@ class Cheetah(object):
                 message='Flush failed',
                 message_stack=self._get_error_stack())
 
-        return c_final_transcript.value.decode('utf-8')
+        final_transcript = c_final_transcript.value.decode('utf-8')
+        self._transcript_delete_func(c_final_transcript)
+
+        return final_transcript
 
     def delete(self) -> None:
         """Releases resources acquired by Cheetah."""
