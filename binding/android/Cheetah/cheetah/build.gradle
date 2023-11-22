@@ -38,7 +38,7 @@ dependencies {
 }
 
 task copyLibs(type: Copy) {
-    from("${rootDir}/../../lib/android")
+    from("${rootDir}/../../../lib/android")
     into("${rootDir}/cheetah/src/main/jniLibs")
 }
 
