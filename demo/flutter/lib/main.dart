@@ -61,9 +61,6 @@ class _MyAppState extends State<MyApp> {
     try {
       _cheetahManager = await CheetahManager.create(
           accessKey, modelPath, transcriptCallback, errorCallback);
-    } on CheetahInvalidArgumentException catch (ex) {
-      errorCallback(CheetahInvalidArgumentException(
-          "${ex.message}\nEnsure your accessKey '$accessKey' is a valid access key."));
     } on CheetahActivationException {
       errorCallback(CheetahActivationException("AccessKey activation error."));
     } on CheetahActivationLimitException {
