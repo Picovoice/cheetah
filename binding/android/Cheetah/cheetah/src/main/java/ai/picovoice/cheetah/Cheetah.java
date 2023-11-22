@@ -54,7 +54,7 @@ public class Cheetah {
             String modelPath,
             float endpointDuration,
             boolean enableAutomaticPunctuation) throws CheetahException {
-        CheetahNative.setSdk(Porcupine._sdk);
+        CheetahNative.setSdk(Cheetah._sdk);
 
         handle = CheetahNative.init(
                 accessKey,

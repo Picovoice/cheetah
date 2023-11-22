@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                     .setEnableAutomaticPunctuation(true)
                     .build(getApplicationContext());
         } catch (CheetahInvalidArgumentException e) {
-            displayError(String.format("%s\nEnsure your AccessKey '%s' is valid", e.getMessage(), ACCESS_KEY));
+            displayError(e.getMessage());
         } catch (CheetahActivationException e) {
             displayError("AccessKey activation error");
         } catch (CheetahActivationLimitException e) {
