@@ -15,7 +15,7 @@ use std::path::{Path, PathBuf};
 use std::ptr::addr_of_mut;
 use std::sync::Arc;
 
-use libc::{c_char, c_float, c_void};
+use libc::{c_char, c_float};
 #[cfg(unix)]
 use libloading::os::unix::Symbol as RawSymbol;
 #[cfg(windows)]
@@ -67,8 +67,8 @@ type PvCheetahProcessFn = unsafe extern "C" fn(
 ) -> PvStatus;
 type PvCheetahFlushFn =
     unsafe extern "C" fn(object: *mut CCheetah, transcript: *mut *mut c_char) -> PvStatus;
+type PvCheetahTranscriptDeleteFn = unsafe extern "C" fn(transcript: *mut c_char);
 type PvCheetahDeleteFn = unsafe extern "C" fn(object: *mut CCheetah);
-type PvFreeFn = unsafe extern "C" fn(*mut c_void);
 type PvGetErrorStackFn =
     unsafe extern "C" fn(message_stack: *mut *mut *mut c_char, message_stack_depth: *mut i32);
 type PvFreeErrorStackFn = unsafe extern "C" fn(message_stack: *mut *mut c_char);
@@ -291,10 +291,10 @@ struct CheetahInnerVTable {
     pv_cheetah_init: RawSymbol<PvCheetahInitFn>,
     pv_cheetah_process: RawSymbol<PvCheetahProcessFn>,
     pv_cheetah_flush: RawSymbol<PvCheetahFlushFn>,
+    pv_cheetah_transcript_delete: RawSymbol<PvCheetahTranscriptDeleteFn>,
     pv_cheetah_delete: RawSymbol<PvCheetahDeleteFn>,
     pv_cheetah_frame_length: RawSymbol<PvCheetahFrameLengthFn>,
     pv_cheetah_version: RawSymbol<PvCheetahVersionFn>,
-    pv_free: RawSymbol<PvFreeFn>,
     pv_sample_rate: RawSymbol<PvSampleRateFn>,
     pv_get_error_stack: RawSymbol<PvGetErrorStackFn>,
     pv_free_error_stack: RawSymbol<PvFreeErrorStackFn>,
@@ -311,10 +311,10 @@ impl CheetahInnerVTable {
                 pv_cheetah_init: load_library_fn(&lib, b"pv_cheetah_init")?,
                 pv_cheetah_process: load_library_fn(&lib, b"pv_cheetah_process")?,
                 pv_cheetah_flush: load_library_fn(&lib, b"pv_cheetah_flush")?,
+                pv_cheetah_transcript_delete: load_library_fn(&lib, b"pv_cheetah_transcript_delete")?,
                 pv_cheetah_delete: load_library_fn(&lib, b"pv_cheetah_delete")?,
                 pv_cheetah_frame_length: load_library_fn(&lib, b"pv_cheetah_frame_length")?,
                 pv_cheetah_version: load_library_fn(&lib, b"pv_cheetah_version")?,
-                pv_free: load_library_fn(&lib, b"pv_free")?,
                 pv_sample_rate: load_library_fn(&lib, b"pv_sample_rate")?,
                 pv_get_error_stack: load_library_fn(&lib, b"pv_get_error_stack")?,
                 pv_free_error_stack: load_library_fn(&lib, b"pv_free_error_stack")?,
@@ -476,7 +476,7 @@ impl CheetahInner {
                     )
                 })?);
 
-            (self.vtable.pv_free)(transcript_ptr as *mut c_void);
+            (self.vtable.pv_cheetah_transcript_delete)(transcript_ptr);
 
             (transcript, is_endpoint)
         };
@@ -503,7 +503,7 @@ impl CheetahInner {
                     )
                 })?);
 
-            (self.vtable.pv_free)(transcript_ptr as *mut c_void);
+            (self.vtable.pv_cheetah_transcript_delete)(transcript_ptr);
 
             (transcript, false)
         };
