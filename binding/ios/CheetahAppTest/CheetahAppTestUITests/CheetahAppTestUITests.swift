@@ -19,14 +19,6 @@ class CheetahDemoUITests: XCTestCase {
 
     let modelURL = Bundle(for: CheetahDemoUITests.self).url(forResource: "cheetah_params", withExtension: "pv")!
 
-    override func setUp() {
-        super.setUp()
-    }
-
-    override func tearDown() {
-        super.tearDown()
-    }
-
     override func setUpWithError() throws {
         continueAfterFailure = true
     }

@@ -1,5 +1,5 @@
 //
-//  Copyright 2022 Picovoice Inc.
+//  Copyright 2022-2023 Picovoice Inc.
 //  You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 //  file accompanying this source.
 //  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
@@ -22,6 +22,12 @@ public class Cheetah {
 
     /// Current Cheetah version.
     public static let version = String(cString: pv_cheetah_version())
+
+    private static var sdk = "ios"
+
+    public static func setSdk(sdk: String) {
+        self.sdk = sdk
+    }
 
     /// Constructor.
     ///
@@ -51,6 +57,8 @@ public class Cheetah {
         if endpointDuration < 0 {
             throw CheetahInvalidArgumentError("EndpointDuration must be a non-negative number.")
         }
+
+        pv_set_sdk(Cheetah.sdk)
 
         let status = pv_cheetah_init(
                 accessKey,
@@ -116,8 +124,8 @@ public class Cheetah {
 
         if pcm.count != Cheetah.frameLength {
             throw CheetahInvalidArgumentError(
-                "Frame of audio data must contain \(Cheetah.frameLength) samples
-                 - given frame contained \(pcm.count)")
+                "Frame of audio data must contain \(Cheetah.frameLength) samples" +
+                " - given frame contained \(pcm.count)")
         }
 
         var cPartialTranscript: UnsafeMutablePointer<Int8>?
@@ -129,7 +137,7 @@ public class Cheetah {
         }
 
         let transcript = String(cString: cPartialTranscript!)
-        cPartialTranscript?.deallocate()
+        pv_cheetah_transcript_delete(cPartialTranscript!)
 
         return (transcript, endPoint)
     }
@@ -151,7 +159,7 @@ public class Cheetah {
         }
 
         let transcript = String(cString: cFinalTranscript!)
-        cFinalTranscript?.deallocate()
+        pv_cheetah_transcript_delete(cFinalTranscript!)
 
         return transcript
     }
@@ -170,12 +178,12 @@ public class Cheetah {
         }
 
         throw CheetahIOError(
-            "Could not find file at path '\(filePath)'. If this is a packaged asset,
-             ensure you have added it to your xcode project."
+            "Could not find file at path '\(filePath)'. If this is a packaged asset, " +
+            "ensure you have added it to your xcode project."
         )
     }
 
-    private func checkStatus(
+    private func pvStatusToCheetahError(
         _ status: pv_status_t,
         _ message: String,
         _ messageStack: [String] = []) -> CheetahError {

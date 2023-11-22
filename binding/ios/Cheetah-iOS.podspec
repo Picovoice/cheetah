@@ -4,10 +4,10 @@ Pod::Spec.new do |s|
   s.version = '2.0.0'
   s.license = {:type => 'Apache 2.0'}
   s.summary = 'iOS SDK for Picovoice\'s Cheetah speech-to-text engine.'
-  s.description = 
+  s.description =
   <<-DESC
   Cheetah is an on-device streaming speech-to-text engine.
-  
+
   Cheetah is:
     - Private, all voice processing runs locally.
     - Accurate
@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   DESC
   s.homepage = 'https://github.com/Picovoice/cheetah/tree/master/binding/ios'
   s.author = { 'Picovoice' => 'hello@picovoice.ai' }
-  s.source = { :git => "https://github.com/Picovoice/cheetah.git", :tag => "Leopard-iOS-v2.0.0" }
+  s.source = { :git => "https://github.com/Picovoice/cheetah.git", :tag => "Cheetah-iOS-v2.0.0" }
   s.ios.deployment_target = '13.0'
   s.swift_version = '5.0'
   s.vendored_frameworks = 'lib/ios/PvCheetah.xcframework'
