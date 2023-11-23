@@ -19,12 +19,18 @@ import java.io.File;
  */
 public class Cheetah {
 
+    private static String sdk = "java";
+
     public static final String LIBRARY_PATH;
     public static final String MODEL_PATH;
 
     static {
         LIBRARY_PATH = Utils.getPackagedLibraryPath();
         MODEL_PATH = Utils.getPackagedModelPath();
+    }
+
+    public static void setSdk(String sdk) {
+        Cheetah.sdk = sdk;
     }
 
     private long handle;
@@ -53,6 +59,8 @@ public class Cheetah {
         } catch (Exception exception) {
             throw new CheetahException(exception);
         }
+        CheetahNative.setSdk(Cheetah.sdk);
+
         handle = CheetahNative.init(
                 accessKey,
                 modelPath,

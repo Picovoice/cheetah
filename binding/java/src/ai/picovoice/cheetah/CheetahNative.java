@@ -20,6 +20,8 @@ class CheetahNative {
 
     static native String getVersion();
 
+    static native void setSdk(String sdk);
+
     static native long init(
             String accessKey,
             String modelPath,
