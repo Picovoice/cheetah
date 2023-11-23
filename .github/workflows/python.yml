@@ -3,7 +3,7 @@ name: Python
 on:
   workflow_dispatch:
   push:
-    branches: [master]
+    branches: [ master ]
     paths:
       - '.github/workflows/python.yml'
       - 'binding/python/**'
@@ -15,7 +15,7 @@ on:
       - 'lib/raspberry-pi/**'
       - 'lib/windows/**'
   pull_request:
-    branches: [master]
+    branches: [ master, 'v[0-9]+.[0-9]+' ]
     paths:
       - '.github/workflows/python.yml'
       - 'binding/python/**'
