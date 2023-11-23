@@ -89,6 +89,12 @@ static void print_dl_error(const char *message) {
 #endif
 }
 
+void print_error_message(char **message_stack, int32_t message_stack_depth) {
+    for (int32_t i = 0; i < message_stack_depth; i++) {
+        fprintf(stderr, "  [%d] %s\n", i, message_stack[i]);
+    }
+}
+
 static void show_audio_devices(void) {
     char **devices = NULL;
     int32_t count = 0;
@@ -217,16 +223,50 @@ int picovoice_main(int argc, char *argv[]) {
         exit(1);
     }
 
-    void (*pv_free_func)(void *) = load_symbol(dl_handle, "pv_free");
-    if (!pv_free_func) {
-        print_dl_error("failed to load `pv_free`");
+    pv_status_t (*pv_cheetah_transcript_delete_func)(char *) =
+            load_symbol(dl_handle, "pv_cheetah_transcript_delete");
+    if (!pv_cheetah_transcript_delete_func) {
+        print_dl_error("failed to load `pv_cheetah_transcript_delete`");
         exit(1);
     }
+
+    pv_status_t (*pv_get_error_stack_func)(char ***, int32_t *) = load_symbol(dl_handle, "pv_get_error_stack");
+    if (!pv_get_error_stack_func) {
+        print_dl_error("failed to load 'pv_get_error_stack_func'");
+        exit(1);
+    }
+
+    void (*pv_free_error_stack_func)(char **) = load_symbol(dl_handle, "pv_free_error_stack");
+    if (!pv_free_error_stack_func) {
+        print_dl_error("failed to load 'pv_free_error_stack_func'");
+        exit(1);
+    }
+
+    char **message_stack = NULL;
+    int32_t message_stack_depth = 0;
+    pv_status_t error_status = PV_STATUS_RUNTIME_ERROR;
 
     pv_cheetah_t *cheetah = NULL;
     pv_status_t status = pv_cheetah_init_func(access_key, model_path, endpoint_duration_sec, enable_automatic_punctuation, &cheetah);
     if (status != PV_STATUS_SUCCESS) {
         fprintf(stderr, "failed to init with `%s`.\n", pv_status_to_string_func(status));
+        error_status = pv_get_error_stack_func(&message_stack, &message_stack_depth);
+        if (error_status != PV_STATUS_SUCCESS) {
+            fprintf(
+                    stderr,
+                    ".\nUnable to get Cheetah error state with '%s'.\n",
+                    pv_status_to_string_func(error_status));
+            exit(1);
+        }
+
+        if (message_stack_depth > 0) {
+            fprintf(stderr, ":\n");
+            print_error_message(message_stack, message_stack_depth);
+        } else {
+            fprintf(stderr, ".\n");
+        }
+
+        pv_free_error_stack_func(message_stack);
         exit(1);
     }
 
@@ -268,20 +308,54 @@ int picovoice_main(int argc, char *argv[]) {
         status = pv_cheetah_process_func(cheetah, pcm, &partial_transcript, &is_endpoint);
         if (status != PV_STATUS_SUCCESS) {
             fprintf(stderr, "`pv_cheetah_process` failed with `%s`\n", pv_status_to_string_func(status));
+            error_status = pv_get_error_stack_func(&message_stack, &message_stack_depth);
+            if (error_status != PV_STATUS_SUCCESS) {
+                fprintf(
+                        stderr,
+                        ".\nUnable to get Cheetah error state with '%s'.\n",
+                        pv_status_to_string_func(error_status));
+                exit(1);
+            }
+
+            if (message_stack_depth > 0) {
+                fprintf(stderr, ":\n");
+                print_error_message(message_stack, message_stack_depth);
+            } else {
+                fprintf(stderr, ".\n");
+            }
+
+            pv_free_error_stack_func(message_stack);
             exit(1);
         }
         fprintf(stdout, "%s", partial_transcript);
         fflush(stdout);
-        pv_free_func(partial_transcript);
+        pv_cheetah_transcript_delete_func(partial_transcript);
         if (is_endpoint) {
             char *final_transcript = NULL;
             status = pv_cheetah_flush_func(cheetah, &final_transcript);
             if (status != PV_STATUS_SUCCESS) {
                 fprintf(stderr, "`pv_cheetah_flush` failed with `%s`\n", pv_status_to_string_func(status));
+                error_status = pv_get_error_stack_func(&message_stack, &message_stack_depth);
+                if (error_status != PV_STATUS_SUCCESS) {
+                    fprintf(
+                            stderr,
+                            ".\nUnable to get Cheetah error state with '%s'.\n",
+                            pv_status_to_string_func(error_status));
+                    exit(1);
+                }
+
+                if (message_stack_depth > 0) {
+                    fprintf(stderr, ":\n");
+                    print_error_message(message_stack, message_stack_depth);
+                } else {
+                    fprintf(stderr, ".\n");
+                }
+
+                pv_free_error_stack_func(message_stack);
                 exit(1);
             }
             fprintf(stdout, "%s\n", final_transcript);
-            pv_free_func(final_transcript);
+            pv_cheetah_transcript_delete_func(final_transcript);
         }
     }
     fprintf(stdout, "\n");
