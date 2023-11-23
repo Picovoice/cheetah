@@ -1,5 +1,5 @@
 /*
-    Copyright 2022 Picovoice Inc.
+    Copyright 2022-2023 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -14,11 +14,13 @@ package ai.picovoice.cheetah;
 
 class CheetahNative {
 
+    static native String getVersion();
+
     static native int getFrameLength();
 
     static native int getSampleRate();
 
-    static native String getVersion();
+    static native void setSdk(String sdk) throws CheetahException;
 
     static native long init(
             String accessKey,

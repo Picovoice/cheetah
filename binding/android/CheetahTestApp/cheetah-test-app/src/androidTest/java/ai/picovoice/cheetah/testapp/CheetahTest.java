@@ -101,4 +101,31 @@ public class CheetahTest extends BaseTest {
 
         assertTrue(sampleRate > 0);
     }
+
+    @Test
+    public void testErrorStack() {
+        String[] error = {};
+        try {
+            new Cheetah.Builder()
+                    .setAccessKey("invalid")
+                    .setModelPath(defaultModelPath)
+                    .build(appContext);
+        } catch (CheetahException e) {
+            error = e.getMessageStack();
+        }
+
+        assertTrue(0 < error.length);
+        assertTrue(error.length <= 8);
+
+        try {
+            new Cheetah.Builder()
+                    .setAccessKey("invalid")
+                    .setModelPath(defaultModelPath)
+                    .build(appContext);
+        } catch (CheetahException e) {
+            for (int i = 0; i < error.length; i++) {
+                assertEquals(e.getMessageStack()[i], error[i]);
+            }
+        }
+    }
 }
