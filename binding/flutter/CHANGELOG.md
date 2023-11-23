@@ -12,3 +12,7 @@
 
 ## [1.1.1] - 2023-08-24
 * Native packages updated
+
+## [2.0.0] - 2023-11-17
+* Engine improvements
+* Improved error reporting
