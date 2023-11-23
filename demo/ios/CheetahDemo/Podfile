@@ -1,7 +1,7 @@
 source 'https://cdn.cocoapods.org/'
-platform :ios, '11.0'
+platform :ios, '13.0'
 
 target 'CheetahDemo' do
-  pod 'Cheetah-iOS', '~> 1.1.0'
+  pod 'Cheetah-iOS', :podspec => 'https://raw.githubusercontent.com/Picovoice/cheetah/v2.0-ios/binding/ios/Cheetah-iOS.podspec'
   pod 'ios-voice-processor', '~> 1.1.0'
 end

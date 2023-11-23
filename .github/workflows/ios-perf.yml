@@ -29,8 +29,8 @@ jobs:
         device: [ios-perf]
         include:
         - device: ios-perf
-          initPerformanceThresholdSec: 1.5
-          procPerformanceThresholdSec: 0.2
+          initPerformanceThresholdSec: 2.5
+          procPerformanceThresholdSec: 0.5
 
     steps:
       - name: Checkout

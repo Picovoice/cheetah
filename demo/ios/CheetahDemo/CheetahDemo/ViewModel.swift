@@ -51,7 +51,7 @@ class ViewModel: ObservableObject {
 
             state = UIState.READY
         } catch let error as CheetahInvalidArgumentError {
-            errorMessage = "\(error.localizedDescription)\nEnsure your AccessKey '\(ACCESS_KEY)' is valid."
+            errorMessage = "\(error.localizedDescription)"
         } catch is CheetahActivationError {
             errorMessage = "ACCESS_KEY activation error"
         } catch is CheetahActivationRefusedError {

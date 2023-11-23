@@ -1,5 +1,5 @@
 //
-//  Copyright 2022 Picovoice Inc.
+//  Copyright 2022-2023 Picovoice Inc.
 //  You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 //  file accompanying this source.
 //  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
@@ -22,6 +22,12 @@ public class Cheetah {
 
     /// Current Cheetah version.
     public static let version = String(cString: pv_cheetah_version())
+
+    private static var sdk = "ios"
+
+    public static func setSdk(sdk: String) {
+        self.sdk = sdk
+    }
 
     /// Constructor.
     ///
@@ -52,13 +58,18 @@ public class Cheetah {
             throw CheetahInvalidArgumentError("EndpointDuration must be a non-negative number.")
         }
 
+        pv_set_sdk(Cheetah.sdk)
+
         let status = pv_cheetah_init(
                 accessKey,
                 modelPathArg,
                 endpointDuration,
                 enableAutomaticPunctuation,
                 &handle)
-        try checkStatus(status, "Cheetah init failed")
+        if status != PV_STATUS_SUCCESS {
+            let messageStack = try getMessageStack()
+            throw pvStatusToCheetahError(status, "Cheetah init failed", messageStack)
+        }
     }
 
     deinit {
@@ -113,17 +124,20 @@ public class Cheetah {
 
         if pcm.count != Cheetah.frameLength {
             throw CheetahInvalidArgumentError(
-                "Frame of audio data must contain \(Cheetah.frameLength) samples
-                 - given frame contained \(pcm.count)")
+                "Frame of audio data must contain \(Cheetah.frameLength) samples" +
+                " - given frame contained \(pcm.count)")
         }
 
         var cPartialTranscript: UnsafeMutablePointer<Int8>?
         var endPoint = false
         let status = pv_cheetah_process(self.handle, pcm, &cPartialTranscript, &endPoint)
-        try checkStatus(status, "Cheetah process failed")
+        if status != PV_STATUS_SUCCESS {
+            let messageStack = try getMessageStack()
+            throw pvStatusToCheetahError(status, "Cheetah process failed", messageStack)
+        }
 
         let transcript = String(cString: cPartialTranscript!)
-        cPartialTranscript?.deallocate()
+        pv_cheetah_transcript_delete(cPartialTranscript!)
 
         return (transcript, endPoint)
     }
@@ -139,10 +153,13 @@ public class Cheetah {
 
         var cFinalTranscript: UnsafeMutablePointer<Int8>?
         let status = pv_cheetah_flush(self.handle, &cFinalTranscript)
-        try checkStatus(status, "Cheetah flush failed")
+        if status != PV_STATUS_SUCCESS {
+            let messageStack = try getMessageStack()
+            throw pvStatusToCheetahError(status, "Cheetah flush failed", messageStack)
+        }
 
         let transcript = String(cString: cFinalTranscript!)
-        cFinalTranscript?.deallocate()
+        pv_cheetah_transcript_delete(cFinalTranscript!)
 
         return transcript
     }
@@ -161,42 +178,59 @@ public class Cheetah {
         }
 
         throw CheetahIOError(
-            "Could not find file at path '\(filePath)'. If this is a packaged asset,
-             ensure you have added it to your xcode project."
+            "Could not find file at path '\(filePath)'. If this is a packaged asset, " +
+            "ensure you have added it to your xcode project."
         )
     }
 
-    private func checkStatus(_ status: pv_status_t, _ message: String) throws {
-        if status == PV_STATUS_SUCCESS {
-            return
-        }
-
+    private func pvStatusToCheetahError(
+        _ status: pv_status_t,
+        _ message: String,
+        _ messageStack: [String] = []) -> CheetahError {
         switch status {
         case PV_STATUS_OUT_OF_MEMORY:
-            throw CheetahMemoryError(message)
+            return CheetahMemoryError(message, messageStack)
         case PV_STATUS_IO_ERROR:
-            throw CheetahIOError(message)
+            return CheetahIOError(message, messageStack)
         case PV_STATUS_INVALID_ARGUMENT:
-            throw CheetahInvalidArgumentError(message)
+            return CheetahInvalidArgumentError(message, messageStack)
         case PV_STATUS_STOP_ITERATION:
-            throw CheetahStopIterationError(message)
+            return CheetahStopIterationError(message, messageStack)
         case PV_STATUS_KEY_ERROR:
-            throw CheetahKeyError(message)
+            return CheetahKeyError(message, messageStack)
         case PV_STATUS_INVALID_STATE:
-            throw CheetahInvalidStateError(message)
+            return CheetahInvalidStateError(message, messageStack)
         case PV_STATUS_RUNTIME_ERROR:
-            throw CheetahRuntimeError(message)
+            return CheetahRuntimeError(message, messageStack)
         case PV_STATUS_ACTIVATION_ERROR:
-            throw CheetahActivationError(message)
+            return CheetahActivationError(message, messageStack)
         case PV_STATUS_ACTIVATION_LIMIT_REACHED:
-            throw CheetahActivationLimitError(message)
+            return CheetahActivationLimitError(message, messageStack)
         case PV_STATUS_ACTIVATION_THROTTLED:
-            throw CheetahActivationThrottledError(message)
+            return CheetahActivationThrottledError(message, messageStack)
         case PV_STATUS_ACTIVATION_REFUSED:
-            throw CheetahActivationRefusedError(message)
+            return CheetahActivationRefusedError(message, messageStack)
         default:
             let pvStatusString = String(cString: pv_status_to_string(status))
-            throw CheetahError("\(pvStatusString): \(message)")
+            return CheetahError("\(pvStatusString): \(message)", messageStack)
         }
+    }
+
+    private func getMessageStack() throws -> [String] {
+        var messageStackRef: UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>?
+        var messageStackDepth: Int32 = 0
+        let status = pv_get_error_stack(&messageStackRef, &messageStackDepth)
+        if status != PV_STATUS_SUCCESS {
+            throw pvStatusToCheetahError(status, "Unable to get Cheetah error state")
+        }
+
+        var messageStack: [String] = []
+        for i in 0..<messageStackDepth {
+            messageStack.append(String(cString: messageStackRef!.advanced(by: Int(i)).pointee!))
+        }
+
+        pv_free_error_stack(messageStackRef)
+
+        return messageStack
     }
 }
