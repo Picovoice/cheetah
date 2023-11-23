@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'cheetah_flutter'
-  s.version          = '1.1.1'
+  s.version          = '2.0.0'
   s.summary          = 'A Flutter package plugin for Picovoice\'s Cheetah Speech-to-Text engine'
   s.description      = <<-DESC
   A Flutter package plugin for Picovoice\'s Cheetah Speech-to-Text engine
@@ -10,9 +10,9 @@ Pod::Spec.new do |s|
   s.author           = { 'Picovoice' => 'hello@picovoice.ai' }
   s.source           = { :git => "https://github.com/Picovoice/cheetah.git" }
   s.source_files = 'Classes/**/*'
-  s.platform = :ios, '9.0'
+  s.platform = :ios, '13.0'
   s.dependency 'Flutter'
-  s.dependency 'Cheetah-iOS', '~> 1.1.0'
+  s.dependency 'Cheetah-iOS', '~> 2.0.0'
 
   s.swift_version = '5.0'
 end
