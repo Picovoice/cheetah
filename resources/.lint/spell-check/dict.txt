@@ -24,6 +24,7 @@ drwav
 dylib
 endpointing
 exopackage
+Fastenshtein
 filedemo
 framecount
 gradlew
