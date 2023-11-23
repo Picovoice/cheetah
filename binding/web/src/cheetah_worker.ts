@@ -1,5 +1,5 @@
 /*
-  Copyright 2022 Picovoice Inc.
+  Copyright 2022-2023 Picovoice Inc.
 
   You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
   file accompanying this source.
@@ -18,8 +18,11 @@ import {
   CheetahWorkerInitResponse,
   CheetahWorkerProcessResponse,
   CheetahWorkerReleaseResponse,
+  PvStatus,
 } from './types';
 import { loadModel } from '@picovoice/web-utils';
+
+import { pvStatusToException } from './cheetah_errors';
 
 export class CheetahWorker {
   private readonly _worker: Worker;
@@ -29,6 +32,7 @@ export class CheetahWorker {
 
   private static _wasm: string;
   private static _wasmSimd: string;
+  private static _sdk: string = "web";
 
   private constructor(worker: Worker, version: string, frameLength: number, sampleRate: number) {
     this._worker = worker;
@@ -85,6 +89,10 @@ export class CheetahWorker {
     }
   }
 
+  public static setSdk(sdk: string): void {
+    CheetahWorker._sdk = sdk;
+  }
+
   /**
    * Creates a worker instance of the Picovoice Cheetah Speech-to-Text engine.
    * Behind the scenes, it requires the WebAssembly code to load and initialize before
@@ -115,7 +123,7 @@ export class CheetahWorker {
     model: CheetahModel,
     options: CheetahOptions = {},
   ): Promise<CheetahWorker> {
-    const { processErrorCallback, ...rest } = options;
+    const { processErrorCallback, ...workerOptions } = options;
 
     const customWritePath = (model.customWritePath) ? model.customWritePath : 'cheetah_model';
     const modelPath = await loadModel({ ...model, customWritePath });
@@ -134,27 +142,29 @@ export class CheetahWorker {
                   break;
                 case 'failed':
                 case 'error':
+                  const error = pvStatusToException(ev.data.status, ev.data.shortMessage, ev.data.messageStack);
                   if (processErrorCallback) {
-                    processErrorCallback(ev.data.message);
+                    processErrorCallback(error);
                   } else {
                     // eslint-disable-next-line no-console
-                    console.error(ev.data.message);
+                    console.error(error);
                   }
                   break;
                 default:
                   // @ts-ignore
-                  processErrorCallback(`Unrecognized command: ${event.data.command}`);
+                  processErrorCallback(pvStatusToException(PvStatus.RUNTIME_ERROR, `Unrecognized command: ${event.data.command}`));
               }
             };
             resolve(new CheetahWorker(worker, event.data.version, event.data.frameLength, event.data.sampleRate));
             break;
           case 'failed':
           case 'error':
-            reject(event.data.message);
+            const error = pvStatusToException(event.data.status, event.data.shortMessage, event.data.messageStack);
+            reject(error);
             break;
           default:
             // @ts-ignore
-            reject(`Unrecognized command: ${event.data.command}`);
+            reject(pvStatusToException(PvStatus.RUNTIME_ERROR, `Unrecognized command: ${event.data.command}`));
         }
       };
     });
@@ -163,9 +173,10 @@ export class CheetahWorker {
       command: 'init',
       accessKey: accessKey,
       modelPath: modelPath,
-      options: rest,
+      options: workerOptions,
       wasm: this._wasm,
       wasmSimd: this._wasmSimd,
+      sdk: this._sdk,
     });
 
     return returnPromise;
@@ -210,11 +221,12 @@ export class CheetahWorker {
             break;
           case 'failed':
           case 'error':
-            reject(event.data.message);
+            const error = pvStatusToException(event.data.status, event.data.shortMessage, event.data.messageStack);
+            reject(error);
             break;
           default:
             // @ts-ignore
-            reject(`Unrecognized command: ${event.data.command}`);
+            reject(pvStatusToException(PvStatus.RUNTIME_ERROR, `Unrecognized command: ${event.data.command}`));
         }
       };
     });

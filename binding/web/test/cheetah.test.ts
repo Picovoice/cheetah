@@ -1,4 +1,5 @@
 import { Cheetah, CheetahWorker } from "../";
+import { CheetahError } from "../dist/types/cheetah_error";
 
 // @ts-ignore
 import cheetahParams from "./cheetah_params";
@@ -164,8 +165,76 @@ const runProcTest = async (
 };
 
 describe("Cheetah Binding", function () {
+  it(`should return process and flush error message stack`, async () => {
+    let errors: [CheetahError] = [];
+
+    const runProcess = () => new Promise<void>(async resolve => {
+      const cheetah = await Cheetah.create(
+        ACCESS_KEY,
+        () => { },
+        { publicPath: '/test/cheetah_params.pv', forceWrite: true },
+        {
+          processErrorCallback: (e: CheetahError) => {
+            errors.push(e);
+            resolve();
+          }
+        }
+      );
+      const testPcm = new Int16Array(cheetah.frameLength);
+      // @ts-ignore
+      const objectAddress = cheetah._objectAddress;
+
+      // @ts-ignore
+      cheetah._objectAddress = 0;
+      await cheetah.process(testPcm);
+      await cheetah.flush();
+
+      await delay(1000);
+
+      // @ts-ignore
+      cheetah._objectAddress = objectAddress;
+      await cheetah.release();
+    });
+
+    await runProcess();
+    expect(errors.length).to.be.gte(0);
+
+    for (let i = 0; i < errors.length; i++) {
+      expect((errors[i] as CheetahError).messageStack.length).to.be.gt(0);
+      expect((errors[i] as CheetahError).messageStack.length).to.be.lte(8);
+    }
+  });
+
   for (const instance of [Cheetah, CheetahWorker]) {
     const instanceString = (instance === CheetahWorker) ? 'worker' : 'main';
+
+    it(`should return correct error message stack (${instanceString})`, async () => {
+      let messageStack = [];
+      try {
+        const cheetah = await instance.create(
+          "invalidAccessKey",
+          () => { },
+          { publicPath: '/test/cheetah_params.pv', forceWrite: true }
+        );
+        expect(cheetah).to.be.undefined;
+      } catch (e: any) {
+        messageStack = e.messageStack;
+      }
+
+      expect(messageStack.length).to.be.gt(0);
+      expect(messageStack.length).to.be.lte(8);
+
+      try {
+        const cheetah = await instance.create(
+          "invalidAccessKey",
+          () => { },
+          { publicPath: '/test/cheetah_params.pv', forceWrite: true }
+        );
+        expect(cheetah).to.be.undefined;
+      } catch (e: any) {
+        expect(messageStack.length).to.be.eq(e.messageStack.length);
+      }
+    });
 
     it(`should be able to init with public path (${instanceString})`, () => {
       cy.wrap(null).then(async () => {
