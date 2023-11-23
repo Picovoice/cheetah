@@ -166,8 +166,8 @@ func (cheetah *Cheetah) Init() error {
 		errorStatus, messageStack := nativeCheetah.nativeGetErrorStack()
 		if errorStatus != SUCCESS {
 			return &CheetahError{
-				StatusCode:   errorStatus,
-				Message:      "Unable to get Cheetah error state",
+				StatusCode: errorStatus,
+				Message:    "Unable to get Cheetah error state",
 			}
 		}
 
@@ -219,12 +219,12 @@ func (cheetah *Cheetah) Process(pcm []int16) (string, bool, error) {
 		errorStatus, messageStack := nativeCheetah.nativeGetErrorStack()
 		if errorStatus != SUCCESS {
 			return "", false, &CheetahError{
-				StatusCode:   errorStatus,
-				Message:      "Unable to get Cheetah error state",
+				StatusCode: errorStatus,
+				Message:    "Unable to get Cheetah error state",
 			}
 		}
 
-		return"", false, &CheetahError{
+		return "", false, &CheetahError{
 			StatusCode:   ret,
 			Message:      "Cheetah process failed",
 			MessageStack: messageStack,
@@ -248,12 +248,12 @@ func (cheetah *Cheetah) Flush() (string, error) {
 		errorStatus, messageStack := nativeCheetah.nativeGetErrorStack()
 		if errorStatus != SUCCESS {
 			return "", &CheetahError{
-				StatusCode:   errorStatus,
-				Message:      "Unable to get Cheetah error state",
+				StatusCode: errorStatus,
+				Message:    "Unable to get Cheetah error state",
 			}
 		}
 
-		return"", &CheetahError{
+		return "", &CheetahError{
 			StatusCode:   ret,
 			Message:      "Cheetah flush failed",
 			MessageStack: messageStack,

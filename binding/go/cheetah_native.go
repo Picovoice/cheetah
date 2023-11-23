@@ -184,17 +184,17 @@ type nativeCheetahInterface interface {
 type nativeCheetahType struct {
 	libraryPath unsafe.Pointer
 
-	pv_cheetah_init_ptr         		unsafe.Pointer
-	pv_cheetah_process_ptr      		unsafe.Pointer
-	pv_cheetah_flush_ptr        		unsafe.Pointer
-	pv_cheetah_delete_ptr       		unsafe.Pointer
-	pv_cheetah_version_ptr      		unsafe.Pointer
-	pv_cheetah_frame_length_ptr 		unsafe.Pointer
-	pv_sample_rate_ptr          		unsafe.Pointer
-	pv_set_sdk_ptr              		unsafe.Pointer
-	pv_get_error_stack_ptr      		unsafe.Pointer
-	pv_free_error_stack_ptr     		unsafe.Pointer
-	pv_cheetah_transcript_delete_ptr	unsafe.Pointer
+	pv_cheetah_init_ptr              unsafe.Pointer
+	pv_cheetah_process_ptr           unsafe.Pointer
+	pv_cheetah_flush_ptr             unsafe.Pointer
+	pv_cheetah_delete_ptr            unsafe.Pointer
+	pv_cheetah_version_ptr           unsafe.Pointer
+	pv_cheetah_frame_length_ptr      unsafe.Pointer
+	pv_sample_rate_ptr               unsafe.Pointer
+	pv_set_sdk_ptr                   unsafe.Pointer
+	pv_get_error_stack_ptr           unsafe.Pointer
+	pv_free_error_stack_ptr          unsafe.Pointer
+	pv_cheetah_transcript_delete_ptr unsafe.Pointer
 }
 
 func (nc *nativeCheetahType) nativeInit(cheetah *Cheetah) (status PvStatus) {
@@ -252,7 +252,7 @@ func (nc *nativeCheetahType) nativeProcess(cheetah *Cheetah, pcm []int16) (statu
 		(*C.int16_t)(unsafe.Pointer(&pcm[0])),
 		(**C.char)(unsafe.Pointer(&transcriptPtr)),
 		(*C.bool)(unsafe.Pointer(&isEndpoint)))
-	if (PvStatus(ret) != SUCCESS) {
+	if PvStatus(ret) != SUCCESS {
 		return PvStatus(ret), "", false
 	}
 
@@ -269,7 +269,7 @@ func (nc *nativeCheetahType) nativeFlush(cheetah *Cheetah) (status PvStatus, tra
 	var ret = C.pv_cheetah_flush_wrapper(nc.pv_cheetah_flush_ptr,
 		cheetah.handle,
 		(**C.char)(unsafe.Pointer(&transcriptPtr)))
-	if (PvStatus(ret) != SUCCESS) {
+	if PvStatus(ret) != SUCCESS {
 		return PvStatus(ret), ""
 	}
 

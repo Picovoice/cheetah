@@ -36,8 +36,8 @@ type TestParameters struct {
 }
 
 var (
-	testAccessKey string
-	cheetah       Cheetah
+	testAccessKey         string
+	cheetah               Cheetah
 	processTestParameters []TestParameters
 )
 
@@ -46,7 +46,6 @@ func TestMain(m *testing.M) {
 	flag.StringVar(&testAccessKey, "access_key", "", "AccessKey for testing")
 	flag.Parse()
 
-	
 	processTestParameters = loadTestData()
 	os.Exit(m.Run())
 }
@@ -202,12 +201,12 @@ func TestProcessFlushMessageStack(t *testing.T) {
 	cheetah.handle = nil
 
 	testPcm := make([]int16, FrameLength)
-	
+
 	_, _, err = cheetah.Process(testPcm)
 	if err == nil {
 		t.Fatalf("Expected cheetah process to fail")
 	}
-	
+
 	_, err = cheetah.Flush()
 	if err == nil {
 		t.Fatalf("Expected cheetah flush to fail")

@@ -67,7 +67,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
 
 	defer func() {
 		err := c.Delete()
