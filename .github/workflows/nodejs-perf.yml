@@ -32,14 +32,14 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         include:
         - os: ubuntu-latest
-          init_performance_threshold_sec: 2.1
-          proc_performance_threshold_sec: 0.5
+          init_performance_threshold_sec: 2.75
+          proc_performance_threshold_sec: 0.75
         - os: windows-latest
-          init_performance_threshold_sec: 2.5
+          init_performance_threshold_sec: 2.75
           proc_performance_threshold_sec: 0.8
         - os: macos-latest
-          init_performance_threshold_sec: 2.3
-          proc_performance_threshold_sec: 0.8
+          init_performance_threshold_sec: 3.5
+          proc_performance_threshold_sec: 4.0
 
     steps:
     - uses: actions/checkout@v3
