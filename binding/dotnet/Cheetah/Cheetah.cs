@@ -19,7 +19,7 @@ namespace Pv
     /// <summary>
     /// Status codes returned by Cheetah library
     /// </summary>
-    public enum PvStatus
+    public enum CheetahStatus
     {
         SUCCESS = 0,
         OUT_OF_MEMORY = 1,
@@ -69,7 +69,7 @@ namespace Pv
 #endif
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
-        private static extern PvStatus pv_cheetah_init(
+        private static extern CheetahStatus pv_cheetah_init(
             IntPtr accessKey,
             IntPtr modelPath,
             float endpointDurationSec,
@@ -83,16 +83,19 @@ namespace Pv
         private static extern void pv_cheetah_delete(IntPtr handle);
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
-        private static extern PvStatus pv_cheetah_process(
+        private static extern CheetahStatus pv_cheetah_process(
             IntPtr handle,
             Int16[] pcm,
             out IntPtr transcriptPtr,
             out bool isEndpoint);
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
-        private static extern PvStatus pv_cheetah_flush(
+        private static extern CheetahStatus pv_cheetah_flush(
             IntPtr handle,
             out IntPtr transcriptPtr);
+
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void pv_cheetah_transcript_delete(IntPtr transcriptPtr);
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr pv_cheetah_version();
@@ -101,7 +104,14 @@ namespace Pv
         private static extern Int32 pv_cheetah_frame_length();
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
-        private static extern void pv_free(IntPtr memoryPtr);
+
+        private static extern void pv_set_sdk(string sdk);
+
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
+        private static extern CheetahStatus pv_get_error_stack(out IntPtr messageStack, out int messageStackDepth);
+
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void pv_free_error_stack(IntPtr messageStack);
 
         /// <summary>
         /// Factory method for Cheetah Speech-to-Text engine.
@@ -163,7 +173,9 @@ namespace Pv
             IntPtr accessKeyPtr = Utils.GetPtrFromUtf8String(accessKey);
             IntPtr modelPathPtr = Utils.GetPtrFromUtf8String(modelPath);
 
-            PvStatus status = pv_cheetah_init(
+            pv_set_sdk("dotnet");
+
+            CheetahStatus status = pv_cheetah_init(
                 accessKeyPtr,
                 modelPathPtr,
                 endpointDurationSec,
@@ -173,9 +185,10 @@ namespace Pv
             Marshal.FreeHGlobal(accessKeyPtr);
             Marshal.FreeHGlobal(modelPathPtr);
 
-            if (status != PvStatus.SUCCESS)
+            if (status != CheetahStatus.SUCCESS)
             {
-                throw PvStatusToException(status);
+                string[] messageStack = GetMessageStack();
+                throw CheetahStatusToException(status, "Cheetah init failed", messageStack);
             }
 
             Version = Utils.GetUtf8StringFromPtr(pv_cheetah_version());
@@ -208,14 +221,16 @@ namespace Pv
 
             IntPtr transcriptPtr = IntPtr.Zero;
             bool isEndpoint = false;
-            PvStatus status = pv_cheetah_process(_libraryPointer, pcm, out transcriptPtr, out isEndpoint);
-            if (status != PvStatus.SUCCESS)
+            CheetahStatus status = pv_cheetah_process(_libraryPointer, pcm, out transcriptPtr, out isEndpoint);
+            if (status != CheetahStatus.SUCCESS)
             {
-                throw PvStatusToException(status, "Cheetah failed to process the audio frame.");
+                string[] messageStack = GetMessageStack();
+                throw CheetahStatusToException(status, "Cheetah failed to process the audio frame.", messageStack);
             }
 
             string transcript = Utils.GetUtf8StringFromPtr(transcriptPtr);
-            pv_free(transcriptPtr);
+            pv_cheetah_transcript_delete(transcriptPtr);
+
             return new CheetahTranscript(transcript, isEndpoint);
         }
 
@@ -228,14 +243,16 @@ namespace Pv
         public CheetahTranscript Flush()
         {
             IntPtr transcriptPtr = IntPtr.Zero;
-            PvStatus status = pv_cheetah_flush(_libraryPointer, out transcriptPtr);
-            if (status != PvStatus.SUCCESS)
+            CheetahStatus status = pv_cheetah_flush(_libraryPointer, out transcriptPtr);
+            if (status != CheetahStatus.SUCCESS)
             {
-                throw PvStatusToException(status, "Cheetah failed to process the audio frame.");
+                string[] messageStack = GetMessageStack();
+                throw CheetahStatusToException(status, "Cheetah failed to flush.", messageStack);
             }
 
             string transcript = Utils.GetUtf8StringFromPtr(transcriptPtr);
-            pv_free(transcriptPtr);
+            pv_cheetah_transcript_delete(transcriptPtr);
+
             return new CheetahTranscript(transcript, false);
         }
 
@@ -261,35 +278,45 @@ namespace Pv
         /// Coverts status codes to relevant .NET exceptions
         /// </summary>
         /// <param name="status">Picovoice library status code.</param>
+        /// <param name="message">Default error message.</param>
+        /// <param name="messageStack">Error stack returned from Picovoice library.</param>
         /// <returns>.NET exception</returns>
-        private static Exception PvStatusToException(PvStatus status, string message = "")
+        private static Exception CheetahStatusToException(
+            CheetahStatus status,
+            string message = "",
+            string[] messageStack = null)
         {
+            if (messageStack == null)
+            {
+                messageStack = new string[] { };
+            }
+
             switch (status)
             {
-                case PvStatus.OUT_OF_MEMORY:
-                    return new CheetahMemoryException(message);
-                case PvStatus.IO_ERROR:
-                    return new CheetahIOException(message);
-                case PvStatus.INVALID_ARGUMENT:
-                    return new CheetahInvalidArgumentException(message);
-                case PvStatus.STOP_ITERATION:
-                    return new CheetahStopIterationException(message);
-                case PvStatus.KEY_ERROR:
-                    return new CheetahKeyException(message);
-                case PvStatus.INVALID_STATE:
-                    return new CheetahInvalidStateException(message);
-                case PvStatus.RUNTIME_ERROR:
-                    return new CheetahRuntimeException(message);
-                case PvStatus.ACTIVATION_ERROR:
-                    return new CheetahActivationException(message);
-                case PvStatus.ACTIVATION_LIMIT_REACHED:
-                    return new CheetahActivationLimitException(message);
-                case PvStatus.ACTIVATION_THROTTLED:
-                    return new CheetahActivationThrottledException(message);
-                case PvStatus.ACTIVATION_REFUSED:
-                    return new CheetahActivationRefusedException(message);
+                case CheetahStatus.OUT_OF_MEMORY:
+                    return new CheetahMemoryException(message, messageStack);
+                case CheetahStatus.IO_ERROR:
+                    return new CheetahIOException(message, messageStack);
+                case CheetahStatus.INVALID_ARGUMENT:
+                    return new CheetahInvalidArgumentException(message, messageStack);
+                case CheetahStatus.STOP_ITERATION:
+                    return new CheetahStopIterationException(message, messageStack);
+                case CheetahStatus.KEY_ERROR:
+                    return new CheetahKeyException(message, messageStack);
+                case CheetahStatus.INVALID_STATE:
+                    return new CheetahInvalidStateException(message, messageStack);
+                case CheetahStatus.RUNTIME_ERROR:
+                    return new CheetahRuntimeException(message, messageStack);
+                case CheetahStatus.ACTIVATION_ERROR:
+                    return new CheetahActivationException(message, messageStack);
+                case CheetahStatus.ACTIVATION_LIMIT_REACHED:
+                    return new CheetahActivationLimitException(message, messageStack);
+                case CheetahStatus.ACTIVATION_THROTTLED:
+                    return new CheetahActivationThrottledException(message, messageStack);
+                case CheetahStatus.ACTIVATION_REFUSED:
+                    return new CheetahActivationRefusedException(message, messageStack);
                 default:
-                    return new CheetahException("Unmapped error code returned from Cheetah.");
+                    return new CheetahException("Unmapped error code returned from Cheetah.", messageStack);
             }
         }
 
@@ -311,6 +338,30 @@ namespace Pv
         ~Cheetah()
         {
             Dispose();
+        }
+
+        private string[] GetMessageStack()
+        {
+            int messageStackDepth;
+            IntPtr messageStackRef;
+
+            CheetahStatus status = pv_get_error_stack(out messageStackRef, out messageStackDepth);
+            if (status != CheetahStatus.SUCCESS)
+            {
+                throw CheetahStatusToException(status, "Unable to get Cheetah error state");
+            }
+
+            int elementSize = Marshal.SizeOf(typeof(IntPtr));
+            string[] messageStack = new string[messageStackDepth];
+
+            for (int i = 0; i < messageStackDepth; i++)
+            {
+                messageStack[i] = Marshal.PtrToStringAnsi(Marshal.ReadIntPtr(messageStackRef, i * elementSize));
+            }
+
+            pv_free_error_stack(messageStackRef);
+
+            return messageStack;
         }
     }
 }
