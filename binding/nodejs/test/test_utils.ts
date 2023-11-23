@@ -14,7 +14,7 @@ const ROOT_DIR = path.join(__dirname, '../../..');
 
 export const TRANSCRIPT =
   'Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel';
-  export const TRANSCRIPT_WITH_PUNCTUATION =
+export const TRANSCRIPT_WITH_PUNCTUATION =
     'Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.';
 
 export function getModelPath(): string {
@@ -27,7 +27,7 @@ export function getModelPath(): string {
 export function getAudioFile(audioFile: string): string {
   return path.join(ROOT_DIR, 'resources/audio_samples', audioFile);
 }
-  
+
 export function getTestParameters(): [
   string,
   string,

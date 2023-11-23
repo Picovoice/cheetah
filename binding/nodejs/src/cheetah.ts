@@ -100,7 +100,7 @@ export default class Cheetah {
     this._pvCheetah = pvCheetah;
 
     let cheetahHandleAndStatus: CheetahHandleAndStatus | null = null;
-    try {      
+    try {
       pvCheetah.set_sdk("nodejs");
 
       cheetahHandleAndStatus = pvCheetah.init(
@@ -109,7 +109,7 @@ export default class Cheetah {
         endpointDurationSec,
         enableAutomaticPunctuation
       );
-    } catch (err: any) {      
+    } catch (err: any) {
       pvStatusToException(PvStatus[err.code as keyof typeof PvStatus], err);
     }
 

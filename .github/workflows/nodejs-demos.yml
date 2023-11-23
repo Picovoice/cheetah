@@ -38,19 +38,12 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    
-    # ************** REMOVE AFTER RELEASE ********************
-    - name: Pre-build binding dependencies
-      run: npm install yarn
-      working-directory: binding/nodejs
 
+    # ************** REMOVE AFTER RELEASE ********************
     - name: Build Node.js SDK
       run: yarn && yarn build
       working-directory: binding/nodejs
       # ********************************************************
-
-    - name: Pre-build dependencies
-      run: npm install yarn
 
     - name: Install dependencies
       run: yarn install
@@ -68,9 +61,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Pre-build dependencies
-      run: npm install --global yarn
-    
     # ************** REMOVE AFTER RELEASE ********************
     - name: Build Node.js SDK
       run: yarn && yarn build

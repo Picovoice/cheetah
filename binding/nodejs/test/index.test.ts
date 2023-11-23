@@ -97,7 +97,7 @@ const cheetahProcessWaveFile = (
   transcript += partialTranscript;
 
   return [transcript, isEndpoint];
-}
+};
 
 
 const testCheetahProcess = (
@@ -172,7 +172,7 @@ describe('manual paths', () => {
   test('manual model path', () => {
     let cheetahEngine = new Cheetah(ACCESS_KEY, { modelPath: MODEL_PATH });
 
-    let [transcript, isEndpoint] = cheetahProcessWaveFile(
+    let [transcript, _] = cheetahProcessWaveFile(
       cheetahEngine,
       WAV_PATH
     );
@@ -183,12 +183,12 @@ describe('manual paths', () => {
 
   test('manual model and library path', () => {
     let cheetahEngine = new Cheetah(ACCESS_KEY, {
-      modelPath:  MODEL_PATH,
+      modelPath: MODEL_PATH,
       libraryPath: libraryPath,
       endpointDurationSec: 0.2,
     });
 
-    let [transcript, isEndpoint] = cheetahProcessWaveFile(
+    let [transcript, _] = cheetahProcessWaveFile(
       cheetahEngine,
       WAV_PATH
     );
