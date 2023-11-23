@@ -35,7 +35,6 @@ public class CheetahPerformanceTest {
 
     @Test
     void initPerformance() throws Exception {
-
         long[] perfResults = new long[numTestIterations];
         for (int i = 0; i < numTestIterations + 1; i++) {
             long before = System.nanoTime();

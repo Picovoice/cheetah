@@ -33,14 +33,55 @@ public class CheetahTest {
     private final String accessKey = System.getProperty("pvTestingAccessKey");
 
     @Test
-    void getVersion() throws Exception {
+    void getVersion() throws CheetahException {
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
                 .build();
-
         assertTrue(cheetah.getVersion() != null && !cheetah.getVersion().equals(""));
-
         cheetah.delete();
+    }
+
+    @Test
+    void getFrameLength() throws CheetahException {
+        Cheetah cheetah = new Cheetah.Builder()
+                .setAccessKey(accessKey)
+                .build();
+        assertTrue(cheetah.getFrameLength() > 0);
+        cheetah.delete();
+    }
+
+    @Test
+    void getSampleRate() throws CheetahException {
+        Cheetah cheetah = new Cheetah.Builder()
+                .setAccessKey(accessKey)
+                .build();
+        assertTrue(cheetah.getSampleRate() > 0);
+        cheetah.delete();
+    }
+
+    @Test
+    void getErrorStack() {
+        String[] error = {};
+        try {
+            new Cheetah.Builder()
+                    .setAccessKey("invalid")
+                    .build();
+        } catch (CheetahException e) {
+            error = e.getMessageStack();
+        }
+
+        assertTrue(0 < error.length);
+        assertTrue(error.length <= 8);
+
+        try {
+            new Cheetah.Builder()
+                    .setAccessKey("invalid")
+                    .build();
+        } catch (CheetahException e) {
+            for (int i = 0; i < error.length; i++) {
+                assertEquals(e.getMessageStack()[i], error[i]);
+            }
+        }
     }
 
     @ParameterizedTest(name = "test transcribe with automatic punctuation set to ''{0}''")
