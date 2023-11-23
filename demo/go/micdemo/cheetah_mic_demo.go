@@ -18,7 +18,7 @@ import (
 	"os/signal"
 	"path/filepath"
 
-	cheetah "github.com/Picovoice/cheetah/binding/go"
+	cheetah "github.com/Picovoice/cheetah/binding/go/v2"
 	pvrecorder "github.com/Picovoice/pvrecorder/binding/go"
 	"github.com/go-audio/wav"
 )
@@ -67,7 +67,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
 
 	defer func() {
 		err := c.Delete()
