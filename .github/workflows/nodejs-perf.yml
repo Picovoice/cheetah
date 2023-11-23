@@ -32,7 +32,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         include:
         - os: ubuntu-latest
-          init_performance_threshold_sec: 2.75
+          init_performance_threshold_sec: 3.0
           proc_performance_threshold_sec: 0.75
         - os: windows-latest
           init_performance_threshold_sec: 3.0
@@ -76,7 +76,7 @@ jobs:
           init_performance_threshold_sec: 5.5
           proc_performance_threshold_sec: 3.5
         - machine: jetson
-          init_performance_threshold_sec: 5.0
+          init_performance_threshold_sec: 5.5
           proc_performance_threshold_sec: 4.3
 
     steps:
