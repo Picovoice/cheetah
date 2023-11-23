@@ -125,7 +125,7 @@ export default class App extends Component<Props, State> {
   handleError(err: any) {
     let errorMessage: string;
     if (err instanceof CheetahErrors.CheetahInvalidArgumentError) {
-      errorMessage = `${err.message}\nPlease make sure accessKey ${this._accessKey} is a valid access key.`;
+      errorMessage = `${err.message}`;
     } else if (err instanceof CheetahErrors.CheetahActivationError) {
       errorMessage = 'AccessKey activation error';
     } else if (err instanceof CheetahErrors.CheetahActivationLimitError) {
