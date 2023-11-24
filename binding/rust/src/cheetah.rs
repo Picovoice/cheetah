@@ -15,7 +15,7 @@ use std::path::{Path, PathBuf};
 use std::ptr::addr_of_mut;
 use std::sync::Arc;
 
-use libc::{c_char, c_float, c_void};
+use libc::{c_char, c_float};
 #[cfg(unix)]
 use libloading::os::unix::Symbol as RawSymbol;
 #[cfg(windows)]
@@ -25,7 +25,11 @@ use libloading::{Library, Symbol};
 use crate::util::{pathbuf_to_cstring, pv_library_path, pv_model_path};
 
 #[repr(C)]
-struct CCheetah {}
+struct CCheetah {
+    // Fields suggested by the Rustonomicon: https://doc.rust-lang.org/nomicon/ffi.html#representing-opaque-structs
+    _data: [u8; 0],
+    _marker: core::marker::PhantomData<(*mut u8, core::marker::PhantomPinned)>,
+}
 
 #[repr(C)]
 #[derive(PartialEq, Clone, Debug)]
@@ -63,8 +67,12 @@ type PvCheetahProcessFn = unsafe extern "C" fn(
 ) -> PvStatus;
 type PvCheetahFlushFn =
     unsafe extern "C" fn(object: *mut CCheetah, transcript: *mut *mut c_char) -> PvStatus;
+type PvCheetahTranscriptDeleteFn = unsafe extern "C" fn(transcript: *mut c_char);
 type PvCheetahDeleteFn = unsafe extern "C" fn(object: *mut CCheetah);
-type PvFreeFn = unsafe extern "C" fn(*mut c_void);
+type PvGetErrorStackFn =
+    unsafe extern "C" fn(message_stack: *mut *mut *mut c_char, message_stack_depth: *mut i32) -> PvStatus;
+type PvFreeErrorStackFn = unsafe extern "C" fn(message_stack: *mut *mut c_char);
+type PvSetSdkFn = unsafe extern "C" fn(sdk: *const c_char);
 
 #[derive(Clone, Debug)]
 pub enum CheetahErrorStatus {
@@ -77,7 +85,8 @@ pub enum CheetahErrorStatus {
 #[derive(Clone, Debug)]
 pub struct CheetahError {
     status: CheetahErrorStatus,
-    message: String,
+    pub message: String,
+    pub message_stack: Vec<String>,
 }
 
 impl CheetahError {
@@ -85,13 +94,35 @@ impl CheetahError {
         Self {
             status,
             message: message.into(),
+            message_stack: Vec::new(),
+        }
+    }
+
+    pub fn new_with_stack(
+        status: CheetahErrorStatus,
+        message: impl Into<String>,
+        message_stack: impl Into<Vec<String>>
+    ) -> Self {
+        Self {
+            status,
+            message: message.into(),
+            message_stack: message_stack.into(),
         }
     }
 }
 
 impl std::fmt::Display for CheetahError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}: {:?}", self.message, self.status)
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+        let mut message_string = String::new();
+        message_string.push_str(&format!("{} with status '{:?}'", self.message, self.status));
+
+        if !self.message_stack.is_empty() {
+            message_string.push(':');
+            for x in 0..self.message_stack.len() {
+                message_string.push_str(&format!("  [{}] {}\n", x, self.message_stack[x]))
+            };
+        }
+        write!(f, "{}", message_string)
     }
 }
 
@@ -221,21 +252,60 @@ unsafe fn load_library_fn<T>(
         })
 }
 
-fn check_fn_call_status(status: PvStatus, function_name: &str) -> Result<(), CheetahError> {
+fn check_fn_call_status(
+    vtable: &CheetahInnerVTable,
+    status: PvStatus,
+    function_name: &str,
+) -> Result<(), CheetahError> {
     match status {
         PvStatus::SUCCESS => Ok(()),
-        _ => Err(CheetahError::new(
-            CheetahErrorStatus::LibraryError(status),
-            format!("Function '{}' in the cheetah library failed", function_name),
-        )),
+        _ => unsafe {
+            let mut message_stack_ptr: *mut c_char = std::ptr::null_mut();
+            let mut message_stack_ptr_ptr = addr_of_mut!(message_stack_ptr);
+
+            let mut message_stack_depth: i32 = 0;
+            let err_status = (vtable.pv_get_error_stack)(
+                addr_of_mut!(message_stack_ptr_ptr),
+                addr_of_mut!(message_stack_depth),
+            );
+
+            if err_status != PvStatus::SUCCESS {
+                return Err(CheetahError::new(
+                    CheetahErrorStatus::LibraryError(err_status),
+                    "Unable to get Cheetah error state",
+                ));
+            };
+
+            let mut message_stack = Vec::new();
+            for i in 0..message_stack_depth as usize {
+                let message = CStr::from_ptr(*message_stack_ptr_ptr.add(i));
+                let message = message.to_string_lossy().into_owned();
+                message_stack.push(message);
+            }
+
+            (vtable.pv_free_error_stack)(message_stack_ptr_ptr);
+
+            Err(CheetahError::new_with_stack(
+                CheetahErrorStatus::LibraryError(status),
+                format!("'{function_name}' failed"),
+                message_stack,
+            ))
+        },
     }
 }
 
 struct CheetahInnerVTable {
+    pv_cheetah_init: RawSymbol<PvCheetahInitFn>,
     pv_cheetah_process: RawSymbol<PvCheetahProcessFn>,
     pv_cheetah_flush: RawSymbol<PvCheetahFlushFn>,
+    pv_cheetah_transcript_delete: RawSymbol<PvCheetahTranscriptDeleteFn>,
     pv_cheetah_delete: RawSymbol<PvCheetahDeleteFn>,
-    pv_free: RawSymbol<PvFreeFn>,
+    pv_cheetah_frame_length: RawSymbol<PvCheetahFrameLengthFn>,
+    pv_cheetah_version: RawSymbol<PvCheetahVersionFn>,
+    pv_sample_rate: RawSymbol<PvSampleRateFn>,
+    pv_get_error_stack: RawSymbol<PvGetErrorStackFn>,
+    pv_free_error_stack: RawSymbol<PvFreeErrorStackFn>,
+    pv_set_sdk: RawSymbol<PvSetSdkFn>,
 
     _lib_guard: Library,
 }
@@ -245,10 +315,17 @@ impl CheetahInnerVTable {
         // SAFETY: the library will be hold by this struct and therefore the symbols can't outlive the library
         unsafe {
             Ok(Self {
+                pv_cheetah_init: load_library_fn(&lib, b"pv_cheetah_init")?,
                 pv_cheetah_process: load_library_fn(&lib, b"pv_cheetah_process")?,
                 pv_cheetah_flush: load_library_fn(&lib, b"pv_cheetah_flush")?,
+                pv_cheetah_transcript_delete: load_library_fn(&lib, b"pv_cheetah_transcript_delete")?,
                 pv_cheetah_delete: load_library_fn(&lib, b"pv_cheetah_delete")?,
-                pv_free: load_library_fn(&lib, b"pv_free")?,
+                pv_cheetah_frame_length: load_library_fn(&lib, b"pv_cheetah_frame_length")?,
+                pv_cheetah_version: load_library_fn(&lib, b"pv_cheetah_version")?,
+                pv_sample_rate: load_library_fn(&lib, b"pv_sample_rate")?,
+                pv_get_error_stack: load_library_fn(&lib, b"pv_get_error_stack")?,
+                pv_free_error_stack: load_library_fn(&lib, b"pv_free_error_stack")?,
+                pv_set_sdk: load_library_fn(&lib, b"pv_set_sdk")?,
 
                 _lib_guard: lib,
             })
@@ -313,6 +390,18 @@ impl CheetahInner {
             )
         })?;
 
+        let vtable = CheetahInnerVTable::new(lib)?;
+
+        let sdk_string = match CString::new("rust") {
+            Ok(sdk_string) => sdk_string,
+            Err(err) => {
+                return Err(CheetahError::new(
+                    CheetahErrorStatus::ArgumentError,
+                    format!("sdk_string is not a valid C string {err}"),
+                ))
+            }
+        };
+
         let access_key = match CString::new(access_key) {
             Ok(access_key) => access_key,
             Err(err) => {
@@ -330,41 +419,34 @@ impl CheetahInner {
         // safe, because we don't use the raw symbols after this function
         // anymore.
         let (frame_length, sample_rate, version) = unsafe {
-            let pv_cheetah_init = load_library_fn::<PvCheetahInitFn>(&lib, b"pv_cheetah_init")?;
-            let pv_cheetah_frame_length =
-                load_library_fn::<PvCheetahFrameLengthFn>(&lib, b"pv_cheetah_frame_length")?;
-            let pv_sample_rate = load_library_fn::<PvSampleRateFn>(&lib, b"pv_sample_rate")?;
-            let pv_cheetah_version =
-                load_library_fn::<PvCheetahVersionFn>(&lib, b"pv_cheetah_version")?;
+            (vtable.pv_set_sdk)(sdk_string.as_ptr());
 
-            let status = pv_cheetah_init(
+            let status = (vtable.pv_cheetah_init)(
                 access_key.as_ptr(),
                 pv_model_path.as_ptr(),
                 endpoint_duration_sec,
                 enable_automatic_punctuation,
                 addr_of_mut!(ccheetah),
             );
-            check_fn_call_status(status, "pv_cheetah_init")?;
+            check_fn_call_status(&vtable, status, "pv_cheetah_init")?;
 
-            let version = match CStr::from_ptr(pv_cheetah_version()).to_str() {
-                Ok(string) => string.to_string(),
-                Err(err) => {
-                    return Err(CheetahError::new(
-                        CheetahErrorStatus::LibraryLoadError,
-                        format!("Failed to get version info from Cheetah Library: {}", err),
-                    ))
-                }
-            };
+            let version = CStr::from_ptr((vtable.pv_cheetah_version)())
+                .to_string_lossy()
+                .into_owned();
 
-            (pv_cheetah_frame_length(), pv_sample_rate(), version)
+            (
+                (vtable.pv_cheetah_frame_length)(),
+                (vtable.pv_sample_rate)(),
+                version,
+            )
         };
 
         Ok(Self {
             ccheetah,
-            frame_length,
             sample_rate,
+            frame_length,
             version,
-            vtable: CheetahInnerVTable::new(lib)?,
+            vtable,
         })
     }
 
@@ -391,7 +473,7 @@ impl CheetahInner {
                 addr_of_mut!(is_endpoint),
             );
 
-            check_fn_call_status(status, "pv_cheetah_process")?;
+            check_fn_call_status(&self.vtable, status, "pv_cheetah_process")?;
 
             let transcript =
                 String::from(CStr::from_ptr(transcript_ptr).to_str().map_err(|_| {
@@ -401,7 +483,7 @@ impl CheetahInner {
                     )
                 })?);
 
-            (self.vtable.pv_free)(transcript_ptr as *mut c_void);
+            (self.vtable.pv_cheetah_transcript_delete)(transcript_ptr);
 
             (transcript, is_endpoint)
         };
@@ -418,7 +500,7 @@ impl CheetahInner {
 
             let status =
                 (self.vtable.pv_cheetah_flush)(self.ccheetah, addr_of_mut!(transcript_ptr));
-            check_fn_call_status(status, "pv_cheetah_process_file")?;
+            check_fn_call_status(&self.vtable, status, "pv_cheetah_flush")?;
 
             let transcript =
                 String::from(CStr::from_ptr(transcript_ptr).to_str().map_err(|_| {
@@ -428,7 +510,7 @@ impl CheetahInner {
                     )
                 })?);
 
-            (self.vtable.pv_free)(transcript_ptr as *mut c_void);
+            (self.vtable.pv_cheetah_transcript_delete)(transcript_ptr);
 
             (transcript, false)
         };
@@ -447,6 +529,42 @@ impl Drop for CheetahInner {
     fn drop(&mut self) {
         unsafe {
             (self.vtable.pv_cheetah_delete)(self.ccheetah);
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::env;
+
+    use crate::util::{pv_library_path, pv_model_path};
+    use crate::cheetah::{CheetahInner};
+
+    #[test]
+    fn test_process_error_stack() {
+        let access_key = env::var("PV_ACCESS_KEY")
+            .expect("Pass the AccessKey in using the PV_ACCESS_KEY env variable");
+
+        let mut inner = CheetahInner::init(
+            &access_key.as_str(),
+            pv_model_path(),
+            pv_library_path(),
+            1.0,
+            true,
+        ).expect("Unable to create Cheetah");
+
+        let test_pcm = vec![0; inner.frame_length as usize];
+        let address = inner.ccheetah;
+        inner.ccheetah = std::ptr::null_mut();
+
+        let res = inner.process(&test_pcm);
+
+        inner.ccheetah = address;
+        if let Err(err) = res {
+            assert!(err.message_stack.len() > 0);
+            assert!(err.message_stack.len() < 8);
+        } else {
+            assert!(res.unwrap().transcript.len() == 0);
         }
     }
 }
