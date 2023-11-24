@@ -1,0 +1,47 @@
+name: Bug report
+description: Bugs in Cheetah
+title: "Cheetah Issue: "
+labels: ["bug"]
+assignees: ""
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Make sure you have read the documentation, and have put forth a reasonable effort to find an existing answer.
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behaviour
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce the behaviour
+      description: Please include enough details so that the issue can be reproduced independently.
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: Version
+      description: What version of our software are you running?
+      options:
+        - 1
+        - 2
+        - 3
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
