@@ -1110,10 +1110,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@picovoice/cheetah-web@=1.1.15":
-  version "1.1.15"
-  resolved "https://registry.npmjs.org/@picovoice/cheetah-web/-/cheetah-web-1.1.15.tgz"
-  integrity sha512-UMKOPqZopcMX3fLQaD3eDRAcUph/6CuirNxQ1SUlNXSxlWO9pdsfdpikaoZ8gx59vbw6l/c8bSB3OicV9Gl2Sw==
+"@picovoice/cheetah-web@=2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-2.0.0.tgz#d4415c25e324726356f979bed3761a94e884198e"
+  integrity sha512-WqxHUznNS7Rf8XfJCp0m0l+xeYFDSFhzOTg+b2DJn06x1slhpJA4CiK4egiH7FzhHiJtvqjLF0dO14LA8e1Gpg==
   dependencies:
     "@picovoice/web-utils" "=1.3.1"
 
