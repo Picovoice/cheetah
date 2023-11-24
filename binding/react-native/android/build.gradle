@@ -48,9 +48,6 @@ android {
 repositories {
   mavenCentral()
   google()
-  maven {
-    url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1302'
-  }
 
   def found = false
   def defaultDir = null
