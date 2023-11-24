@@ -47,8 +47,8 @@ export const useCheetah = (): {
   const [isListening, setIsListening] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const errorCallback = useCallback((e: any) => {
-    setError(new Error(e));
+  const errorCallback = useCallback((e: Error) => {
+    setError(e);
   }, []);
 
   const transcriptCallback = useCallback(
