@@ -207,7 +207,10 @@ int picovoice_main(int argc, char **argv) {
     pv_cheetah_t *cheetah = NULL;
     pv_status_t status = pv_cheetah_init_func(access_key, model_path, 0.f, enable_automatic_punctuation, &cheetah);
     if (status != PV_STATUS_SUCCESS) {
-        fprintf(stderr, "failed to init with `%s`.\n", pv_status_to_string_func(status));
+        fprintf(
+            stderr,
+            "Failed to init with `%s`",
+            pv_status_to_string_func(status));
         error_status = pv_get_error_stack_func(&message_stack, &message_stack_depth);
         if (error_status != PV_STATUS_SUCCESS) {
             fprintf(
@@ -277,7 +280,10 @@ int picovoice_main(int argc, char **argv) {
             bool _ = false;
             status = pv_cheetah_process_func(cheetah, pcm, &partial_transcript, &_);
             if (status != PV_STATUS_SUCCESS) {
-                fprintf(stderr, "`pv_cheetah_process` failed with `%s`\n", pv_status_to_string_func(status));
+                fprintf(
+                    stderr,
+                    "Failed to process with `%s`",
+                    pv_status_to_string_func(status));
                 error_status = pv_get_error_stack_func(&message_stack, &message_stack_depth);
                 if (error_status != PV_STATUS_SUCCESS) {
                     fprintf(
@@ -314,7 +320,10 @@ int picovoice_main(int argc, char **argv) {
         char *final_transcript = NULL;
         status = pv_cheetah_flush_func(cheetah, &final_transcript);
         if (status != PV_STATUS_SUCCESS) {
-            fprintf(stderr, "`pv_cheetah_flush` failed with `%s`.\n", pv_status_to_string_func(status));
+            fprintf(
+                stderr,
+                "Failed to flush with `%s`",
+                pv_status_to_string_func(status));
             error_status = pv_get_error_stack_func(&message_stack, &message_stack_depth);
             if (error_status != PV_STATUS_SUCCESS) {
                 fprintf(

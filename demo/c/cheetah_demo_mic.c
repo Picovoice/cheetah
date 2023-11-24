@@ -247,9 +247,17 @@ int picovoice_main(int argc, char *argv[]) {
     pv_status_t error_status = PV_STATUS_RUNTIME_ERROR;
 
     pv_cheetah_t *cheetah = NULL;
-    pv_status_t status = pv_cheetah_init_func(access_key, model_path, endpoint_duration_sec, enable_automatic_punctuation, &cheetah);
+    pv_status_t status = pv_cheetah_init_func(
+        access_key,
+        model_path,
+        endpoint_duration_sec,
+        enable_automatic_punctuation,
+        &cheetah);
     if (status != PV_STATUS_SUCCESS) {
-        fprintf(stderr, "failed to init with `%s`.\n", pv_status_to_string_func(status));
+        fprintf(
+            stderr,
+            "Failed to init with `%s`",
+            pv_status_to_string_func(status));
         error_status = pv_get_error_stack_func(&message_stack, &message_stack_depth);
         if (error_status != PV_STATUS_SUCCESS) {
             fprintf(
@@ -276,7 +284,7 @@ int picovoice_main(int argc, char *argv[]) {
     pv_recorder_t *recorder = NULL;
     pv_recorder_status_t recorder_status = pv_recorder_init(device_index, frame_length, 1000, true, true, &recorder);
     if (recorder_status != PV_RECORDER_STATUS_SUCCESS) {
-        fprintf(stderr, "failed to initialize audio device with `%s`.\n", pv_recorder_status_to_string(recorder_status));
+        fprintf(stderr, "Failed to initialize audio device with `%s`.\n", pv_recorder_status_to_string(recorder_status));
         exit(1);
     }
 
@@ -292,14 +300,14 @@ int picovoice_main(int argc, char *argv[]) {
     fprintf(stdout, "start recording...\n");
     recorder_status = pv_recorder_start(recorder);
     if (recorder_status != PV_RECORDER_STATUS_SUCCESS) {
-        fprintf(stderr, "failed to start device with %s.\n", pv_recorder_status_to_string(recorder_status));
+        fprintf(stderr, "Failed to start device with %s.\n", pv_recorder_status_to_string(recorder_status));
         exit(1);
     }
 
     while (!is_interrupted) {
         recorder_status = pv_recorder_read(recorder, pcm);
         if (recorder_status != PV_RECORDER_STATUS_SUCCESS) {
-            fprintf(stderr, "failed to read with `%s`.\n", pv_recorder_status_to_string(recorder_status));
+            fprintf(stderr, "Failed to read with `%s`.\n", pv_recorder_status_to_string(recorder_status));
             exit(1);
         }
 
@@ -307,7 +315,10 @@ int picovoice_main(int argc, char *argv[]) {
         bool is_endpoint = false;
         status = pv_cheetah_process_func(cheetah, pcm, &partial_transcript, &is_endpoint);
         if (status != PV_STATUS_SUCCESS) {
-            fprintf(stderr, "`pv_cheetah_process` failed with `%s`\n", pv_status_to_string_func(status));
+            fprintf(
+                stderr,
+                "Failed to process with `%s`",
+                pv_status_to_string_func(status));
             error_status = pv_get_error_stack_func(&message_stack, &message_stack_depth);
             if (error_status != PV_STATUS_SUCCESS) {
                 fprintf(
@@ -334,7 +345,10 @@ int picovoice_main(int argc, char *argv[]) {
             char *final_transcript = NULL;
             status = pv_cheetah_flush_func(cheetah, &final_transcript);
             if (status != PV_STATUS_SUCCESS) {
-                fprintf(stderr, "`pv_cheetah_flush` failed with `%s`\n", pv_status_to_string_func(status));
+                fprintf(
+                    stderr,
+                    "Failed to flush with `%s`",
+                    pv_status_to_string_func(status));
                 error_status = pv_get_error_stack_func(&message_stack, &message_stack_depth);
                 if (error_status != PV_STATUS_SUCCESS) {
                     fprintf(
@@ -362,7 +376,7 @@ int picovoice_main(int argc, char *argv[]) {
 
     recorder_status = pv_recorder_stop(recorder);
     if (recorder_status != PV_RECORDER_STATUS_SUCCESS) {
-        fprintf(stderr, "failed to stop device with `%s`.\n", pv_recorder_status_to_string(recorder_status));
+        fprintf(stderr, "Failed to stop device with `%s`.\n", pv_recorder_status_to_string(recorder_status));
         exit(1);
     }
 
