@@ -15,7 +15,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
 ## Compatibility
 
-- Node.js 12+
+- Node.js 16+
 - Runs on Linux (x86_64), macOS (x86_64, arm64), Windows (x86_64), Raspberry Pi (4, 3), and NVIDIA Jetson Nano.
 
 ## Installation
