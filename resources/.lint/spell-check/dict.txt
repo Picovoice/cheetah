@@ -67,6 +67,7 @@ repr
 RGBO
 rodio
 RTLD
+Rustonomicon
 signup
 stdbool
 stdint
