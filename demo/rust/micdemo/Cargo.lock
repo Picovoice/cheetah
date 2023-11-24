@@ -267,9 +267,9 @@ dependencies = [
 
 [[package]]
 name = "pv_cheetah"
-version = "1.1.0"
+version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2924b4d578bab4f12bc6137e353f39514b382e4c5fdc8511e570d1fbd582eab5"
+checksum = "8dbc9bf92574ffb65e919487c09bbd916f7d31a2db0fe67d63fff0c4e8af483d"
 dependencies = [
  "libc",
  "libloading 0.7.4",
@@ -277,7 +277,7 @@ dependencies = [
 
 [[package]]
 name = "pv_cheetah_micdemo"
-version = "1.1.0"
+version = "2.0.0"
 dependencies = [
  "chrono",
  "clap",
