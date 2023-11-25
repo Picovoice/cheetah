@@ -44,6 +44,10 @@ jobs:
       - name: Pre-build dependencies
         run: npm install yarn
 
+      - name: Build Local Web SDK
+        run: yarn && yarn copywasm && yarn build
+        working-directory: binding/web
+
       - name: Install dependencies
         run: yarn install
 
