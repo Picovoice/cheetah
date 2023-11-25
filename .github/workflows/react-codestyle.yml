@@ -31,6 +31,14 @@ jobs:
         with:
           node-version: lts/*
 
+      - name: Build Local Web SDK
+        run: yarn && yarn copywasm && yarn build
+        working-directory: binding/web
+
+      - name: Build Local React SDK
+        run: yarn && yarn build
+        working-directory: binding/react
+
       - name: Pre-build dependencies
         run: npm install yarn
 
