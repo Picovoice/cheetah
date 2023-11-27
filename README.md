@@ -808,12 +808,22 @@ function App(props) {
 
 ## Releases
 
-### v1.1.0 — August 11th, 2022
+### v2.0.0 - November 27th, 2023
 
-* added true-casing by default for transcription results
-* added option to enable automatic punctuation insertion
+- Improvements to error reporting
+- Upgrades to authorization and authentication system
+- Improved engine accuracy 
+- Various bug fixes and improvements
+- Node min support bumped to Node 16
+- Bumped iOS support to iOS 13+
+- Patches to .NET support
+
+### v1.1.0 - August 11th, 2022
+
+* Added true-casing by default for transcription results
+* Added option to enable automatic punctuation insertion
 * Cheetah Web SDK release
 
-### v1.0.0 — January 25th, 2022
+### v1.0.0 - January 25th, 2022
 
-* Initial release.
+* Initial release
