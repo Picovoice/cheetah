@@ -6,8 +6,6 @@ on:
     paths:
       - 'binding/react-native/**'
       - 'lib/common/**'
-      - 'lib/android/**'
-      - 'lib/ios/**'
       - '.github/workflows/react-native-tests.yml'
       - 'resources/audio_samples/**'
   pull_request:
@@ -15,8 +13,6 @@ on:
     paths:
       - 'binding/react-native/**'
       - 'lib/common/**'
-      - 'lib/android/**'
-      - 'lib/ios/**'
       - '.github/workflows/react-native-tests.yml'
       - 'resources/audio_samples/**'
 
@@ -63,7 +59,7 @@ jobs:
         ./copy_test_resources.sh
     - name: Cocoapods install
       working-directory: binding/react-native/test-app/CheetahTestApp/ios
-      run: pod install
+      run: pod install --repo-update
 
     - name: Inject AppID
       run: sed -i '.bak' 's:{TESTING_ACCESS_KEY_HERE}:${{secrets.PV_VALID_ACCESS_KEY}}:' Tests.ts

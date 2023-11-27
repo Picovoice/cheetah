@@ -42,6 +42,8 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
         flutterContext = flutterPluginBinding.getApplicationContext();
         channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "cheetah");
         channel.setMethodCallHandler(this);
+
+        Cheetah.setSdk("flutter");
     }
 
     @Override

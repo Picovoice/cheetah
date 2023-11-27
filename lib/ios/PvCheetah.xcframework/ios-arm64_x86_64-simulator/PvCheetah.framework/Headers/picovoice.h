@@ -1,5 +1,5 @@
 /*
-    Copyright 2018-2021 Picovoice Inc.
+    Copyright 2018-2023 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -31,17 +31,7 @@ PV_API int32_t pv_sample_rate(void);
  * Status codes.
  */
 typedef enum {
-
-#ifdef __PV_PLATFORM_WASM__
-
-    PV_STATUS_SUCCESS = 10000,
-
-#else
-
     PV_STATUS_SUCCESS = 0,
-
-#endif
-
     PV_STATUS_OUT_OF_MEMORY,
     PV_STATUS_IO_ERROR,
     PV_STATUS_INVALID_ARGUMENT,
@@ -62,6 +52,32 @@ typedef enum {
  * @return String representation.
  */
 PV_API const char *pv_status_to_string(pv_status_t status);
+
+/**
+ * If a function returns a failure (any pv_status_t other than PV_STATUS_SUCCESS), this function can be called
+ * to get a series of error messages related to the failure. This function can only be called only once per
+ * failure status on another function. The memory for `message_stack` must be freed using `pv_free_error_stack`.
+ *
+ * Regardless of the return status of this function, if `message_stack` is not `NULL`, then `message_stack`
+ * contains valid memory. However, a failure status on this function indicates that future error messages
+ * may not be reported.
+ *
+ * @param[out] message_stack Array of messages relating to the failure. Messages are NULL terminated strings.
+ *                           The array and messages must be freed using `pv_free_error_stack`.
+ * @param[out] message_stack_depth The number of messages in the `message_stack` array.
+ */
+PV_API pv_status_t pv_get_error_stack(
+        char ***message_stack,
+        int32_t *message_stack_depth);
+
+/**
+ * This function frees the memory used by error messages allocated by `pv_get_error_stack`.
+ *
+ * @param message_stack Array of messages relating to the failure, allocated from `pv_get_error_stack`.
+ */
+PV_API void pv_free_error_stack(char **message_stack);
+
+PV_API void pv_set_sdk(const char *sdk);
 
 #ifdef __cplusplus
 }

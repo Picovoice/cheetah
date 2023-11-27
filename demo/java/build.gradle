@@ -15,14 +15,14 @@ sourceSets {
 }
 
 dependencies {
-    implementation 'ai.picovoice:cheetah-java:1.1.1'
+    implementation 'ai.picovoice:cheetah-java:2.0.0'
     implementation 'commons-cli:commons-cli:1.4'
 }
 
 jar {
     manifest {
         attributes "Main-Class": "ai.picovoice.cheetahdemo.MicDemo",
-                   "Class-Path": "cheetah-1.1.1.jar;commons-cli-1.4.jar"
+                   "Class-Path": "cheetah-2.0.0.jar;commons-cli-1.4.jar"
     }
     from sourceSets.main.output
     exclude "**/FileDemo.class"
@@ -33,7 +33,7 @@ jar {
 task fileDemoJar(type: Jar) {
     manifest {
         attributes "Main-Class": "ai.picovoice.cheetahdemo.FileDemo",
-                   "Class-Path": "cheetah-1.1.1.jar;commons-cli-1.4.jar"
+                   "Class-Path": "cheetah-2.0.0.jar;commons-cli-1.4.jar"
     }
     from sourceSets.main.output
     exclude "**/MicDemo.class"

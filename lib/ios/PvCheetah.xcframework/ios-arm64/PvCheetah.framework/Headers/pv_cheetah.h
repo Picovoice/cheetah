@@ -74,7 +74,7 @@ PV_API void pv_cheetah_delete(pv_cheetah_t *object);
  * `NULL`.
  * @return Status code. Returns `PV_STATUS_INVALID_ARGUMENT` or `PV_STATUS_OUT_OF_MEMORY`,
  * `PV_STATUS_RUNTIME_ERROR`, `PV_STATUS_ACTIVATION_ERROR`, `PV_STATUS_ACTIVATION_LIMIT_REACHED`,
- * `PV_STATUS_ACTIVATION_THROTTLED`, or `PV_STATUS_ACTIVATION_REFUSED` on failure
+ * `PV_STATUS_ACTIVATION_THROTTLED`, or `PV_STATUS_ACTIVATION_REFUSED` on failure.
  */
 PV_API pv_status_t pv_cheetah_process(pv_cheetah_t *object, const int16_t *pcm, char **transcript, bool *is_endpoint);
 
@@ -86,9 +86,16 @@ PV_API pv_status_t pv_cheetah_process(pv_cheetah_t *object, const int16_t *pcm, 
  * @param[out] transcript Any remaining transcribed text. If none is available then an empty string is returned.
  * @return Status code. Returns `PV_STATUS_INVALID_ARGUMENT` or `PV_STATUS_OUT_OF_MEMORY`,
  * `PV_STATUS_RUNTIME_ERROR`, `PV_STATUS_ACTIVATION_ERROR`, `PV_STATUS_ACTIVATION_LIMIT_REACHED`,
- * `PV_STATUS_ACTIVATION_THROTTLED`, or `PV_STATUS_ACTIVATION_REFUSED` on failure
+ * `PV_STATUS_ACTIVATION_THROTTLED`, or `PV_STATUS_ACTIVATION_REFUSED` on failure.
  */
 PV_API pv_status_t pv_cheetah_flush(pv_cheetah_t *object, char **transcript);
+
+/**
+ * Deletes transcript returned from `pv_cheetah_process()` or `pv_cheetah_flush()`
+ *
+ * @param transcript transcription string returned from `pv_cheetah_process()` or `pv_cheetah_flush()`
+ */
+PV_API void pv_cheetah_transcript_delete(char *transcript);
 
 /**
  * Getter for version.

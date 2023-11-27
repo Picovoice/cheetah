@@ -25,7 +25,10 @@ import {
 
 import { simd } from 'wasm-feature-detect';
 
-import { CheetahModel, CheetahOptions, CheetahTranscript } from './types';
+import { CheetahModel, CheetahOptions, CheetahTranscript, PvStatus } from './types';
+
+import * as CheetahErrors from "./cheetah_errors"
+import { pvStatusToException } from './cheetah_errors';
 
 /**
  * WebAssembly function types
@@ -33,11 +36,15 @@ import { CheetahModel, CheetahOptions, CheetahTranscript } from './types';
 type pv_cheetah_init_type = (accessKey: number, modelPath: number, endpointDurationSec: number, enableAutomaticPunctuation: number, object: number) => Promise<number>;
 type pv_cheetah_process_type = (object: number, pcm: number, transcript: number, isEndpoint: number) => Promise<number>;
 type pv_cheetah_flush_type = (object: number, transcript: number) => Promise<number>;
+type pv_cheetah_transcript_delete_type = (transcript: number) => Promise<void>;
 type pv_cheetah_delete_type = (object: number) => Promise<void>;
 type pv_status_to_string_type = (status: number) => Promise<number>
 type pv_cheetah_frame_length_type = () => Promise<number>;
 type pv_sample_rate_type = () => Promise<number>;
 type pv_cheetah_version_type = () => Promise<number>;
+type pv_set_sdk_type = (sdk: number) => Promise<void>;
+type pv_get_error_stack_type = (messageStack: number, messageStackDepth: number) => Promise<number>;
+type pv_free_error_stack_type = (messageStack: number) => Promise<void>;
 
 /**
  * JavaScript/WebAssembly Binding for Cheetah
@@ -47,18 +54,24 @@ type CheetahWasmOutput = {
   aligned_alloc: aligned_alloc_type;
   memory: WebAssembly.Memory;
   pvFree: pv_free_type;
-  objectAddress: number;
-  pvCheetahDelete: pv_cheetah_delete_type;
-  pvCheetahProcess: pv_cheetah_process_type;
-  pvCheetahFlush: pv_cheetah_flush_type;
-  pvStatusToString: pv_status_to_string_type;
-  frameLength: number
+
+  frameLength: number;
   sampleRate: number;
   version: string;
+
+  objectAddress: number;
   inputBufferAddress: number;
   isEndpointAddress: number;
   transcriptAddressAddress: number;
-  pvError: PvError;
+  messageStackAddressAddressAddress: number;
+  messageStackDepthAddress: number;
+
+  pvCheetahDelete: pv_cheetah_delete_type;
+  pvCheetahProcess: pv_cheetah_process_type;
+  pvCheetahFlush: pv_cheetah_flush_type;
+  pvCheetahTranscriptDelete: pv_cheetah_transcript_delete_type;
+  pvGetErrorStack: pv_get_error_stack_type;
+  pvFreeErrorStack: pv_free_error_stack_type;
 };
 
 const PV_STATUS_SUCCESS = 10000;
@@ -67,7 +80,9 @@ export class Cheetah {
   private readonly _pvCheetahDelete: pv_cheetah_delete_type;
   private readonly _pvCheetahProcess: pv_cheetah_process_type;
   private readonly _pvCheetahFlush: pv_cheetah_flush_type;
-  private readonly _pvStatusToString: pv_status_to_string_type;
+  private readonly _pvCheetahTranscriptDelete: pv_cheetah_transcript_delete_type;
+  private readonly _pvGetErrorStack: pv_get_error_stack_type;
+  private readonly _pvFreeErrorStack: pv_free_error_stack_type;
 
   private _wasmMemory: WebAssembly.Memory | undefined;
 
@@ -78,24 +93,25 @@ export class Cheetah {
   private readonly _inputBufferAddress: number;
   private readonly _isEndpointAddress: number;
   private readonly _transcriptAddressAddress: number;
+  private readonly _messageStackAddressAddressAddress: number;
+  private readonly _messageStackDepthAddress: number;
 
   private static _frameLength: number;
   private static _sampleRate: number;
   private static _version: string;
   private static _wasm: string;
   private static _wasmSimd: string;
+  private static _sdk: string = "web";
 
   private static _cheetahMutex = new Mutex();
 
   private readonly _transcriptCallback: (cheetahTranscript: CheetahTranscript) => void;
-  private readonly _processErrorCallback?: (error: string) => void;
-
-  private readonly _pvError: PvError;
+  private readonly _processErrorCallback?: (error: CheetahErrors.CheetahError) => void;
 
   private constructor(
     handleWasm: CheetahWasmOutput,
     transcriptCallback: (cheetahTranscript: CheetahTranscript) => void,
-    processErrorCallback?: (error: string) => void,
+    processErrorCallback?: (error: CheetahErrors.CheetahError) => void,
   ) {
     Cheetah._frameLength = handleWasm.frameLength;
     Cheetah._sampleRate = handleWasm.sampleRate;
@@ -104,7 +120,9 @@ export class Cheetah {
     this._pvCheetahDelete = handleWasm.pvCheetahDelete;
     this._pvCheetahProcess = handleWasm.pvCheetahProcess;
     this._pvCheetahFlush = handleWasm.pvCheetahFlush;
-    this._pvStatusToString = handleWasm.pvStatusToString;
+    this._pvCheetahTranscriptDelete = handleWasm.pvCheetahTranscriptDelete;
+    this._pvGetErrorStack = handleWasm.pvGetErrorStack;
+    this._pvFreeErrorStack = handleWasm.pvFreeErrorStack;
 
     this._wasmMemory = handleWasm.memory;
     this._pvFree = handleWasm.pvFree;
@@ -112,8 +130,9 @@ export class Cheetah {
     this._inputBufferAddress = handleWasm.inputBufferAddress;
     this._isEndpointAddress = handleWasm.isEndpointAddress;
     this._transcriptAddressAddress = handleWasm.transcriptAddressAddress;
+    this._messageStackAddressAddressAddress = handleWasm.messageStackAddressAddressAddress;
+    this._messageStackDepthAddress = handleWasm.messageStackDepthAddress;
 
-    this._pvError = handleWasm.pvError;
     this._processMutex = new Mutex();
 
     this._transcriptCallback = transcriptCallback;
@@ -159,6 +178,10 @@ export class Cheetah {
     if (this._wasmSimd === undefined) {
       this._wasmSimd = wasmSimd;
     }
+  }
+
+  public static setSdk(sdk: string): void {
+    Cheetah._sdk = sdk;
   }
 
   /**
@@ -211,7 +234,7 @@ export class Cheetah {
     const { processErrorCallback } = options;
 
     if (!isAccessKeyValid(accessKey)) {
-      throw new Error('Invalid AccessKey');
+      throw new CheetahErrors.CheetahInvalidArgumentError('Invalid AccessKey');
     }
 
     return new Promise<Cheetah>((resolve, reject) => {
@@ -239,9 +262,9 @@ export class Cheetah {
    */
   public async process(pcm: Int16Array): Promise<void> {
     if (!(pcm instanceof Int16Array)) {
-      const error = new Error('The argument \'pcm\' must be provided as an Int16Array');
+      const error = new CheetahErrors.CheetahInvalidArgumentError('The argument \'pcm\' must be provided as an Int16Array');
       if (this._processErrorCallback) {
-        this._processErrorCallback(error.toString());
+        this._processErrorCallback(error);
       } else {
         // eslint-disable-next-line no-console
         console.error(error);
@@ -251,7 +274,7 @@ export class Cheetah {
     this._processMutex
       .runExclusive(async () => {
         if (this._wasmMemory === undefined) {
-          throw new Error('Attempted to call Cheetah process after release.');
+          throw new CheetahErrors.CheetahInvalidStateError('Attempted to call Cheetah process after release.');
         }
 
         const memoryBuffer = new Int16Array(this._wasmMemory.buffer);
@@ -273,14 +296,23 @@ export class Cheetah {
         const memoryBufferView = new DataView(this._wasmMemory.buffer);
 
         if (status !== PV_STATUS_SUCCESS) {
-          const msg = `process failed with status ${arrayBufferToStringAtIndex(
-            memoryBufferUint8,
-            await this._pvStatusToString(status),
-          )}`;
-
-          throw new Error(
-            `${msg}\nDetails: ${this._pvError.getErrorString()}`
+          const messageStack = await Cheetah.getMessageStack(
+            this._pvGetErrorStack,
+            this._pvFreeErrorStack,
+            this._messageStackAddressAddressAddress,
+            this._messageStackDepthAddress,
+            memoryBufferView,
+            memoryBufferUint8
           );
+
+          const error = pvStatusToException(status, "Processing failed", messageStack);
+          if (this._processErrorCallback) {
+            this._processErrorCallback(error);
+          } else {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          }
+          return;
         }
 
         const isEndpoint = memoryBufferView.getUint8(this._isEndpointAddress) === 1;
@@ -294,7 +326,7 @@ export class Cheetah {
           memoryBufferUint8,
           transcriptAddress,
         );
-        await this._pvFree(transcriptAddress);
+        await this._pvCheetahTranscriptDelete(transcriptAddress);
 
         this._transcriptCallback({ transcript });
 
@@ -308,7 +340,7 @@ export class Cheetah {
       })
       .catch(async (error: any) => {
         if (this._processErrorCallback) {
-          this._processErrorCallback(error.toString());
+          this._processErrorCallback(error);
         } else {
           // eslint-disable-next-line no-console
           console.error(error);
@@ -335,14 +367,19 @@ export class Cheetah {
           resolve();
         })
         .catch(async (error: any) => {
-          reject(error);
+          if (this._processErrorCallback) {
+            this._processErrorCallback(error);
+          } else {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          }
         });
     });
   }
 
   private async cheetahFlush(): Promise<string> {
     if (this._wasmMemory === undefined) {
-      throw new Error('Attempted to call Cheetah flush after release.');
+      throw new CheetahErrors.CheetahInvalidStateError('Attempted to call Cheetah flush after release.');
     }
 
     const status = await this._pvCheetahFlush(
@@ -354,14 +391,16 @@ export class Cheetah {
     const memoryBufferView = new DataView(this._wasmMemory.buffer);
 
     if (status !== PV_STATUS_SUCCESS) {
-      const msg = `flush failed with status ${arrayBufferToStringAtIndex(
-        memoryBufferUint8,
-        await this._pvStatusToString(status),
-      )}`;
-
-      throw new Error(
-        `${msg}\nDetails: ${this._pvError.getErrorString()}`
+      const messageStack = await Cheetah.getMessageStack(
+        this._pvGetErrorStack,
+        this._pvFreeErrorStack,
+        this._messageStackAddressAddressAddress,
+        this._messageStackDepthAddress,
+        memoryBufferView,
+        memoryBufferUint8
       );
+
+      throw pvStatusToException(status, "Flush failed", messageStack);
     }
 
     const transcriptAddress = memoryBufferView.getInt32(
@@ -373,7 +412,7 @@ export class Cheetah {
       memoryBufferUint8,
       transcriptAddress,
     );
-    await this._pvFree(transcriptAddress);
+    await this._pvCheetahTranscriptDelete(transcriptAddress);
 
     return transcript;
   }
@@ -383,7 +422,11 @@ export class Cheetah {
    */
   public async release(): Promise<void> {
     await this._pvCheetahDelete(this._objectAddress);
+    await this._pvFree(this._messageStackAddressAddressAddress);
+    await this._pvFree(this._messageStackDepthAddress);
     await this._pvFree(this._inputBufferAddress);
+    await this._pvFree(this._isEndpointAddress);
+    await this._pvFree(this._transcriptAddressAddress);
     delete this._wasmMemory;
     this._wasmMemory = undefined;
   }
@@ -403,11 +446,11 @@ export class Cheetah {
     const { endpointDurationSec = 1.0, enableAutomaticPunctuation = false } = options;
 
     if (typeof endpointDurationSec !== 'number' || endpointDurationSec < 0) {
-      throw new Error('Cheetah endpointDurationSec must be a non-negative number');
+      throw new CheetahErrors.CheetahInvalidArgumentError('Cheetah endpointDurationSec must be a non-negative number');
     }
 
     // A WebAssembly page has a constant size of 64KiB. -> 1MiB ~= 16 pages
-    const memory = new WebAssembly.Memory({ initial: 3370 });
+    const memory = new WebAssembly.Memory({ initial: 3700 });
 
     const memoryBufferUint8 = new Uint8Array(memory.buffer);
 
@@ -420,18 +463,21 @@ export class Cheetah {
     const pv_cheetah_version = exports.pv_cheetah_version as pv_cheetah_version_type;
     const pv_cheetah_process = exports.pv_cheetah_process as pv_cheetah_process_type;
     const pv_cheetah_flush = exports.pv_cheetah_flush as pv_cheetah_flush_type;
+    const pv_cheetah_transcript_delete = exports.pv_cheetah_transcript_delete as pv_cheetah_transcript_delete_type;
     const pv_cheetah_delete = exports.pv_cheetah_delete as pv_cheetah_delete_type;
     const pv_cheetah_init = exports.pv_cheetah_init as pv_cheetah_init_type;
-    const pv_status_to_string = exports.pv_status_to_string as pv_status_to_string_type;
     const pv_cheetah_frame_length = exports.pv_cheetah_frame_length as pv_cheetah_frame_length_type;
     const pv_sample_rate = exports.pv_sample_rate as pv_sample_rate_type;
+    const pv_set_sdk = exports.pv_set_sdk as pv_set_sdk_type;
+    const pv_get_error_stack = exports.pv_get_error_stack as pv_get_error_stack_type;
+    const pv_free_error_stack = exports.pv_free_error_stack as pv_free_error_stack_type;
 
     const transcriptAddressAddress = await aligned_alloc(
       Int32Array.BYTES_PER_ELEMENT,
       Int32Array.BYTES_PER_ELEMENT,
     );
     if (transcriptAddressAddress === 0) {
-      throw new Error('malloc failed: Cannot allocate memory');
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
     const isEndpointAddress = await aligned_alloc(
@@ -439,7 +485,7 @@ export class Cheetah {
       Uint8Array.BYTES_PER_ELEMENT,
     );
     if (isEndpointAddress === 0) {
-      throw new Error('malloc failed: Cannot allocate memory');
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
     const objectAddressAddress = await aligned_alloc(
@@ -447,7 +493,7 @@ export class Cheetah {
       Int32Array.BYTES_PER_ELEMENT,
     );
     if (objectAddressAddress === 0) {
-      throw new Error('malloc failed: Cannot allocate memory');
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
     const accessKeyAddress = await aligned_alloc(
@@ -456,7 +502,7 @@ export class Cheetah {
     );
 
     if (accessKeyAddress === 0) {
-      throw new Error('malloc failed: Cannot allocate memory');
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
     for (let i = 0; i < accessKey.length; i++) {
@@ -471,11 +517,41 @@ export class Cheetah {
     );
 
     if (modelPathAddress === 0) {
-      throw new Error('malloc failed: Cannot allocate memory');
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
     memoryBufferUint8.set(modelPathEncoded, modelPathAddress);
     memoryBufferUint8[modelPathAddress + modelPathEncoded.length] = 0;
+
+    const sdkEncoded = new TextEncoder().encode(this._sdk);
+    const sdkAddress = await aligned_alloc(
+      Uint8Array.BYTES_PER_ELEMENT,
+      (sdkEncoded.length + 1) * Uint8Array.BYTES_PER_ELEMENT
+    );
+    if (!sdkAddress) {
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
+    }
+    memoryBufferUint8.set(sdkEncoded, sdkAddress);
+    memoryBufferUint8[sdkAddress + sdkEncoded.length] = 0;
+    await pv_set_sdk(sdkAddress);
+
+    const messageStackDepthAddress = await aligned_alloc(
+      Int32Array.BYTES_PER_ELEMENT,
+      Int32Array.BYTES_PER_ELEMENT
+    );
+    if (!messageStackDepthAddress) {
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
+    }
+
+    const messageStackAddressAddressAddress = await aligned_alloc(
+      Int32Array.BYTES_PER_ELEMENT,
+      Int32Array.BYTES_PER_ELEMENT
+    );
+    if (!messageStackAddressAddressAddress) {
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
+    }
+
+    const memoryBufferView = new DataView(memory.buffer);
 
     const status = await pv_cheetah_init(
       accessKeyAddress,
@@ -484,17 +560,20 @@ export class Cheetah {
       (enableAutomaticPunctuation) ? 1 : 0,
       objectAddressAddress);
     if (status !== PV_STATUS_SUCCESS) {
-      const msg = `'pv_cheetah_init' failed with status ${arrayBufferToStringAtIndex(
-        memoryBufferUint8,
-        await pv_status_to_string(status),
-      )}`;
-
-      throw new Error(
-        `${msg}\nDetails: ${pvError.getErrorString()}`
+      const messageStack = await Cheetah.getMessageStack(
+        pv_get_error_stack,
+        pv_free_error_stack,
+        messageStackAddressAddressAddress,
+        messageStackDepthAddress,
+        memoryBufferView,
+        memoryBufferUint8
       );
+
+      throw pvStatusToException(status, "Initialization failed", messageStack, pvError);
     }
-    const memoryBufferView = new DataView(memory.buffer);
+
     const objectAddress = memoryBufferView.getInt32(objectAddressAddress, true);
+    await pv_free(objectAddressAddress);
 
     const frameLength = await pv_cheetah_frame_length();
     const sampleRate = await pv_sample_rate();
@@ -509,25 +588,60 @@ export class Cheetah {
       frameLength * Int16Array.BYTES_PER_ELEMENT,
     );
     if (inputBufferAddress === 0) {
-      throw new Error('malloc failed: Cannot allocate memory');
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
     return {
       aligned_alloc,
       memory: memory,
       pvFree: pv_free,
-      objectAddress: objectAddress,
-      pvCheetahDelete: pv_cheetah_delete,
-      pvCheetahProcess: pv_cheetah_process,
-      pvCheetahFlush: pv_cheetah_flush,
-      pvStatusToString: pv_status_to_string,
+
       frameLength: frameLength,
       sampleRate: sampleRate,
       version: version,
+      
+      objectAddress: objectAddress,
       inputBufferAddress: inputBufferAddress,
       isEndpointAddress: isEndpointAddress,
       transcriptAddressAddress: transcriptAddressAddress,
-      pvError: pvError
+      messageStackAddressAddressAddress: messageStackAddressAddressAddress,
+      messageStackDepthAddress: messageStackDepthAddress,
+
+      pvCheetahDelete: pv_cheetah_delete,
+      pvCheetahProcess: pv_cheetah_process,
+      pvCheetahFlush: pv_cheetah_flush,
+      pvCheetahTranscriptDelete: pv_cheetah_transcript_delete,
+      pvGetErrorStack: pv_get_error_stack,
+      pvFreeErrorStack: pv_free_error_stack,
     };
+  }
+
+  private static async getMessageStack(
+    pv_get_error_stack: pv_get_error_stack_type,
+    pv_free_error_stack: pv_free_error_stack_type,
+    messageStackAddressAddressAddress: number,
+    messageStackDepthAddress: number,
+    memoryBufferView: DataView,
+    memoryBufferUint8: Uint8Array,
+  ): Promise<string[]> {
+    const status = await pv_get_error_stack(messageStackAddressAddressAddress, messageStackDepthAddress);
+    if (status != PvStatus.SUCCESS) {
+      throw pvStatusToException(status, "Unable to get Cheetah error state");
+    }
+
+    const messageStackAddressAddress = memoryBufferView.getInt32(messageStackAddressAddressAddress, true);
+
+    const messageStackDepth = memoryBufferView.getInt32(messageStackDepthAddress, true);
+    const messageStack: string[] = [];
+    for (let i = 0; i < messageStackDepth; i++) {
+      const messageStackAddress = memoryBufferView.getInt32(
+        messageStackAddressAddress + (i * Int32Array.BYTES_PER_ELEMENT), true);
+      const message = arrayBufferToStringAtIndex(memoryBufferUint8, messageStackAddress);
+      messageStack.push(message);
+    }
+
+    pv_free_error_stack(messageStackAddressAddress);
+
+    return messageStack;
   }
 }

@@ -1,4 +1,5 @@
 aarch
+agnivade
 androidx
 armv7l
 calcsize
@@ -24,6 +25,7 @@ drwav
 dylib
 endpointing
 exopackage
+Fastenshtein
 filedemo
 framecount
 gradlew
@@ -65,6 +67,7 @@ repr
 RGBO
 rodio
 RTLD
+Rustonomicon
 signup
 stdbool
 stdint

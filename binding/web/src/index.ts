@@ -16,6 +16,8 @@ import {
   CheetahWorkerResponse,
 } from './types';
 
+import * as CheetahErrors from './cheetah_errors';
+
 import cheetahWasm from '../lib/pv_cheetah.wasm';
 import cheetahWasmSimd from '../lib/pv_cheetah_simd.wasm';
 
@@ -39,4 +41,5 @@ export {
   CheetahWorkerReleaseResponse,
   CheetahWorkerFailureResponse,
   CheetahWorkerResponse,
+  CheetahErrors,
 };

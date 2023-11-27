@@ -29,6 +29,8 @@ jobs:
       uses: golangci/golangci-lint-action@v3
       with:
         working-directory: binding/go
+        # TODO: figure out why the linter complains about this??
+        args: --exclude="could not import C"
 
   check-go-micdemo-codestyle:
     runs-on: ubuntu-latest

@@ -8,8 +8,6 @@ on:
       - 'binding/react-native/**'
       - '!binding/react-native/README.md'
       - 'lib/common/**'
-      - 'lib/android/**'
-      - 'lib/ios/**'
       - '.github/workflows/react-native.yml'
   pull_request:
     branches: [ master, 'v[0-9]+.[0-9]+' ]
@@ -17,8 +15,6 @@ on:
       - 'binding/react-native/**'
       - '!binding/react-native/README.md'
       - 'lib/common/**'
-      - 'lib/android/**'
-      - 'lib/ios/**'
       - '.github/workflows/react-native.yml'
 
 defaults:
@@ -31,7 +27,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x, 20.x]
+        node-version: [16.x, 18.x, 20.x]
 
     steps:
     - uses: actions/checkout@v3
@@ -48,4 +44,4 @@ jobs:
       run: yarn install
 
     - name: Build
-      run: yarn
+      run: yarn prepare

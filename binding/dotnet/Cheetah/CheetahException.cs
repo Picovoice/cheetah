@@ -15,9 +15,35 @@ namespace Pv
 {
     public class CheetahException : Exception
     {
+        private readonly string[] _messageStack;
+
         public CheetahException() { }
 
         public CheetahException(string message) : base(message) { }
+
+        public CheetahException(string message, string[] messageStack) : base(ModifyMessages(message, messageStack))
+        {
+            this._messageStack = messageStack;
+        }
+
+        public string[] MessageStack
+        {
+            get => _messageStack;
+        }
+
+        private static string ModifyMessages(string message, string[] messageStack)
+        {
+            string messageString = message;
+            if (messageStack.Length > 0)
+            {
+                messageString += ":";
+                for (int i = 0; i < messageStack.Length; i++)
+                {
+                    messageString += $"\n  [{i}] {messageStack[i]}";
+                }
+            }
+            return messageString;
+        }
 
     }
 
@@ -26,6 +52,8 @@ namespace Pv
         public CheetahMemoryException() { }
 
         public CheetahMemoryException(string message) : base(message) { }
+
+        public CheetahMemoryException(string message, string[] messageStack) : base(message, messageStack) { }
     }
 
     public class CheetahIOException : CheetahException
@@ -33,6 +61,8 @@ namespace Pv
         public CheetahIOException() { }
 
         public CheetahIOException(string message) : base(message) { }
+
+        public CheetahIOException(string message, string[] messageStack) : base(message, messageStack) { }
     }
 
     public class CheetahInvalidArgumentException : CheetahException
@@ -40,6 +70,8 @@ namespace Pv
         public CheetahInvalidArgumentException() { }
 
         public CheetahInvalidArgumentException(string message) : base(message) { }
+
+        public CheetahInvalidArgumentException(string message, string[] messageStack) : base(message, messageStack) { }
     }
 
     public class CheetahStopIterationException : CheetahException
@@ -47,6 +79,8 @@ namespace Pv
         public CheetahStopIterationException() { }
 
         public CheetahStopIterationException(string message) : base(message) { }
+
+        public CheetahStopIterationException(string message, string[] messageStack) : base(message, messageStack) { }
     }
 
     public class CheetahKeyException : CheetahException
@@ -54,6 +88,8 @@ namespace Pv
         public CheetahKeyException() { }
 
         public CheetahKeyException(string message) : base(message) { }
+
+        public CheetahKeyException(string message, string[] messageStack) : base(message, messageStack) { }
     }
 
     public class CheetahInvalidStateException : CheetahException
@@ -61,6 +97,8 @@ namespace Pv
         public CheetahInvalidStateException() { }
 
         public CheetahInvalidStateException(string message) : base(message) { }
+
+        public CheetahInvalidStateException(string message, string[] messageStack) : base(message, messageStack) { }
     }
 
     public class CheetahRuntimeException : CheetahException
@@ -68,6 +106,8 @@ namespace Pv
         public CheetahRuntimeException() { }
 
         public CheetahRuntimeException(string message) : base(message) { }
+
+        public CheetahRuntimeException(string message, string[] messageStack) : base(message, messageStack) { }
     }
 
     public class CheetahActivationException : CheetahException
@@ -75,6 +115,8 @@ namespace Pv
         public CheetahActivationException() { }
 
         public CheetahActivationException(string message) : base(message) { }
+
+        public CheetahActivationException(string message, string[] messageStack) : base(message, messageStack) { }
     }
 
     public class CheetahActivationLimitException : CheetahException
@@ -82,6 +124,8 @@ namespace Pv
         public CheetahActivationLimitException() { }
 
         public CheetahActivationLimitException(string message) : base(message) { }
+
+        public CheetahActivationLimitException(string message, string[] messageStack) : base(message, messageStack) { }
     }
 
     public class CheetahActivationThrottledException : CheetahException
@@ -89,6 +133,8 @@ namespace Pv
         public CheetahActivationThrottledException() { }
 
         public CheetahActivationThrottledException(string message) : base(message) { }
+
+        public CheetahActivationThrottledException(string message, string[] messageStack) : base(message, messageStack) { }
     }
 
     public class CheetahActivationRefusedException : CheetahException
@@ -96,6 +142,8 @@ namespace Pv
         public CheetahActivationRefusedException() { }
 
         public CheetahActivationRefusedException(string message) : base(message) { }
+
+        public CheetahActivationRefusedException(string message, string[] messageStack) : base(message, messageStack) { }
     }
 
 }

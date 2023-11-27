@@ -3,7 +3,7 @@ description: Demonstrates how to use the cheetah plugin.
 
 publish_to: 'none'
 
-version: 1.0.0
+version: 2.0.0
 
 environment:
   sdk: ">=2.14.0 <3.0.0"
@@ -14,7 +14,7 @@ dependencies:
     sdk: flutter
 
   flutter_voice_processor: ^1.1.0
-  cheetah_flutter: ^1.1.1
+  cheetah_flutter: ^2.0.0
 
 dev_dependencies:
   integration_test:

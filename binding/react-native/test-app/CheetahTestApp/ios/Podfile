@@ -1,7 +1,7 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, min_ios_version_supported
+platform :ios, '13.0'
 prepare_react_native_project!
 
 flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
@@ -14,6 +14,7 @@ end
 
 target 'CheetahTestApp' do
   config = use_native_modules!
+  pod 'Cheetah-iOS', '~> 2.0.0'
 
   # Flags change depending on the env values.
   flags = get_default_flags()
