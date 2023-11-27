@@ -1,5 +1,7 @@
 # Cheetah Binding for Node.js
 
+## Cheetah Speech-to-Text Engine
+
 Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
 Cheetah is an on-device streaming speech-to-text engine. Cheetah is:

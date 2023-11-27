@@ -1,4 +1,6 @@
-# Cheetah Speech-to-Text Engine
+# Cheetah Binding for Go
+
+## Cheetah Speech-to-Text Engine
 
 Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
@@ -17,7 +19,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
 - go 1.16+
 - Runs on Linux (x86_64), macOS (x86_64, arm64), Windows (x86_64), Raspberry Pi (4, 3), and NVIDIA Jetson Nano.
-- **Windows**: The Go binding requires `cgo`, which means that you need to install a gcc compiler like [Mingw](http://mingw-w64.org/) to build it properly. 
+- **Windows**: The Go binding requires `cgo`, which means that you need to install a gcc compiler like [Mingw](http://mingw-w64.org/) to build it properly.
   - Go versions less than `1.20` requires `gcc` version `11` or lower.
 
 ## Installation

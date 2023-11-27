@@ -1,4 +1,6 @@
-# Cheetah Speech-to-Text Engine
+# Cheetah Binding for Python
+
+## Cheetah Speech-to-Text Engine
 
 Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
