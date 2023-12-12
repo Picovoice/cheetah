@@ -7,41 +7,47 @@ body:
   - type: markdown
     attributes:
       value: |
-        Make sure you have read the documentation, and have put forth a reasonable effort to find an existing answer.
-  - type: textarea
-    id: expected-behaviour
+        **Before** reporting an issue, make sure to read the [documentation](https://picovoice.ai/docs/cheetah/) and search [existing issues](https://github.com/Picovoice/cheetah/issues).
+  - type: checkboxes
     attributes:
-      label: Expected behavior
-    validations:
-      required: true
-  - type: textarea
-    id: actual-behaviour
-    attributes:
-      label: Actual behavior
-    validations:
-      required: true
-  - type: textarea
-    id: reproduction
-    attributes:
-      label: Steps to reproduce the behaviour
-      description: Please include enough details so that the issue can be reproduced independently.
-    validations:
-      required: true
-  - type: dropdown
-    id: version
-    attributes:
-      label: Version
-      description: What version of our software are you running?
+      label: Did you check docs and existing issues?
+      description: Make sure you checked all of the below before submitting an issue
       options:
-        - 1
-        - 2
-        - 3
-      default: 0
+        - label: I have read all of the relevant Picovoice Cheetah docs
+          required: true
+        - label: I have searched the existing issues for Cheetah
+          required: true
+  - type: input
+    attributes:
+      label: "Cheetah version"
+      placeholder: "2.0"
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: "Operating system/version"
+      placeholder: "MacOS 11.5"
     validations:
       required: true
   - type: textarea
-    id: logs
     attributes:
-      label: Relevant log output
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
-      render: shell
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps To Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1.
+        2. 
+        3.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected Behavior
+      description: A concise description of what you expected to happen.
+    validations:
+      required: true
