@@ -12,11 +12,9 @@ body:
       label: Did you check docs and existing issues?
       description: Make sure you checked all of the below before submitting an issue
       options:
-        - label: |
-            I have read all of the relevant [Picovoice Cheetah docs](https://picovoice.ai/docs/cheetah/)
+        - label: I have read all of the relevant Picovoice Cheetah docs
           required: true
-        - label: |
-            I have searched the [existing issues](https://github.com/Picovoice/cheetah/issues) for Cheetah
+        - label: I have searched the existing issues for Cheetah
           required: true
   - type: dropdown
     id: sdk
