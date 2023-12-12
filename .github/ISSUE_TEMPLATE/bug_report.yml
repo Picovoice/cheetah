@@ -34,7 +34,6 @@ body:
         - React
         - Rust
         - Web
-      default: 0
     validations:
       required: true
   - type: input
@@ -66,7 +65,6 @@ body:
         - NVIDIA Jetson
         - BeagleBone
         - ARM Cortex-M
-      default: 0
     validations:
       required: true
   - type: input
