@@ -8,6 +8,7 @@ body:
       value: |
         **Before** reporting an issue, make sure to read the [documentation](https://picovoice.ai/docs/cheetah/) and search [existing issues](https://github.com/Picovoice/cheetah/issues).
   - type: checkboxes
+    id: check
     attributes:
       label: Did you check docs and existing issues?
       description: Make sure you checked all of the below before submitting an issue
@@ -37,12 +38,14 @@ body:
     validations:
       required: true
   - type: input
+    id: package
     attributes:
       label: "Cheetah package version"
       placeholder: "1.0.0"
     validations:
       required: true
   - type: input
+    id: framework
     attributes:
       label: "Framework version"
       placeholder: "Python 3.7, .NET Core 3.1, etc."
@@ -67,18 +70,21 @@ body:
     validations:
       required: true
   - type: input
+    id: os
     attributes:
       label: "OS/Browser version"
       placeholder: "macOS 11.0, Android 8.0, etc."
     validations:
       required: true
   - type: textarea
+    id: description
     attributes:
       label: Describe the bug
       description: A clear and concise description of what the bug is.
     validations:
       required: true
   - type: textarea
+    id: reproduction
     attributes:
       label: Steps To Reproduce
       description: Steps to reproduce the behavior.
@@ -89,6 +95,7 @@ body:
     validations:
       required: true
   - type: textarea
+    id: expectation
     attributes:
       label: Expected Behavior
       description: A concise description of what you expected to happen.
