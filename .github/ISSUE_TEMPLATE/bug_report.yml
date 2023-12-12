@@ -12,20 +12,66 @@ body:
       label: Did you check docs and existing issues?
       description: Make sure you checked all of the below before submitting an issue
       options:
-        - label: I have read all of the relevant Picovoice Cheetah docs
+        - label: |
+            I have read all of the relevant [Picovoice Cheetah docs](https://picovoice.ai/docs/cheetah/)
           required: true
-        - label: I have searched the existing issues for Cheetah
+        - label: |
+            I have searched the [existing issues](https://github.com/Picovoice/cheetah/issues) for Cheetah
           required: true
-  - type: input
+  - type: dropdown
+    id: version
     attributes:
-      label: "Cheetah version"
-      placeholder: "2.0"
+      label: SDK
+      options:
+        - Android
+        - .NET
+        - Flutter
+        - Go
+        - iOS
+        - Java
+        - Node.js
+        - Python
+        - React Native
+        - React
+        - Rust
+        - Web
+      default: 0
     validations:
       required: true
   - type: input
     attributes:
-      label: "Operating system/version"
-      placeholder: "MacOS 11.5"
+      label: "Cheetah package version"
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: "Framework version"
+      placeholder: "Python 3.7, .NET Core 3.1, etc."
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: Platform
+      options:
+        - Android
+        - iOS
+        - Web (WASM)
+        - Linux (x86_64)
+        - macOS (x86_64, arm64)
+        - Windows (x86_64)
+        - Raspberry Pi
+        - NVIDIA Jetson
+        - BeagleBone
+        - ARM Cortex-M
+      default: 0
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: "OS/Browser version"
+      placeholder: "macOS 11.0, Android 8.0, etc."
     validations:
       required: true
   - type: textarea
