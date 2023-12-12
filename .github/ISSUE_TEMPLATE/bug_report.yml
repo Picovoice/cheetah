@@ -19,7 +19,7 @@ body:
             I have searched the [existing issues](https://github.com/Picovoice/cheetah/issues) for Cheetah
           required: true
   - type: dropdown
-    id: version
+    id: sdk
     attributes:
       label: SDK
       options:
@@ -51,7 +51,7 @@ body:
     validations:
       required: true
   - type: dropdown
-    id: version
+    id: platform
     attributes:
       label: Platform
       options:
