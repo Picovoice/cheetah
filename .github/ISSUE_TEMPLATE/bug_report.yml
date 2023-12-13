@@ -64,7 +64,6 @@ body:
         - Raspberry Pi
         - NVIDIA Jetson
         - BeagleBone
-        - ARM Cortex-M
     validations:
       required: true
   - type: input
