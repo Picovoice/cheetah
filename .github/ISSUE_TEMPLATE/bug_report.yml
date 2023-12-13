@@ -10,8 +10,8 @@ body:
   - type: checkboxes
     id: check
     attributes:
-      label: Did you check docs and existing issues?
-      description: Make sure you checked all of the below before submitting an issue
+      label: Have you checked the docs and existing issues?
+      description: Make sure you have checked all of the below before submitting an issue
       options:
         - label: I have read all of the relevant Picovoice Cheetah docs
           required: true
@@ -34,7 +34,6 @@ body:
         - React
         - Rust
         - Web
-      default: 0
     validations:
       required: true
   - type: input
@@ -65,8 +64,6 @@ body:
         - Raspberry Pi
         - NVIDIA Jetson
         - BeagleBone
-        - ARM Cortex-M
-      default: 0
     validations:
       required: true
   - type: input
