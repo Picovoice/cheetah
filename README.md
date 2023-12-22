@@ -354,9 +354,9 @@ Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console and `${MODEL_
 resources acquired using `pv_cheetah_delete(handle)`.
 
 ### iOS
-
+<!-- markdown-link-check-disable -->
 The Cheetah iOS binding is available via [CocoaPods](https://cocoapods.org/pods/Cheetah-iOS). To import it into your iOS project, add the following line to your Podfile and run `pod install`:
-
+<!-- markdown-link-check-enable -->
 ```ruby
 pod 'Cheetah-iOS'
 ```
@@ -812,7 +812,7 @@ function App(props) {
 
 - Improvements to error reporting
 - Upgrades to authorization and authentication system
-- Improved engine accuracy 
+- Improved engine accuracy
 - Various bug fixes and improvements
 - Node min support bumped to Node 16
 - Bumped iOS support to iOS 13+
