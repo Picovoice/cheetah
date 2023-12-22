@@ -24,6 +24,7 @@ android {
     lint {
         abortOnError false
     }
+    namespace 'ai.picovoice.cheetahdemo'
 }
 
 dependencies {
