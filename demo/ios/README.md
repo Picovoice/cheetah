@@ -8,7 +8,7 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 
 ## Running the Demo
 
-Copy your `AccessKey` into the `ACCESS_KEY` variable inside [`ViewModel.swift`](./CheetahDemo/CheetahDemo/ViewModel.swift#L25).
+Copy your `AccessKey` into the `ACCESS_KEY` variable inside [`ViewModel.swift`](./CheetahDemo/CheetahDemo/ViewModel.swift).
 
 Before building the demo app, run the following from `CheetahDemo` directory to install the Cheetah CocoaPod:
 

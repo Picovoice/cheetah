@@ -17,7 +17,9 @@ Cheetah is a streaming on-device speech-to-text engine. Cheetah is:
 
 ## Installation
 
+<!-- markdown-link-check-disable -->
 The Cheetah iOS binding is available via [CocoaPods](https://cocoapods.org/pods/Cheetah-iOS). To import it into your iOS project, add the following line to your Podfile:
+<!-- markdown-link-check-enable -->
 
 ```ruby
 pod 'Cheetah-iOS'
