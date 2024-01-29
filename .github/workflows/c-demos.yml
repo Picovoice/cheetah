@@ -59,7 +59,7 @@ jobs:
 
     strategy:
       matrix:
-        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64, jetson]
 
     steps:
     - uses: actions/checkout@v3
@@ -119,7 +119,7 @@ jobs:
 
     strategy:
       matrix:
-        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64, jetson]
         include:
           - machine: rpi3-32
             platform: raspberry-pi
@@ -133,6 +133,9 @@ jobs:
           - machine: rpi4-64
             platform: raspberry-pi
             arch: cortex-a72-aarch64
+          - machine: rpi5-64
+            platform: raspberry-pi
+            arch: cortex-a76-aarch64
           - machine: jetson
             platform: jetson
             arch: cortex-a57-aarch64
