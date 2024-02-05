@@ -75,6 +75,7 @@ namespace Pv
                 case "0xd03": return "cortex-a53" + archInfo;
                 case "0xd07": return "cortex-a57" + archInfo;
                 case "0xd08": return "cortex-a72" + archInfo;
+                case "0xd0b": return "cortex-a76" + archInfo;
                 default:
                     throw new PlatformNotSupportedException($"This device (CPU part = {cpuPart}) is not supported by Picovoice.");
             }
@@ -87,7 +88,8 @@ namespace Pv
             {
                 case "0xc07":
                 case "0xd03":
-                case "0xd08": return "raspberry-pi";
+                case "0xd08":
+                case "0xd0b": return "raspberry-pi";
                 case "0xd07": return "jetson";
                 default:
                     throw new PlatformNotSupportedException($"This device (CPU part = {cpuPart}) is not supported by Picovoice.");
