@@ -41,11 +41,19 @@ def _linux_machine():
         return 'cortex-a57' + arch_info
     elif '0xd08' == cpu_part:
         return 'cortex-a72' + arch_info
+    elif "0xd0b" == cpu_part:
+        return "cortex-a76" + arch_info
     else:
         raise NotImplementedError("Unsupported CPU: `%s`." % cpu_part)
 
 
-_RASPBERRY_PI_MACHINES = {'cortex-a53', 'cortex-a72', 'cortex-a53-aarch64', 'cortex-a72-aarch64'}
+_RASPBERRY_PI_MACHINES = {
+    "cortex-a53",
+    "cortex-a72",
+    "cortex-a76",
+    "cortex-a53-aarch64",
+    "cortex-a72-aarch64",
+    "cortex-a76-aarch64"}
 _JETSON_MACHINES = {'cortex-a57-aarch64'}
 
 

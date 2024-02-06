@@ -71,7 +71,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64, jetson]
         include:
         - machine: rpi3-32
           init_performance_threshold_sec: 9.0
@@ -85,6 +85,9 @@ jobs:
         - machine: rpi4-64
           init_performance_threshold_sec: 7.5
           proc_performance_threshold_sec: 4.0
+        - machine: rpi5-64
+          init_performance_threshold_sec: 0.1
+          proc_performance_threshold_sec: 0.1
         - machine: jetson
           init_performance_threshold_sec: 7.5
           proc_performance_threshold_sec: 4.0
