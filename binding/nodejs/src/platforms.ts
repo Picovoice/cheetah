@@ -34,7 +34,7 @@ const ARM_CPU_64 = '-aarch64';
 const ARM_CPU_CORTEX_A53 = 'cortex-a53';
 const ARM_CPU_CORTEX_A57 = 'cortex-a57';
 const ARM_CPU_CORTEX_A72 = 'cortex-a72';
-const ARM_CPU_CORTEX_A76 = 'cortex-a72';
+const ARM_CPU_CORTEX_A76 = 'cortex-a76';
 
 const SUPPORTED_NODEJS_SYSTEMS = new Set([
   SYSTEM_LINUX,
