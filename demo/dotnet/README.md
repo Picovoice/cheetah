@@ -13,7 +13,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
   - Linux (x86_64), macOS (x86_64, arm64), and Windows (x86_64)
   - Android and iOS
   - Chrome, Safari, Firefox, and Edge
-  - Raspberry Pi (4, 3) and NVIDIA Jetson Nano
+  - Raspberry Pi (5, 4, 3) and NVIDIA Jetson Nano
 
 ## Requirements
 
@@ -27,6 +27,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 - Raspberry Pi:
   - 3 (32 and 64 bit)
   - 4 (32 and 64 bit)
+  - 5 (32 and 64 bit)
 - NVIDIA Jetson Nano
 
 ## Installation
@@ -59,7 +60,7 @@ Cheetah/demo/dotnet/CheetahDemo
 Run the following in the terminal:
 
 ```console
-dotnet run -c FileDemo.Release -- \ 
+dotnet run -c FileDemo.Release -- \
 --input_audio_path ${AUDIO_PATH} \
 --access_key ${ACCESS_KEY} \
 ```
@@ -87,9 +88,9 @@ It provides information about various audio input devices on the box. This is an
 ```
 index: 0, device name: USB Audio Device
 index: 1, device name: MacBook Air Microphone
-``` 
+```
 
-You can use the device index to specify which microphone to use for the demo. For instance, if you want to use the USB Audio Device 
+You can use the device index to specify which microphone to use for the demo. For instance, if you want to use the USB Audio Device
 in the above example, you can invoke the demo application as below:
 
 ```console
