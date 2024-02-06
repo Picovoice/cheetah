@@ -39,6 +39,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+      # ************** REMOVE AFTER RELEASE ********************
+    - name: Build Node.js SDK
+      run: yarn && yarn build
+      working-directory: binding/nodejs
+      # ********************************************************
+
     - name: Install dependencies
       run: yarn install
 
@@ -50,10 +56,16 @@ jobs:
 
     strategy:
       matrix:
-        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, jetson]
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64, jetson]
 
     steps:
     - uses: actions/checkout@v3
+
+      # ************** REMOVE AFTER RELEASE ********************
+    - name: Build Node.js SDK
+      run: yarn && yarn build
+      working-directory: binding/nodejs
+      # ********************************************************
 
     - name: Install dependencies
       run: yarn install

@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2023 Picovoice Inc.
+// Copyright 2022-2024 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -20,7 +20,7 @@ import {
   CheetahOptions,
 } from './types';
 
-import * as CheetahErrors from "./errors";
+import * as CheetahErrors from './errors';
 
 export {
   Cheetah,
