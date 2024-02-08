@@ -9,8 +9,8 @@
   specific language governing permissions and limitations under the License.
 */
 
-import { PvModel } from "@picovoice/web-utils";
-import { CheetahError } from "./cheetah_errors";
+import { PvModel } from '@picovoice/web-utils';
+import { CheetahError } from './cheetah_errors';
 
 export enum PvStatus {
   SUCCESS = 10000,
@@ -34,11 +34,11 @@ export type CheetahModel = PvModel;
 
 export type CheetahOptions = {
   /** @defaultValue 1.0 */
-  endpointDurationSec?: number
+  endpointDurationSec?: number;
   /** @defaultValue false */
   enableAutomaticPunctuation?: boolean;
   /** @defaultValue undefined */
-  processErrorCallback?: (error: CheetahError) => void
+  processErrorCallback?: (error: CheetahError) => void;
 };
 
 export type CheetahTranscript = {
@@ -64,17 +64,17 @@ export type CheetahWorkerProcessRequest = {
 
 export type CheetahWorkerFlushRequest = {
   command: 'flush';
-}
+};
 
 export type CheetahWorkerReleaseRequest = {
   command: 'release';
 };
 
 export type CheetahWorkerRequest =
-  CheetahWorkerInitRequest |
-  CheetahWorkerProcessRequest |
-  CheetahWorkerFlushRequest |
-  CheetahWorkerReleaseRequest;
+  | CheetahWorkerInitRequest
+  | CheetahWorkerProcessRequest
+  | CheetahWorkerFlushRequest
+  | CheetahWorkerReleaseRequest;
 
 export type CheetahWorkerFailureResponse = {
   command: 'failed' | 'error';
@@ -83,29 +83,37 @@ export type CheetahWorkerFailureResponse = {
   messageStack: string[];
 };
 
-export type CheetahWorkerInitResponse = CheetahWorkerFailureResponse | {
-  command: 'ok';
-  frameLength: number;
-  sampleRate: number;
-  version: string;
-};
+export type CheetahWorkerInitResponse =
+  | CheetahWorkerFailureResponse
+  | {
+      command: 'ok';
+      frameLength: number;
+      sampleRate: number;
+      version: string;
+    };
 
-export type CheetahWorkerProcessResponse = CheetahWorkerFailureResponse | {
-  command: 'ok';
-  cheetahTranscript: CheetahTranscript;
-};
+export type CheetahWorkerProcessResponse =
+  | CheetahWorkerFailureResponse
+  | {
+      command: 'ok';
+      cheetahTranscript: CheetahTranscript;
+    };
 
-export type CheetahWorkerFlushResponse = CheetahWorkerFailureResponse | {
-  command: 'ok';
-  cheetahTranscript: CheetahTranscript;
-};
+export type CheetahWorkerFlushResponse =
+  | CheetahWorkerFailureResponse
+  | {
+      command: 'ok';
+      cheetahTranscript: CheetahTranscript;
+    };
 
-export type CheetahWorkerReleaseResponse = CheetahWorkerFailureResponse | {
-  command: 'ok';
-};
+export type CheetahWorkerReleaseResponse =
+  | CheetahWorkerFailureResponse
+  | {
+      command: 'ok';
+    };
 
 export type CheetahWorkerResponse =
-  CheetahWorkerInitResponse |
-  CheetahWorkerProcessResponse |
-  CheetahWorkerFlushResponse |
-  CheetahWorkerReleaseResponse;
+  | CheetahWorkerInitResponse
+  | CheetahWorkerProcessResponse
+  | CheetahWorkerFlushResponse
+  | CheetahWorkerReleaseResponse;

@@ -101,7 +101,7 @@ export default class Cheetah {
 
     let cheetahHandleAndStatus: CheetahHandleAndStatus | null = null;
     try {
-      pvCheetah.set_sdk("nodejs");
+      pvCheetah.set_sdk('nodejs');
 
       cheetahHandleAndStatus = pvCheetah.init(
         accessKey,
@@ -248,7 +248,7 @@ export default class Cheetah {
     if (errorObject.status === PvStatus.SUCCESS) {
       pvStatusToException(status, message, errorObject.message_stack);
     } else {
-      pvStatusToException(status, "Unable to get Cheetah error state");
+      pvStatusToException(status, 'Unable to get Cheetah error state');
     }
   }
 }

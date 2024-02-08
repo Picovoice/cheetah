@@ -37,8 +37,10 @@ export class CheetahError extends Error {
     let msg = initial;
 
     if (messageStack.length > 0) {
-      msg += `: ${messageStack.reduce((acc, value, index) =>
-        acc + '\n  [' + index + '] ' + value, '')}`;
+      msg += `: ${messageStack.reduce(
+        (acc, value, index) => acc + '\n  [' + index + '] ' + value,
+        ''
+      )}`;
     }
 
     return msg;

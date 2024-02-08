@@ -20,7 +20,7 @@ import {
   CheetahOptions,
 } from './types';
 
-import * as CheetahErrors from "./errors";
+import * as CheetahErrors from './errors';
 
 export {
   Cheetah,
