@@ -16,3 +16,6 @@
 ## [2.0.0] - 2023-11-17
 * Engine improvements
 * Improved error reporting
+
+## [2.0.1] - 2024-02-08
+* Additional gradle plugin build support

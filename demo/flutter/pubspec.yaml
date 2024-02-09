@@ -6,15 +6,16 @@ publish_to: 'none'
 version: 2.0.0
 
 environment:
-  sdk: ">=2.14.0 <3.0.0"
+  sdk: ">=2.15.0 <4.0.0"
   flutter: ">=2.8.1"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  flutter_voice_processor: ^1.1.0
-  cheetah_flutter: ^2.0.0
+  flutter_voice_processor: ^1.1.1
+  cheetah_flutter:
+    path: ../../binding/flutter
 
 dev_dependencies:
   integration_test:
