@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2023 Picovoice Inc.
+// Copyright 2022-2024 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -50,7 +50,7 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         Method method;
         try {
-            method = Method.valueOf(call.method.toUpperCase());
+            method = Method.valueOf(call.method);
         } catch (IllegalArgumentException e) {
             result.error(
                     CheetahRuntimeException.class.getSimpleName(),

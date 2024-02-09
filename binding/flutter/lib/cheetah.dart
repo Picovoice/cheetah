@@ -1,5 +1,5 @@
 //
-// Copyright 2022 Picovoice Inc.
+// Copyright 2022-2024 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -15,6 +15,17 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:cheetah_flutter/cheetah_error.dart';
+
+enum _NativeFunctions {
+  // ignore:constant_identifier_names
+  CREATE,
+  // ignore:constant_identifier_names
+  PROCESS,
+  // ignore:constant_identifier_names
+  FLUSH,
+  // ignore:constant_identifier_names
+  DELETE
+}
 
 class CheetahTranscript {
   final String? _transcript;
@@ -63,8 +74,8 @@ class Cheetah {
     modelPath = await _tryExtractFlutterAsset(modelPath);
 
     try {
-      Map<String, dynamic> result =
-          Map<String, dynamic>.from(await _channel.invokeMethod('create', {
+      Map<String, dynamic> result = Map<String, dynamic>.from(
+          await _channel.invokeMethod(_NativeFunctions.CREATE.name, {
         'accessKey': accessKey,
         'modelPath': modelPath,
         'endpointDuration': endpointDuration,
@@ -92,7 +103,8 @@ class Cheetah {
   Future<CheetahTranscript> process(List<int>? frame) async {
     try {
       Map<String, dynamic> transcript = Map<String, dynamic>.from(await _channel
-          .invokeMethod('process', {'handle': _handle, 'frame': frame}));
+          .invokeMethod(_NativeFunctions.PROCESS.name,
+              {'handle': _handle, 'frame': frame}));
 
       if (transcript['transcript'] == null) {
         throw CheetahInvalidStateException(
@@ -113,8 +125,8 @@ class Cheetah {
   /// returns CheetahTranscript object.
   Future<CheetahTranscript> flush() async {
     try {
-      Map<String, dynamic> transcript = Map<String, dynamic>.from(
-          await _channel.invokeMethod('flush', {'handle': _handle}));
+      Map<String, dynamic> transcript = Map<String, dynamic>.from(await _channel
+          .invokeMethod(_NativeFunctions.FLUSH.name, {'handle': _handle}));
 
       if (transcript['transcript'] == null) {
         throw CheetahInvalidStateException(
@@ -132,7 +144,8 @@ class Cheetah {
   /// Frees memory that was allocated for Cheetah
   Future<void> delete() async {
     if (_handle != null) {
-      await _channel.invokeMethod('delete', {'handle': _handle});
+      await _channel
+          .invokeMethod(_NativeFunctions.DELETE.name, {'handle': _handle});
       _handle = null;
     }
   }
