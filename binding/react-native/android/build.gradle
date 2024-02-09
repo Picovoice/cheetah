@@ -6,7 +6,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.android.tools.build:gradle:4.1.3'
+    classpath 'com.android.tools.build:gradle:7.4.2'
   }
 }
 
@@ -21,6 +21,17 @@ def getExtOrIntegerDefault(name) {
 }
 
 android {
+  def agpVersion = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION
+  if (agpVersion.tokenize('.')[0].toInteger() >= 7) {
+      namespace "ai.picovoice.reactnative.cheetah"
+  }
+
+  if (agpVersion.tokenize('.')[0].toInteger() >= 8) {
+      buildFeatures {
+          buildConfig = true
+      }
+  }
+
   compileSdkVersion getExtOrIntegerDefault('compileSdkVersion')
   buildToolsVersion getExtOrDefault('buildToolsVersion')
   defaultConfig {
