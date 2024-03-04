@@ -69,8 +69,8 @@ AccessKey also verifies that your usage is within the limits of your account. Ev
 
 ## Language Support
 
-- English
-- Support for additional languages is available for commercial customers on a case-by-case basis.
+- Cheetah Streaming Speech-to-Text currently support English only.
+- Support for [additional languages is available for commercial customers](https://picovoice.ai/consulting/) on a case-by-case basis.
 
 ## Demos
 
