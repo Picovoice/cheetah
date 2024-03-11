@@ -23,6 +23,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 - [Cheetah](#cheetah)
     - [Table of Contents](#table-of-contents)
     - [AccessKey](#accesskey)
+    - [Language Support](#language-support)
     - [Demos](#demos)
         - [Python](#python-demos)
         - [C](#c-demos)
@@ -65,6 +66,11 @@ offline.
 AccessKey also verifies that your usage is within the limits of your account. Everyone who signs up for
 [Picovoice Console](https://console.picovoice.ai/) receives the `Free Tier` usage rights described
 [here](https://picovoice.ai/pricing/). If you wish to increase your limits, you can purchase a subscription plan.
+
+## Language Support
+
+- Cheetah Streaming Speech-to-Text currently supports English only.
+- Support for [additional languages is available for commercial customers](https://picovoice.ai/consulting/) on a case-by-case basis.
 
 ## Demos
 
