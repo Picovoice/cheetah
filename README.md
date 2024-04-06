@@ -6,7 +6,7 @@
 [![Crates.io](https://img.shields.io/crates/v/pv_cheetah)](https://crates.io/crates/pv_cheetah)<!-- markdown-link-check-disable-line -->
 [![Maven Central](https://img.shields.io/maven-central/v/ai.picovoice/cheetah-android?label=maven-central%20%5Bandroid%5D)](https://repo1.maven.org/maven2/ai/picovoice/cheetah-android/)
 [![Maven Central](https://img.shields.io/maven-central/v/ai.picovoice/cheetah-java?label=maven%20central%20%5Bjava%5D)](https://repo1.maven.org/maven2/ai/picovoice/cheetah-java/)
-[![npm](https://img.shields.io/npm/v/@picovoice/cheetah-node?label=npm%20%5Bnode%5D)](https://www.npmjs.com/package/@picovoice/picovoice-node)
+[![npm](https://img.shields.io/npm/v/@picovoice/cheetah-node?label=npm%20%5Bnode%5D)](https://www.npmjs.com/package/@picovoice/cheetah-node)
 [![npm](https://img.shields.io/npm/v/@picovoice/cheetah-react?label=npm%20%5Breact%5D)](https://www.npmjs.com/package/@picovoice/cheetah-react)
 [![npm](https://img.shields.io/npm/v/@picovoice/cheetah-react-native?label=npm%20%5Breact-native%5D)](https://www.npmjs.com/package/@picovoice/cheetah-react-native)
 [![npm](https://img.shields.io/npm/v/@picovoice/cheetah-web?label=npm%20%5Bweb%5D)](https://www.npmjs.com/package/@picovoice/cheetah-web)
