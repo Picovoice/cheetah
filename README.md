@@ -1,10 +1,24 @@
 # Cheetah
 
+[![GitHub release](https://img.shields.io/github/release/Picovoice/Cheetah.svg)](https://github.com/Picovoice/Cheetah/releases)
+[![GitHub](https://img.shields.io/github/license/Picovoice/cheetah)](https://github.com/Picovoice/cheetah/)
+
+[![Crates.io](https://img.shields.io/crates/v/pv_cheetah)](https://crates.io/crates/pv_cheetah)<!-- markdown-link-check-disable-line -->
+[![Maven Central](https://img.shields.io/maven-central/v/ai.picovoice/cheetah-android?label=maven-central%20%5Bandroid%5D)](https://repo1.maven.org/maven2/ai/picovoice/cheetah-android/)
+[![Maven Central](https://img.shields.io/maven-central/v/ai.picovoice/cheetah-java?label=maven%20central%20%5Bjava%5D)](https://repo1.maven.org/maven2/ai/picovoice/cheetah-java/)
+[![npm](https://img.shields.io/npm/v/@picovoice/cheetah-node?label=npm%20%5Bnode%5D)](https://www.npmjs.com/package/@picovoice/cheetah-node)
+[![npm](https://img.shields.io/npm/v/@picovoice/cheetah-react?label=npm%20%5Breact%5D)](https://www.npmjs.com/package/@picovoice/cheetah-react)
+[![npm](https://img.shields.io/npm/v/@picovoice/cheetah-react-native?label=npm%20%5Breact-native%5D)](https://www.npmjs.com/package/@picovoice/cheetah-react-native)
+[![npm](https://img.shields.io/npm/v/@picovoice/cheetah-web?label=npm%20%5Bweb%5D)](https://www.npmjs.com/package/@picovoice/cheetah-web)
+[![Nuget](https://img.shields.io/nuget/v/cheetah)](https://www.nuget.org/packages/Cheetah/)
+[![CocoaPods](https://img.shields.io/cocoapods/v/Cheetah-iOS)](https://cocoapods.org/pods/Cheetah-iOS)<!-- markdown-link-check-disable-line -->
+[![Pub Version](https://img.shields.io/pub/v/cheetah_flutter)](https://pub.dev/packages/cheetah_flutter)
+[![PyPI](https://img.shields.io/pypi/v/pvcheetah)](https://pypi.org/project/pvcheetah/)
+[![Go Reference](https://pkg.go.dev/badge/github.com/Picovoice/cheetah/binding/go.svg)](https://pkg.go.dev/github.com/Picovoice/cheetah/binding/go)
+
 Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
-<!-- markdown-link-check-disable -->
-[![Twitter URL](https://img.shields.io/twitter/url?label=%40AiPicovoice&style=social&url=https%3A%2F%2Ftwitter.com%2FAiPicovoice)](https://twitter.com/AiPicovoice)
-<!-- markdown-link-check-enable -->
+[![Twitter URL](https://img.shields.io/twitter/url?label=%40AiPicovoice&style=social&url=https%3A%2F%2Ftwitter.com%2FAiPicovoice)](https://twitter.com/AiPicovoice)<!-- markdown-link-check-disable-line -->
 [![YouTube Channel Views](https://img.shields.io/youtube/channel/views/UCAdi9sTCXLosG1XeqDwLx7w?label=YouTube&style=social)](https://www.youtube.com/channel/UCAdi9sTCXLosG1XeqDwLx7w)
 
 Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
