@@ -11,7 +11,7 @@
 [![npm](https://img.shields.io/npm/v/@picovoice/cheetah-react-native?label=npm%20%5Breact-native%5D)](https://www.npmjs.com/package/@picovoice/cheetah-react-native)
 [![npm](https://img.shields.io/npm/v/@picovoice/cheetah-web?label=npm%20%5Bweb%5D)](https://www.npmjs.com/package/@picovoice/cheetah-web)
 [![Nuget](https://img.shields.io/nuget/v/cheetah)](https://www.nuget.org/packages/Cheetah/)
-[![npm](https://img.shields.io/cocoapods/v/Cheetah-iOS)](https://cocoapods.org/pods/Cheetah-iOS)
+[![CocoaPods](https://img.shields.io/cocoapods/v/Cheetah-iOS)](https://cocoapods.org/pods/Cheetah-iOS)
 [![Pub Version](https://img.shields.io/pub/v/cheetah_flutter)](https://pub.dev/packages/cheetah_flutter)
 [![PyPI](https://img.shields.io/pypi/v/pvcheetah)](https://pypi.org/project/pvcheetah/)
 [![Go Reference](https://pkg.go.dev/badge/github.com/Picovoice/cheetah/binding/go.svg)](https://pkg.go.dev/github.com/Picovoice/cheetah/binding/go)
