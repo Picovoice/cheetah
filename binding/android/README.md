@@ -70,7 +70,7 @@ short[] getNextAudioFrame() {
 
 String transcript = "";
 
-while true {
+while (true) {
     CheetahTranscript transcriptObj = cheetah.process(getNextAudioFrame());
     transcript += transcriptObj.getTranscript();
 
