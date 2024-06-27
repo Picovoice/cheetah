@@ -84,7 +84,7 @@ class _MyAppState extends State<MyApp> {
       transcriptText = transcriptText + transcript;
     });
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (shouldScroll && !_controller.position.atEdge) {
         _controller.jumpTo(_controller.position.maxScrollExtent);
       }
@@ -153,7 +153,7 @@ class _MyAppState extends State<MyApp> {
 
   buildStartButton(BuildContext context) {
     final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
-        primary: picoBlue,
+        backgroundColor: picoBlue,
         shape: CircleBorder(),
         textStyle: TextStyle(color: Colors.white));
 
