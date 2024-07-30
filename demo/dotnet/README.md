@@ -17,7 +17,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
 ## Requirements
 
-- .NET Core 3.1
+- .NET 6.0
 
 ## Compatibility
 
