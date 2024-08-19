@@ -37,7 +37,7 @@ fs.writeFileSync(
 
 const command = process.platform === "win32" ? "npx.cmd" : "npx";
 
-child_process.execSync(`${command} react-scripts ${args}`, {  
+child_process.execSync(`${command} react-scripts ${args.join(" ")}`, {  
   shell: true,
   stdio: 'inherit'
 });
