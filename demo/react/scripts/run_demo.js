@@ -39,5 +39,6 @@ const command = process.platform === "win32" ? "npx.cmd" : "npx";
 
 child_process.spawn("react-scripts", commands, {
   execPath: command,
-  shell: true
+  shell: true,
+  stdio: 'inherit'
 });
