@@ -2,7 +2,7 @@ const child_process = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
-const commands = process.argv.slice(2, 3);
+const args = process.argv.slice(2, 3);
 const rootDir = path.join(__dirname, "..", "..", "..");
 
 const libDirectory = path.join(__dirname, "..", "src", "lib");
@@ -37,7 +37,7 @@ fs.writeFileSync(
 
 const command = process.platform === "win32" ? "npx.cmd" : "npx";
 
-child_process.spawn("react-scripts", commands, {
-  execPath: command,
-  shell: true
+child_process.execSync(`${command} react-scripts ${args}`, {  
+  shell: true,
+  stdio: 'inherit'
 });
