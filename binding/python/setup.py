@@ -15,7 +15,7 @@ import shutil
 import setuptools
 
 INCLUDE_FILES = ('../../LICENSE', '__init__.py', '_factory.py', '_cheetah.py', '_util.py')
-INCLUDE_LIBS = ('linux', 'mac', 'windows', 'jetson', 'raspberry-pi')
+INCLUDE_LIBS = ('linux', 'mac', 'windows', 'raspberry-pi')
 
 os.system('git clean -dfx')
 

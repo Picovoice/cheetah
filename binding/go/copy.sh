@@ -16,7 +16,4 @@ cp ../../lib/windows/amd64/libpv_cheetah.dll ./embedded/lib/windows/amd64/libpv_
 echo "Copying RPi libs..."
 cp -rp ../../lib/raspberry-pi/* ./embedded/lib/raspberry-pi
 
-echo "Copying Jetson lib..."
-cp ../../lib/jetson/cortex-a57-aarch64/libpv_cheetah.so ./embedded/lib/jetson/cortex-a57-aarch64/libpv_cheetah.so
-
 echo "Copy complete!"

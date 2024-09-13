@@ -345,8 +345,6 @@ func getLinuxDetails() (string, string) {
 	switch cpuPart {
 	case "0xd03":
 		return "raspberry-pi", "cortex-a53" + archInfo
-	case "0xd07":
-		return "jetson", "cortex-a57" + archInfo
 	case "0xd08":
 		return "raspberry-pi", "cortex-a72" + archInfo
 	case "0xd0b":

@@ -18,8 +18,7 @@ Pod::Spec.new do |s|
       - Windows (x86_64)
       - Android
       - iOS
-      - Raspberry Pi (4, 3)
-      - NVIDIA Jetson Nano
+      - Raspberry Pi (3, 4, 5)
   DESC
   s.homepage = 'https://github.com/Picovoice/cheetah/tree/master/binding/ios'
   s.author = { 'Picovoice' => 'hello@picovoice.ai' }
