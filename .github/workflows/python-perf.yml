@@ -9,7 +9,6 @@ on:
       - 'binding/python/test_cheetah_perf.py'
       - 'lib/common/**'
       - 'lib/linux/**'
-      - 'lib/jetson/**'
       - 'lib/mac/**'
       - 'lib/raspberry-pi/**'
       - 'lib/windows/**'
@@ -20,7 +19,6 @@ on:
       - 'binding/python/test_cheetah_perf.py'
       - 'lib/common/**'
       - 'lib/linux/**'
-      - 'lib/jetson/**'
       - 'lib/mac/**'
       - 'lib/raspberry-pi/**'
       - 'lib/windows/**'
@@ -43,7 +41,7 @@ jobs:
           proc_performance_threshold_sec: 0.8
         - os: windows-latest
           init_performance_threshold_sec: 4.0
-          proc_performance_threshold_sec: 0.7 
+          proc_performance_threshold_sec: 0.7
         - os: macos-latest
           init_performance_threshold_sec: 4.5
           proc_performance_threshold_sec: 2.5
@@ -71,7 +69,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64, jetson]
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64]
         include:
         - machine: rpi3-32
           init_performance_threshold_sec: 9.0
@@ -88,9 +86,6 @@ jobs:
         - machine: rpi5-64
           init_performance_threshold_sec: 2.5
           proc_performance_threshold_sec: 2.0
-        - machine: jetson
-          init_performance_threshold_sec: 7.5
-          proc_performance_threshold_sec: 4.0
 
     steps:
     - uses: actions/checkout@v3

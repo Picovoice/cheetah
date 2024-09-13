@@ -41,6 +41,12 @@ jobs:
         toolchain: stable
         override: true
 
+      # ************** REMOVE AFTER RELEASE ********************
+    - name: Build Rust SDK
+      run: ./copy.sh
+      working-directory: binding/rust
+      # ********************************************************
+
     - name: Rust build micdemo
       run: cargo build --verbose
       working-directory: demo/rust/micdemo
@@ -58,7 +64,7 @@ jobs:
 
     strategy:
       matrix:
-        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64, jetson]
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64]
 
     steps:
     - uses: actions/checkout@v3
@@ -72,6 +78,12 @@ jobs:
       with:
         toolchain: nightly
         override: true
+
+      # ************** REMOVE AFTER RELEASE ********************
+    - name: Build Rust SDK
+      run: ./copy.sh
+      working-directory: binding/rust
+      # ********************************************************
 
     - name: Rust build micdemo
       run: cargo build --verbose

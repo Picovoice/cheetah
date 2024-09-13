@@ -9,7 +9,6 @@ on:
       - '!binding/go/README.md'
       - 'lib/common/**'
       - 'lib/linux/**'
-      - 'lib/jetson/**'
       - 'lib/mac/**'
       - 'lib/raspberry-pi/**'
       - 'lib/windows/**'
@@ -21,7 +20,6 @@ on:
       - '!binding/go/README.md'
       - 'lib/common/**'
       - 'lib/linux/**'
-      - 'lib/jetson/**'
       - 'lib/mac/**'
       - 'lib/raspberry-pi/**'
       - 'lib/windows/**'
@@ -57,8 +55,10 @@ jobs:
     - name: Pre-build dependencies
       run: ./copy.sh
 
-    - name: Install dependencies
-      run: go get
+      # ************** REMOVE AFTER RELEASE ********************
+    - name: Get Go SDK from branch
+      run: go get github.com/Picovoice/cheetah/binding/go/v2/@e46bc0c60723c45618d3df95a38882e457788b47
+      # ********************************************************
 
     - name: Build
       run: go build
@@ -71,7 +71,7 @@ jobs:
 
     strategy:
       matrix:
-        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64, jetson]
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64]
 
     steps:
     - uses: actions/checkout@v3
@@ -79,8 +79,10 @@ jobs:
     - name: Pre-build dependencies
       run: ./copy.sh
 
-    - name: Install dependencies
-      run: go get
+      # ************** REMOVE AFTER RELEASE ********************
+    - name: Get Go SDK from branch
+      run: go get github.com/Picovoice/cheetah/binding/go/v2/@e46bc0c60723c45618d3df95a38882e457788b47
+      # ********************************************************
 
     - name: Build
       run: go build
