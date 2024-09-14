@@ -152,16 +152,6 @@ demo\\c\\build\\cheetah_demo.exe ^
 -i ${MIC_INDEX}
 ```
 
-##### NVIDIA Jetson Nano
-
-```console
-./demo/c/build/cheetah_demo \
--a ${ACCESS_KEY} \
--m lib/common/cheetah_params.pv \
--l lib/jetson/cortex-a57-aarch64/libpv_cheetah.so \
--i ${MIC_INDEX}
-```
-
 #### File Demo
 
 ```console
@@ -253,15 +243,5 @@ ${WAV_PATH}
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a53-aarch64/libpv_cheetah.so \
-${WAV_PATH}
-```
-
-##### NVIDIA Jetson Nano
-
-```console
-./demo/c/build/cheetah_demo \
--a ${ACCESS_KEY} \
--m lib/common/cheetah_params.pv \
--l lib/jetson/cortex-a57-aarch64/libpv_cheetah.so \
 ${WAV_PATH}
 ```
