@@ -16,7 +16,7 @@ package cheetah
 import (
 	"encoding/binary"
 	"flag"
-	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
