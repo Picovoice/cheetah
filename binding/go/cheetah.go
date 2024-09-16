@@ -1,4 +1,4 @@
-// Copyright 2022 Picovoice Inc.
+// Copyright 2022-2024 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is
 // located in the "LICENSE" file accompanying this source.
@@ -20,7 +20,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"os/exec"
