@@ -42,7 +42,7 @@ jobs:
 
     - name: Add local NuGet package file
       continue-on-error: true
-      run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Cheetah
+      run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Picovoice.Cheetah
       # ********************************************************
 
     - name: Package restore
@@ -74,7 +74,7 @@ jobs:
 
     - name: Add local NuGet package file
       continue-on-error: true
-      run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Cheetah
+      run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Picovoice.Cheetah
       # ********************************************************
 
     - name: Package restore
