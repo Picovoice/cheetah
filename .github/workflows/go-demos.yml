@@ -44,7 +44,7 @@ jobs:
 
       # ************** REMOVE AFTER RELEASE ********************
     - name: Get Go SDK from branch
-      run: go get github.com/Picovoice/cheetah/binding/go/v2/@9bfffa2d1802378d111fd64f57f0a87c2838909a
+      run: go get github.com/Picovoice/cheetah/binding/go/v2/@50e695ffe3a92031002bfbbd7cd4748908d0dd1a
       # ********************************************************
 
     - name: Build micdemo
@@ -68,7 +68,7 @@ jobs:
 
       # ************** REMOVE AFTER RELEASE ********************
     - name: Get Go SDK from branch
-      run: go get github.com/Picovoice/cheetah/binding/go/v2/@9bfffa2d1802378d111fd64f57f0a87c2838909a
+      run: go get github.com/Picovoice/cheetah/binding/go/v2/@50e695ffe3a92031002bfbbd7cd4748908d0dd1a
       # ********************************************************
 
     - name: Build micdemo
