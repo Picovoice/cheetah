@@ -126,6 +126,8 @@ checksum = "648001efe5d5c0102d8cea768e348da85d90af8ba91f0bea908f157951493cd4"
 [[package]]
 name = "pv_cheetah"
 version = "2.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e283da7d704c5b16970fe55cf0443df1ab8fe2aa3765cbf8a83c5e2cdefe8b7d"
 dependencies = [
  "libc",
  "libloading",
