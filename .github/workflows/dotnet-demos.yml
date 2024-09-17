@@ -35,16 +35,6 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-      # ************** REMOVE AFTER RELEASE ********************
-    - name: Pack .NET SDK
-      run: dotnet pack -c Release
-      working-directory: binding/dotnet
-
-    - name: Add local NuGet package file
-      continue-on-error: true
-      run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Picovoice.Cheetah
-      # ********************************************************
-
     - name: Package restore
       run: dotnet restore
 
@@ -66,16 +56,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-
-      # ************** REMOVE AFTER RELEASE ********************
-    - name: Pack .NET SDK
-      run: dotnet pack -c Release
-      working-directory: binding/dotnet
-
-    - name: Add local NuGet package file
-      continue-on-error: true
-      run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Picovoice.Cheetah
-      # ********************************************************
 
     - name: Package restore
       run: dotnet restore
