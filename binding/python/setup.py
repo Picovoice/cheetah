@@ -15,7 +15,7 @@ import shutil
 import setuptools
 
 INCLUDE_FILES = ('../../LICENSE', '__init__.py', '_factory.py', '_cheetah.py', '_util.py')
-INCLUDE_LIBS = ('linux', 'mac', 'windows', 'jetson', 'raspberry-pi')
+INCLUDE_LIBS = ('linux', 'mac', 'windows', 'raspberry-pi')
 
 os.system('git clean -dfx')
 
@@ -48,7 +48,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md'), 'r') as f:
 
 setuptools.setup(
     name="pvcheetah",
-    version="2.0.1",
+    version="2.0.2",
     author="Picovoice",
     author_email="hello@picovoice.ai",
     description="Cheetah Speech-to-Text Engine.",

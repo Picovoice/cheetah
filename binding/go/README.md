@@ -13,12 +13,12 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
   - Linux (x86_64), macOS (x86_64, arm64), and Windows (x86_64)
   - Android and iOS
   - Chrome, Safari, Firefox, and Edge
-  - Raspberry Pi (3, 4, 5) and NVIDIA Jetson Nano
+  - Raspberry Pi (3, 4, 5)
 
 ## Compatibility
 
 - go 1.16+
-- Runs on Linux (x86_64), macOS (x86_64, arm64), Windows (x86_64), Raspberry Pi (3, 4, 5), and NVIDIA Jetson Nano.
+- Runs on Linux (x86_64), macOS (x86_64, arm64), Windows (x86_64), and Raspberry Pi (3, 4, 5).
 - **Windows**: The Go binding requires `cgo`, which means that you need to install a gcc compiler like [Mingw](http://mingw-w64.org/) to build it properly.
   - Go versions less than `1.20` requires `gcc` version `11` or lower.
 

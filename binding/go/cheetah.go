@@ -1,4 +1,4 @@
-// Copyright 2022 Picovoice Inc.
+// Copyright 2022-2024 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is
 // located in the "LICENSE" file accompanying this source.
@@ -345,8 +345,6 @@ func getLinuxDetails() (string, string) {
 	switch cpuPart {
 	case "0xd03":
 		return "raspberry-pi", "cortex-a53" + archInfo
-	case "0xd07":
-		return "jetson", "cortex-a57" + archInfo
 	case "0xd08":
 		return "raspberry-pi", "cortex-a72" + archInfo
 	case "0xd0b":

@@ -13,11 +13,11 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
   - Linux (x86_64), macOS (x86_64, arm64), and Windows (x86_64)
   - Android and iOS
   - Chrome, Safari, Firefox, and Edge
-  - Raspberry Pi (3, 4, 5) and NVIDIA Jetson Nano
+  - Raspberry Pi (3, 4, 5)
 
 ## Requirements
 
-- .NET 6.0
+- .NET 8.0
 
 ## Compatibility
 
@@ -28,7 +28,6 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
   - 3 (32 and 64 bit)
   - 4 (32 and 64 bit)
   - 5 (32 and 64 bit)
-- NVIDIA Jetson Nano
 
 ## Installation
 

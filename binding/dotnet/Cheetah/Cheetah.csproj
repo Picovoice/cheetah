@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net6.0;netcoreapp3.0;netstandard2.0</TargetFrameworks>
-        <Version>2.0.1</Version>
+        <TargetFrameworks>net8.0;net6.0;netcoreapp3.0;netstandard2.0</TargetFrameworks>
+        <Version>2.0.2</Version>
         <Authors>Picovoice</Authors>
         <Company />
         <Product>Cheetah Speech-to-Text Engine</Product>
@@ -11,14 +11,14 @@
         <RepositoryType>git</RepositoryType>
         <PackageTags>Speech-to-Text, Speech Recognition, Voice Recognition, ASR</PackageTags>
         <PackageReleaseNotes>See https://github.com/Picovoice/cheetah/ </PackageReleaseNotes>
-        <Copyright>Picovoice 2022-2023</Copyright>
+        <Copyright>Picovoice 2022-2024</Copyright>
         <Description>
             Cheetah is an on-device speech-to-text engine. Cheetah is:
 
             - Private; All voice processing runs locally.
             - Accurate
             - Compact and Computationally-Efficient
-            - Cross-Platform: Linux (x86_64), macOS (x86_64, arm64), Windows (x86_64), Raspberry Pi (4, 3), NVIDIA Jetson Nano
+            - Cross-Platform: Linux (x86_64), macOS (x86_64, arm64), Windows (x86_64), Raspberry Pi (3, 4, 5)
         </Description>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <PackageIcon>pv_circle_512.png</PackageIcon>
@@ -35,6 +35,7 @@
             <PackagePath>
                 build/netcoreapp3.0;
                 build/net6.0;
+                build/net8.0;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
@@ -43,6 +44,7 @@
                 build/netstandard2.0/lib/common/cheetah_params.pv;
                 build/netcoreapp3.0/lib/common/cheetah_params.pv;
                 build/net6.0/lib/common/cheetah_params.pv;
+                build/net8.0/lib/common/cheetah_params.pv;
             </PackagePath>
             <Link>lib\common\cheetah_params.pv</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -52,6 +54,7 @@
                 build/netstandard2.0/libpv_cheetah.dll;
                 build/netcoreapp3.0/lib/windows/amd64/libpv_cheetah.dll;
                 build/net6.0/lib/windows/amd64/libpv_cheetah.dll;
+                build/net8.0/lib/windows/amd64/libpv_cheetah.dll;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\windows\amd64\libpv_cheetah.dll</Link>
@@ -62,6 +65,7 @@
                 build/netstandard2.0/libpv_cheetah.so;
                 build/netcoreapp3.0/lib/linux/x86_64/libpv_cheetah.so;
                 build/net6.0/lib/linux/x86_64/libpv_cheetah.so;
+                build/net8.0/lib/linux/x86_64/libpv_cheetah.so;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\linux\x86_64\libpv_cheetah.so</Link>
@@ -72,6 +76,7 @@
                 build/netstandard2.0/libpv_cheetah.dylib;
                 build/netcoreapp3.0/lib/mac/x86_64/libpv_cheetah.dylib;
                 build/net6.0/lib/mac/x86_64/libpv_cheetah.dylib;
+                build/net8.0/lib/mac/x86_64/libpv_cheetah.dylib;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\mac\x86_64\libpv_cheetah.dylib</Link>
@@ -83,18 +88,10 @@
             <PackagePath>
                 build/netcoreapp3.0/lib/raspberry-pi;
                 build/net6.0/lib/raspberry-pi;
+                build/net8.0/lib/raspberry-pi;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\raspberry-pi\%(RecursiveDir)%(Filename)%(Extension)</Link>
-            <Visible>false</Visible>
-        </Content>
-        <Content Include="..\..\..\lib\jetson\cortex-a57-aarch64\libpv_cheetah.so">
-            <PackagePath>
-                build/netcoreapp3.0/lib/jetson/cortex-a57-aarch64/libpv_cheetah.so;
-                build/net6.0/lib/jetson/cortex-a57-aarch64/libpv_cheetah.so;
-            </PackagePath>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <Link>lib\jetson\cortex-a57-aarch64\libpv_cheetah.so</Link>
             <Visible>false</Visible>
         </Content>
     </ItemGroup>
@@ -102,6 +99,7 @@
         <Content Include="..\..\..\lib\mac\arm64\libpv_cheetah.dylib">
             <PackagePath>
                 build/net6.0/lib/mac/arm64/libpv_cheetah.dylib;
+                build/net8.0/lib/mac/arm64/libpv_cheetah.dylib;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\mac\arm64\libpv_cheetah.dylib</Link>

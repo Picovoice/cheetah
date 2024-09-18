@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2022-2023 Picovoice Inc.
+    Copyright 2022-2024 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -71,9 +71,7 @@ namespace Pv
             string cpuPart = GetCpuPart();
             switch (cpuPart)
             {
-                case "0xc07": return "cortex-a7" + archInfo;
                 case "0xd03": return "cortex-a53" + archInfo;
-                case "0xd07": return "cortex-a57" + archInfo;
                 case "0xd08": return "cortex-a72" + archInfo;
                 case "0xd0b": return "cortex-a76" + archInfo;
                 default:
@@ -86,11 +84,9 @@ namespace Pv
             string cpuPart = GetCpuPart();
             switch (cpuPart)
             {
-                case "0xc07":
                 case "0xd03":
                 case "0xd08":
                 case "0xd0b": return "raspberry-pi";
-                case "0xd07": return "jetson";
                 default:
                     throw new PlatformNotSupportedException($"This device (CPU part = {cpuPart}) is not supported by Picovoice.");
             }

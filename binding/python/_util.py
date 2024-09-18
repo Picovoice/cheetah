@@ -1,5 +1,5 @@
 #
-# Copyright 2022-2023 Picovoice Inc.
+# Copyright 2022-2024 Picovoice Inc.
 #
 # You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 # file accompanying this source.
@@ -37,8 +37,6 @@ def _linux_machine():
 
     if '0xd03' == cpu_part:
         return 'cortex-a53' + arch_info
-    elif '0xd07' == cpu_part:
-        return 'cortex-a57' + arch_info
     elif '0xd08' == cpu_part:
         return 'cortex-a72' + arch_info
     elif "0xd0b" == cpu_part:
@@ -54,7 +52,6 @@ _RASPBERRY_PI_MACHINES = {
     "cortex-a53-aarch64",
     "cortex-a72-aarch64",
     "cortex-a76-aarch64"}
-_JETSON_MACHINES = {'cortex-a57-aarch64'}
 
 
 def default_library_path(relative):
@@ -67,8 +64,6 @@ def default_library_path(relative):
         linux_machine = _linux_machine()
         if linux_machine == 'x86_64':
             return os.path.join(os.path.dirname(__file__), relative, 'lib/linux/x86_64/libpv_cheetah.so')
-        elif linux_machine in _JETSON_MACHINES:
-            return os.path.join(os.path.dirname(__file__), relative, 'lib/jetson/%s/libpv_cheetah.so' % linux_machine)
         elif linux_machine in _RASPBERRY_PI_MACHINES:
             return os.path.join(
                 os.path.dirname(__file__),

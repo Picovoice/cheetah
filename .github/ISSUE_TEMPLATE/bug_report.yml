@@ -63,8 +63,6 @@ body:
         - macOS (x86_64, arm64)
         - Windows (x86_64)
         - Raspberry Pi
-        - NVIDIA Jetson
-        - BeagleBone
     validations:
       required: true
   - type: input

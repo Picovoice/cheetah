@@ -74,7 +74,6 @@ fn base_library_path() -> PathBuf {
 #[cfg(all(target_os = "linux", any(target_arch = "arm", target_arch = "aarch64")))]
 fn base_library_path() -> PathBuf {
     const RPI_MACHINES: [&str; 3] = ["cortex-a53", "cortex-a72", "cortex-a76"];
-    const JETSON_MACHINES: [&str; 1] = ["cortex-a57"];
 
     let machine = find_machine_type();
     match machine.as_str() {
@@ -87,9 +86,6 @@ fn base_library_path() -> PathBuf {
             } else {
                 PathBuf::from(format!("raspberry-pi/{}/libpv_cheetah.so", &machine))
             }
-        }
-        machine if JETSON_MACHINES.contains(&machine) => {
-            PathBuf::from("jetson/cortex-a57-aarch64/libpv_cheetah.so")
         }
         _ => {
             panic!("This device is not officially supported by Picovoice.\n");
