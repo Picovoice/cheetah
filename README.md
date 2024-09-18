@@ -10,7 +10,7 @@
 [![npm](https://img.shields.io/npm/v/@picovoice/cheetah-react?label=npm%20%5Breact%5D)](https://www.npmjs.com/package/@picovoice/cheetah-react)
 [![npm](https://img.shields.io/npm/v/@picovoice/cheetah-react-native?label=npm%20%5Breact-native%5D)](https://www.npmjs.com/package/@picovoice/cheetah-react-native)
 [![npm](https://img.shields.io/npm/v/@picovoice/cheetah-web?label=npm%20%5Bweb%5D)](https://www.npmjs.com/package/@picovoice/cheetah-web)
-[![Nuget](https://img.shields.io/nuget/v/cheetah)](https://www.nuget.org/packages/Cheetah/)
+[![Nuget](https://img.shields.io/nuget/v/picovoice.cheetah)](https://www.nuget.org/packages/Picovoice.Cheetah/)
 [![CocoaPods](https://img.shields.io/cocoapods/v/Cheetah-iOS)](https://cocoapods.org/pods/Cheetah-iOS)<!-- markdown-link-check-disable-line -->
 [![Pub Version](https://img.shields.io/pub/v/cheetah_flutter)](https://pub.dev/packages/cheetah_flutter)
 [![PyPI](https://img.shields.io/pypi/v/pvcheetah)](https://pypi.org/project/pvcheetah/)
