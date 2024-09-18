@@ -42,11 +42,6 @@ jobs:
       with:
         go-version: ${{ matrix.go }}
 
-      # ************** REMOVE AFTER RELEASE ********************
-    - name: Get Go SDK from branch
-      run: go get github.com/Picovoice/cheetah/binding/go/v2/@50e695ffe3a92031002bfbbd7cd4748908d0dd1a
-      # ********************************************************
-
     - name: Build micdemo
       run: go build micdemo/cheetah_mic_demo.go
 
@@ -65,11 +60,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-
-      # ************** REMOVE AFTER RELEASE ********************
-    - name: Get Go SDK from branch
-      run: go get github.com/Picovoice/cheetah/binding/go/v2/@50e695ffe3a92031002bfbbd7cd4748908d0dd1a
-      # ********************************************************
 
     - name: Build micdemo
       run: go build micdemo/cheetah_mic_demo.go
