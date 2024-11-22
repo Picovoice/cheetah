@@ -64,7 +64,8 @@ def main(args: argparse.Namespace) -> None:
         'app': app_response_json['app_url'],
         'testSuite': test_response_json['test_suite_url'],
         'project': args.project_name,
-        'devices': devices_dict[args.devices]
+        'devices': devices_dict[args.devices],
+        'deviceLogs': True
     }
 
     while True:
