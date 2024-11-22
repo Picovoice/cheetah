@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,10 +18,10 @@
 		1E5B7B332800F75900F8BDDB /* PerformanceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5B7B322800F75900F8BDDB /* PerformanceTest.swift */; };
 		1E5B7B362800F77300F8BDDB /* test.wav in Resources */ = {isa = PBXBuildFile; fileRef = 1E5B7B352800F77300F8BDDB /* test.wav */; };
 		1E5B7B382800F7AA00F8BDDB /* cheetah_params.pv in Resources */ = {isa = PBXBuildFile; fileRef = 1E5B7B372800F7AA00F8BDDB /* cheetah_params.pv */; };
-		415638DBF440AE6FEF275134 /* libPods-CheetahAppTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E6008986406F64E64E5AABC /* libPods-CheetahAppTest.a */; };
-		BB55D37F1F5EF113CFE49288 /* libPods-CheetahAppTestUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A6F71AF1715132C4FD3C9473 /* libPods-CheetahAppTestUITests.a */; };
-		D23A4B5C0E110877F4A85325 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
-		DB30F23C393A77EF898A27A3 /* libPods-PerformanceTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE6FA71D6A578FD4B0CD0897 /* libPods-PerformanceTest.a */; };
+		D23A4B5C0E110877F4A85325 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		E1E0C8012CF120B0001D6D84 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E1E0C8002CF120B0001D6D84 /* Cheetah */; };
+		E1E0C8032CF120B7001D6D84 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E1E0C8022CF120B7001D6D84 /* Cheetah */; };
+		E1E0C8052CF120BE001D6D84 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E1E0C8042CF120BE001D6D84 /* Cheetah */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,7 +42,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		19841E7C8EA384D98ED7251B /* Pods-CheetahAppTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CheetahAppTest.release.xcconfig"; path = "Target Support Files/Pods-CheetahAppTest/Pods-CheetahAppTest.release.xcconfig"; sourceTree = "<group>"; };
 		1E00655427CFF7EB006FF6E9 /* CheetahAppTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheetahAppTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E00655727CFF7EB006FF6E9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1E00655B27CFF7EB006FF6E9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -60,14 +59,6 @@
 		1E5B7B342800F76700F8BDDB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1E5B7B352800F77300F8BDDB /* test.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = test.wav; path = ../../../../resources/audio_samples/test.wav; sourceTree = "<group>"; };
 		1E5B7B372800F7AA00F8BDDB /* cheetah_params.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params.pv; path = ../../../../lib/common/cheetah_params.pv; sourceTree = "<group>"; };
-		3E6008986406F64E64E5AABC /* libPods-CheetahAppTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CheetahAppTest.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5CCA3A5EB9F44528BD989C77 /* Pods-PerformanceTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PerformanceTest.debug.xcconfig"; path = "Target Support Files/Pods-PerformanceTest/Pods-PerformanceTest.debug.xcconfig"; sourceTree = "<group>"; };
-		7EED4351F3353A9995259861 /* Pods-CheetahAppTestUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CheetahAppTestUITests.release.xcconfig"; path = "Target Support Files/Pods-CheetahAppTestUITests/Pods-CheetahAppTestUITests.release.xcconfig"; sourceTree = "<group>"; };
-		808A1A007913D8DFAD0BF784 /* Pods-CheetahAppTestUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CheetahAppTestUITests.debug.xcconfig"; path = "Target Support Files/Pods-CheetahAppTestUITests/Pods-CheetahAppTestUITests.debug.xcconfig"; sourceTree = "<group>"; };
-		A6F71AF1715132C4FD3C9473 /* libPods-CheetahAppTestUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CheetahAppTestUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B34F5016447834B47F0B5E27 /* Pods-PerformanceTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PerformanceTest.release.xcconfig"; path = "Target Support Files/Pods-PerformanceTest/Pods-PerformanceTest.release.xcconfig"; sourceTree = "<group>"; };
-		DE6FA71D6A578FD4B0CD0897 /* libPods-PerformanceTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PerformanceTest.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		FB4347876E9364A46E319585 /* Pods-CheetahAppTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CheetahAppTest.debug.xcconfig"; path = "Target Support Files/Pods-CheetahAppTest/Pods-CheetahAppTest.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,7 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				415638DBF440AE6FEF275134 /* libPods-CheetahAppTest.a in Frameworks */,
+				E1E0C8012CF120B0001D6D84 /* Cheetah in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,8 +74,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D23A4B5C0E110877F4A85325 /* BuildFile in Frameworks */,
-				BB55D37F1F5EF113CFE49288 /* libPods-CheetahAppTestUITests.a in Frameworks */,
+				D23A4B5C0E110877F4A85325 /* (null) in Frameworks */,
+				E1E0C8032CF120B7001D6D84 /* Cheetah in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,7 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB30F23C393A77EF898A27A3 /* libPods-PerformanceTest.a in Frameworks */,
+				E1E0C8052CF120BE001D6D84 /* Cheetah in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,9 +96,8 @@
 				1E5B7B312800F71E00F8BDDB /* PerformanceTest */,
 				1E00655627CFF7EB006FF6E9 /* CheetahAppTest */,
 				1E00657727CFF7EC006FF6E9 /* CheetahAppTestUITests */,
+				E1E0C7FF2CF120B0001D6D84 /* Frameworks */,
 				1E00655527CFF7EB006FF6E9 /* Products */,
-				9CBC7522C4FCFE2940BFA42C /* Pods */,
-				5F91207C263F7A97417BE8CD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -156,27 +146,11 @@
 			path = PerformanceTest;
 			sourceTree = "<group>";
 		};
-		5F91207C263F7A97417BE8CD /* Frameworks */ = {
+		E1E0C7FF2CF120B0001D6D84 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3E6008986406F64E64E5AABC /* libPods-CheetahAppTest.a */,
-				DE6FA71D6A578FD4B0CD0897 /* libPods-PerformanceTest.a */,
-				A6F71AF1715132C4FD3C9473 /* libPods-CheetahAppTestUITests.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		9CBC7522C4FCFE2940BFA42C /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				FB4347876E9364A46E319585 /* Pods-CheetahAppTest.debug.xcconfig */,
-				19841E7C8EA384D98ED7251B /* Pods-CheetahAppTest.release.xcconfig */,
-				808A1A007913D8DFAD0BF784 /* Pods-CheetahAppTestUITests.debug.xcconfig */,
-				7EED4351F3353A9995259861 /* Pods-CheetahAppTestUITests.release.xcconfig */,
-				5CCA3A5EB9F44528BD989C77 /* Pods-PerformanceTest.debug.xcconfig */,
-				B34F5016447834B47F0B5E27 /* Pods-PerformanceTest.release.xcconfig */,
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -186,11 +160,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1E00657E27CFF7EC006FF6E9 /* Build configuration list for PBXNativeTarget "CheetahAppTest" */;
 			buildPhases = (
-				F3A4A1CCABD4718530D6587F /* [CP] Check Pods Manifest.lock */,
 				1E00655027CFF7EB006FF6E9 /* Sources */,
 				1E00655127CFF7EB006FF6E9 /* Frameworks */,
 				1E00655227CFF7EB006FF6E9 /* Resources */,
-				213525BC8D3CB460A44F22DA /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -205,11 +177,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1E00658427CFF7EC006FF6E9 /* Build configuration list for PBXNativeTarget "CheetahAppTestUITests" */;
 			buildPhases = (
-				5205C1A9524E55350205706E /* [CP] Check Pods Manifest.lock */,
 				1E00657027CFF7EC006FF6E9 /* Sources */,
 				1E00657127CFF7EC006FF6E9 /* Frameworks */,
 				1E00657227CFF7EC006FF6E9 /* Resources */,
-				330620338C86D4B471102B40 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -225,11 +195,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1E5B7B2D2800F6FE00F8BDDB /* Build configuration list for PBXNativeTarget "PerformanceTest" */;
 			buildPhases = (
-				1E5B7B242800F6FE00F8BDDB /* [CP] Check Pods Manifest.lock */,
 				1E5B7B252800F6FE00F8BDDB /* Sources */,
 				1E5B7B272800F6FE00F8BDDB /* Frameworks */,
 				1E5B7B292800F6FE00F8BDDB /* Resources */,
-				1E5B7B2C2800F6FE00F8BDDB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -273,6 +241,9 @@
 				Base,
 			);
 			mainGroup = 1E00654B27CFF7EB006FF6E9;
+			packageReferences = (
+				E1E0C7FE2CF11FD9001D6D84 /* XCLocalSwiftPackageReference "../../../../cheetah" */,
+			);
 			productRefGroup = 1E00655527CFF7EB006FF6E9 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -314,126 +285,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		1E5B7B242800F6FE00F8BDDB /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-PerformanceTest-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		1E5B7B2C2800F6FE00F8BDDB /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PerformanceTest/Pods-PerformanceTest-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PerformanceTest/Pods-PerformanceTest-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PerformanceTest/Pods-PerformanceTest-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		213525BC8D3CB460A44F22DA /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CheetahAppTest/Pods-CheetahAppTest-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CheetahAppTest/Pods-CheetahAppTest-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CheetahAppTest/Pods-CheetahAppTest-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		330620338C86D4B471102B40 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CheetahAppTestUITests/Pods-CheetahAppTestUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CheetahAppTestUITests/Pods-CheetahAppTestUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CheetahAppTestUITests/Pods-CheetahAppTestUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5205C1A9524E55350205706E /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CheetahAppTestUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F3A4A1CCABD4718530D6587F /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CheetahAppTest-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1E00655027CFF7EB006FF6E9 /* Sources */ = {
@@ -612,7 +463,6 @@
 		};
 		1E00657F27CFF7EC006FF6E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FB4347876E9364A46E319585 /* Pods-CheetahAppTest.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -642,7 +492,6 @@
 		};
 		1E00658027CFF7EC006FF6E9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 19841E7C8EA384D98ED7251B /* Pods-CheetahAppTest.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -672,7 +521,6 @@
 		};
 		1E00658527CFF7EC006FF6E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 808A1A007913D8DFAD0BF784 /* Pods-CheetahAppTestUITests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -695,7 +543,6 @@
 		};
 		1E00658627CFF7EC006FF6E9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7EED4351F3353A9995259861 /* Pods-CheetahAppTestUITests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -718,7 +565,6 @@
 		};
 		1E5B7B2E2800F6FE00F8BDDB /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5CCA3A5EB9F44528BD989C77 /* Pods-PerformanceTest.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -743,7 +589,6 @@
 		};
 		1E5B7B2F2800F6FE00F8BDDB /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B34F5016447834B47F0B5E27 /* Pods-PerformanceTest.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -805,6 +650,31 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		E1E0C7FE2CF11FD9001D6D84 /* XCLocalSwiftPackageReference "../../../../cheetah" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../../../cheetah;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E1E0C8002CF120B0001D6D84 /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1E0C7FE2CF11FD9001D6D84 /* XCLocalSwiftPackageReference "../../../../cheetah" */;
+			productName = Cheetah;
+		};
+		E1E0C8022CF120B7001D6D84 /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1E0C7FE2CF11FD9001D6D84 /* XCLocalSwiftPackageReference "../../../../cheetah" */;
+			productName = Cheetah;
+		};
+		E1E0C8042CF120BE001D6D84 /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1E0C7FE2CF11FD9001D6D84 /* XCLocalSwiftPackageReference "../../../../cheetah" */;
+			productName = Cheetah;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1E00654C27CFF7EB006FF6E9 /* Project object */;
 }
