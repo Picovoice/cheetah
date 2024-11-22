@@ -36,10 +36,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up Node.js LTS
-        uses: actions/setup-node@v3
+      - name: Installing Python
+        uses: actions/setup-python@v5
         with:
-          node-version: lts/*
+          python-version: '3.10'
+      - run:
+          pip3 install requests
 
       - name: Install Cocoapods
         run: gem install cocoapods
