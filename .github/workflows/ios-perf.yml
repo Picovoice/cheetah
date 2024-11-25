@@ -67,7 +67,7 @@ jobs:
       - name: XCode Build
         run: xcrun xcodebuild build-for-testing
           -configuration Debug
-          -workspace CheetahAppTest.xcworkspace
+          -project CheetahAppTest.xcodeproj
           -sdk iphoneos
           -scheme PerformanceTest
           -derivedDataPath ddp
