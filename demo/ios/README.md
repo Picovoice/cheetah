@@ -15,4 +15,4 @@ Before building the demo app, run the following from `CheetahDemo` directory to 
 ```ruby
 pod install
 ```
-Open [CheetahDemo.xcworkspace](./CheetahDemo/CheetahDemo.xcworkspace) and run the demo.
+Open [CheetahDemo.xcodeproj](./CheetahDemo/CheetahDemo.xcodeproj) and run the demo.

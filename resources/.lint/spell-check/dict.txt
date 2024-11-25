@@ -80,5 +80,7 @@ vtable
 wargv
 wavefile
 webfonts
+xcframework
+xcodeproj
 xcuitest
 xcworkspace
