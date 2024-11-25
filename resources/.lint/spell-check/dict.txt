@@ -80,4 +80,5 @@ vtable
 wargv
 wavefile
 webfonts
+xcuitest
 xcworkspace
