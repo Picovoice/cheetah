@@ -29,9 +29,6 @@ let package = Package(
             sources: [
                 "binding/ios/Cheetah.swift",
                 "binding/ios/CheetahErrors.swift"
-            ],
-            resources: [
-               .copy("lib/common/cheetah_params.pv")
             ]
         )
     ]
