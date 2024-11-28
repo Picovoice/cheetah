@@ -14,8 +14,7 @@ dependencies:
     sdk: flutter
 
   flutter_voice_processor: 1.1.2
-  cheetah_flutter: # TODO: =2.0.2
-    path: ../../binding/flutter
+  cheetah_flutter: 2.0.2
 
 dev_dependencies:
   integration_test:

@@ -35,15 +35,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-# REMOVE
-    - name: Build binding
-      run: yarn && yarn pkg
-      working-directory: binding/react-native
-
-    - name: Build binding
-      run: yarn add ../../binding/react-native/pkg/picovoice-cheetah-react-native-2.0.2.tgz
-# REMOVE
-
     - name: Pre-build dependencies
       run: npm install yarn
 
@@ -71,15 +62,6 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-
-# REMOVE
-    - name: Build binding
-      run: yarn && yarn pkg
-      working-directory: binding/react-native
-
-    - name: Build binding
-      run: yarn add ../../binding/react-native/pkg/picovoice-cheetah-react-native-2.0.2.tgz
-# REMOVE
 
     - name: Pre-build dependencies
       run: npm install yarn
