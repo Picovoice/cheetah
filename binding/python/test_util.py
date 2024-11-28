@@ -61,10 +61,12 @@ def get_model_path_by_language(language: str) -> str:
     model_path_subdir = _append_language('../../lib/common/cheetah_params', language)
     return os.path.join(os.path.dirname(__file__), f'{model_path_subdir}.pv')
 
+
 def _append_language(s: str, language: str) -> str:
     if language == 'en':
         return s
     return "%s_%s" % (s, language)
+
 
 def get_word_error_rate(transcript: str, expected_transcript: str, use_cer: bool = False) -> float:
     transcript_split = list(transcript) if use_cer else transcript.split()
