@@ -38,6 +38,15 @@ jobs:
     - name: Pre-build dependencies
       run: npm install yarn
 
+# REMOVE
+    - name: Build binding
+      run: yarn && yarn pkg
+      working-directory: binding/react-native
+
+    - name: Build binding
+      run: yarn add ../../binding/react-native/pkg/picovoice-cheetah-react-native-2.0.2.tgz
+# REMOVE
+
     - name: Install dependencies
       run: yarn android-install
 
@@ -65,6 +74,15 @@ jobs:
 
     - name: Pre-build dependencies
       run: npm install yarn
+
+# REMOVE
+    - name: Build binding
+      run: yarn && yarn pkg
+      working-directory: binding/react-native
+
+    - name: Build binding
+      run: yarn add ../../binding/react-native/pkg/picovoice-cheetah-react-native-2.0.2.tgz
+# REMOVE
 
     - name: Install dependencies
       run: yarn ios-install
