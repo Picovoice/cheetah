@@ -18,8 +18,14 @@ Cheetah is a streaming on-device speech-to-text engine. Cheetah is:
 ## Installation
 
 <!-- markdown-link-check-disable -->
-The Cheetah iOS binding is available via [CocoaPods](https://cocoapods.org/pods/Cheetah-iOS). To import it into your iOS project, add the following line to your Podfile:
+The Cheetah iOS binding is available via [Swift Package Manager](https://www.swift.org/documentation/package-manager/) or [CocoaPods](https://cocoapods.org/pods/Cheetah-iOS).
 <!-- markdown-link-check-enable -->
+
+To import the package using SPM, open up your project's Package Dependencies in XCode and add:
+```
+https://github.com/Picovoice/cheetah.git
+```
+To import it into your iOS project using CocoaPods, add the following line to your Podfile:
 
 ```ruby
 pod 'Cheetah-iOS'
@@ -82,7 +88,7 @@ Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://con
 
 ## Running Unit Tests
 
-Copy your `AccessKey` into the `accessKey` variable in [`CheetahAppTestUITests.swift`](./CheetahAppTest/CheetahAppTestUITests/CheetahAppTestUITests.swift). Open `CheetahAppTest.xcworkspace` with XCode and run the tests with `Product > Test`.
+Copy your `AccessKey` into the `accessKey` variable in [`CheetahAppTestUITests.swift`](CheetahAppTest/CheetahAppTestUITests/CheetahAppTestUITests.swift). Open [`CheetahAppTest.xcodeproj`](CheetahAppTest/CheetahAppTest.xcodeproj) with XCode and run the tests with `Product > Test`.
 
 ## Demo App
 

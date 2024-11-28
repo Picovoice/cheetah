@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -12,7 +12,9 @@
 		327698EADFD16D8F70823520 /* CheetahDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327697358B823E5B2EF0FA8C /* CheetahDemoApp.swift */; };
 		32769B2E1B2C5A2A897FFB10 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32769F3923C69C8C0C435CCF /* ContentView.swift */; };
 		32769C58D7E56BA187567FE6 /* cheetah_params.pv in Resources */ = {isa = PBXBuildFile; fileRef = 327698B2EA8A4DD88C527110 /* cheetah_params.pv */; };
-		AF10BC13B27DBA6B733B192A /* libPods-CheetahDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB997F06C7C673F9F2446D95 /* libPods-CheetahDemo.a */; };
+		E15A377F2CF7B8ED00A96F85 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E15A377E2CF7B8ED00A96F85 /* Cheetah */; };
+		E1E0C8082CF12744001D6D84 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E1E0C8072CF12744001D6D84 /* Cheetah */; };
+		E1E0C80B2CF12778001D6D84 /* ios_voice_processor in Frameworks */ = {isa = PBXBuildFile; productRef = E1E0C80A2CF12778001D6D84 /* ios_voice_processor */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,11 +25,6 @@
 		327699927E572962C40A7A04 /* CheetahDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheetahDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32769E49F724E169E0E13E27 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		32769F3923C69C8C0C435CCF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		3B82BCD82CCC5303A602F516 /* Pods-CheetahDemoUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CheetahDemoUITests.debug.xcconfig"; path = "Target Support Files/Pods-CheetahDemoUITests/Pods-CheetahDemoUITests.debug.xcconfig"; sourceTree = "<group>"; };
-		79E6C5E1A07F1F9C428E73D4 /* Pods-CheetahDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CheetahDemo.debug.xcconfig"; path = "Target Support Files/Pods-CheetahDemo/Pods-CheetahDemo.debug.xcconfig"; sourceTree = "<group>"; };
-		BD4ECBA4E7173E9ECE685095 /* Pods-CheetahDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CheetahDemo.release.xcconfig"; path = "Target Support Files/Pods-CheetahDemo/Pods-CheetahDemo.release.xcconfig"; sourceTree = "<group>"; };
-		CB997F06C7C673F9F2446D95 /* libPods-CheetahDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CheetahDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		F33333AE1B947FF5FFB3E9E7 /* Pods-CheetahDemoUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CheetahDemoUITests.release.xcconfig"; path = "Target Support Files/Pods-CheetahDemoUITests/Pods-CheetahDemoUITests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,28 +32,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AF10BC13B27DBA6B733B192A /* libPods-CheetahDemo.a in Frameworks */,
+				E15A377F2CF7B8ED00A96F85 /* Cheetah in Frameworks */,
+				E1E0C80B2CF12778001D6D84 /* ios_voice_processor in Frameworks */,
+				E1E0C8082CF12744001D6D84 /* Cheetah in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		152DF7E2EA2DFC4CD7EB46DC /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				CB997F06C7C673F9F2446D95 /* libPods-CheetahDemo.a */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		327692BCE8C735F3534C318E = {
 			isa = PBXGroup;
 			children = (
 				32769B87809678D96B1C6C55 /* Products */,
 				32769C17C8FD0599F872D3D1 /* CheetahDemo */,
-				AED451108802979154B4E395 /* Pods */,
-				152DF7E2EA2DFC4CD7EB46DC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -81,17 +70,6 @@
 			path = CheetahDemo;
 			sourceTree = "<group>";
 		};
-		AED451108802979154B4E395 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				79E6C5E1A07F1F9C428E73D4 /* Pods-CheetahDemo.debug.xcconfig */,
-				BD4ECBA4E7173E9ECE685095 /* Pods-CheetahDemo.release.xcconfig */,
-				3B82BCD82CCC5303A602F516 /* Pods-CheetahDemoUITests.debug.xcconfig */,
-				F33333AE1B947FF5FFB3E9E7 /* Pods-CheetahDemoUITests.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -99,11 +77,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 32769440EBAF1B96C25C64E5 /* Build configuration list for PBXNativeTarget "CheetahDemo" */;
 			buildPhases = (
-				EEEBC400C3F382C9ADB47297 /* [CP] Check Pods Manifest.lock */,
 				32769E8C15D0D566DE02D742 /* Sources */,
 				32769FD78B69EE3D028A9BD8 /* Frameworks */,
 				327698D80053ADD919041906 /* Resources */,
-				6B8F74027D329047EE376040 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -137,6 +113,10 @@
 				en,
 			);
 			mainGroup = 327692BCE8C735F3534C318E;
+			packageReferences = (
+				E1E0C8092CF12777001D6D84 /* XCRemoteSwiftPackageReference "ios-voice-processor" */,
+				E15A377D2CF7B8ED00A96F85 /* XCRemoteSwiftPackageReference "cheetah" */,
+			);
 			productRefGroup = 32769B87809678D96B1C6C55 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -157,49 +137,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		6B8F74027D329047EE376040 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CheetahDemo/Pods-CheetahDemo-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/Cheetah-iOS/PvCheetah.framework/PvCheetah",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PvCheetah.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CheetahDemo/Pods-CheetahDemo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		EEEBC400C3F382C9ADB47297 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CheetahDemo-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		32769E8C15D0D566DE02D742 /* Sources */ = {
@@ -266,15 +203,15 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
 		3276957BE00965E54B1F13C1 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 79E6C5E1A07F1F9C428E73D4 /* Pods-CheetahDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -290,7 +227,10 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.picovoice.CheetahDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -302,7 +242,6 @@
 		};
 		327698DB666EFBD22F7AB2D5 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BD4ECBA4E7173E9ECE685095 /* Pods-CheetahDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -318,7 +257,10 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.picovoice.CheetahDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -414,6 +356,42 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E15A377D2CF7B8ED00A96F85 /* XCRemoteSwiftPackageReference "cheetah" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Picovoice/cheetah";
+			requirement = {
+				kind = exactVersion;
+				version = 2.0.1;
+			};
+		};
+		E1E0C8092CF12777001D6D84 /* XCRemoteSwiftPackageReference "ios-voice-processor" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Picovoice/ios-voice-processor";
+			requirement = {
+				kind = exactVersion;
+				version = 1.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E15A377E2CF7B8ED00A96F85 /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E15A377D2CF7B8ED00A96F85 /* XCRemoteSwiftPackageReference "cheetah" */;
+			productName = Cheetah;
+		};
+		E1E0C8072CF12744001D6D84 /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Cheetah;
+		};
+		E1E0C80A2CF12778001D6D84 /* ios_voice_processor */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1E0C8092CF12777001D6D84 /* XCRemoteSwiftPackageReference "ios-voice-processor" */;
+			productName = ios_voice_processor;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 32769964E3C57B4A4BE3CC9E /* Project object */;
 }
