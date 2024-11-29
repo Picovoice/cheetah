@@ -4,42 +4,42 @@
             {
                 "language": "en",
                 "audio_file": "test.wav",
-                "transcript": "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel.",
+                "transcript": "Mr. quilter is the apostle of the middle classes and we are glad to welcome his gospel.",
                 "punctuations": ["."],
                 "error_rate": 0.025
             },
             {
                 "language": "es",
                 "audio_file": "test_es.wav",
-                "transcript": "Las arenas son blanquecinas de grano medio y tiene muy poca asistencia.",
+                "transcript": "En ese equipo contó con dos futuros internacionales Javi Martínez y nacho Monreal.",
                 "punctuations": ["."],
-                "error_rate": 0.06
+                "error_rate": 0.025
             },
             {
                 "language": "de",
                 "audio_file": "test_de.wav",
-                "transcript": "Der hinter diesem Portal liegenden Raum wurde als Leichenhalle genutzt.",
+                "transcript": "Bei den Reparaturen stehen ihm seine sowohl sprechenden als auch eigenwilligen Werkzeuge zur Verfügung.",
                 "punctuations": ["."],
                 "error_rate": 0.025
             },
             {
                 "language": "fr",
                 "audio_file": "test_fr.wav",
-                "transcript": "Sous le consulat il devient conservateur des eaux et forêts et conseiller général.",
+                "transcript": "Cet ensemble est constituée par une série de plusieurs archipel assez proche géographiquement.",
                 "punctuations": ["."],
                 "error_rate": 0.025
             },
             {
                 "language": "it",
                 "audio_file": "test_it.wav",
-                "transcript": "Sempre alla radio nacquero anche alcune sue canzoni o meglio ritmi.",
+                "transcript": "Il gioco rimase sostanzialmente invariato rispetto all'anno precedente ma vennero apportate comunque delle modifiche.",
                 "punctuations": ["."],
                 "error_rate": 0.025
             },
             {
                 "language": "pt",
                 "audio_file": "test_pt.wav",
-                "transcript": "Uma raposa velha não consegue aprender nenhum ofício.",
+                "transcript": "Seu corpo estava perdido entre os muitos outros no necrotério da cidade.",
                 "punctuations": ["."],
                 "error_rate": 0.025
             }
