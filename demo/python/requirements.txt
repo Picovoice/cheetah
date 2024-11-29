@@ -1,2 +1,2 @@
-pvcheetah==2.0.2
+pvcheetah==2.1.0
 pvrecorder==1.2.3

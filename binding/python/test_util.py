@@ -1,5 +1,5 @@
 #
-# Copyright 2023 Picovoice Inc.
+# Copyright 2023-2024 Picovoice Inc.
 #
 # You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 # file accompanying this source.
@@ -9,23 +9,32 @@
 # specific language governing permissions and limitations under the License.
 #
 
+import json
+import os
 import struct
 import wave
+
 from typing import *
 
 
 def load_test_data() -> List[Tuple[str, str, str, List[str], float]]:
-    parameters = [
+    data_file_path = os.path.join(os.path.dirname(__file__), "../../resources/.test/test_data.json")
+    with open(data_file_path, encoding="utf8") as data_file:
+        json_test_data = data_file.read()
+    test_data = json.loads(json_test_data)['tests']
+
+    language_tests = [
         (
-            "en",
-            "test.wav",
-            "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.",
-            ["."],
-            0.025
+            t['language'],
+            t['audio_file'],
+            t['transcript'],
+            t['punctuations'],
+            t['error_rate'],
         )
+        for t in test_data['language_tests']
     ]
 
-    return parameters
+    return language_tests
 
 
 def read_wav_file(file_name: str, sample_rate: int) -> Tuple:
@@ -48,6 +57,17 @@ def read_wav_file(file_name: str, sample_rate: int) -> Tuple:
     return frames[::channels]
 
 
+def get_model_path_by_language(language: str) -> str:
+    model_path_subdir = _append_language('../../lib/common/cheetah_params', language)
+    return os.path.join(os.path.dirname(__file__), f'{model_path_subdir}.pv')
+
+
+def _append_language(s: str, language: str) -> str:
+    if language == 'en':
+        return s
+    return "%s_%s" % (s, language)
+
+
 def get_word_error_rate(transcript: str, expected_transcript: str, use_cer: bool = False) -> float:
     transcript_split = list(transcript) if use_cer else transcript.split()
     expected_split = list(expected_transcript) if use_cer else expected_transcript.split()
@@ -55,7 +75,7 @@ def get_word_error_rate(transcript: str, expected_transcript: str, use_cer: bool
 
 
 def _levenshtein_distance(words1: Sequence[str], words2: Sequence[str]) -> int:
-    res = [[0] * (len(words1) + 2) for _ in range(len(words2) + 1)]
+    res = [[0] * (len(words2) + 1) for _ in range(len(words1) + 1)]
     for i in range(len(words1) + 1):
         res[i][0] = i
     for j in range(len(words2) + 1):
