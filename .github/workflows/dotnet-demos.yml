@@ -74,7 +74,7 @@ jobs:
       run: dotnet build && dotnet pack -c Release
       working-directory: binding/dotnet/Cheetah
 
-    - name: Install Local Packages
+    - name: Install Local Packages && dotnet pack -c Release
       run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Picovoice.Cheetah
     # ********************************************************
 
