@@ -106,7 +106,7 @@ namespace CheetahTest
             string[] referenceTranscriptWords = referenceTranscript.Split(' ');
 
             int editDistance = LevenshteinDistance(transcriptWords, referenceTranscriptWords);
-            return (double) editDistance / referenceTranscriptWords.Length;
+            return (double)editDistance / referenceTranscriptWords.Length;
         }
 
         private static string GetModelPath(string language)
@@ -199,7 +199,8 @@ namespace CheetahTest
                 transcript += finalTranscriptObj.Transcript;
 
                 string normalizedTranscript = referenceTranscript;
-                foreach (string punctuation in punctuations) {
+                foreach (string punctuation in punctuations)
+                {
                     normalizedTranscript = normalizedTranscript.Replace(punctuation, "");
                 }
 
