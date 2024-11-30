@@ -40,7 +40,7 @@ jobs:
 
     # ************** REMOVE AFTER RELEASE ********************
     - name: Build Local Packages
-      run: dotnet build
+      run: dotnet build && dotnet pack -c Release
       working-directory: binding/dotnet/Cheetah
 
     - name: Install Local Packages
@@ -74,7 +74,7 @@ jobs:
       run: dotnet build && dotnet pack -c Release
       working-directory: binding/dotnet/Cheetah
 
-    - name: Install Local Packages && dotnet pack -c Release
+    - name: Install Local Packages
       run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Picovoice.Cheetah
     # ********************************************************
 
