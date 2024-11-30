@@ -88,7 +88,7 @@ namespace CheetahTest
             {
                 for (int j = 1; j <= transcriptWordsLen; j++)
                 {
-                    int cost = referenceWords[i - 1] == transcriptWords[j - 1] ? 0 : 1;
+                    int cost = referenceWords[i - 1].ToUpper() == transcriptWords[j - 1].ToUpper() ? 0 : 1;
 
                     dp[i, j] = Math.Min(
                         Math.Min(dp[i - 1, j] + 1, dp[i, j - 1] + 1),
