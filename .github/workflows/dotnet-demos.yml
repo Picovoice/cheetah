@@ -71,7 +71,7 @@ jobs:
 
     # ************** REMOVE AFTER RELEASE ********************
     - name: Build Local Packages
-      run: dotnet build
+      run: dotnet build && dotnet pack -c Release
       working-directory: binding/dotnet/Cheetah
 
     - name: Install Local Packages
