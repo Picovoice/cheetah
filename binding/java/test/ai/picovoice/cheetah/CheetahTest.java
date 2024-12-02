@@ -47,7 +47,7 @@ public class CheetahTest {
         return s + "_" + language;
     }
 
-    public static int levenshteinDistance(String[] transcript, String[] reference) {
+    private static int levenshteinDistance(String[] transcript, String[] reference) {
         int m = transcript.length;
         int n = reference.length;
         int[][] dp = new int[m + 1][n + 1];
@@ -72,7 +72,7 @@ public class CheetahTest {
         return dp[m][n];
     }
 
-    public static float getErrorRate(String transcript, String reference) {
+    private static float getErrorRate(String transcript, String reference) {
         String[] transcriptWords = transcript.split("\\s+");
         String[] referenceWords = reference.split("\\s+");
         int distance = levenshteinDistance(transcriptWords, referenceWords);
