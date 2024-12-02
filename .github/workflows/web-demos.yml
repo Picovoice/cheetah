@@ -40,7 +40,7 @@ jobs:
 
     # ************** REMOVE AFTER RELEASE ********************
     - name: Build Local Packages
-      run: yarn && yarn build
+      run: yarn && yarn copywasm && yarn build
       working-directory: binding/web
     # ********************************************************
 
