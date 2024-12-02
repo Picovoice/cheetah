@@ -1,19 +1,12 @@
 import { Cheetah, CheetahWorker } from "../";
-import { CheetahError } from "../dist/types/cheetah_error";
+import { CheetahError } from "../dist/types/cheetah_errors";
+import testData from './test_data.json';
 
 // @ts-ignore
 import cheetahParams from "./cheetah_params";
 import { PvModel } from '@picovoice/web-utils';
 
-const ACCESS_KEY: string = Cypress.env("ACCESS_KEY");
-
-const testParam = {
-  language: 'en',
-  audio_file: 'test.wav',
-  transcript: 'Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.',
-  punctuations: ['.'],
-  error_rate: 0.025,
-};
+const ACCESS_KEY: string = Cypress.env('ACCESS_KEY');
 
 const levenshteinDistance = (words1: string[], words2: string[]) => {
   const res = Array.from(Array(words1.length + 1), () => new Array(words2.length + 1));
@@ -37,8 +30,10 @@ const levenshteinDistance = (words1: string[], words2: string[]) => {
 
 const wordErrorRate = (reference: string, hypothesis: string, useCER = false): number => {
   const splitter = (useCER) ? '' : ' ';
-  const ed = levenshteinDistance(reference.split(splitter), hypothesis.split(splitter));
-  return ed / reference.length;
+  const refWords = reference.split(splitter);
+  const hypWords = hypothesis.split(splitter);
+  const ed = levenshteinDistance(refWords, hypWords);
+  return ed / refWords.length;
 };
 
 function delay(time: number) {
@@ -131,7 +126,7 @@ const runProcTest = async (
         model,
         {
           enableAutomaticPunctuation: enablePunctuation,
-          processErrorCallback: (error: string) => {
+          processErrorCallback: (error: CheetahError) => {
             reject(error);
           }
         }
@@ -166,7 +161,7 @@ const runProcTest = async (
 
 describe("Cheetah Binding", function () {
   it(`should return process and flush error message stack`, async () => {
-    let errors: [CheetahError] = [];
+    let errors: CheetahError[] = [];
 
     const runProcess = () => new Promise<void>(async resolve => {
       const cheetah = await Cheetah.create(
@@ -285,45 +280,59 @@ describe("Cheetah Binding", function () {
       });
     });
 
-    it(`should be able to process (${testParam.language}) (${instanceString})`, () => {
-      try {
-        cy.getFramesFromFile(`audio_samples/${testParam.audio_file}`).then( async pcm => {
-          const suffix = (testParam.language === 'en') ? '' : `_${testParam.language}`;
-          await runProcTest(
-            instance,
-            pcm,
-            testParam.punctuations,
-            testParam.transcript,
-            testParam.error_rate,
-            {
-              model: { publicPath: `/test/cheetah_params${suffix}.pv`, forceWrite: true },
-              enablePunctuation: false,
-              useCER: (testParam.language === 'ja')
-            });
-        });
-      } catch (e) {
-        expect(e).to.be.undefined;
-      }
-    });
+    for (const testParam of testData.tests.language_tests) {
+      it(`should be able to process (${testParam.language}) (${instanceString})`, () => {
+        try {
+          cy.getFramesFromFile(`audio_samples/${testParam.audio_file}`).then(
+            async pcm => {
+              const suffix =
+                testParam.language === 'en' ? '' : `_${testParam.language}`;
+              await runProcTest(
+                instance,
+                pcm,
+                testParam.punctuations,
+                testParam.transcript,
+                testParam.error_rate,
+                {
+                  model: {
+                    publicPath: `/test/cheetah_params${suffix}.pv`,
+                    forceWrite: true,
+                  },
+                }
+              );
+            }
+          );
+        } catch (e) {
+          expect(e).to.be.undefined;
+        }
+      });
 
-    it(`should be able to process with punctuation (${testParam.language}) (${instanceString})`, () => {
-      try {
-        cy.getFramesFromFile(`audio_samples/${testParam.audio_file}`).then( async pcm => {
-          const suffix = (testParam.language === 'en') ? '' : `_${testParam.language}`;
-          await runProcTest(
-            instance,
-            pcm,
-            testParam.punctuations,
-            testParam.transcript,
-            testParam.error_rate,
-            {
-              model: { publicPath: `/test/cheetah_params${suffix}.pv`, forceWrite: true },
-              useCER: (testParam.language === 'ja')
-            });
-        });
-      } catch (e) {
-        expect(e).to.be.undefined;
-      }
-    });
+      it(`should be able to process with punctuation (${testParam.language}) (${instanceString})`, () => {
+        try {
+          cy.getFramesFromFile(`audio_samples/${testParam.audio_file}`).then(
+            async pcm => {
+              const suffix =
+                testParam.language === 'en' ? '' : `_${testParam.language}`;
+              await runProcTest(
+                instance,
+                pcm,
+                testParam.punctuations,
+                testParam.transcript,
+                testParam.error_rate,
+                {
+                  model: {
+                    publicPath: `/test/cheetah_params${suffix}.pv`,
+                    forceWrite: true,
+                  },
+                  enablePunctuation: true,
+                }
+              );
+            }
+          );
+        } catch (e) {
+          expect(e).to.be.undefined;
+        }
+      });
+    }
   }
 });
