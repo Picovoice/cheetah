@@ -193,8 +193,7 @@ await handle.terminate();
 
 ### Language Model
 
-The Cheetah Web SDK comes preloaded with a default English language model (`.pv` file).
-Default models for other supported languages can be found in [lib/common](../../lib/common).
+Default models for supported languages can be found in [lib/common](../../lib/common).
 
 Create custom language models using the [Picovoice Console](https://console.picovoice.ai/). Here you can train
 language models with custom vocabulary and boost words in the existing vocabulary.
