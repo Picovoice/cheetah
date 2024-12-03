@@ -191,6 +191,13 @@ Terminate `CheetahWorker` instance:
 await handle.terminate();
 ```
 
+### Language Model
+
+Default models for supported languages can be found in [lib/common](../../lib/common).
+
+Create custom language models using the [Picovoice Console](https://console.picovoice.ai/). Here you can train
+language models with custom vocabulary and boost words in the existing vocabulary.
+
 ## Demo
 
 For example usage refer to our [Web demo application](https://github.com/Picovoice/cheetah/tree/master/demo/web).

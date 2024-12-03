@@ -452,7 +452,7 @@ export class Cheetah {
     // A WebAssembly page has a constant size of 64KiB. -> 1MiB ~= 16 pages
     const memory = new WebAssembly.Memory({ initial: 3700 });
 
-    const memoryBufferUint8 = new Uint8Array(memory.buffer);
+    let memoryBufferUint8 = new Uint8Array(memory.buffer);
 
     const pvError = new PvError();
 
@@ -551,7 +551,7 @@ export class Cheetah {
       throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
-    const memoryBufferView = new DataView(memory.buffer);
+    let memoryBufferView = new DataView(memory.buffer);
 
     const status = await pv_cheetah_init(
       accessKeyAddress,
@@ -559,6 +559,15 @@ export class Cheetah {
       endpointDurationSec,
       (enableAutomaticPunctuation) ? 1 : 0,
       objectAddressAddress);
+
+    if (memoryBufferView.buffer.byteLength === 0) {
+      memoryBufferView = new DataView(memory.buffer);
+    }
+
+    if (memoryBufferUint8.buffer.byteLength === 0) {
+      memoryBufferUint8 = new Uint8Array(memory.buffer);
+    }
+
     if (status !== PV_STATUS_SUCCESS) {
       const messageStack = await Cheetah.getMessageStack(
         pv_get_error_stack,
@@ -599,7 +608,7 @@ export class Cheetah {
       frameLength: frameLength,
       sampleRate: sampleRate,
       version: version,
-      
+
       objectAddress: objectAddress,
       inputBufferAddress: inputBufferAddress,
       isEndpointAddress: isEndpointAddress,
@@ -625,7 +634,7 @@ export class Cheetah {
     memoryBufferUint8: Uint8Array,
   ): Promise<string[]> {
     const status = await pv_get_error_stack(messageStackAddressAddressAddress, messageStackDepthAddress);
-    if (status != PvStatus.SUCCESS) {
+    if (status !== PvStatus.SUCCESS) {
       throw pvStatusToException(status, "Unable to get Cheetah error state");
     }
 
