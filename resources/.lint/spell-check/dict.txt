@@ -45,6 +45,7 @@ LPWSTR
 Makefiles
 micdemo
 NETCOREAPP
+Newtonsoft
 NumChans
 Okhttp
 pathbuf

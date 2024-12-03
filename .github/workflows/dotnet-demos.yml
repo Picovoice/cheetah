@@ -38,6 +38,15 @@ jobs:
     - name: Package restore
       run: dotnet restore
 
+    # ************** REMOVE AFTER RELEASE ********************
+    - name: Build Local Packages
+      run: dotnet build && dotnet pack -c Release
+      working-directory: binding/dotnet/Cheetah
+
+    - name: Install Local Packages
+      run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Picovoice.Cheetah
+    # ********************************************************
+
     - name: Dotnet build micdemo
       run: dotnet build -c MicDemo.Release
 
@@ -59,6 +68,15 @@ jobs:
 
     - name: Package restore
       run: dotnet restore
+
+    # ************** REMOVE AFTER RELEASE ********************
+    - name: Build Local Packages
+      run: dotnet build && dotnet pack -c Release
+      working-directory: binding/dotnet/Cheetah
+
+    - name: Install Local Packages
+      run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Picovoice.Cheetah
+    # ********************************************************
 
     - name: Dotnet build micdemo
       run: dotnet build -c MicDemo.Release
