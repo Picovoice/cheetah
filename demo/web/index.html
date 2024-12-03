@@ -3,7 +3,7 @@
   <head>
     <script src="node_modules/@picovoice/web-voice-processor/dist/iife/index.js"></script>
     <script src="node_modules/@picovoice/cheetah-web/dist/iife/index.js"></script>
-    <script src="cheetah_params.js"></script>
+    <script src="models/cheetahModel.js"></script>
     <script type="application/javascript">
       let cheetah = null;
 
@@ -29,7 +29,7 @@
           cheetah = await CheetahWeb.CheetahWorker.create(
             accessKey,
             cheetahTranscriptionCallback,
-            { base64: modelParams },
+            cheetahModel,
             { enableAutomaticPunctuation: true }
           );
 

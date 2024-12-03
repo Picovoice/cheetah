@@ -4,3 +4,4 @@ lib/pv_cheetah*.wasm
 cypress/fixtures/audio_samples/*
 test/cheetah_params*.js
 test/cheetah_params*.pv
+test/test_data.json
