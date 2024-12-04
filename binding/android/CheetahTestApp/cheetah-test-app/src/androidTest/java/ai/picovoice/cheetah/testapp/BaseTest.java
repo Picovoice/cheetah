@@ -1,5 +1,5 @@
 /*
-    Copyright 2022 Picovoice Inc.
+    Copyright 2022-2024 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -22,6 +22,7 @@ import org.junit.Before;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -53,6 +54,22 @@ public class BaseTest {
         defaultModelPath = new File(testResourcesPath, "cheetah_params.pv").getAbsolutePath();
 
         accessKey = appContext.getString(R.string.pvTestingAccessKey);
+    }
+
+    public static String getTestDataString() throws IOException {
+        Context testContext = InstrumentationRegistry.getInstrumentation().getContext();
+        AssetManager assetManager = testContext.getAssets();
+
+        InputStream is = new BufferedInputStream(assetManager.open("test_resources/test_data.json"), 256);
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+
+        byte[] buffer = new byte[256];
+        int bytesRead;
+        while ((bytesRead = is.read(buffer)) != -1) {
+            result.write(buffer, 0, bytesRead);
+        }
+
+        return result.toString("UTF-8");
     }
 
     private void extractAssetsRecursively(String path) throws IOException {
