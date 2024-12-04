@@ -32,7 +32,7 @@ Cheetah requires a valid Picovoice `AccessKey` at initialization. `AccessKey` ac
 You can get your `AccessKey` for free. Make sure to keep your `AccessKey` secret.
 Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get your `AccessKey`.
 
-### Usage
+## Usage
 
 Create an instance of the engine and transcribe audio:
 
@@ -52,6 +52,21 @@ while True:
 
 Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/). When done be sure
 to explicitly release the resources using `handle.delete()`.
+
+### Language Model
+
+The Cheetah Python SDK comes preloaded with a default English language model (`.pv` file).
+Default models for other supported languages can be found in [lib/common](../../lib/common).
+
+Create custom language models using the [Picovoice Console](https://console.picovoice.ai/). Here you can train
+language models with custom vocabulary and boost words in the existing vocabulary.
+
+Pass in the `.pv` file via the `model_path` argument:
+```python
+cheetah = pvcheetah.create(
+    access_key='${ACCESS_KEY}',
+    model_path='${MODEL_FILE_PATH}')
+```
 
 ## Demos
 
