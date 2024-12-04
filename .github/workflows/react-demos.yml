@@ -39,6 +39,7 @@ jobs:
       - name: Pre-build dependencies
         run: npm install yarn
 
+      # ************** REMOVE AFTER RELEASE ********************
       - name: Build Local Web SDK
         run: yarn && yarn copywasm && yarn build
         working-directory: binding/web
@@ -46,9 +47,13 @@ jobs:
       - name: Build Local React SDK
         run: yarn && yarn build
         working-directory: binding/react
+        # ********************************************************
 
       - name: Install dependencies
         run: yarn install
 
-      - name: Build
-        run: yarn build
+      - name: Build English
+        run: yarn build en
+
+      - name: Build Other Language
+        run: yarn build es
