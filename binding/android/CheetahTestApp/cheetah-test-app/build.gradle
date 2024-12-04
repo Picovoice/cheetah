@@ -75,7 +75,7 @@ android {
     def testDataFile = file('../../../../resources/.test/test_data.json')
     def parsedJson = new groovy.json.JsonSlurper().parseText(testDataFile.text)
     def languages = []
-    parsedJson.tests.parameters.each { a ->
+    parsedJson.tests.language_tests.each { a ->
         languages.add(a.language)
     }
 

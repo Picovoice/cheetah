@@ -25,6 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import java.util.Objects;
+
 import ai.picovoice.android.voiceprocessor.VoiceProcessor;
 import ai.picovoice.android.voiceprocessor.VoiceProcessorException;
 import ai.picovoice.cheetah.Cheetah;
@@ -54,12 +56,20 @@ public class MainActivity extends AppCompatActivity {
         transcriptTextView.setMovementMethod(new ScrollingMovementMethod());
 
         try {
-            cheetah = new Cheetah.Builder()
+            Cheetah.Builder builder = new Cheetah.Builder()
                     .setAccessKey(ACCESS_KEY)
-                    .setModelPath(MODEL_FILE)
                     .setEndpointDuration(1f)
-                    .setEnableAutomaticPunctuation(true)
-                    .build(getApplicationContext());
+                    .setEnableAutomaticPunctuation(true);
+
+            String model;
+            if (Objects.equals(BuildConfig.FLAVOR, "en")) {
+                model = "cheetah_params.pv";
+            } else {
+                model = "cheetah_params_" + BuildConfig.FLAVOR + ".pv";
+            }
+            builder.setModelPath("models/" + model);
+
+            cheetah = builder.build(getApplicationContext());
         } catch (CheetahInvalidArgumentException e) {
             displayError(e.getMessage());
         } catch (CheetahActivationException e) {
