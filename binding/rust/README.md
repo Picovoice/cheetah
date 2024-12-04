@@ -71,6 +71,23 @@ Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://con
 
 The model file contains the parameters for the Cheetah engine. You may create bespoke language models using [Picovoice Console](https://console.picovoice.ai/) and then pass in the relevant file.
 
+### Language Model
+
+The Cheetah Rust SDK comes preloaded with a default English language model (`.pv` file).
+Default models for other supported languages can be found in [lib/common](../../lib/common).
+
+Create custom language models using the [Picovoice Console](https://console.picovoice.ai/). Here you can train
+language models with custom vocabulary and boost words in the existing vocabulary.
+
+Pass in the `.pv` file via the `.model_path()` Builder argument:
+```rust
+let leopard: Cheetah = CheetahBuilder::new()
+    .access_key("${ACCESS_KEY}")
+    .model_path("${MODEL_FILE_PATH}")
+    .init()
+    .expect("Unable to create Cheetah");
+```
+
 ## Demos
 
 The [Cheetah Rust demo project](https://github.com/Picovoice/cheetah/tree/master/demo/rust) is a Rust console app that allows for processing real-time audio (i.e. microphone) and files using Cheetah.
