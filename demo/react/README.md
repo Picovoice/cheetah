@@ -16,22 +16,20 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 
 ## Install and Run
 
-Use `yarn` or `npm` to install the dependencies. Run `start` to start the demo.
+Use `yarn` or `npm` to install the dependencies, and the `start` script with a language code
+to start a local web server hosting the demo in the language of your choice (e.g. `de` -> German, `ko` -> Korean).
+To see a list of available languages, run `start` without a language code.
 
 ```console
 yarn
-yarn start
+yarn start ${LANGUAGE}
 ```
 
 (or)
 
 ```console
 npm install
-npm run start
+npm run start ${LANGUAGE}
 ```
 
 Open `http://localhost:3000` to view it in the browser.
-
-The page will reload if you make edits. You will also see any lint errors in the console.
-
-Wait until Cheetah has initialized. Start recording audio to see the real-time transcription.
