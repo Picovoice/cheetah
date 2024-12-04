@@ -59,7 +59,7 @@ android {
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.release
+            // signingConfig signingConfigs.release
         }
         release {
             minifyEnabled false
@@ -72,6 +72,44 @@ android {
         testBuildType("release")
     }
 
+    def testDataFile = file('../../../../resources/.test/test_data.json')
+    def parsedJson = new groovy.json.JsonSlurper().parseText(testDataFile.text)
+    def languages = []
+    parsedJson.tests.parameters.each { a ->
+        languages.add(a.language)
+    }
+
+    flavorDimensions "language"
+    productFlavors {
+        en {
+            getIsDefault().set(true)
+        }
+
+        languages.each { language ->
+            "$language" {
+                applicationIdSuffix ".$language"
+
+            }
+        }
+
+        all { flavor ->
+            delete fileTree("$projectDir/src/main/assets") {
+                exclude '**/.gitkeep'
+            }
+            String suffix = (flavor.name != "en") ? "_${flavor.name}" : ""
+            task("${flavor.name}CopyParams", type: Copy) {
+                from("$projectDir/../../../../lib/common/")
+                include("cheetah_params${suffix}.pv")
+                into("$projectDir/src/main/assets/models")
+            }
+            task("${flavor.name}CopyAudio", type: Copy) {
+                description = "Copy ${flavor.name} audio resources"
+                from("$projectDir/../../../../resources/audio_samples/")
+                include("test${suffix}.wav")
+                into("$projectDir/src/main/assets/audio_samples")
+            }
+        }
+    }
     sourceSets {
         androidTest {
             java {
@@ -91,18 +129,6 @@ android {
         }
     }
 
-    task("copyParams", type: Copy) {
-        from("$projectDir/../../../../lib/common/")
-        include("cheetah_params.pv")
-        into("$projectDir/src/main/assets/models")
-    }
-    task("copyAudio", type: Copy) {
-        description = "Copy audio resources"
-        from("$projectDir/../../../../resources/audio_samples/")
-        include("test.wav")
-        into("$projectDir/src/main/assets/audio_samples/")
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -111,6 +137,8 @@ android {
     lint {
         abortOnError false
     }
+
+    namespace 'ai.picovoice.cheetah.testapp'
 }
 
 dependencies {
@@ -130,8 +158,15 @@ dependencies {
 }
 
 afterEvaluate {
-    tasks."mergeDebugAssets".dependsOn "copyParams"
-    tasks."mergeReleaseAssets".dependsOn "copyParams"
-    tasks."mergeDebugAssets".dependsOn "copyAudio"
-    tasks."mergeReleaseAssets".dependsOn "copyAudio"
+    android.productFlavors.all {
+        flavor ->
+            tasks."merge${flavor.name.capitalize()}DebugAssets".dependsOn "${flavor.name}CopyParams"
+            tasks."merge${flavor.name.capitalize()}ReleaseAssets".dependsOn "${flavor.name}CopyParams"
+            tasks."generate${flavor.name.capitalize()}ReleaseLintVitalReportModel".dependsOn "${flavor.name}CopyParams"
+            tasks."lintVitalAnalyze${flavor.name.capitalize()}Release".dependsOn "${flavor.name}CopyParams"
+            tasks."merge${flavor.name.capitalize()}DebugAssets".dependsOn "${flavor.name}CopyAudio"
+            tasks."merge${flavor.name.capitalize()}ReleaseAssets".dependsOn "${flavor.name}CopyAudio"
+            tasks."generate${flavor.name.capitalize()}ReleaseLintVitalReportModel".dependsOn "${flavor.name}CopyAudio"
+            tasks."lintVitalAnalyze${flavor.name.capitalize()}Release".dependsOn "${flavor.name}CopyAudio"
+    }
 }

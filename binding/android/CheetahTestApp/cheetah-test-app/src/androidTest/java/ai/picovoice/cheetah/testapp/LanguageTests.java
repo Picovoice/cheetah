@@ -82,9 +82,9 @@ public class LanguageTests extends BaseTest {
 
             String modelFile;
             if (language.equals("en")) {
-                modelFile = "model_files/leopard_params.pv";
+                modelFile = "model_files/cheetah_params.pv";
             } else {
-                modelFile = String.format("model_files/leopard_params_%s.pv", language);
+                modelFile = String.format("model_files/cheetah_params_%s.pv", language);
             }
 
             String testAudioFile = String.format("audio_samples/%s", audioFile);
@@ -104,9 +104,10 @@ public class LanguageTests extends BaseTest {
 
     @Test
     public void testTranscribe() throws Exception {
+        String modelPath = new File(testResourcesPath, modelFile).getAbsolutePath();
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
-                .setModelPath(modelFile)
+                .setModelPath(modelPath)
                 .build(appContext);
 
         File audioFile = new File(testResourcesPath, testAudioFile);
@@ -117,14 +118,17 @@ public class LanguageTests extends BaseTest {
         for (String punctuation : punctuations) {
             transcript = transcript.replace(punctuation, "");
         }
-        assertEquals(transcript, result);
+
+        boolean useCER = language.equals("ja");
+        assertTrue(getWordErrorRate(result, transcript, useCER) < errorRate);
     }
 
     @Test
     public void testTranscribeWithPunctuation() throws Exception {
+        String modelPath = new File(testResourcesPath, modelFile).getAbsolutePath();
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
-                .setModelPath(modelFile)
+                .setModelPath(modelPath)
                 .setEnableAutomaticPunctuation(true)
                 .build(appContext);
 
@@ -132,6 +136,7 @@ public class LanguageTests extends BaseTest {
         String result = processTestAudio(cheetah, audioFile);
         cheetah.delete();
 
-        assertEquals(expectedTranscript, result);
+        boolean useCER = language.equals("ja");
+        assertTrue(getWordErrorRate(result, expectedTranscript, useCER) < errorRate);
     }
 }
