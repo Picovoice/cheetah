@@ -12,7 +12,7 @@ on:
       - '**/*.swift'
 
 jobs:
-  check-switch-codestyle:
+  check-swift-codestyle:
     runs-on: ubuntu-latest
 
     steps:

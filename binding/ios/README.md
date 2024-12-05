@@ -86,6 +86,20 @@ while true {
 
 Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/) and `${MODEL_FILE}` with the name of the Cheetah model file name. Finally, when done be sure to explicitly release the resources using `cheetah.delete()`.
 
+### Language Model
+
+Default models for supported languages can be found in [lib/common](../../lib/common).
+
+Create custom language models using the [Picovoice Console](https://console.picovoice.ai/). Here you can train
+language models with custom vocabulary and boost words in the existing vocabulary.
+
+Pass in the `.pv` file via the `modelURL` or `modelPath` constructor argument:
+```swift
+let cheetah = Cheetah(accessKey: accessKey, modelPath: "${MODEL_FILE_PATH")
+// or
+let cheetah = Cheetah(accessKey: accessKey, modelURL: "${MODEL_FILE_URL}")
+```
+
 ## Running Unit Tests
 
 Copy your `AccessKey` into the `accessKey` variable in [`CheetahAppTestUITests.swift`](CheetahAppTest/CheetahAppTestUITests/CheetahAppTestUITests.swift). Open [`CheetahAppTest.xcodeproj`](CheetahAppTest/CheetahAppTest.xcodeproj) with XCode and run the tests with `Product > Test`.
