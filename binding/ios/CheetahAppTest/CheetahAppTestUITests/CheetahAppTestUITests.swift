@@ -119,7 +119,10 @@ class CheetahDemoUITests: XCTestCase {
                 withExtension: "",
                 subdirectory: "test_resources/audio_samples")!
 
-        let cheetah = try Cheetah(accessKey: accessKey, modelPath: modelPath, enableAutomaticPunctuation: enableAutomaticPunctuation)
+        let cheetah = try Cheetah(
+                accessKey: accessKey,
+                modelPath: modelPath,
+                enableAutomaticPunctuation: enableAutomaticPunctuation)
 
         let res: String = try processFile(cheetah: cheetah, fileURL: audioFileURL)
         cheetah.delete()
