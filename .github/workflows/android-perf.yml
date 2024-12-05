@@ -42,10 +42,10 @@ jobs:
     - run:
         pip3 install requests
 
-    - name: set up JDK 11
+    - name: set up JDK 17
       uses: actions/setup-java@v3
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: 'temurin'
 
     - name: Copy test_resources
@@ -89,6 +89,6 @@ jobs:
         --access_key "${{secrets.BROWSERSTACK_ACCESS_KEY}}"
         --project_name "Cheetah-Android-Performance"
         --devices "${{ matrix.device }}"
-        --app_path "cheetah-test-app/build/outputs/apk/debug/cheetah-test-app-debug.apk"
-        --test_path "cheetah-test-app/build/outputs/apk/androidTest/debug/cheetah-test-app-debug-androidTest.apk"
+        --app_path "cheetah-test-app/build/outputs/apk/en/debug/cheetah-test-app-en-debug.apk"
+        --test_path "cheetah-test-app/build/outputs/apk/androidTest/en/debug/cheetah-test-app-en-debug-androidTest.apk"
 

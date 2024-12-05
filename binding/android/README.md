@@ -87,6 +87,13 @@ When done, resources have to be released explicitly:
 cheetah.delete();
 ```
 
+### Language Model
+
+Add the Cheetah model file to your Android application by:
+
+1. Either create a model in [Picovoice Console](https://console.picovoice.ai/) or use one of the default language models found in [lib/common](../../lib/common).
+2. Add the model as a bundled resource by placing it under the assets directory of your Android project (`src/main/assets/`).
+
 ## Demo App
 
 For example usage refer to our [Android demo application](../../demo/android).

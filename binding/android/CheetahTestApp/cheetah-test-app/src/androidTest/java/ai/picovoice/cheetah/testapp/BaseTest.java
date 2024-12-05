@@ -1,5 +1,5 @@
 /*
-    Copyright 2022 Picovoice Inc.
+    Copyright 2022-2024 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -22,6 +22,7 @@ import org.junit.Before;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -50,9 +51,56 @@ public class BaseTest {
         assetManager = testContext.getAssets();
         extractAssetsRecursively("test_resources");
         testResourcesPath = new File(appContext.getFilesDir(), "test_resources").getAbsolutePath();
-        defaultModelPath = new File(testResourcesPath, "cheetah_params.pv").getAbsolutePath();
+        defaultModelPath = new File(testResourcesPath, "model_files/cheetah_params.pv").getAbsolutePath();
 
         accessKey = appContext.getString(R.string.pvTestingAccessKey);
+    }
+
+    public static String getTestDataString() throws IOException {
+        Context testContext = InstrumentationRegistry.getInstrumentation().getContext();
+        AssetManager assetManager = testContext.getAssets();
+
+        InputStream is = new BufferedInputStream(assetManager.open("test_resources/test_data.json"), 256);
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+
+        byte[] buffer = new byte[256];
+        int bytesRead;
+        while ((bytesRead = is.read(buffer)) != -1) {
+            result.write(buffer, 0, bytesRead);
+        }
+
+        return result.toString("UTF-8");
+    }
+
+    protected static float getWordErrorRate(
+            String transcript,
+            String expectedTranscript,
+            boolean useCER) {
+        String splitter = (useCER) ? "" : " ";
+        return (float) levenshteinDistance(
+                transcript.split(splitter),
+                expectedTranscript.split(splitter)) / transcript.length();
+    }
+
+    private static int levenshteinDistance(String[] words1, String[] words2) {
+        int[][] res = new int[words1.length + 1][words2.length + 1];
+        for (int i = 0; i <= words1.length; i++) {
+            res[i][0] = i;
+        }
+        for (int j = 0; j <= words2.length; j++) {
+            res[0][j] = j;
+        }
+        for (int i = 1; i <= words1.length; i++) {
+            for (int j = 1; j <= words2.length; j++) {
+                res[i][j] = Math.min(
+                        Math.min(
+                                res[i - 1][j] + 1,
+                                res[i][j - 1] + 1),
+                        res[i - 1][j - 1] + (words1[i - 1].equalsIgnoreCase(words2[j - 1]) ? 0 : 1)
+                );
+            }
+        }
+        return res[words1.length][words2.length];
     }
 
     private void extractAssetsRecursively(String path) throws IOException {
