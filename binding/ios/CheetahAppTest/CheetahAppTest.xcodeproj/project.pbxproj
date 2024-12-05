@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -42,6 +42,20 @@
 
 /* Begin PBXFileReference section */
 		072F6D482D02533000E29DF3 /* test_resources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = test_resources; path = CheetahAppTestUITests/test_resources; sourceTree = "<group>"; };
+		07E777C32D02632A005A41E7 /* test.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = test.wav; sourceTree = "<group>"; };
+		07E777C42D02632A005A41E7 /* test_de.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = test_de.wav; sourceTree = "<group>"; };
+		07E777C52D02632A005A41E7 /* test_es.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = test_es.wav; sourceTree = "<group>"; };
+		07E777C62D02632A005A41E7 /* test_fr.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = test_fr.wav; sourceTree = "<group>"; };
+		07E777C72D02632A005A41E7 /* test_it.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = test_it.wav; sourceTree = "<group>"; };
+		07E777C82D02632A005A41E7 /* test_pt.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = test_pt.wav; sourceTree = "<group>"; };
+		07E777CA2D02632A005A41E7 /* cheetah_params.pv */ = {isa = PBXFileReference; lastKnownFileType = file; path = cheetah_params.pv; sourceTree = "<group>"; };
+		07E777CB2D02632A005A41E7 /* cheetah_params_de.pv */ = {isa = PBXFileReference; lastKnownFileType = file; path = cheetah_params_de.pv; sourceTree = "<group>"; };
+		07E777CC2D02632A005A41E7 /* cheetah_params_es.pv */ = {isa = PBXFileReference; lastKnownFileType = file; path = cheetah_params_es.pv; sourceTree = "<group>"; };
+		07E777CD2D02632A005A41E7 /* cheetah_params_fr.pv */ = {isa = PBXFileReference; lastKnownFileType = file; path = cheetah_params_fr.pv; sourceTree = "<group>"; };
+		07E777CE2D02632A005A41E7 /* cheetah_params_it.pv */ = {isa = PBXFileReference; lastKnownFileType = file; path = cheetah_params_it.pv; sourceTree = "<group>"; };
+		07E777CF2D02632A005A41E7 /* cheetah_params_pt.pv */ = {isa = PBXFileReference; lastKnownFileType = file; path = cheetah_params_pt.pv; sourceTree = "<group>"; };
+		07E777D12D02632A005A41E7 /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		07E777D22D02632A005A41E7 /* test_data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = test_data.json; sourceTree = "<group>"; };
 		1E00655427CFF7EB006FF6E9 /* CheetahAppTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheetahAppTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E00655727CFF7EB006FF6E9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1E00655B27CFF7EB006FF6E9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -58,33 +72,6 @@
 		1E5B7B352800F77300F8BDDB /* test.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = test.wav; path = ../../../../resources/audio_samples/test.wav; sourceTree = "<group>"; };
 		1E5B7B372800F7AA00F8BDDB /* cheetah_params.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params.pv; path = ../../../../lib/common/cheetah_params.pv; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		072F6D4A2D02533A00E29DF3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				.gitkeep,
-				audio_samples/test_de.wav,
-				audio_samples/test_es.wav,
-				audio_samples/test_fr.wav,
-				audio_samples/test_it.wav,
-				audio_samples/test_pt.wav,
-				audio_samples/test.wav,
-				model_files/cheetah_params_de.pv,
-				model_files/cheetah_params_es.pv,
-				model_files/cheetah_params_fr.pv,
-				model_files/cheetah_params_it.pv,
-				model_files/cheetah_params_pt.pv,
-				model_files/cheetah_params.pv,
-				test_data.json,
-			);
-			target = 1E00657327CFF7EC006FF6E9 /* CheetahAppTestUITests */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		072F6CE02D023C7C00E29DF3 /* test_resources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (072F6D4A2D02533A00E29DF3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = test_resources; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		1E00655127CFF7EB006FF6E9 /* Frameworks */ = {
@@ -115,6 +102,43 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		07E777C92D02632A005A41E7 /* audio_samples */ = {
+			isa = PBXGroup;
+			children = (
+				07E777C32D02632A005A41E7 /* test.wav */,
+				07E777C42D02632A005A41E7 /* test_de.wav */,
+				07E777C52D02632A005A41E7 /* test_es.wav */,
+				07E777C62D02632A005A41E7 /* test_fr.wav */,
+				07E777C72D02632A005A41E7 /* test_it.wav */,
+				07E777C82D02632A005A41E7 /* test_pt.wav */,
+			);
+			path = audio_samples;
+			sourceTree = "<group>";
+		};
+		07E777D02D02632A005A41E7 /* model_files */ = {
+			isa = PBXGroup;
+			children = (
+				07E777CA2D02632A005A41E7 /* cheetah_params.pv */,
+				07E777CB2D02632A005A41E7 /* cheetah_params_de.pv */,
+				07E777CC2D02632A005A41E7 /* cheetah_params_es.pv */,
+				07E777CD2D02632A005A41E7 /* cheetah_params_fr.pv */,
+				07E777CE2D02632A005A41E7 /* cheetah_params_it.pv */,
+				07E777CF2D02632A005A41E7 /* cheetah_params_pt.pv */,
+			);
+			path = model_files;
+			sourceTree = "<group>";
+		};
+		07E777D32D02632A005A41E7 /* test_resources */ = {
+			isa = PBXGroup;
+			children = (
+				07E777C92D02632A005A41E7 /* audio_samples */,
+				07E777D02D02632A005A41E7 /* model_files */,
+				07E777D12D02632A005A41E7 /* .gitkeep */,
+				07E777D22D02632A005A41E7 /* test_data.json */,
+			);
+			path = test_resources;
+			sourceTree = "<group>";
+		};
 		1E00654B27CFF7EB006FF6E9 = {
 			isa = PBXGroup;
 			children = (
@@ -153,7 +177,7 @@
 		1E00657727CFF7EC006FF6E9 /* CheetahAppTestUITests */ = {
 			isa = PBXGroup;
 			children = (
-				072F6CE02D023C7C00E29DF3 /* test_resources */,
+				07E777D32D02632A005A41E7 /* test_resources */,
 				1E00657827CFF7EC006FF6E9 /* CheetahAppTestUITests.swift */,
 				1E00658827CFFA3C006FF6E9 /* Info.plist */,
 			);
@@ -210,9 +234,6 @@
 			);
 			dependencies = (
 				1E00657627CFF7EC006FF6E9 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				072F6CE02D023C7C00E29DF3 /* test_resources */,
 			);
 			name = CheetahAppTestUITests;
 			productName = CheetahAppTestUITests;
@@ -503,7 +524,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -532,7 +553,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
