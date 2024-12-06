@@ -11,7 +11,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:cheetah_demo/cheetah_manager.dart';
 import 'package:cheetah_flutter/cheetah_error.dart';
@@ -52,13 +51,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> initCheetah() async {
-    String platform = Platform.isAndroid
-        ? "android"
-        : Platform.isIOS
-            ? "ios"
-            : throw CheetahRuntimeException(
-                "This demo supports iOS and Android only.");
-
     String language = "";
     try {
       final paramsString =
