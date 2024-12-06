@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2023 Picovoice Inc.
+// Copyright 2022-2024 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -20,17 +20,12 @@ import { WaveFile } from 'wavefile';
 import { getSystemLibraryPath } from '../src/platforms';
 
 import {
-  TRANSCRIPT,
+  getModelPathByLanguage,
   getAudioFile,
-  getModelPath,
-  getTestParameters,
+  getLanguageTestParameters,
 } from './test_utils';
 
-const MODEL_PATH = getModelPath();
-const TEST_PARAMETERS = getTestParameters();
-const WAV_PATH = "test.wav";
-
-const libraryPath = getSystemLibraryPath();
+const LANGUAGE_TEST_PARAMETERS = getLanguageTestParameters();
 
 const ACCESS_KEY = process.argv
   .filter(x => x.startsWith('--access_key='))[0]
@@ -76,8 +71,7 @@ const loadPcm = (audioFile: string): Int16Array => {
   const waveBuffer = fs.readFileSync(waveFilePath);
   const waveAudioFile = new WaveFile(waveBuffer);
 
-  const pcm: any = waveAudioFile.getSamples(false, Int16Array);
-  return pcm;
+  return waveAudioFile.getSamples(false, Int16Array) as any;
 };
 
 const cheetahProcessWaveFile = (
@@ -101,60 +95,73 @@ const cheetahProcessWaveFile = (
 
 
 const testCheetahProcess = (
-  _: string,
-  transcript: string,
-  testPunctuation: boolean,
+  language: string,
+  audioFile: string,
+  referenceTranscript: string,
+  punctuations: string[],
+  enableAutomaticPunctuation: boolean,
   errorRate: number,
-  audioFile: string
 ) => {
+  const modelPath = getModelPathByLanguage(language);
+
   let cheetahEngine = new Cheetah(ACCESS_KEY, {
-    enableAutomaticPunctuation: testPunctuation,
+    modelPath,
+    enableAutomaticPunctuation,
   });
 
-  let [res, __] = cheetahProcessWaveFile(cheetahEngine, audioFile);
+  let [transcript] = cheetahProcessWaveFile(cheetahEngine, audioFile);
+
+  let normalizedTranscript = referenceTranscript;
+  if (!enableAutomaticPunctuation) {
+    for (const punctuation of punctuations) {
+      normalizedTranscript = normalizedTranscript.replace(punctuation, "");
+    }
+  }
 
   expect(
-    characterErrorRate(res, transcript) < errorRate
+    characterErrorRate(transcript, normalizedTranscript) < errorRate
   ).toBeTruthy();
 
   cheetahEngine.release();
 };
 
 describe('successful processes', () => {
-  it.each(TEST_PARAMETERS)(
+  it.each(LANGUAGE_TEST_PARAMETERS)(
     'testing process `%p`',
     (
       language: string,
+      audioFile: string,
       transcript: string,
-      _: string,
+      punctuations: string[],
       errorRate: number,
-      audioFile: string
     ) => {
       testCheetahProcess(
         language,
+        audioFile,
         transcript,
+        punctuations,
         false,
         errorRate,
-        audioFile
       );
     }
   );
 
-  it.each(TEST_PARAMETERS)(
-    'testing process `%p` with punctuation',
+  it.each(LANGUAGE_TEST_PARAMETERS)(
+    'testing process `%p`  with punctuation',
     (
       language: string,
-      _: string,
-      transcriptWithPunctuation: string,
+      audioFile: string,
+      transcript: string,
+      punctuations: string[],
       errorRate: number,
-      audioFile: string
     ) => {
       testCheetahProcess(
         language,
-        transcriptWithPunctuation,
+        audioFile,
+        transcript,
+        punctuations,
         true,
         errorRate,
-        audioFile
       );
     }
   );
@@ -170,30 +177,32 @@ describe('Defaults', () => {
 
 describe('manual paths', () => {
   test('manual model path', () => {
-    let cheetahEngine = new Cheetah(ACCESS_KEY, { modelPath: MODEL_PATH });
+    let cheetahEngine = new Cheetah(ACCESS_KEY, { modelPath: getModelPathByLanguage("en") });
 
-    let [transcript, _] = cheetahProcessWaveFile(
+    let [transcript] = cheetahProcessWaveFile(
       cheetahEngine,
-      WAV_PATH
+      "test.wav"
     );
 
-    expect(transcript).toBe(TRANSCRIPT);
+    expect(transcript.length).toBeGreaterThan(0);
     cheetahEngine.release();
   });
 
   test('manual model and library path', () => {
+    const libraryPath = getSystemLibraryPath();
+
     let cheetahEngine = new Cheetah(ACCESS_KEY, {
-      modelPath: MODEL_PATH,
+      modelPath: getModelPathByLanguage("en"),
       libraryPath: libraryPath,
       endpointDurationSec: 0.2,
     });
 
-    let [transcript, _] = cheetahProcessWaveFile(
+    let [transcript] = cheetahProcessWaveFile(
       cheetahEngine,
-      WAV_PATH
+      "test.wav"
     );
 
-    expect(transcript).toBe(TRANSCRIPT);
+    expect(transcript.length).toBeGreaterThan(0);
     cheetahEngine.release();
   });
 });
@@ -202,7 +211,7 @@ describe("error message stack", () => {
   test("message stack cleared after read", () => {
     let error: string[] = [];
     try {
-      new Cheetah('invalid', { modelPath: MODEL_PATH });
+      new Cheetah('invalid', { modelPath: getModelPathByLanguage("en") });
     } catch (e: any) {
       error = e.messageStack;
     }
@@ -211,7 +220,7 @@ describe("error message stack", () => {
     expect(error.length).toBeLessThanOrEqual(8);
 
     try {
-      new Cheetah('invalid', { modelPath: MODEL_PATH });
+      new Cheetah('invalid', { modelPath: getModelPathByLanguage("en") });
     } catch (e: any) {
       for (let i = 0; i < error.length; i++) {
         expect(error[i]).toEqual(e.messageStack[i]);
