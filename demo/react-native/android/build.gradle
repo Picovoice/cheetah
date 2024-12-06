@@ -10,6 +10,9 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1353/'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.2'
