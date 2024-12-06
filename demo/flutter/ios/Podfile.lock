@@ -42,7 +42,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Cheetah-iOS:
-    :commit: 0ea916e22bdc20b9183596c31891e536a2bc7348
+    :commit: 0efbc0dff9ee5ad8fcb2f419ffb95618cb3941e0
     :git: https://github.com/Picovoice/cheetah.git
 
 SPEC CHECKSUMS:
