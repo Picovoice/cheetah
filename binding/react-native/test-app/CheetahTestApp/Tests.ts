@@ -4,16 +4,10 @@ import {decode as atob} from 'base-64';
 
 import {Cheetah} from '@picovoice/cheetah-react-native';
 
+const testData = require('./test_data.json');
 const platform = Platform.OS;
 
 const TEST_ACCESS_KEY: string = '{TESTING_ACCESS_KEY_HERE}';
-
-const LANGUAGE = 'en';
-const AUDIO_FILE = 'test.wav';
-const EXPECTED_TRANSCRIPT =
-  'Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.';
-const PUNCTUATIONS = ['.'];
-const ERROR_RATE = 0.025;
 
 export type Result = {
   testName: string;
@@ -242,28 +236,34 @@ async function initTests(): Promise<Result[]> {
 async function processTests(): Promise<Result[]> {
   const results: Result[] = [];
 
-  let result = await runProcTestCase(
-    LANGUAGE,
-    AUDIO_FILE,
-    EXPECTED_TRANSCRIPT,
-    PUNCTUATIONS,
-    ERROR_RATE,
-  );
-  logResult(result);
-  results.push(result);
+  for (const testParam of testData.tests.language_tests) {
+    const result = await runProcTestCase(
+      testParam.language,
+      testParam.audio_file,
+      testParam.transcript,
+      testParam.punctuations,
+      testParam.error_rate,
+    );
+    result.testName = `Process test for '${testParam.language}'`;
+    logResult(result);
+    results.push(result);
+  }
 
-  result = await runProcTestCase(
-    LANGUAGE,
-    AUDIO_FILE,
-    EXPECTED_TRANSCRIPT,
-    PUNCTUATIONS,
-    ERROR_RATE,
-    {
-      enablePunctuation: true,
-    },
-  );
-  logResult(result);
-  results.push(result);
+  for (const testParam of testData.tests.language_tests) {
+    const result = await runProcTestCase(
+      testParam.language,
+      testParam.audio_file,
+      testParam.transcript,
+      testParam.punctuations,
+      testParam.error_rate,
+      {
+        enablePunctuation: true,
+      },
+    );
+    result.testName = `Process test with punctuation for '${testParam.language}'`;
+    logResult(result);
+    results.push(result);
+  }
 
   return results;
 }
