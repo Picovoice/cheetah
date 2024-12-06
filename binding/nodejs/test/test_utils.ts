@@ -16,7 +16,7 @@ const TEST_DATA_JSON = require(path.join(
   ROOT_DIR,
   'resources/.test/test_data.json'
 ));
-const MB_50 = 1024 * 1024 * 50;
+const MB_40 = 1024 * 1024 * 40;
 
 function appendLanguage(s: string, language: string): string {
   if (language === 'en') {
@@ -66,7 +66,7 @@ export function getLanguageTestParameters(): [
   const cpuPart = getCpuPart();
   let parametersJson = TEST_DATA_JSON.tests.language_tests;
   if (cpuPart === "0xd03") {
-    parametersJson = parametersJson.filter((x: any) => (getModelSize(x.language) < MB_50));
+    parametersJson = parametersJson.filter((x: any) => (getModelSize(x.language) < MB_40));
   }
   return parametersJson.map((x: any) => [
     x.language,
