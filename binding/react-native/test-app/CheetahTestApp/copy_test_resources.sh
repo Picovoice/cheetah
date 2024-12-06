@@ -18,3 +18,6 @@ mkdir -p ${ANDROID_ASSETS_DIR}/model_files
 mkdir -p ${IOS_ASSETS_DIR}/model_files
 cp ${LIB_DIR}/common/*.pv ${ANDROID_ASSETS_DIR}/model_files
 cp ${LIB_DIR}/common/*.pv ${IOS_ASSETS_DIR}/model_files
+
+echo "Copying test data file..."
+cp ${RESOURCE_DIR}/.test/test_data.json .
