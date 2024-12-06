@@ -39,11 +39,11 @@ jobs:
       with:
         flutter-version: ${{ matrix.flutter-version }}
 
-    - name: Copy assets
-      run: ./copy_assets.sh
-
     - name: Install dependencies
       run: flutter pub get
+
+    - name: Prepare demo
+      run: dart scripts/prepare_demo.dart en
 
     - name: Build
       run: flutter build apk
@@ -64,11 +64,11 @@ jobs:
         flutter-version: ${{ matrix.flutter-version }}
         architecture: x64
 
-    - name: Copy assets
-      run: ./copy_assets.sh
-
     - name: Install dependencies
       run: flutter pub get
+
+    - name: Prepare demo
+      run: dart scripts/prepare_demo.dart en
 
     - name: Build
       run: flutter build ios --release --no-codesign

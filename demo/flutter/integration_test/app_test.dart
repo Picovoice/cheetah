@@ -142,7 +142,7 @@ void main() {
         double errorRate = testData['tests']['language_tests'][t]['error_rate'];
         String audioFile = testData['tests']['language_tests'][t]['audio_file'];
 
-        for (int p = 0; p < punctuations.length(); p++) {
+        for (int p = 0; p < punctuations.length; p++) {
           transcript = transcript.replaceAll(punctuations[p], "");
         }
 
@@ -163,5 +163,6 @@ void main() {
         await runCheetahProcess(
             language, transcript, punctuations, true, errorRate, audioFile);
       }
+    });
   });
 }
