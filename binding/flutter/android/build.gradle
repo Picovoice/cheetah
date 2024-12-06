@@ -1,10 +1,13 @@
 group 'ai.picovoice.flutter.cheetah'
-version '2.0.2'
+version '2.1.0'
 
 buildscript {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1353/'
+        }
     }
 
     dependencies {
@@ -16,6 +19,9 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1353/'
+        }
     }
 }
 
@@ -44,5 +50,5 @@ android {
 }
 
 dependencies {
-    implementation 'ai.picovoice:cheetah-android:2.0.0'
+    implementation 'ai.picovoice:cheetah-android:2.1.0'
 }

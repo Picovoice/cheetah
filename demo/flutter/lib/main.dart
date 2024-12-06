@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2023 Picovoice Inc.
+// Copyright 2022-2024 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -10,7 +10,8 @@
 //
 
 import 'dart:async';
-import 'dart:io';
+import 'dart:convert';
+
 import 'package:cheetah_demo/cheetah_manager.dart';
 import 'package:cheetah_flutter/cheetah_error.dart';
 import 'package:flutter/material.dart';
@@ -50,17 +51,28 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> initCheetah() async {
-    String platform = Platform.isAndroid
-        ? "android"
-        : Platform.isIOS
-            ? "ios"
-            : throw CheetahRuntimeException(
-                "This demo supports iOS and Android only.");
-    String modelPath = "assets/models/$platform/cheetah_params.pv";
+    String language = "";
+    try {
+      final paramsString =
+          await DefaultAssetBundle.of(context).loadString('assets/params.json');
+      final params = json.decode(paramsString);
+
+      language = params["language"];
+    } catch (_) {
+      errorCallback(CheetahException(
+          "Could not find `params.json`. Ensure 'prepare_demo.dart' script was run before launching the demo."));
+      return;
+    }
+
+    final String suffix = language != "en" ? "_$language" : "";
+    final String modelPath = "assets/models/cheetah_params$suffix.pv";
 
     try {
       _cheetahManager = await CheetahManager.create(
-          accessKey, modelPath, transcriptCallback, errorCallback);
+          accessKey,
+          modelPath,
+          transcriptCallback,
+          errorCallback);
     } on CheetahActivationException {
       errorCallback(CheetahActivationException("AccessKey activation error."));
     } on CheetahActivationLimitException {

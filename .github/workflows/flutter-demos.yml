@@ -28,10 +28,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up JDK 11
+    - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: 'temurin'
 
     - name: Install Flutter ${{ matrix.flutter-version }}
@@ -39,18 +39,18 @@ jobs:
       with:
         flutter-version: ${{ matrix.flutter-version }}
 
-    - name: Copy assets
-      run: ./copy_assets.sh
-
     - name: Install dependencies
       run: flutter pub get
+
+    - name: Prepare demo
+      run: dart scripts/prepare_demo.dart en
 
     - name: Build
       run: flutter build apk
 
   build-ios:
     name: Build iOS demo
-    runs-on: macos-12
+    runs-on: macos-14
     strategy:
       matrix:
         flutter-version: ['3.3.0', '3.22.2']
@@ -64,11 +64,11 @@ jobs:
         flutter-version: ${{ matrix.flutter-version }}
         architecture: x64
 
-    - name: Copy assets
-      run: ./copy_assets.sh
-
     - name: Install dependencies
       run: flutter pub get
+
+    - name: Prepare demo
+      run: dart scripts/prepare_demo.dart en
 
     - name: Build
       run: flutter build ios --release --no-codesign

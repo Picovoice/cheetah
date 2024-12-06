@@ -39,25 +39,31 @@ jobs:
     - name: Install dependencies
       run: flutter pub get
 
+    - name: Prepare demo
+      run: dart scripts/prepare_demo.dart en
+
     - name: Run integration tests
       run: flutter test integration_test
 
   test-ios:
-      name: Test iOS
-      runs-on: pv-ios
+    name: Test iOS
+    runs-on: pv-ios
 
-      steps:
-      - uses: actions/checkout@v3
+    steps:
+    - uses: actions/checkout@v3
 
-      - name: Copy test_resources
-        run: ./copy_test_resources.sh
+    - name: Copy test_resources
+      run: ./copy_test_resources.sh
 
-      - name: Inject AppID
-        run: sed -i '.bak' 's:{TESTING_ACCESS_KEY_HERE}:${{secrets.PV_VALID_ACCESS_KEY}}:'
-          integration_test/app_test.dart
+    - name: Inject AppID
+      run: sed -i '.bak' 's:{TESTING_ACCESS_KEY_HERE}:${{secrets.PV_VALID_ACCESS_KEY}}:'
+        integration_test/app_test.dart
 
-      - name: Install dependencies
-        run: flutter pub get
+    - name: Install dependencies
+      run: flutter pub get
 
-      - name: Run integration tests
-        run: flutter test integration_test
+    - name: Prepare demo
+      run: dart scripts/prepare_demo.dart en
+
+    - name: Run integration tests
+      run: flutter test integration_test
