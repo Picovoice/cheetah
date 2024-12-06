@@ -18,6 +18,9 @@ dependencies:
   cheetah_flutter:
     path: ../../binding/flutter
 
+dependency_overrides:
+  win32: ^5.5.4
+
 dev_dependencies:
   integration_test:
     sdk: flutter
