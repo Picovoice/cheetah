@@ -154,7 +154,11 @@ Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [MainActivity.java](./demo/andro
 
 To run the Cheetah demo on Android or iOS with Flutter, you must have the [Flutter SDK](https://flutter.dev/docs/get-started/install) installed on your system. Once installed, you can run `flutter doctor` to determine any other missing requirements for your relevant platform. Once your environment has been set up, launch a simulator or connect an Android/iOS device.
 
-Before launching the app, use the [copy_assets.sh](./demo/flutter/copy_assets.sh) script to copy the cheetah demo model file into the demo project. (**NOTE**: on Windows, Git Bash or another bash shell is required, or you will have to manually copy the context into the project.).
+Run the `prepare_demo` script from [demo/flutter](.) with a language code to set up the demo in the language of your choice (e.g. `de` -> German, `ko` -> Korean). To see a list of available languages, run `prepare_demo` without a language code.
+
+```console
+dart scripts/prepare_demo.dart ${LANGUAGE}
+```
 
 Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [main.dart](./demo/flutter/lib/main.dart) with your `AccessKey`.
 
