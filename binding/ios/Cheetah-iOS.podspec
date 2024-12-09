@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   DESC
   s.homepage = 'https://github.com/Picovoice/cheetah/tree/master/binding/ios'
   s.author = { 'Picovoice' => 'hello@picovoice.ai' }
-  s.source = { :git => "https://github.com/Picovoice/cheetah.git", :branch => "v2.1-flutter" }
+  s.source = { :git => "https://github.com/Picovoice/cheetah.git", :branch => "v2.1-react-native" }
   s.ios.deployment_target = '13.0'
   s.swift_version = '5.0'
   s.vendored_frameworks = 'lib/ios/PvCheetah.xcframework'
