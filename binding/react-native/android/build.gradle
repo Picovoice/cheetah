@@ -3,9 +3,6 @@ buildscript {
   repositories {
     google()
     mavenCentral()
-    maven {
-        url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1355/'
-    }
   }
 
   dependencies {
