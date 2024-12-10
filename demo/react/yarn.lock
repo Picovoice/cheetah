@@ -1616,21 +1616,19 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@picovoice/cheetah-react@../../binding/react":
-  version "2.0.0"
-  dependencies:
-    "@picovoice/cheetah-web" "../web"
-
-"@picovoice/cheetah-web@../../binding/web":
+"@picovoice/cheetah-react@~2.1.0":
   version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-react/-/cheetah-react-2.1.0.tgz#69647960d792ff3d076ed39ac31f6a055a6ba521"
+  integrity sha512-BVW4wZyJo0wy28vrFdgLhiIFCt9etUZmwdWXwkdLI4Y1wZ4GNQuN3iimL+xlL9tmzgAzcN3OuJbGHoSndc5CBw==
+  dependencies:
+    "@picovoice/cheetah-web" "~2.1.0"
+
+"@picovoice/cheetah-web@~2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-2.1.0.tgz#d75e579460ca7d3b308ff4d56c82b0171f19ff30"
+  integrity sha512-LMJC8wRu6vakDdzuL9flWtgmrYk/6fodBwX18cNSqmXgRaVYNn7/jjW+N7XgA5UQrbGLcNBipIdsEBPivuzCBA==
   dependencies:
     "@picovoice/web-utils" "=1.4.3"
-
-"@picovoice/cheetah-web@../web":
-  version "2.0.0"
-  dependencies:
-    "@picovoice/cheetah-web" "../../binding/web"
-    "@picovoice/web-voice-processor" "~4.0.8"
 
 "@picovoice/web-utils@=1.3.1":
   version "1.3.1"
