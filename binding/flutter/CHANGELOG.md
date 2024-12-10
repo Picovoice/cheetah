@@ -22,3 +22,6 @@
 
 ## [2.0.2] - 2024-11-28
 * Update native packages
+
+## [2.1.0] - 2024-12-09
+* Additional language support
