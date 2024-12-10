@@ -8,7 +8,8 @@ echo "Preparing dir ..."
 mkdir -p ./data/lib/
 
 echo "Copying Model File ..."
-cp -r ../../lib/common ./data/lib/
+mkdir -p ./data/lib/common
+cp -r ../../lib/common/cheetah_params.pv ./data/lib/common
 
 for platform in linux mac raspberry-pi windows
 do
