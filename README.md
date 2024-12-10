@@ -832,6 +832,11 @@ function App(props) {
 
 ## Releases
 
+### v2.1.0 - December 10th, 2024
+
+- Added language support for French, German, Italian, Portuguese and Spanish
+- Various bug fixes and performance improvements
+
 ### v2.0.0 - November 27th, 2023
 
 - Improvements to error reporting
