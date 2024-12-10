@@ -36,7 +36,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/Picovoice/cheetah",
     packages=["pvcheetahdemo"],
-    install_requires=["pvcheetah==2.0.2", "pvrecorder==1.2.3"],
+    install_requires=["pvcheetah==2.1.0", "pvrecorder==1.2.3"],
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
