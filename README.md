@@ -83,7 +83,7 @@ AccessKey also verifies that your usage is within the limits of your account. Ev
 
 ## Language Support
 
-- Cheetah Streaming Speech-to-Text currently supports English only.
+- Cheetah Streaming Speech-to-Text currently supports English, French, German, Italian, Portuguese, and Spanish.
 - Support for [additional languages is available for commercial customers](https://picovoice.ai/consulting/) on a case-by-case basis.
 
 ## Demos
@@ -154,7 +154,11 @@ Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [MainActivity.java](./demo/andro
 
 To run the Cheetah demo on Android or iOS with Flutter, you must have the [Flutter SDK](https://flutter.dev/docs/get-started/install) installed on your system. Once installed, you can run `flutter doctor` to determine any other missing requirements for your relevant platform. Once your environment has been set up, launch a simulator or connect an Android/iOS device.
 
-Before launching the app, use the [copy_assets.sh](./demo/flutter/copy_assets.sh) script to copy the cheetah demo model file into the demo project. (**NOTE**: on Windows, Git Bash or another bash shell is required, or you will have to manually copy the context into the project.).
+Run the `prepare_demo` script from [demo/flutter](.) with a language code to set up the demo in the language of your choice (e.g. `de` -> German, `ko` -> Korean). To see a list of available languages, run `prepare_demo` without a language code.
+
+```console
+dart scripts/prepare_demo.dart ${LANGUAGE}
+```
 
 Replace `"${YOUR_ACCESS_KEY_HERE}"` in the file [main.dart](./demo/flutter/lib/main.dart) with your `AccessKey`.
 
@@ -827,6 +831,11 @@ function App(props) {
 ```
 
 ## Releases
+
+### v2.1.0 - December 10th, 2024
+
+- Added language support for French, German, Italian, Portuguese and Spanish
+- Various bug fixes and performance improvements
 
 ### v2.0.0 - November 27th, 2023
 

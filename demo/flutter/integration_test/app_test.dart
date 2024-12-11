@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -7,14 +8,6 @@ import 'package:integration_test/integration_test.dart';
 
 import 'package:cheetah_flutter/cheetah.dart';
 import 'package:cheetah_flutter/cheetah_error.dart';
-
-Map testParam = {
-  'language': 'en',
-  'audio_file': 'test.wav',
-  'transcript': 'Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.',
-  'punctuations': ['.'],
-  'error_rate': 0.025,
-};
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -86,6 +79,14 @@ void main() {
   }
 
   group('Cheetah Process Tests', () {
+    late dynamic testData;
+
+    setUp(() async {
+      String testDataJson =
+          await rootBundle.loadString('assets/test_resources/test_data.json');
+      testData = json.decode(testDataJson);
+    });
+
     Future<void> runCheetahProcess(
         String language,
         String transcript,
@@ -130,30 +131,36 @@ void main() {
           reason: "Character error rate was incorrect");
     }
 
-    testWidgets('Test Process', (tester) async {
-      String language = testParam['language'];
-      String transcript = testParam['transcript'];
-      List<dynamic> punctuationsRaw = testParam['punctuations'];
-      List<String> punctuations =
-          punctuationsRaw.map((p) => p.toString()).toList();
-      double errorRate = testParam['error_rate'];
-      String audioFile = testParam['audio_file'];
+    testWidgets('Test Process all languages', (tester) async {
+      for (int t = 0; t < testData['tests']['language_tests'].length; t++) {
+        String language = testData['tests']['language_tests'][t]['language'];
+        String transcript = testData['tests']['language_tests'][t]['transcript'];
+        List<dynamic> punctuationsRaw = testData['tests']['language_tests'][t]['punctuations'];
+        List<String> punctuations = punctuationsRaw.map((p) => p.toString()).toList();
+        double errorRate = testData['tests']['language_tests'][t]['error_rate'];
+        String audioFile = testData['tests']['language_tests'][t]['audio_file'];
 
-      await runCheetahProcess(
-          language, transcript, punctuations, false, errorRate, audioFile);
+        for (int p = 0; p < punctuations.length; p++) {
+          transcript = transcript.replaceAll(punctuations[p], "");
+        }
+
+        await runCheetahProcess(
+            language, transcript, punctuations, false, errorRate, audioFile);
+      }
     });
 
-    testWidgets('Test Process with Punctuation', (tester) async {
-      String language = testParam['language'];
-      String transcript = testParam['transcript'];
-      List<dynamic> punctuationsRaw = testParam['punctuations'];
-      List<String> punctuations =
-          punctuationsRaw.map((p) => p.toString()).toList();
-      double errorRate = testParam['error_rate'];
-      String audioFile = testParam['audio_file'];
+    testWidgets('Test Process all languages with Punctuation', (tester) async {
+      for (int t = 0; t < testData['tests']['language_tests'].length; t++) {
+        String language = testData['tests']['language_tests'][t]['language'];
+        String transcript = testData['tests']['language_tests'][t]['transcript'];
+        List<dynamic> punctuationsRaw = testData['tests']['language_tests'][t]['punctuations'];
+        List<String> punctuations = punctuationsRaw.map((p) => p.toString()).toList();
+        double errorRate = testData['tests']['language_tests'][t]['error_rate'];
+        String audioFile = testData['tests']['language_tests'][t]['audio_file'];
 
-      await runCheetahProcess(
-          language, transcript, punctuations, true, errorRate, audioFile);
+        await runCheetahProcess(
+            language, transcript, punctuations, true, errorRate, audioFile);
+      }
     });
   });
 }

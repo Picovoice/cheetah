@@ -183,10 +183,12 @@ If any arguments require changes, call `release`, then `init` again to initializ
 
 You do not need to call `release` when your component is unmounted - the hook will clean up automatically on unmount.
 
-## Non-English Languages
+### Language Model
 
-In order to detect non-English wake words you need to use the corresponding model file (`.pv`). The model files for all
-supported languages are available [here](https://github.com/Picovoice/cheetah/tree/master/lib/common).
+Default models for supported languages can be found in [lib/common](../../lib/common).
+
+Create custom language models using the [Picovoice Console](https://console.picovoice.ai/). Here you can train
+language models with custom vocabulary and boost words in the existing vocabulary.
 
 ## Demo
 

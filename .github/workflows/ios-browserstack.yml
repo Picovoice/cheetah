@@ -36,6 +36,9 @@ jobs:
       - name: Make build dir
         run: mkdir ddp
 
+      - name: Copy test_resources
+        run: ./copy_test_resources.sh
+
       - name: Inject AccessKey
         run: sed -i '.bak' 's:{TESTING_ACCESS_KEY_HERE}:${{secrets.PV_VALID_ACCESS_KEY}}:'
           CheetahAppTestUITests/CheetahAppTestUITests.swift

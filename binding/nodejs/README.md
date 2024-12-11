@@ -60,6 +60,14 @@ while (true) {
 Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/). Finally, when done be sure to explicitly release the resources using
 `handle.release()`.
 
+### Language Model
+
+The Cheetah Node.js SDK comes preloaded with a default English language model (`.pv` file).
+Default models for other supported languages can be found in [lib/common](../../lib/common).
+
+Create custom language models using the [Picovoice Console](https://console.picovoice.ai/). Here you can train
+language models with custom vocabulary and boost words in the existing vocabulary.
+
 ## Demos
 
 [Cheetah Node.js demo package](https://www.npmjs.com/package/@picovoice/cheetah-node-demo) provides command-line utilities for processing audio using cheetah.

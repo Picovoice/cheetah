@@ -102,7 +102,13 @@ using(Cheetah handle = Cheetah.Create(accessKey))
 }
 ```
 
-The model file contains the parameters for the Cheetah engine. You may create bespoke language models using [Picovoice Console](https://console.picovoice.ai/) and then pass in the relevant file.
+### Language Model
+
+The Cheetah .NET SDK comes preloaded with a default English language model (`.pv` file).
+Default models for other supported languages can be found in [lib/common](../../lib/common).
+
+Create custom language models using the [Picovoice Console](https://console.picovoice.ai/). Here you can train
+language models with custom vocabulary and boost words in the existing vocabulary.
 
 ```csharp
 using Pv;

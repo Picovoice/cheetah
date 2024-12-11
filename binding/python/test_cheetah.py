@@ -1,19 +1,17 @@
 #
-#    Copyright 2018-2023 Picovoice Inc.
+# Copyright 2018-2024 Picovoice Inc.
 #
-#    You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
-#    file accompanying this source.
+# You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
+# file accompanying this source.
 #
-#    Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
-#    an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
-#    specific language governing permissions and limitations under the License.
+# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+# an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations under the License.
 #
 
 import os
-import struct
 import sys
 import unittest
-import wave
 
 from parameterized import parameterized
 
@@ -22,7 +20,7 @@ from _util import *
 from test_util import *
 
 
-parameters = load_test_data()
+language_tests = load_test_data()
 
 
 class CheetahTestCase(unittest.TestCase):
@@ -32,17 +30,17 @@ class CheetahTestCase(unittest.TestCase):
         cls._audio_directory = os.path.join('..', '..', 'resources', 'audio_samples')
 
     @classmethod
-    def _create_cheetah(cls, enable_automatic_punctuation: bool) -> Cheetah:
+    def _create_cheetah(cls, language: str, enable_automatic_punctuation: bool) -> Cheetah:
         return Cheetah(
             access_key=cls._access_key,
-            model_path=default_model_path('../..'),
+            model_path=get_model_path_by_language(language=language),
             library_path=default_library_path('../..'),
             enable_automatic_punctuation=enable_automatic_punctuation)
 
-    @parameterized.expand(parameters)
+    @parameterized.expand(language_tests)
     def test_process(
             self,
-            _: str,
+            language: str,
             audio_file: str,
             expected_transcript: str,
             punctuations: List[str],
@@ -50,7 +48,7 @@ class CheetahTestCase(unittest.TestCase):
         o = None
 
         try:
-            o = self._create_cheetah(False)
+            o = self._create_cheetah(language=language, enable_automatic_punctuation=False)
 
             pcm = read_wav_file(
                 file_name=os.path.join(self._audio_directory, audio_file),
@@ -77,10 +75,10 @@ class CheetahTestCase(unittest.TestCase):
             if o is not None:
                 o.delete()
 
-    @parameterized.expand(parameters)
+    @parameterized.expand(language_tests)
     def test_process_with_punctuation(
             self,
-            _: str,
+            language: str,
             audio_file: str,
             expected_transcript: str,
             punctuations: List[str],
@@ -88,7 +86,7 @@ class CheetahTestCase(unittest.TestCase):
         o = None
 
         try:
-            o = self._create_cheetah(True)
+            o = self._create_cheetah(language=language, enable_automatic_punctuation=True)
 
             pcm = read_wav_file(
                 file_name=os.path.join(self._audio_directory, audio_file),
@@ -112,7 +110,11 @@ class CheetahTestCase(unittest.TestCase):
                 o.delete()
 
     def test_version(self):
-        o = self._create_cheetah(False)
+        o = Cheetah(
+            access_key=self._access_key,
+            model_path=default_model_path('../..'),
+            library_path=default_library_path('../..'),
+            enable_automatic_punctuation=True)
         self.assertIsInstance(o.version, str)
         self.assertGreater(len(o.version), 0)
 

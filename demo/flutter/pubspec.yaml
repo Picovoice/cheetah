@@ -3,7 +3,7 @@ description: Demonstrates how to use the cheetah plugin.
 
 publish_to: 'none'
 
-version: 2.0.2
+version: 2.1.0
 
 environment:
   sdk: ">=2.18.0 <4.0.0"
@@ -13,8 +13,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  path_provider: ^2.0.9
   flutter_voice_processor: 1.1.2
-  cheetah_flutter: 2.0.2
+  cheetah_flutter: ^2.1.0
 
 dev_dependencies:
   integration_test:
@@ -26,8 +27,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/models/ios/
-    - assets/models/android/
+    - assets/
+    - assets/models/
     - assets/test_resources/
     - assets/test_resources/audio_samples/
     - assets/test_resources/model_files/

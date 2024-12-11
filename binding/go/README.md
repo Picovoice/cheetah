@@ -63,6 +63,14 @@ for {
 Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/). When done be sure
 to explicitly release the resources using `cheetah.Delete()`.
 
+### Language Model
+
+The Cheetah Go SDK comes preloaded with a default English language model (`.pv` file).
+Default models for other supported languages can be found in [lib/common](../../lib/common).
+
+Create custom language models using the [Picovoice Console](https://console.picovoice.ai/). Here you can train
+language models with custom vocabulary and boost words in the existing vocabulary.
+
 ## Demos
 
 Check out the Cheetah Go demos [here](https://github.com/Picovoice/cheetah/tree/master/demo/go).

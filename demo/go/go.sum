@@ -1,11 +1,7 @@
-github.com/Picovoice/cheetah/binding/go/v2 v2.0.2 h1:ClgXf3jVR87MiWD8NMX/n+cgymvH8rnqWu8iLkIEAmU=
-github.com/Picovoice/cheetah/binding/go/v2 v2.0.2/go.mod h1:rctztGHGzGPelptxism4IBquo7plpZKgSmQ5SNYFhv8=
+github.com/Picovoice/cheetah/binding/go/v2 v2.1.0 h1:7T3H0AxxYym9FFTBE/0ALlqsH88kZLYlhfFGQU/sqfc=
+github.com/Picovoice/cheetah/binding/go/v2 v2.1.0/go.mod h1:BKQPVuV+8xxEBLuCdwTxgj4bVsUTiuQg4YJ7oJt9uh4=
 github.com/Picovoice/pvrecorder/binding/go v1.2.3 h1:VU9cf4g3h7pazecoEsPINi21AHWgxIsn7jFWdRDpWZE=
 github.com/Picovoice/pvrecorder/binding/go v1.2.3/go.mod h1:gQdvBAjoKmRxMFh8W9cVKWcqHsWvu+d13sCPVFm7dhg=
-github.com/agnivade/levenshtein v1.1.1 h1:QY8M92nrzkmr798gCo3kmMyqXFzdQVpxLlGPRBij0P8=
-github.com/agnivade/levenshtein v1.1.1/go.mod h1:veldBMzWxcCG2ZvUTKD2kJNRdCk5hVbJomOvKkmgYbo=
-github.com/arbovm/levenshtein v0.0.0-20160628152529-48b4e1c0c4d0/go.mod h1:t2tdKJDJF9BV14lnkjHmOQgcvEKgtqs5a1N3LNdJhGE=
-github.com/dgryski/trifles v0.0.0-20200323201526-dd97f9abfb48/go.mod h1:if7Fbed8SFyPtHLHbg49SI7NAdJiC5WIA09pe59rfAA=
 github.com/go-audio/audio v1.0.0 h1:zS9vebldgbQqktK4H0lUqWrG8P0NxCJVqcj7ZpNnwd4=
 github.com/go-audio/audio v1.0.0/go.mod h1:6uAu0+H2lHkwdGsAY+j2wHPNPpPoeg5AaEFh9FlA+Zs=
 github.com/go-audio/riff v1.0.0 h1:d8iCGbDvox9BfLagY94fBynxSPHO80LmZCaOsmKxokA=

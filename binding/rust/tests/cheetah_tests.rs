@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2023 Picovoice Inc.
+    Copyright 2022-2024 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -14,22 +14,59 @@ mod tests {
     use distance::*;
     use itertools::Itertools;
     use rodio::{source::Source, Decoder};
-    use serde_json::{json, Value};
+    use serde::Deserialize;
     use std::env;
-    use std::fs::File;
+    use std::fs::{read_to_string, File};
     use std::io::BufReader;
 
     use cheetah::CheetahBuilder;
 
-    fn load_test_data() -> Value {
-        let test_json: Value = json!([{
-            "language": "en",
-            "transcript": "Mr quilter is the apostle of the middle classes and we are glad to welcome his gospel",
-            "transcript_with_punctuation": "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel.",
-            "error_rate": 0.025,
-            "audio_file": "test.wav"
-        }]);
-        test_json
+    #[derive(Debug, Deserialize)]
+    struct LanguageTestJson {
+        language: String,
+        audio_file: String,
+        transcript: String,
+        punctuations: Vec<String>,
+        error_rate: f32,
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct TestsJson {
+        language_tests: Vec<LanguageTestJson>,
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct RootJson {
+        tests: TestsJson,
+    }
+
+    fn load_test_data() -> TestsJson {
+        let test_json_path = format!(
+            "{}{}",
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../resources/.test/test_data.json"
+        );
+        let contents: String =
+            read_to_string(test_json_path).expect("Unable to read test_data.json");
+        let root: RootJson = serde_json::from_str(&contents).expect("Failed to parse JSON");
+        root.tests
+    }
+
+    fn append_lang(path: &str, language: &str) -> String {
+        if language == "en" {
+            String::from(path)
+        } else {
+            format!("{}_{}", path, language)
+        }
+    }
+
+    fn model_path_by_language(language: &str) -> String {
+        format!(
+            "{}{}{}",
+            env!("CARGO_MANIFEST_DIR"),
+            append_lang("/../../lib/common/cheetah_params", language),
+            ".pv"
+        )
     }
 
     fn character_error_rate(transcript: &str, expected_transcript: &str) -> f32 {
@@ -38,7 +75,7 @@ mod tests {
     }
 
     fn run_test_process(
-        _: &str,
+        language: &str,
         transcript: &str,
         test_punctuation: bool,
         error_rate: f32,
@@ -46,6 +83,8 @@ mod tests {
     ) {
         let access_key = env::var("PV_ACCESS_KEY")
             .expect("Pass the AccessKey in using the PV_ACCESS_KEY env variable");
+
+        let model_path = model_path_by_language(language);
 
         let audio_path = format!(
             "{}{}{}",
@@ -59,6 +98,7 @@ mod tests {
 
         let cheetah = CheetahBuilder::new()
             .access_key(access_key)
+            .model_path(model_path)
             .enable_automatic_punctuation(test_punctuation)
             .init()
             .expect("Unable to create Cheetah");
@@ -82,42 +122,37 @@ mod tests {
 
     #[test]
     fn test_process() {
-        let test_json: Value = load_test_data();
+        let test_json: TestsJson = load_test_data();
 
-        for t in test_json.as_array().unwrap() {
-            let language = t["language"].as_str().unwrap();
-            let transcript = t["transcript"].as_str().unwrap();
-            let error_rate = t["error_rate"].as_f64().unwrap() as f32;
-
-            let test_audio = t["audio_file"].as_str().unwrap();
+        for t in test_json.language_tests {
+            let mut transcript = t.transcript;
+            for p in t.punctuations {
+                transcript = transcript.replace(&p, "")
+            }
 
             run_test_process(
-                language,
-                transcript,
+                &t.language,
+                &transcript,
                 false,
-                error_rate,
-                &test_audio,
+                t.error_rate,
+                &t.audio_file,
             );
         }
     }
 
     #[test]
     fn test_process_punctuation() {
-        let test_json: Value = load_test_data();
+        let test_json: TestsJson = load_test_data();
 
-        for t in test_json.as_array().unwrap() {
-            let language = t["language"].as_str().unwrap();
-            let transcript_with_punctuation = t["transcript_with_punctuation"].as_str().unwrap();
-            let error_rate = t["error_rate"].as_f64().unwrap() as f32;
-
-            let test_audio = t["audio_file"].as_str().unwrap();
+        for t in test_json.language_tests {
+            let transcript = t.transcript;
 
             run_test_process(
-                language,
-                transcript_with_punctuation,
+                &t.language,
+                &transcript,
                 true,
-                error_rate,
-                &test_audio,
+                t.error_rate,
+                &t.audio_file,
             );
         }
     }

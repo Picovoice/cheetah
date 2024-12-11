@@ -78,7 +78,7 @@ public class PerformanceTest extends BaseTest {
                 .setModelPath(defaultModelPath)
                 .build(appContext);
 
-        File testAudio = new File(testResourcesPath, "audio/test.wav");
+        File testAudio = new File(testResourcesPath, "audio_samples/test.wav");
 
         long totalNSec = 0;
         for (int i = 0; i < numTestIterations + 1; i++) {

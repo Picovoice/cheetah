@@ -1,4 +1,7 @@
+import groovy.json.JsonSlurper
+
 apply plugin: 'com.android.application'
+
 android {
     compileSdkVersion defaultTargetSdkVersion
 
@@ -17,6 +20,44 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    def testDataFile = file('../../../../resources/.test/test_data.json')
+    def parsedJson = new JsonSlurper().parseText(testDataFile.text)
+    def languages = []
+    parsedJson.tests.language_tests.each { a ->
+        languages.add(a.language)
+    }
+
+    flavorDimensions "language"
+    productFlavors {
+        en {
+            getIsDefault().set(true)
+        }
+
+        languages.each { language ->
+            "$language" {
+                applicationIdSuffix ".$language"
+
+            }
+        }
+
+        all { flavor ->
+            delete fileTree("$projectDir/src/main/assets") {
+                exclude '**/.gitkeep'
+            }
+            task("${flavor.name}CopyParams", type: Copy) {
+                if (flavor.name != 'en') {
+                    from("$projectDir/../../../../lib/common/")
+                    include("cheetah_params_${flavor.name}.pv")
+                    into("$projectDir/src/main/assets/models")
+                } else {
+                    from("$projectDir/../../../../lib/common/")
+                    include("cheetah_params.pv")
+                    into("$projectDir/src/main/assets/models")
+                }
+            }
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -32,14 +73,14 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'ai.picovoice:cheetah-android:2.0.0'
+    implementation 'ai.picovoice:cheetah-android:2.1.0'
     implementation 'ai.picovoice:android-voice-processor:1.0.2'
 }
 
-task copyParams(type: Copy) {
-    from("${rootDir}/../../../lib/common")
-    include('cheetah_params.pv')
-    into("${rootDir}/cheetah-demo-app/src/main/assets")
+afterEvaluate {
+    android.productFlavors.all {
+        flavor ->
+            tasks."merge${flavor.name.capitalize()}DebugAssets".dependsOn "${flavor.name}CopyParams"
+            tasks."merge${flavor.name.capitalize()}ReleaseAssets".dependsOn "${flavor.name}CopyParams"
+    }
 }
-
-preBuild.dependsOn(copyParams)

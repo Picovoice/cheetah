@@ -85,6 +85,14 @@ When done resources have to be released explicitly:
 cheetah.delete();
 ```
 
+### Language Model
+
+The Cheetah Java SDK comes preloaded with a default English language model (`.pv` file).
+Default models for other supported languages can be found in [lib/common](../../lib/common).
+
+Create custom language models using the [Picovoice Console](https://console.picovoice.ai/). Here you can train
+language models with custom vocabulary and boost words in the existing vocabulary.
+
 ## Demo App
 
 For example usage refer to our [Java demos](../../demo/java).
