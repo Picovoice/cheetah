@@ -61,7 +61,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64, pv-windows-arm64]
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64]
         include:
         - machine: rpi3-32
           init_performance_threshold_sec: 14.0
@@ -78,9 +78,6 @@ jobs:
         - machine: rpi5-64
           init_performance_threshold_sec: 7.8
           proc_performance_threshold_sec: 5.0
-        - machine: pv-windows-arm64
-          init_performance_threshold_sec: 4.5
-          proc_performance_threshold_sec: 1.0
 
     steps:
     - uses: actions/checkout@v3
