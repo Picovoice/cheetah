@@ -32,10 +32,10 @@ jobs:
         node-version: [16.x, 18.x, 20.x]
         include:
           - os: windows-latest
-            platform: windows
+            platform: windows/amd64
             arch: amd64
           - os: windows-latest
-            platform: windows
+            platform: windows/arm64
             arch: arm64
 
     steps:

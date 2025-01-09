@@ -29,10 +29,10 @@ jobs:
         java-version: ['11', '17', '19']
         include:
           - os: windows-latest
-            platform: windows
+            platform: windows/amd64
             arch: amd64
           - os: windows-latest
-            platform: windows
+            platform: windows/arm64
             arch: arm64
 
     steps:

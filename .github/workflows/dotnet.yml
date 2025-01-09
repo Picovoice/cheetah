@@ -41,10 +41,10 @@ jobs:
         dotnet-version: [2.1.x, 3.0.x, 3.1.x, 5.0.x, 6.0.x, 8.0.x]
         include:
           - os: windows-latest
-            platform: windows
+            platform: windows/amd64
             arch: amd64
           - os: windows-latest
-            platform: windows
+            platform: windows/arm64
             arch: arm64
           - dotnet-version: 2.1.x
             binding-framework: netstandard2.0
