@@ -84,7 +84,7 @@ SYSTEM_TO_LIBRARY_PATH.set(
 );
 SYSTEM_TO_LIBRARY_PATH.set(
   `${SYSTEM_WINDOWS}/${ARM_64}`,
-  `${PLATFORM_WINDOWS}/arm64/pv_picollm.node`
+  `${PLATFORM_WINDOWS}/arm64/pv_cheetah.node`
 );
 
 function absoluteLibraryPath(libraryPath: string): string {

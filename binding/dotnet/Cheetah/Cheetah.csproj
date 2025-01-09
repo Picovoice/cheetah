@@ -60,6 +60,16 @@
             <Link>lib\windows\amd64\libpv_cheetah.dll</Link>
             <Visible>false</Visible>
         </Content>
+        <Content Include="..\..\..\lib\windows\arm64\libpv_cheetah.dll">
+            <PackagePath>
+                build/netcoreapp3.0/lib/windows/arm64/libpv_cheetah.dll;
+                build/net6.0/lib/windows/arm64/libpv_cheetah.dll;
+                build/net8.0/lib/windows/arm64/libpv_cheetah.dll;
+            </PackagePath>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>lib\windows\arm64\libpv_cheetah.dll</Link>
+            <Visible>false</Visible>
+        </Content>
         <Content Include="..\..\..\lib\linux\x86_64\libpv_cheetah.so">
             <PackagePath>
                 build/netstandard2.0/libpv_cheetah.so;
