@@ -85,10 +85,6 @@ jobs:
             platform: windows/amd64
             arch: amd64
             make_file: "MinGW Makefiles"
-          - os: windows-latest
-            platform: windows/arm64
-            arch: arm64
-            make_file: "MinGW Makefiles"
           - os: macos-latest
             platform: mac
             arch: arm64
@@ -122,6 +118,7 @@ jobs:
     strategy:
       matrix:
         machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64]
+        make_file: "Unix Makefiles"
         include:
           - machine: rpi3-32
             platform: raspberry-pi
@@ -138,6 +135,10 @@ jobs:
           - machine: rpi5-64
             platform: raspberry-pi
             arch: cortex-a76-aarch64
+          - machine: pv-windows-arm64
+            platform: windows
+            arch: arm64
+            make_file: "MinGW Makefiles"
 
     steps:
       - uses: actions/checkout@v3
@@ -145,7 +146,7 @@ jobs:
           submodules: recursive
 
       - name: Create build directory
-        run: cmake -B ./build
+        run: cmake -G "${{ matrix.make_file }}" -B ./build
 
       - name: Build demo
         run: cmake --build ./build --target cheetah_demo_file
