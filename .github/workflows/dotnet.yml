@@ -40,6 +40,12 @@ jobs:
         os: [ubuntu-latest, macos-latest, macos-13, windows-latest]
         dotnet-version: [2.1.x, 3.0.x, 3.1.x, 5.0.x, 6.0.x, 8.0.x]
         include:
+          - os: windows-latest
+            platform: windows
+            arch: amd64
+          - os: windows-latest
+            platform: windows
+            arch: arm64
           - dotnet-version: 2.1.x
             binding-framework: netstandard2.0
             test-framework: netcoreapp2.1

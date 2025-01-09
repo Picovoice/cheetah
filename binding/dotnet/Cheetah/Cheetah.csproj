@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>net8.0;net6.0;netcoreapp3.0;netstandard2.0;</TargetFrameworks>
-        <Version>2.1.0</Version>
+        <Version>2.1.1</Version>
         <Authors>Picovoice</Authors>
         <Company />
         <Product>Cheetah Speech-to-Text Engine</Product>
@@ -18,7 +18,7 @@
             - Private; All voice processing runs locally.
             - Accurate
             - Compact and Computationally-Efficient
-            - Cross-Platform: Linux (x86_64), macOS (x86_64, arm64), Windows (x86_64), Raspberry Pi (3, 4, 5)
+            - Cross-Platform: Linux (x86_64), macOS (x86_64, arm64), Windows (x86_64, arm64), Raspberry Pi (3, 4, 5)
         </Description>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <PackageIcon>pv_circle_512.png</PackageIcon>

@@ -31,6 +31,13 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         java-version: ['11', '17', '19']
+        include:
+          - os: windows-latest
+            platform: windows
+            arch: amd64
+          - os: windows-latest
+            platform: windows
+            arch: arm64
 
     steps:
     - uses: actions/checkout@v3

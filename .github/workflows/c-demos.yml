@@ -84,6 +84,9 @@ jobs:
           - os: windows-latest
             platform: windows
             arch: amd64
+          - os: windows-latest
+            platform: windows
+            arch: arm64
             make_file: "MinGW Makefiles"
           - os: macos-latest
             platform: mac

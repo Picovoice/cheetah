@@ -19,7 +19,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Picovoice.Cheetah" Version="2.1.0" />
+        <ProjectReference Include="..\..\..\binding\dotnet\Cheetah\Cheetah.csproj" />
         <PackageReference Include="PvRecorder" Version="1.2.6" />
     </ItemGroup>
 </Project>
