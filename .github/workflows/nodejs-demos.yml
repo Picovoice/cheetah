@@ -30,10 +30,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         node-version: [16.x, 18.x, 20.x]
-        include:
-          - os: windows-latest
-            platform: windows/amd64
-            arch: amd64
 
     steps:
     - uses: actions/checkout@v3

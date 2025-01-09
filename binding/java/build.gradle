@@ -50,7 +50,10 @@ task copyMacLib(type: Copy) {
     into "${outputDir}/cheetah/lib/java/mac/"
 }
 task copyWindowsLib(type: Copy) {
-    from('../../lib/java/windows/amd64/libpv_cheetah_jni.dll') into "${outputDir}/cheetah/lib/java/windows/amd64/"
+    from('../../lib/java/windows/')
+    include('amd64/libpv_cheetah_jni.dll',
+            'arm64/libpv_cheetah_jni.dll')
+    into "${outputDir}/cheetah/lib/java/windows/"
 }
 task copyRPILib(type: Copy) {
     from('../../lib/java/raspberry-pi/')
