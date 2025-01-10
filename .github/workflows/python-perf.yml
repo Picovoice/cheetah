@@ -104,7 +104,7 @@ jobs:
       working-directory: resources/scripts
       run: bash machine-state.sh
 
-  perf-self-hosted:
+  perf-windows-arm64:
     runs-on: ${{ matrix.machine }}
 
     strategy:
