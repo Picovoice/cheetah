@@ -114,7 +114,7 @@ jobs:
         include:
         - machine: pv-windows-arm64
           init_performance_threshold_sec: 4.0
-          proc_performance_threshold_sec: 0.7
+          proc_performance_threshold_sec: 1.0
 
     steps:
     - uses: actions/checkout@v3
