@@ -82,7 +82,7 @@ jobs:
             arch: x86_64
             make_file: "Unix Makefiles"
           - os: windows-latest
-            platform: windows/amd64
+            platform: windows
             arch: amd64
             make_file: "MinGW Makefiles"
           - os: macos-latest
