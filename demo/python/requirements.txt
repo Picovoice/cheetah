@@ -1,2 +1,2 @@
-../../binding/python/dist/pvcheetah-2.1.1-py3-none-any.whl
-pvrecorder==1.2.3
+pvcheetah==2.1.1
+pvrecorder==1.2.4

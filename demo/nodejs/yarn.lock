@@ -2,15 +2,15 @@
 # yarn lockfile v1
 
 
-"@picovoice/cheetah-node@~2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-node/-/cheetah-node-2.1.0.tgz#d68a86b55bc21bf586a23f4c33563dce58b18385"
-  integrity sha512-B63Aqmjs2berQ/YVEooIJTSQVXrJ/naz5YG5ZG+mlyfahYaOBbudXAdQP4FxTiQBlGLNhQSqZjllgoEs394n1Q==
+"@picovoice/cheetah-node@~2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-node/-/cheetah-node-2.1.1.tgz#ecc1762c56b090670853b52def624574d4cca015"
+  integrity sha512-nP+VTZYVqHF3BNz8BIuP5MAFCFJVVX6HWAQq5DStZ5c26yCUQwXs+orIlXeEpNZqlZOEvhkxbwACqFwORC3Ktw==
 
-"@picovoice/pvrecorder-node@^1.2.4":
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/@picovoice/pvrecorder-node/-/pvrecorder-node-1.2.4.tgz#1e67a1f82a144ad3c8e3f77c18fdbfe1ab5880cf"
-  integrity sha512-s8l6LtJnTHZ+FfIgXJZ9d8pKONSWs04v5q83F2zmfRr9IV1m7SQ5RlsmL0FO7NsB0GjIar3qHndryAQCjgSInw==
+"@picovoice/pvrecorder-node@^1.2.5":
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/@picovoice/pvrecorder-node/-/pvrecorder-node-1.2.5.tgz#a47e11d347979ef0f1b083657ff69dd9bd2efe5c"
+  integrity sha512-bnid5oInf22JRdrZ75z8ooewOza0whYI9w/oSQSZbkDvddylPPrY6x+1L1qIyf5Tb8ZtzKQL+aQ9m8SazgRHFg==
 
 commander@^6.1.0:
   version "6.2.1"
