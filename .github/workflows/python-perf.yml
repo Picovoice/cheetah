@@ -103,3 +103,24 @@ jobs:
     - name: Machine state after
       working-directory: resources/scripts
       run: bash machine-state.sh
+
+  perf-windows-arm64:
+    runs-on: ${{ matrix.machine }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        machine: [pv-windows-arm64]
+        include:
+        - machine: pv-windows-arm64
+          init_performance_threshold_sec: 4.0
+          proc_performance_threshold_sec: 1.0
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Test
+      run: python3 test_cheetah_perf.py ${{secrets.PV_VALID_ACCESS_KEY}} 50 ${{matrix.init_performance_threshold_sec}} ${{matrix.proc_performance_threshold_sec}}

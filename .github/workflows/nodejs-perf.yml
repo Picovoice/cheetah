@@ -95,3 +95,24 @@ jobs:
     - name: Machine state after
       working-directory: resources/scripts
       run: bash machine-state.sh
+
+  perf-windows-arm64:
+    runs-on: ${{ matrix.machine }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        machine: [pv-windows-arm64]
+        include:
+        - machine: pv-windows-arm64
+          init_performance_threshold_sec: 3.0
+          proc_performance_threshold_sec: 0.8
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Test
+      run: yarn test perf.test.ts --access_key=${{secrets.PV_VALID_ACCESS_KEY}} --num_test_iterations=50 --init_performance_threshold_sec=${{matrix.init_performance_threshold_sec}} --proc_performance_threshold_sec=${{matrix.proc_performance_threshold_sec}}

@@ -10,7 +10,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 - [Accurate](https://picovoice.ai/docs/benchmark/stt/#results)
 - [Compact and Computationally-Efficient](https://github.com/Picovoice/speech-to-text-benchmark#rtf)
 - Cross-Platform:
-  - Linux (x86_64), macOS (x86_64, arm64), and Windows (x86_64)
+  - Linux (x86_64), macOS (x86_64, arm64), and Windows (x86_64, arm64)
   - Android and iOS
   - Chrome, Safari, Firefox, and Edge
   - Raspberry Pi (3, 4, 5)
@@ -23,7 +23,7 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
 - Linux (x86_64)
 - macOS (x86_64)
-- Windows (x86_64)
+- Windows (x86_64, arm64)
 - Raspberry Pi:
   - 3 (32 and 64 bit)
   - 4 (32 and 64 bit)
