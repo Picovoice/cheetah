@@ -232,9 +232,12 @@ class Cheetah(object):
             byref(c_partial_transcript),
             byref(is_endpoint))
         if status is not self.PicovoiceStatuses.SUCCESS:
+            message_stack = self._get_error_stack()
+            if c_partial_transcript.value is not None:
+                self._transcript_delete_func(c_partial_transcript)
             raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](
                 message='Process failed',
-                message_stack=self._get_error_stack())
+                message_stack=message_stack)
 
         partial_transcript = c_partial_transcript.value.decode('utf-8')
         self._transcript_delete_func(c_partial_transcript)
@@ -252,9 +255,12 @@ class Cheetah(object):
         c_final_transcript = c_char_p()
         status = self._flush_func(self._handle, byref(c_final_transcript))
         if status is not self.PicovoiceStatuses.SUCCESS:
+            message_stack = self._get_error_stack()
+            if c_partial_transcript.value is not None:
+                self._transcript_delete_func(c_partial_transcript)
             raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](
                 message='Flush failed',
-                message_stack=self._get_error_stack())
+                message_stack=message_stack)
 
         final_transcript = c_final_transcript.value.decode('utf-8')
         self._transcript_delete_func(c_final_transcript)
