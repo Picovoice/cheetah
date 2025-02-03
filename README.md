@@ -14,7 +14,6 @@
 [![CocoaPods](https://img.shields.io/cocoapods/v/Cheetah-iOS)](https://cocoapods.org/pods/Cheetah-iOS)<!-- markdown-link-check-disable-line -->
 [![Pub Version](https://img.shields.io/pub/v/cheetah_flutter)](https://pub.dev/packages/cheetah_flutter)
 [![PyPI](https://img.shields.io/pypi/v/pvcheetah)](https://pypi.org/project/pvcheetah/)
-[![Go Reference](https://pkg.go.dev/badge/github.com/Picovoice/cheetah/binding/go.svg)](https://pkg.go.dev/github.com/Picovoice/cheetah/binding/go)
 
 Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
@@ -44,7 +43,6 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [iOS](#ios-demos)
         - [Android](#android-demo)
         - [Flutter](#flutter-demo)
-        - [Go](#go-demo)
         - [React Native](#react-native-demo)
         - [Java](#java-demos)
         - [Node.js](#nodejs-demo)
@@ -59,7 +57,6 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [iOS](#ios)
         - [Android](#android)
         - [Flutter](#flutter)
-        - [Go](#go)
         - [React Native](#react-native)
         - [Node.js](#nodejs)
         - [Java](#java)
@@ -167,20 +164,6 @@ Run the following command from [demo/flutter](./demo/flutter) to build and deplo
 ```console
 flutter run
 ```
-
-### Go Demo
-
-The demo requires `cgo`, which on Windows may mean that you need to install a gcc compiler like [MinGW](https://www.mingw-w64.org/) to build it properly.
-
-From [demo/go](./demo/go) run the following command from the terminal to build and run the file demo:
-
-```console
-go run micdemo/cheetah_mic_demo.go -access_key "${ACCESS_KEY}"
-```
-
-Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
-
-For more information about Go demos go to [demo/go](./demo/go).
 
 ### React Native Demo
 
@@ -498,40 +481,6 @@ try{
 ```
 
 Replace `${ACCESS_KEY}` with your `AccessKey` obtained from [Picovoice Console](https://console.picovoice.ai/) and `${CHEETAH_MODEL_PATH}` with the the path a custom trained model from [Picovoice Console](https://console.picovoice.ai/) or the [default model](lib/common/cheetah_params.pv).
-
-### Go
-
-Install the Go binding:
-
-```console
-go get github.com/Picovoice/cheetah/binding/go
-```
-
-Create an instance of the engine and transcribe audio in real-time:
-
-```go
-import . "github.com/Picovoice/cheetah/binding/go"
-
-cheetah = NewCheetah{AccessKey: "${ACCESS_KEY}"}
-err := cheetah.Init()
-if err != nil {
-    // handle err init
-}
-defer cheetah.Delete()
-
-func getNextFrameAudio() []int16{
-    // get audio frame
-}
-
-for {
-  partialTranscript, isEndpoint, err = cheetah.Process(getNextFrameAudio())
-  if isEndpoint {
-    finalTranscript, err = cheetah.Flush()
-    }
-}
-```
-
-Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console. When done be sure to explicitly release the resources using `cheetah.Delete()`.
 
 ### React Native
 
