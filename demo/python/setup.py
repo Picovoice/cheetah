@@ -26,9 +26,12 @@ with open(os.path.join(os.path.dirname(__file__), 'MANIFEST.in'), 'w') as f:
 with open(os.path.join(os.path.dirname(__file__), 'README.md'), 'r') as f:
     long_description = f.read()
 
+with open(os.path.join(os.path.dirname(__file__), "requirements.txt"), "r") as f:
+    dependencies = f.read().strip().splitlines()
+
 setuptools.setup(
     name="pvcheetahdemo",
-    version="2.1.1",
+    version="2.1.2",
     author="Picovoice",
     author_email="hello@picovoice.ai",
     description="Cheetah speech-to-text engine demos",
@@ -36,7 +39,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/Picovoice/cheetah",
     packages=["pvcheetahdemo"],
-    install_requires=["pvcheetah==2.1.1", "pvrecorder==1.2.4"],
+    install_requires=dependencies,
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -52,6 +55,6 @@ setuptools.setup(
             'cheetah_demo_mic=pvcheetahdemo.cheetah_demo_mic:main',
         ],
     ),
-    python_requires='>=3.8',
+    python_requires='>=3.9',
     keywords="Speech-to-Text, ASR, Speech Recognition, Voice Recognition, Automatic Speech Recognition",
 )
