@@ -28,34 +28,31 @@
     <ItemGroup>
         <Content Include="Picovoice.Cheetah.netstandard2.0.targets">
             <PackagePath>
-                build/netstandard2.0/Picovoice.Cheetah.targets;
+                buildTransitive/netstandard2.0/Picovoice.Cheetah.targets;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Picovoice.Cheetah.targets">
             <PackagePath>
-                build/netcoreapp3.0;
-                build/net6.0;
-                build/net8.0;
+                buildTransitive/netcoreapp3.0;
+                buildTransitive/net6.0;
+                buildTransitive/net8.0;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="..\..\..\lib\common\cheetah_params.pv">
             <PackagePath>
-                build/netstandard2.0/lib/common/cheetah_params.pv;
-                build/netcoreapp3.0/lib/common/cheetah_params.pv;
-                build/net6.0/lib/common/cheetah_params.pv;
-                build/net8.0/lib/common/cheetah_params.pv;
+                buildTransitive/common/cheetah_params.pv;
             </PackagePath>
             <Link>lib\common\cheetah_params.pv</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="..\..\..\lib\windows\amd64\libpv_cheetah.dll">
             <PackagePath>
-                build/netstandard2.0/libpv_cheetah.dll;
-                build/netcoreapp3.0/lib/windows/amd64/libpv_cheetah.dll;
-                build/net6.0/lib/windows/amd64/libpv_cheetah.dll;
-                build/net8.0/lib/windows/amd64/libpv_cheetah.dll;
+                buildTransitive/netstandard2.0/libpv_cheetah.dll;
+                buildTransitive/netcoreapp3.0/lib/windows/amd64/libpv_cheetah.dll;
+                buildTransitive/net6.0/lib/windows/amd64/libpv_cheetah.dll;
+                buildTransitive/net8.0/lib/windows/amd64/libpv_cheetah.dll;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\windows\amd64\libpv_cheetah.dll</Link>
@@ -63,8 +60,8 @@
         </Content>
         <Content Include="..\..\..\lib\windows\arm64\libpv_cheetah.dll">
             <PackagePath>
-                build/net6.0/lib/windows/arm64/libpv_cheetah.dll;
-                build/net8.0/lib/windows/arm64/libpv_cheetah.dll;
+                buildTransitive/net6.0/lib/windows/arm64/libpv_cheetah.dll;
+                buildTransitive/net8.0/lib/windows/arm64/libpv_cheetah.dll;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\windows\arm64\libpv_cheetah.dll</Link>
@@ -72,8 +69,8 @@
         </Content>
         <Content Include="..\..\..\lib\linux\x86_64\libpv_cheetah.so">
             <PackagePath>
-                build/net6.0/lib/linux/x86_64/libpv_cheetah.so;
-                build/net8.0/lib/linux/x86_64/libpv_cheetah.so;
+                buildTransitive/net6.0/lib/linux/x86_64/libpv_cheetah.so;
+                buildTransitive/net8.0/lib/linux/x86_64/libpv_cheetah.so;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\linux\x86_64\libpv_cheetah.so</Link>
@@ -81,10 +78,10 @@
         </Content>
         <Content Include="..\..\..\lib\mac\x86_64\libpv_cheetah.dylib">
             <PackagePath>
-                build/netstandard2.0/libpv_cheetah.dylib;
-                build/netcoreapp3.0/lib/mac/x86_64/libpv_cheetah.dylib;
-                build/net6.0/lib/mac/x86_64/libpv_cheetah.dylib;
-                build/net8.0/lib/mac/x86_64/libpv_cheetah.dylib;
+                buildTransitive/netstandard2.0/libpv_cheetah.dylib;
+                buildTransitive/netcoreapp3.0/lib/mac/x86_64/libpv_cheetah.dylib;
+                buildTransitive/net6.0/lib/mac/x86_64/libpv_cheetah.dylib;
+                buildTransitive/net8.0/lib/mac/x86_64/libpv_cheetah.dylib;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\mac\x86_64\libpv_cheetah.dylib</Link>
@@ -94,8 +91,8 @@
     <ItemGroup>
         <Content Include="..\..\..\lib\raspberry-pi\**\*">
             <PackagePath>
-                build/net6.0/lib/raspberry-pi;
-                build/net8.0/lib/raspberry-pi;
+                buildTransitive/net6.0/lib/raspberry-pi;
+                buildTransitive/net8.0/lib/raspberry-pi;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\raspberry-pi\%(RecursiveDir)%(Filename)%(Extension)</Link>
@@ -105,8 +102,8 @@
     <ItemGroup>
         <Content Include="..\..\..\lib\mac\arm64\libpv_cheetah.dylib">
             <PackagePath>
-                build/net6.0/lib/mac/arm64/libpv_cheetah.dylib;
-                build/net8.0/lib/mac/arm64/libpv_cheetah.dylib;
+                buildTransitive/net6.0/lib/mac/arm64/libpv_cheetah.dylib;
+                buildTransitive/net8.0/lib/mac/arm64/libpv_cheetah.dylib;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\mac\arm64\libpv_cheetah.dylib</Link>

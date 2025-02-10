@@ -2,6 +2,13 @@
     <ItemGroup>
         <Content Include="$(MSBuildThisFileDirectory)lib/**">
             <Link>lib/%(RecursiveDir)%(Filename)%(Extension)</Link>
+            <PackagePath>content/picovoice/%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Visible>false</Visible>
+        </Content>
+        <Content Include="$(MSBuildThisFileDirectory)/../common/cheetah_params.pv">
+            <Link>lib/common/cheetah_params.pv</Link>
+            <PackagePath>content/picovoice/common/cheetah_params.pv</PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Visible>false</Visible>
         </Content>
