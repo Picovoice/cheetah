@@ -15,13 +15,15 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Visible>false</Visible>
         </Content>
-        <Content Include="$(MSBuildThisFileDirectory)libpv_cheetah.so">
-            <Link>libpv_cheetah.so</Link>
+        <Content Include="$(MSBuildThisFileDirectory)lib/**">
+            <PackagePath>content/picovoice/%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+            <Link>lib/%(RecursiveDir)%(Filename)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Visible>false</Visible>
         </Content>
-        <Content Include="$(MSBuildThisFileDirectory)lib/**">
-            <Link>lib/%(RecursiveDir)%(Filename)%(Extension)</Link>
+        <Content Include="$(MSBuildThisFileDirectory)/../common/cheetah_params.pv">
+            <Link>lib/common/cheetah_params.pv</Link>
+            <PackagePath>content/picovoice/common/cheetah_params.pv</PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Visible>false</Visible>
         </Content>
