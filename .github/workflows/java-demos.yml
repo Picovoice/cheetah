@@ -26,7 +26,14 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        java-version: ['11', '17', '19']
+        java-version: [11, 17, 21]
+        include:
+        - java-version: 11
+          gradle-version: 6.5
+        - java-version: 17
+          gradle-version: 7.3
+        - java-version: 21
+          gradle-version: 8.5
 
     steps:
     - uses: actions/checkout@v3
@@ -36,6 +43,11 @@ jobs:
       with:
         java-version: ${{ matrix.java-version }}
         distribution: 'temurin'
+
+    - name: Use Gradle ${{ matrix.gradle-version }}
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: ${{ matrix.gradle-version }}
 
     - name: Build
       run: ./gradlew build
