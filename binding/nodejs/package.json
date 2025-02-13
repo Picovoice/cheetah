@@ -1,6 +1,6 @@
 {
   "name": "@picovoice/cheetah-node",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Picovoice Cheetah Node.js binding",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
@@ -54,7 +54,7 @@
     "wavefile": "^11.0.0"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "cpu": [
     "!ia32",
