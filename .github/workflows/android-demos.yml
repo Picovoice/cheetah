@@ -18,6 +18,17 @@ on:
 jobs:
   build-cheetah-demo:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [11, 17, 21]
+        include:
+        - java-version: 11
+          gradle-version: 6.5
+        - java-version: 17
+          gradle-version: 7.3
+        - java-version: 21
+          gradle-version: 8.5
+
     defaults:
       run:
         working-directory: demo/android/CheetahDemo
@@ -25,11 +36,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: set up JDK 11
+    - name: set up JDK  ${{ matrix.java-version }}
       uses: actions/setup-java@v3
       with:
-        java-version: '11'
+        java-version: ${{ matrix.java-version }}
         distribution: 'temurin'
 
+    - name: Use Gradle ${{ matrix.gradle-version }}
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: ${{ matrix.gradle-version }}
+
     - name: Build
-      run: ./gradlew assembleDebug
+      run: gradle assembleDebug
