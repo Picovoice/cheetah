@@ -23,13 +23,13 @@ async function startCheetah(accessKey) {
       accessKey,
       cheetahTranscriptionCallback,
       cheetahModel,
-      { enableAutomaticPunctuation: true }
+      { enableAutomaticPunctuation: true },
     );
 
     writeMessage("Cheetah worker ready!");
 
     writeMessage(
-      "WebVoiceProcessor initializing. Microphone permissions requested ..."
+      "WebVoiceProcessor initializing. Microphone permissions requested ...",
     );
     await window.WebVoiceProcessor.WebVoiceProcessor.subscribe(cheetah);
     writeMessage("WebVoiceProcessor ready and listening!");
