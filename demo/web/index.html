@@ -1,57 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <script src="node_modules/@picovoice/web-voice-processor/dist/iife/index.js"></script>
     <script src="node_modules/@picovoice/cheetah-web/dist/iife/index.js"></script>
     <script src="models/cheetahModel.js"></script>
-    <script type="application/javascript">
-      let cheetah = null;
-
-      function writeMessage(message) {
-        console.log(message);
-        document.getElementById("status").innerHTML = message;
-      }
-
-      function cheetahErrorCallback(error) {
-        writeMessage(error);
-      }
-
-      function cheetahTranscriptionCallback(cheetahTranscript) {
-        document.getElementById("result").innerHTML += cheetahTranscript.transcript;
-        if (cheetahTranscript.isEndpoint) {
-          document.getElementById("result").innerHTML += "<br>";
-        }
-      }
-
-      async function startCheetah(accessKey) {
-        writeMessage("Cheetah is loading. Please wait...");
-        try {
-          cheetah = await CheetahWeb.CheetahWorker.create(
-            accessKey,
-            cheetahTranscriptionCallback,
-            cheetahModel,
-            { enableAutomaticPunctuation: true }
-          );
-
-          writeMessage("Cheetah worker ready!");
-
-          writeMessage(
-            "WebVoiceProcessor initializing. Microphone permissions requested ..."
-          );
-          await window.WebVoiceProcessor.WebVoiceProcessor.subscribe(cheetah);
-          writeMessage("WebVoiceProcessor ready and listening!");
-        } catch (err) {
-          cheetahErrorCallback(err);
-        }
-      }
-    </script>
+    <script src="scripts/cheetah.js"></script>
   </head>
   <body>
     <h1>Cheetah Web Demo</h1>
     <p>This demo uses Cheetah for Web and the WebVoiceProcessor to:</p>
     <ol>
       <li>
-        Create an instance of Cheetah with the model file provided or default model file.
+        Create an instance of Cheetah with the model file provided or default
+        model file.
       </li>
       <li>
         Acquire microphone (& ask permission) data stream and convert to voice
@@ -78,8 +39,8 @@
       onclick="startCheetah(document.getElementById('accessKey').value)"
     />
     <hr />
-    <div id="status" style="white-space: pre;"></div>
-    <br>
+    <div id="status" style="white-space: pre"></div>
+    <br />
     <div id="result"></div>
   </body>
 </html>
