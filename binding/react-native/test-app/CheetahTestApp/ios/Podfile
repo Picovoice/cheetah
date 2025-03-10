@@ -14,7 +14,8 @@ end
 
 target 'CheetahTestApp' do
   config = use_native_modules!
-  pod 'Cheetah-iOS', '~> 2.1.0'
+  # pod 'Cheetah-iOS', '~> 2.1.1'
+  pod 'Cheetah-iOS', :podspec => 'https://raw.githubusercontent.com/Picovoice/cheetah/release-others/binding/ios/Cheetah-iOS.podspec'
 
   # Flags change depending on the env values.
   flags = get_default_flags()

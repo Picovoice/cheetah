@@ -28,6 +28,7 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
+  pod 'Cheetah-iOS', :podspec => 'https://raw.githubusercontent.com/Picovoice/cheetah/release-others/binding/ios/Cheetah-iOS.podspec'
   use_frameworks!
   use_modular_headers!
 

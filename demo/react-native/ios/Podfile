@@ -4,6 +4,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 platform :ios, '13.0'
 
 target 'CheetahDemo' do
+  pod 'Cheetah-iOS', :podspec => 'https://raw.githubusercontent.com/Picovoice/cheetah/release-others/binding/ios/Cheetah-iOS.podspec'
   config = use_native_modules!
   use_react_native!(:path => config["reactNativePath"])
 end
