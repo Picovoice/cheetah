@@ -4,7 +4,7 @@
   "private": true,
   "description": "Cheetah React demo (made with Create React App)",
   "dependencies": {
-    "@picovoice/cheetah-react": "~2.1.0",
+    "@picovoice/cheetah-react": "file:../../binding/react",
     "@picovoice/web-voice-processor": "~4.0.8",
     "@types/node": "^18.11.9",
     "@types/react": "^19.0.0",
