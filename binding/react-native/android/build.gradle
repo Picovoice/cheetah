@@ -3,6 +3,9 @@ buildscript {
   repositories {
     google()
     mavenCentral()
+        maven {
+            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-****/'
+        }
   }
 
   dependencies {
@@ -59,6 +62,10 @@ android {
 repositories {
   mavenCentral()
   google()
+
+        maven {
+            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-****/'
+        }
 
   def found = false
   def defaultDir = null
@@ -129,5 +136,5 @@ repositories {
 dependencies {
   // noinspection GradleDynamicVersion
   api 'com.facebook.react:react-native:+'
-  implementation 'ai.picovoice:cheetah-android:2.1.0'
+  implementation 'ai.picovoice:cheetah-android:2.1.1'
 }
