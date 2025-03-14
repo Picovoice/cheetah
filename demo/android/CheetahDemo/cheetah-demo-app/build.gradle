@@ -52,11 +52,11 @@ android {
                 if (flavor.name != 'en') {
                     from("$projectDir/../../../../lib/common/")
                     include("cheetah_params_${flavor.name}.pv")
-                    into("$projectDir/src/main/assets/models")
+                    into("$projectDir/src/${flavor.name}/assets/models")
                 } else {
                     from("$projectDir/../../../../lib/common/")
                     include("cheetah_params.pv")
-                    into("$projectDir/src/main/assets/models")
+                    into("$projectDir/src/${flavor.name}/assets/models")
                 }
             }
         }
