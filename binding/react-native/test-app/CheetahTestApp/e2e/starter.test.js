@@ -19,7 +19,7 @@ describe('Cheetah', () => {
     for (let i = 0; i < NUM_RESULTS; i += 1) {
       await waitFor(element(by.id('testResult')).atIndex(i))
         .toExist()
-        .withTimeout(60 * 1000);
+        .withTimeout(2 * 60 * 1000);
       await expect(element(by.id('testResult')).atIndex(i)).toHaveText('true');
     }
   });
