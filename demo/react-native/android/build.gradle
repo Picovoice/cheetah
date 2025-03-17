@@ -3,7 +3,7 @@
 buildscript {
     ext {
         buildToolsVersion = "30.0.3"
-        minSdkVersion = 21
+        minSdkVersion = 24
         compileSdkVersion = 33
         targetSdkVersion = 33
     }
@@ -11,7 +11,7 @@ buildscript {
         google()
         jcenter()
         maven {
-            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1371/'
+            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1377/'
         }
     }
     dependencies {
@@ -36,7 +36,7 @@ allprojects {
         maven { url 'https://www.jitpack.io' }
 
         maven {
-            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1371/'
+            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1377/'
         }
     }
 }

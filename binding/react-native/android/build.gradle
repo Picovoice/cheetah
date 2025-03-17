@@ -4,7 +4,7 @@ buildscript {
     google()
     mavenCentral()
         maven {
-            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1371/'
+            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1377/'
         }
   }
 
@@ -38,7 +38,7 @@ android {
   compileSdkVersion getExtOrIntegerDefault('compileSdkVersion')
   buildToolsVersion getExtOrDefault('buildToolsVersion')
   defaultConfig {
-    minSdkVersion 21
+    minSdkVersion 24
     targetSdkVersion getExtOrIntegerDefault('targetSdkVersion')
     versionCode 1
     versionName "1.0"
@@ -64,7 +64,7 @@ repositories {
   google()
 
         maven {
-            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1371/'
+            url 'https://s01.oss.sonatype.org/content/repositories/aipicovoice-1377/'
         }
 
   def found = false

@@ -1,4 +1,4 @@
-const NUM_RESULTS = 4;
+const NUM_RESULTS = 14;
 
 describe('Cheetah', () => {
   beforeEach(async () => {
