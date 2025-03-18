@@ -13,7 +13,7 @@
     "ios-link": "cd ios && pod install && cd ..",
     "ios-install": "yarn && yarn ios-link",
     "ios-bundle": "react-native bundle --dev false --platform ios --entry-file index.js --bundle-output ios/app.jsbundle",
-    "postinstall": "node copy.js"
+    "postinstall": "patch-package && node copy.js"
   },
   "dependencies": {
     "@picovoice/cheetah-react-native": "=2.1.0",
@@ -35,6 +35,8 @@
     "metro-react-native-babel-preset": "^0.64.0",
     "mkdirp": "^1.0.4",
     "ncp": "^2.0.0",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.8.0",
     "react-test-renderer": "17.0.2",
     "typescript": "^4.9.3"

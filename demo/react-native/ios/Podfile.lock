@@ -1,6 +1,6 @@
 PODS:
   - boost (1.76.0)
-  - Cheetah-iOS (2.1.0)
+  - Cheetah-iOS (2.1.1)
   - cheetah-react-native (2.1.0):
     - Cheetah-iOS (~> 2.1.0)
     - React
@@ -299,7 +299,7 @@ PODS:
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
-  - Cheetah-iOS (from `https://raw.githubusercontent.com/Picovoice/cheetah/v2.1-react-native/binding/ios/Cheetah-iOS.podspec`)
+  - Cheetah-iOS (from `https://raw.githubusercontent.com/Picovoice/cheetah/release-cheetah-others/binding/ios/Cheetah-iOS.podspec`)
   - "cheetah-react-native (from `../node_modules/@picovoice/cheetah-react-native`)"
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -346,7 +346,7 @@ EXTERNAL SOURCES:
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   Cheetah-iOS:
-    :podspec: https://raw.githubusercontent.com/Picovoice/cheetah/v2.1-react-native/binding/ios/Cheetah-iOS.podspec
+    :podspec: https://raw.githubusercontent.com/Picovoice/cheetah/release-cheetah-others/binding/ios/Cheetah-iOS.podspec
   cheetah-react-native:
     :path: "../node_modules/@picovoice/cheetah-react-native"
   DoubleConversion:
@@ -416,14 +416,9 @@ EXTERNAL SOURCES:
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
-CHECKOUT OPTIONS:
-  Cheetah-iOS:
-    :commit: b07ef50da9058941d268aee19932815f9bd471ba
-    :git: https://github.com/Picovoice/cheetah.git
-
 SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
-  Cheetah-iOS: 3ad9ac1bd4f880a557ce7fe6fbe1fb1f0a7402f3
+  Cheetah-iOS: 8801e227fc1ad49be8af578a671e1bbe80d8d1c6
   cheetah-react-native: dd709d4c52c07bf45828003b58fe4072783e4320
   DoubleConversion: 831926d9b8bf8166fd87886c4abab286c2422662
   FBLazyVector: 63b89dc85804d5817261f56dc4cfb43a9b6d57f5
@@ -461,6 +456,6 @@ SPEC CHECKSUMS:
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   Yoga: 0bc4b37c3b8a345336ff601e2cf7d9704bab7e93
 
-PODFILE CHECKSUM: dea7c62235d55b5514625b6be593b3f4eb288d9a
+PODFILE CHECKSUM: 7c753ab4bf8b778f96b4dc32a628791b464527b7
 
 COCOAPODS: 1.16.2
