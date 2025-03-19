@@ -1,6 +1,6 @@
 {
   "name": "cheetah-react-native-demo",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "private": true,
   "scripts": {
     "start": "react-native start",
@@ -16,7 +16,7 @@
     "postinstall": "patch-package && node copy.js"
   },
   "dependencies": {
-    "@picovoice/cheetah-react-native": "=2.1.0",
+    "@picovoice/cheetah-react-native": "=2.1.1",
     "@picovoice/react-native-voice-processor": "1.2.3",
     "@react-native-picker/picker": "^1.9.2",
     "react": "^17.0.2",
