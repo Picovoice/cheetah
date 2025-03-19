@@ -25,3 +25,6 @@
 
 ## [2.1.0] - 2024-12-09
 * Additional language support
+
+## [2.1.1] - 2025-03-18
+* Improved endpointing

@@ -57,6 +57,7 @@ jobs:
       run: |
         yarn install
         ./copy_test_resources.sh
+
     - name: Cocoapods install
       working-directory: binding/react-native/test-app/CheetahTestApp/ios
       run: pod install --repo-update

@@ -46,6 +46,9 @@ function App(): JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+  const margined = {
+    marginTop: StatusBar.currentHeight,
+  }
 
   const [running, setRunning] = useState(false);
   const [results, setResults] = useState<Result[]>([]);
@@ -65,7 +68,7 @@ function App(): JSX.Element {
       />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
+        style={{...backgroundStyle, ...margined}}>
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,

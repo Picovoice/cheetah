@@ -199,16 +199,6 @@ checksum = "b4668fb0ea861c1df094127ac5f1da3409a82116a4ba74fca2e58ef927159bb3"
 
 [[package]]
 name = "libloading"
-version = "0.7.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b67380fd3b2fbe7527a606e18729d21c6f3951633d0500574c4dc22d2d638b9f"
-dependencies = [
- "cfg-if",
- "winapi",
-]
-
-[[package]]
-name = "libloading"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d580318f95776505201b28cf98eb1fa5e4be3b689633ba6a3e6cd880ff22d8cb"
@@ -267,17 +257,17 @@ dependencies = [
 
 [[package]]
 name = "pv_cheetah"
-version = "2.0.3"
+version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e283da7d704c5b16970fe55cf0443df1ab8fe2aa3765cbf8a83c5e2cdefe8b7d"
+checksum = "a4b3404ce3568d4c01d275a19d1967ab2a2c1000d1e9f23d3e11c28c85095c15"
 dependencies = [
  "libc",
- "libloading 0.7.4",
+ "libloading",
 ]
 
 [[package]]
 name = "pv_cheetah_micdemo"
-version = "2.0.1"
+version = "2.1.0"
 dependencies = [
  "chrono",
  "clap",
@@ -295,7 +285,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3004c0adbf3826de2ba3aff0a2e594b2f5a761a45a4bbc1c50b16277ef47b165"
 dependencies = [
  "libc",
- "libloading 0.8.0",
+ "libloading",
 ]
 
 [[package]]
