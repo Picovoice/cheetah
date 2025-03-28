@@ -1,5 +1,7 @@
 # Cheetah Speech-to-Text Demos
 
+> Rust SDKs will no longer be maintained after **July 15, 2025**. If you plan to use the Cheetah Streaming Speech-to-Text Rust SDK for commercial purposes, please [contact us](https://picovoice.ai/contact/).
+
 Made in Vancouver, Canada by [Picovoice](https://picovoice.ai)
 
 ## Cheetah
