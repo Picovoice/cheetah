@@ -232,6 +232,8 @@ For more information about .NET demos, go to [demo/dotnet](./demo/dotnet).
 
 ### Rust Demo
 
+> Rust SDKs will no longer be maintained after **July 15, 2025**. If you plan to use the Cheetah Streaming Speech-to-Text Rust SDK for commercial purposes, please [contact us](https://picovoice.ai/contact/).
+
 [Cheetah Rust demo](./demo/rust) is a command-line application that lets you choose between running Cheetah on an audio
 file or on real-time microphone input.
 
@@ -644,6 +646,8 @@ using(Cheetah handle = Cheetah.Create(accessKey))
 
 
 ### Rust
+
+> Rust SDKs will no longer be maintained after **July 15, 2025**. If you plan to use the Cheetah Streaming Speech-to-Text Rust SDK for commercial purposes, please [contact us](https://picovoice.ai/contact/).
 
 First you will need [Rust and Cargo](https://rustup.rs/) installed on your system.
 
