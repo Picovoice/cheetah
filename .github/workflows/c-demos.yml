@@ -40,6 +40,13 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            pv_recorder_platform: "linux"
+          - os: windows-latest
+            pv_recorder_platform: "windows-amd64"
+          - os: macos-latest
+            pv_recorder_platform: "mac-arm64"
 
     steps:
     - uses: actions/checkout@v3
@@ -47,7 +54,7 @@ jobs:
         submodules: recursive
 
     - name: Create build directory
-      run: cmake -B ./build
+      run: cmake -B ./build -DPV_RECORDER_PLATFORM="${{ matrix.pv_recorder_platform }}"
 
     - name: Build micdemo
       run: cmake --build ./build --target cheetah_demo_mic
@@ -58,6 +65,17 @@ jobs:
     strategy:
       matrix:
         machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64]
+        include:
+          - machine: rpi3-32
+            pv_recorder_platform: "raspberry-pi3-32"
+          - machine: rpi3-64
+            pv_recorder_platform: "raspberry-pi3-64"
+          - machine: rpi4-32
+            pv_recorder_platform: "raspberry-pi4-32"
+          - machine: rpi4-64
+            pv_recorder_platform: "raspberry-pi4-64"
+          - machine: rpi5-64
+            pv_recorder_platform: "raspberry-pi5-64"
 
     steps:
     - uses: actions/checkout@v3
@@ -65,7 +83,7 @@ jobs:
         submodules: recursive
 
     - name: Create build directory
-      run: cmake -B ./build
+      run: cmake -B ./build -DPV_RECORDER_PLATFORM="${{ matrix.pv_recorder_platform }}"
 
     - name: Build micdemo
       run: cmake --build ./build --target cheetah_demo_mic
@@ -81,14 +99,17 @@ jobs:
             platform: linux
             arch: x86_64
             make_file: "Unix Makefiles"
+            pv_recorder_platform: "linux"
           - os: windows-latest
             platform: windows
             arch: amd64
             make_file: "MinGW Makefiles"
+            pv_recorder_platform: "windows-amd64"
           - os: macos-latest
             platform: mac
             arch: arm64
             make_file: "Unix Makefiles"
+            pv_recorder_platform: "mac-arm64"
 
     steps:
       - uses: actions/checkout@v3
@@ -101,7 +122,7 @@ jobs:
           python-version: '3.10'
 
       - name: Create build directory
-        run: cmake -G "${{ matrix.make_file }}" -B ./build
+        run: cmake -G "${{ matrix.make_file }}" -B ./build -DPV_RECORDER_PLATFORM="${{ matrix.pv_recorder_platform }}"
 
       - name: Build demo
         run: cmake --build ./build --target cheetah_demo_file
@@ -117,27 +138,33 @@ jobs:
 
     strategy:
       matrix:
-        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64]
+        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64, pv-windows-arm64]
         make_file: ["Unix Makefiles"]
         include:
           - machine: rpi3-32
             platform: raspberry-pi
             arch: cortex-a53
+            pv_recorder_platform: "raspberry-pi3-32"
           - machine: rpi3-64
             platform: raspberry-pi
             arch: cortex-a53-aarch64
+            pv_recorder_platform: "raspberry-pi3-64"
           - machine: rpi4-32
             platform: raspberry-pi
             arch: cortex-a72
+            pv_recorder_platform: "raspberry-pi4-32"
           - machine: rpi4-64
             platform: raspberry-pi
             arch: cortex-a72-aarch64
+            pv_recorder_platform: "raspberry-pi4-64"
           - machine: rpi5-64
             platform: raspberry-pi
             arch: cortex-a76-aarch64
+            pv_recorder_platform: "raspberry-pi5-64"
           - machine: pv-windows-arm64
             platform: windows
             arch: arm64
+            pv_recorder_platform: "windows-arm64"
             make_file: "MinGW Makefiles"
 
     steps:
@@ -146,7 +173,7 @@ jobs:
           submodules: recursive
 
       - name: Create build directory
-        run: cmake -G "${{ matrix.make_file }}" -B ./build
+        run: cmake -G "${{ matrix.make_file }}" -B ./build -DPV_RECORDER_PLATFORM="${{ matrix.pv_recorder_platform }}"
 
       - name: Build demo
         run: cmake --build ./build --target cheetah_demo_file

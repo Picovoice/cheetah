@@ -34,18 +34,22 @@ git clone --recurse-submodules https://github.com/Picovoice/cheetah.git
 Build the demos by running this from the root of the repository:
 
 ```console
-cmake -S demo/c/ -B demo/c/build
+cmake -S demo/c/ -B demo/c/build -DPV_RECORDER_PLATFORM={PV_RECORDER_PLATFORM}
 cmake --build demo/c/build
 ```
+
+The {PV_RECORDER_PLATFORM} variable will set the compilation flags for the given platform. Exclude this variable to get a list of possible values.
 
 ### Build Windows
 
 Build the demo by running this from the root of the repository:
 
 ```console
-cmake -S demo/c/ -B demo/c/build -G "MinGW Makefiles"
+cmake -S demo/c/ -B demo/c/build -DPV_RECORDER_PLATFORM={PV_RECORDER_PLATFORM} -G "MinGW Makefiles"
 cmake --build demo/c/build
 ```
+
+The {PV_RECORDER_PLATFORM} variable will set the compilation flags for the given platform. Exclude this variable to get a list of possible values.
 
 ### Run
 
