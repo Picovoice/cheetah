@@ -1,6 +1,6 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <ItemGroup>
-        <Content Include="$(MSBuildThisFileDirectory)../../lib/netstandard2.0/Cheetah.dll">
+        <Content Include="$(MSBuildThisFileDirectory)..\..\lib\netstandard2.0\Cheetah.dll">
             <Link>Cheetah.dll</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Visible>False</Visible>
@@ -15,15 +15,15 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Visible>false</Visible>
         </Content>
-        <Content Include="$(MSBuildThisFileDirectory)lib/**">
-            <PackagePath>content/picovoice/%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
-            <Link>lib/%(RecursiveDir)%(Filename)%(Extension)</Link>
+        <Content Include="$(MSBuildThisFileDirectory)lib\**">
+            <PackagePath>content\picovoice\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+            <Link>lib\%(RecursiveDir)%(Filename)%(Extension)</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Visible>false</Visible>
         </Content>
-        <Content Include="$(MSBuildThisFileDirectory)/../common/cheetah_params.pv">
-            <Link>lib/common/cheetah_params.pv</Link>
-            <PackagePath>content/picovoice/common/cheetah_params.pv</PackagePath>
+        <Content Include="$(MSBuildThisFileDirectory)\..\common\cheetah_params.pv">
+            <Link>lib\common\cheetah_params.pv</Link>
+            <PackagePath>content\picovoice\common\cheetah_params.pv</PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Visible>false</Visible>
         </Content>
