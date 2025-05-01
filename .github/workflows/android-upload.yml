@@ -6,25 +6,25 @@ on:
     branches: [ master ]
     paths:
       - '.github/workflows/android-upload.yml'
-      - 'demo/android/Activity/**'
+      - 'demo/android/**'
       - 'binding/android/**'
-      - '!demo/android/Activity/README.md'
+      - '!demo/android/CheetahDemo/README.md'
       - '!binding/android/README.md'
   pull_request:
     branches: [ master, 'v[0-9]+.[0-9]+' ]
     paths:
       - '.github/workflows/android-upload.yml'
-      - 'demo/android/Activity/**'
+      - 'demo/android/CheetahDemo/**'
       - 'binding/android/**'
-      - '!demo/android/Activity/README.md'
+      - '!demo/android/CheetahDemo/README.md'
       - '!binding/android/README.md'
 
 jobs:
-  upload-activity-demo:
+  upload-demo:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: demo/android/Activity
+        working-directory: demo/android/CheetahDemo
 
     steps:
     - uses: actions/checkout@v3
@@ -42,7 +42,7 @@ jobs:
       run: |
         VC=`fastlane run google_play_track_version_codes \
           json_key:"./service-account.json" \
-          package_name:"ai.picovoice.cheetahdemo" \
+          package_name:"ai.picovoice.cheetahdemo.en" \
           track:"internal" \
         | grep -oP '(?<=Result: \[)\d+(?=\])' \
         | awk '{print $1+1}'`
@@ -60,4 +60,4 @@ jobs:
       run: ./gradlew bundleRelease
 
     - name: Upload to Google Play
-      run: fastlane supply --json_key ./service-account.json --package_name ai.picovoice.cheetahdemo --aab cheetah-demo-app/build/outputs/bundle/enRelease/cheetah-demo-app-en-release.aab --track internal --skip_upload_metadata --skip_upload_images --skip_upload_screenshots --release_status draft
+      run: fastlane supply --json_key ./service-account.json --package_name ai.picovoice.cheetahdemo.en --aab cheetah-demo-app/build/outputs/bundle/enRelease/cheetah-demo-app-en-release.aab --track internal --skip_upload_metadata --skip_upload_images --skip_upload_screenshots --release_status draft
