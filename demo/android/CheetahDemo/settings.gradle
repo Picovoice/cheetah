@@ -1,2 +1,5 @@
 rootProject.name = "CheetahDemo"
 include ':cheetah-demo-app'
+
+include(":cheetah-android")
+project(":cheetah-android").projectDir = file("../../../binding/android/Cheetah/cheetah")
