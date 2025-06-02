@@ -28,8 +28,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    namespace 'ai.picovoice.cheetah'
 }
 
 if (file("${rootDir}/publish-mavencentral.gradle").exists()) {

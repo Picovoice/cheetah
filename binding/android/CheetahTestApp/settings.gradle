@@ -1,5 +1,2 @@
 rootProject.name = "CheetahTestApp"
 include ':cheetah-test-app'
-
-include(":cheetah-android")
-project(":cheetah-android").projectDir = file("../Cheetah/cheetah")
