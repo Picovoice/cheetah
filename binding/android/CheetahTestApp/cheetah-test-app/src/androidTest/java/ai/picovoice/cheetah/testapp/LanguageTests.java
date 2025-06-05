@@ -82,9 +82,9 @@ public class LanguageTests extends BaseTest {
 
             String modelFile;
             if (language.equals("en")) {
-                modelFile = "model_files/cheetah_params.pv";
+                modelFile = "cheetah_params.pv";
             } else {
-                modelFile = String.format("model_files/cheetah_params_%s.pv", language);
+                modelFile = String.format("cheetah_params_%s.pv", language);
             }
 
             String testAudioFile = String.format("audio_samples/%s", audioFile);
@@ -104,7 +104,7 @@ public class LanguageTests extends BaseTest {
 
     @Test
     public void testTranscribe() throws Exception {
-        String modelPath = new File(testResourcesPath, modelFile).getAbsolutePath();
+        String modelPath = getModelFilepath(modelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
                 .setModelPath(modelPath)
@@ -125,7 +125,7 @@ public class LanguageTests extends BaseTest {
 
     @Test
     public void testTranscribeWithPunctuation() throws Exception {
-        String modelPath = new File(testResourcesPath, modelFile).getAbsolutePath();
+        String modelPath = getModelFilepath(modelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
                 .setModelPath(modelPath)
