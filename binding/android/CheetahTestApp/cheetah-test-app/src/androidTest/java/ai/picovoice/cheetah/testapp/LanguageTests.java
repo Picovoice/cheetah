@@ -82,17 +82,15 @@ public class LanguageTests extends BaseTest {
 
             String modelFile;
             if (language.equals("en")) {
-                modelFile = "model_files/cheetah_params.pv";
+                modelFile = "cheetah_params.pv";
             } else {
-                modelFile = String.format("model_files/cheetah_params_%s.pv", language);
+                modelFile = String.format("cheetah_params_%s.pv", language);
             }
-
-            String testAudioFile = String.format("audio_samples/%s", audioFile);
 
             parameters.add(new Object[]{
                     language,
                     modelFile,
-                    testAudioFile,
+                    audioFile,
                     transcript,
                     punctuations,
                     errorRate
@@ -104,13 +102,13 @@ public class LanguageTests extends BaseTest {
 
     @Test
     public void testTranscribe() throws Exception {
-        String modelPath = new File(testResourcesPath, modelFile).getAbsolutePath();
+        String modelPath = getModelFilepath(modelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
                 .setModelPath(modelPath)
                 .build(appContext);
 
-        File audioFile = new File(testResourcesPath, testAudioFile);
+        File audioFile = new File(getAudioFilepath(testAudioFile));
         String result = processTestAudio(cheetah, audioFile);
         cheetah.delete();
 
@@ -125,14 +123,14 @@ public class LanguageTests extends BaseTest {
 
     @Test
     public void testTranscribeWithPunctuation() throws Exception {
-        String modelPath = new File(testResourcesPath, modelFile).getAbsolutePath();
+        String modelPath = getModelFilepath(modelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
                 .setModelPath(modelPath)
                 .setEnableAutomaticPunctuation(true)
                 .build(appContext);
 
-        File audioFile = new File(testResourcesPath, testAudioFile);
+        File audioFile = new File(getAudioFilepath(testAudioFile));
         String result = processTestAudio(cheetah, audioFile);
         cheetah.delete();
 

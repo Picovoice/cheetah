@@ -31,11 +31,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.HashSet;
+import java.util.Set;
 
 import ai.picovoice.cheetah.Cheetah;
 import ai.picovoice.cheetah.CheetahTranscript;
 
 public class BaseTest {
+    static Set<String> extractedFiles;
 
     Context testContext;
     Context appContext;
@@ -46,10 +49,10 @@ public class BaseTest {
 
     @Before
     public void Setup() throws IOException {
+        extractedFiles = new HashSet<>();
         testContext = InstrumentationRegistry.getInstrumentation().getContext();
         appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         assetManager = testContext.getAssets();
-        extractAssetsRecursively("test_resources");
         testResourcesPath = new File(appContext.getFilesDir(), "test_resources").getAbsolutePath();
         defaultModelPath = new File(testResourcesPath, "model_files/cheetah_params.pv").getAbsolutePath();
 
@@ -103,27 +106,48 @@ public class BaseTest {
         return res[words1.length][words2.length];
     }
 
-    private void extractAssetsRecursively(String path) throws IOException {
-        String[] list = assetManager.list(path);
-        if (list.length > 0) {
-            File outputFile = new File(appContext.getFilesDir(), path);
-            if (!outputFile.exists()) {
-                outputFile.mkdirs();
-            }
+    public String getModelFilepath(String modelFilename) throws IOException {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        String resPath = new File(
+                context.getFilesDir(),
+                "test_resources").getAbsolutePath();
+        String modelPath = String.format("model_files/%s", modelFilename);
+        extractTestFile(String.format("test_resources/%s", modelPath));
+        return new File(resPath, modelPath).getAbsolutePath();
+    }
 
-            for (String file : list) {
-                String filepath = path + "/" + file;
-                extractAssetsRecursively(filepath);
-            }
-        } else {
-            extractTestFile(path);
-        }
+    public String getAudioFilepath(String audioFilename) throws IOException {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        String resPath = new File(
+                context.getFilesDir(),
+                "test_resources").getAbsolutePath();
+        extractTestFile(String.format("test_resources/audio_samples/%s", audioFilename));
+        return new File(resPath, String.format("audio_samples/%s", audioFilename)).getAbsolutePath();
     }
 
     private void extractTestFile(String filepath) throws IOException {
-        InputStream is = new BufferedInputStream(assetManager.open(filepath), 256);
-        File absPath = new File(appContext.getFilesDir(), filepath);
-        OutputStream os = new BufferedOutputStream(new FileOutputStream(absPath), 256);
+        File absPath = new File(
+                appContext.getFilesDir(),
+                filepath);
+
+        if (extractedFiles.contains(filepath)) {
+            return;
+        }
+
+        if (!absPath.exists()) {
+            if (absPath.getParentFile() != null) {
+                absPath.getParentFile().mkdirs();
+            }
+            absPath.createNewFile();
+        }
+
+        InputStream is = new BufferedInputStream(
+                assetManager.open(filepath),
+                256);
+        OutputStream os = new BufferedOutputStream(
+                new FileOutputStream(absPath),
+                256);
+
         int r;
         while ((r = is.read()) != -1) {
             os.write(r);
@@ -132,6 +156,8 @@ public class BaseTest {
 
         is.close();
         os.close();
+
+        extractedFiles.add(filepath);
     }
 
     String processTestAudio(@NonNull Cheetah c, File testAudio) throws Exception {
