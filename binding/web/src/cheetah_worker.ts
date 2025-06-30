@@ -163,7 +163,7 @@ export class CheetahWorker {
                   transcriptCallback(ev.data.cheetahTranscript);
                   break;
                 case 'failed':
-                case 'error':
+                case 'error': {
                   const error = pvStatusToException(ev.data.status, ev.data.shortMessage, ev.data.messageStack);
                   if (processErrorCallback) {
                     processErrorCallback(error);
@@ -172,6 +172,7 @@ export class CheetahWorker {
                     console.error(error);
                   }
                   break;
+                }
                 default:
                   // @ts-ignore
                   processErrorCallback(pvStatusToException(PvStatus.RUNTIME_ERROR, `Unrecognized command: ${event.data.command}`));
@@ -180,10 +181,11 @@ export class CheetahWorker {
             resolve(new CheetahWorker(worker, event.data.version, event.data.frameLength, event.data.sampleRate));
             break;
           case 'failed':
-          case 'error':
+          case 'error': {
             const error = pvStatusToException(event.data.status, event.data.shortMessage, event.data.messageStack);
             reject(error);
             break;
+          }
           default:
             // @ts-ignore
             reject(pvStatusToException(PvStatus.RUNTIME_ERROR, `Unrecognized command: ${event.data.command}`));
@@ -244,10 +246,11 @@ export class CheetahWorker {
             resolve();
             break;
           case 'failed':
-          case 'error':
+          case 'error': {
             const error = pvStatusToException(event.data.status, event.data.shortMessage, event.data.messageStack);
             reject(error);
             break;
+          }
           default:
             // @ts-ignore
             reject(pvStatusToException(PvStatus.RUNTIME_ERROR, `Unrecognized command: ${event.data.command}`));

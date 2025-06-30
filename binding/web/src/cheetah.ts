@@ -27,7 +27,7 @@ import { simd } from 'wasm-feature-detect';
 
 import { CheetahModel, CheetahOptions, CheetahTranscript, PvStatus } from './types';
 
-import * as CheetahErrors from "./cheetah_errors"
+import * as CheetahErrors from "./cheetah_errors";
 import { pvStatusToException } from './cheetah_errors';
 
 /**
@@ -396,6 +396,7 @@ export class Cheetah {
             // eslint-disable-next-line no-console
             console.error(error);
           }
+          reject(error);
         });
     });
   }
