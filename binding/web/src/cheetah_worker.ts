@@ -1,5 +1,5 @@
 /*
-  Copyright 2022-2023 Picovoice Inc.
+  Copyright 2022-2025 Picovoice Inc.
 
   You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
   file accompanying this source.
@@ -31,7 +31,9 @@ export class CheetahWorker {
   private readonly _sampleRate: number;
 
   private static _wasm: string;
+  private static _wasmLib: string;
   private static _wasmSimd: string;
+  private static _wasmSimdLib: string;
   private static _sdk: string = "web";
 
   private constructor(worker: Worker, version: string, frameLength: number, sampleRate: number) {
@@ -80,12 +82,32 @@ export class CheetahWorker {
   }
 
   /**
+   * Set base64 wasm lib file in text format.
+   * @param wasmLib Base64'd wasm lib file in text format.
+   */
+  public static setWasmLib(wasmLib: string): void {
+    if (this._wasmLib === undefined) {
+      this._wasmLib = wasmLib;
+    }
+  }
+
+  /**
    * Set base64 wasm file with SIMD feature.
-   * @param wasmSimd Base64'd wasm file to use to initialize wasm.
+   * @param wasmSimd Base64'd wasm SIMD file to use to initialize wasm.
    */
   public static setWasmSimd(wasmSimd: string): void {
     if (this._wasmSimd === undefined) {
       this._wasmSimd = wasmSimd;
+    }
+  }
+
+  /**
+   * Set base64 wasm file with SIMD feature in text format.
+   * @param wasmSimdLib Base64'd wasm SIMD file in text format.
+   */
+  public static setWasmSimdLib(wasmSimdLib: string): void {
+    if (this._wasmSimdLib === undefined) {
+      this._wasmSimdLib = wasmSimdLib;
     }
   }
 
@@ -175,7 +197,9 @@ export class CheetahWorker {
       modelPath: modelPath,
       options: workerOptions,
       wasm: this._wasm,
+      wasmLib: this._wasmLib,
       wasmSimd: this._wasmSimd,
+      wasmSimdLib: this._wasmSimdLib,
       sdk: this._sdk,
     });
 

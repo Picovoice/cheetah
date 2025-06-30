@@ -1,5 +1,5 @@
 /*
-  Copyright 2022-2023 Picovoice Inc.
+  Copyright 2022-2025 Picovoice Inc.
 
   You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
   file accompanying this source.
@@ -53,6 +53,8 @@ self.onmessage = async function (
       try {
         Cheetah.setWasm(event.data.wasm);
         Cheetah.setWasmSimd(event.data.wasmSimd);
+        Cheetah.setWasmLib(event.data.wasmLib);
+        Cheetah.setWasmSimdLib(event.data.wasmSimdLib);
         cheetah = await Cheetah._init(
           event.data.accessKey,
           transcriptCallback,

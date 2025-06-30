@@ -53,7 +53,9 @@ export type CheetahWorkerInitRequest = {
   modelPath: string;
   options: CheetahOptions;
   wasm: string;
+  wasmLib: string;
   wasmSimd: string;
+  wasmSimdLib: string;
   sdk: string;
 };
 
