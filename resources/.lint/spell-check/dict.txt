@@ -4,6 +4,7 @@ androidx
 armv7l
 calcsize
 camelcase
+ccall
 ccheetah
 Cdecl
 cheetahdemo
@@ -16,6 +17,7 @@ codesign
 Compat
 constraintlayout
 cstring
+cwrap
 dlfcn
 dlopen
 dlsym
@@ -23,12 +25,16 @@ downsample
 downsampled
 drwav
 dylib
+emscripten
 endpointing
 exopackage
 Fastenshtein
 filedemo
 framecount
 gradlew
+HEAPF
+HEAPU
+heteronyms
 HMODULE
 IIFE
 instanceof
