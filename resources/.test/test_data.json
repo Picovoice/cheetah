@@ -11,7 +11,7 @@
             {
                 "language": "es",
                 "audio_file": "test_es.wav",
-                "transcript": "En ese equipo contó con dos futuros internacionales Javi Martínez y nacho Monreal.",
+                "transcript": "En ese equipo contó con dos futuros internacionales. Javi Martínez y nacho Monreal.",
                 "punctuations": ["."],
                 "error_rate": 0.025
             },
@@ -32,8 +32,8 @@
             {
                 "language": "it",
                 "audio_file": "test_it.wav",
-                "transcript": "Il gioco rimase sostanzialmente invariato rispetto all'anno precedente ma vennero apportate comunque delle modifiche.",
-                "punctuations": ["."],
+                "transcript": "Il gioco rimase sostanzialmente invariato rispetto all'anno precedente, ma vennero apportate comunque delle modifiche.",
+                "punctuations": [".", ","],
                 "error_rate": 0.025
             },
             {
