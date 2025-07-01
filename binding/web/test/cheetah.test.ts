@@ -283,11 +283,11 @@ describe("Cheetah Binding", function () {
     for (const testParam of testData.tests.language_tests) {
       it(`should be able to process (${testParam.language}) (${instanceString})`, () => {
         try {
-          cy.getFramesFromFile(`audio_samples/${testParam.audio_file}`).then(
-            async pcm => {
+          return cy.getFramesFromFile(`audio_samples/${testParam.audio_file}`).then(
+            pcm => {
               const suffix =
                 testParam.language === 'en' ? '' : `_${testParam.language}`;
-              await runProcTest(
+              return runProcTest(
                 instance,
                 pcm,
                 testParam.punctuations,
@@ -309,11 +309,11 @@ describe("Cheetah Binding", function () {
 
       it(`should be able to process with punctuation (${testParam.language}) (${instanceString})`, () => {
         try {
-          cy.getFramesFromFile(`audio_samples/${testParam.audio_file}`).then(
-            async pcm => {
+          return cy.getFramesFromFile(`audio_samples/${testParam.audio_file}`).then(
+            pcm => {
               const suffix =
                 testParam.language === 'en' ? '' : `_${testParam.language}`;
-              await runProcTest(
+              return runProcTest(
                 instance,
                 pcm,
                 testParam.punctuations,
