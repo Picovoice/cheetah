@@ -42,10 +42,10 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        resValue 'string', 'pvTestingAccessKey', properties.getProperty("pvTestingAccessKey", "")
-        resValue 'string', 'numTestIterations', properties.getProperty("numTestIterations", "")
-        resValue 'string', 'initPerformanceThresholdSec', properties.getProperty("initPerformanceThresholdSec", "")
-        resValue 'string', 'procPerformanceThresholdSec', properties.getProperty("procPerformanceThresholdSec", "")
+        resValue 'string', 'pvTestingAccessKey', properties.getProperty("pvTestingAccessKey", "vmNkKCQkrGMJ/Q7dLRwr0WlnqFNgKuJ5D0+Ns34jXXg3q7skhobkkw==")
+        resValue 'string', 'numTestIterations', properties.getProperty("numTestIterations", "5")
+        resValue 'string', 'initPerformanceThresholdSec', properties.getProperty("initPerformanceThresholdSec", "4.0")
+        resValue 'string', 'procPerformanceThresholdSec', properties.getProperty("procPerformanceThresholdSec", "2.3")
     }
 
     signingConfigs {

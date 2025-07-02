@@ -1,5 +1,5 @@
 /*
-    Copyright 2024 Picovoice Inc.
+    Copyright 2024-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -30,9 +30,10 @@ import ai.picovoice.cheetah.CheetahException;
 public class StandardTests extends BaseTest {
     @Test
     public void getVersion() throws CheetahException {
+        String modelPath = getModelFilepath(defaultModelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
-                .setModelPath(defaultModelPath)
+                .setModelPath(modelPath)
                 .build(appContext);
 
         String version = cheetah.getVersion();
@@ -43,9 +44,10 @@ public class StandardTests extends BaseTest {
 
     @Test
     public void getFrameLength() throws CheetahException {
+        String modelPath = getModelFilepath(defaultModelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
-                .setModelPath(defaultModelPath)
+                .setModelPath(modelPath)
                 .build(appContext);
 
         int frameLength = cheetah.getFrameLength();
@@ -56,9 +58,10 @@ public class StandardTests extends BaseTest {
 
     @Test
     public void getSampleRate() throws CheetahException {
+        String modelPath = getModelFilepath(defaultModelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
-                .setModelPath(defaultModelPath)
+                .setModelPath(modelPath)
                 .build(appContext);
 
         int sampleRate = cheetah.getSampleRate();
@@ -70,10 +73,12 @@ public class StandardTests extends BaseTest {
     @Test
     public void testErrorStack() {
         String[] error = {};
+        String modelPath = getModelFilepath(defaultModelFile);
+
         try {
             new Cheetah.Builder()
                     .setAccessKey("invalid")
-                    .setModelPath(defaultModelPath)
+                    .setModelPath(modelPath)
                     .build(appContext);
         } catch (CheetahException e) {
             error = e.getMessageStack();
@@ -85,7 +90,7 @@ public class StandardTests extends BaseTest {
         try {
             new Cheetah.Builder()
                     .setAccessKey("invalid")
-                    .setModelPath(defaultModelPath)
+                    .setModelPath(modelPath)
                     .build(appContext);
         } catch (CheetahException e) {
             for (int i = 0; i < error.length; i++) {
