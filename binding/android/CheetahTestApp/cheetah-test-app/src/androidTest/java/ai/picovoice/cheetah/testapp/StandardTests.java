@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.IOException;
 
 import ai.picovoice.cheetah.Cheetah;
 import ai.picovoice.cheetah.CheetahException;
@@ -28,8 +29,9 @@ import ai.picovoice.cheetah.CheetahException;
 
 @RunWith(AndroidJUnit4.class)
 public class StandardTests extends BaseTest {
+
     @Test
-    public void getVersion() throws CheetahException {
+    public void getVersion() throws CheetahException, IOException {
         String modelPath = getModelFilepath(defaultModelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
@@ -43,7 +45,7 @@ public class StandardTests extends BaseTest {
     }
 
     @Test
-    public void getFrameLength() throws CheetahException {
+    public void getFrameLength() throws CheetahException, IOException {
         String modelPath = getModelFilepath(defaultModelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
@@ -57,7 +59,7 @@ public class StandardTests extends BaseTest {
     }
 
     @Test
-    public void getSampleRate() throws CheetahException {
+    public void getSampleRate() throws CheetahException, IOException {
         String modelPath = getModelFilepath(defaultModelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
@@ -71,7 +73,7 @@ public class StandardTests extends BaseTest {
     }
 
     @Test
-    public void testErrorStack() {
+    public void testErrorStack() throws IOException {
         String[] error = {};
         String modelPath = getModelFilepath(defaultModelFile);
 
