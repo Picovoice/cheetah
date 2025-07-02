@@ -185,7 +185,7 @@ class CheetahDemoUITests: XCTestCase {
                         testAudio: testCase.audio_file,
                         expectedTranscript: testCase.transcript,
                         errorRate: testCase.error_rate,
-                        enableAutomaticPunctuation: false)
+                        enableAutomaticPunctuation: true)
             }
         }
     }
