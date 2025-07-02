@@ -205,7 +205,7 @@ describe("Cheetah Binding", function () {
     }
   });
 
-  for (const instance of [CheetahWorker]) {
+  for (const instance of [Cheetah, CheetahWorker]) {
     const instanceString = (instance === CheetahWorker) ? 'worker' : 'main';
 
     it(`should return correct error message stack (${instanceString})`, async () => {
