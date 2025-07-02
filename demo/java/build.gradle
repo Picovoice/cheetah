@@ -18,7 +18,7 @@ sourceSets {
 }
 
 dependencies {
-    implementation name: 'Cheetah'
+    implementation name: 'cheetah-java'
     implementation 'commons-cli:commons-cli:1.4'
 }
 

@@ -49,6 +49,12 @@ jobs:
       with:
         gradle-version: ${{ matrix.gradle-version }}
 
+      # ************** REMOVE AFTER RELEASE ********************
+    - name: Build Local Packages
+      run: gradle assemble
+      working-directory: binding/java
+      # ********************************************************
+
     - name: Build
       run: gradle build
 
@@ -64,6 +70,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+      # ************** REMOVE AFTER RELEASE ********************
+    - name: Build Local Packages
+      run: ./gradlew assemble
+      working-directory: binding/java
+      # ********************************************************
 
     - name: Build
       run: ./gradlew build
