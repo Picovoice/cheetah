@@ -1,10 +1,11 @@
 [package]
 name = "pv_cheetah_filedemo"
-version = "2.1.0"
+version = "2.2.0"
 edition = "2018"
 
 [dependencies]
 clap = "3.2.16"
 hound = "3.4.0"
 itertools = "0.10.3"
-pv_cheetah = "=2.1.1"
+# pv_cheetah = "=2.2.0"
+pv_cheetah = { path = "../../../binding/rust" }
