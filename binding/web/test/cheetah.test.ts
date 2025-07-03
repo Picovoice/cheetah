@@ -112,6 +112,7 @@ const runProcTest = async (
   }
 
   let transcript = "";
+  let isTranscriptFinalized = false;
 
   const runProcess = () =>
     new Promise<void>(async (resolve, reject) => {
@@ -120,6 +121,7 @@ const runProcTest = async (
         cheetahTranscript => {
           transcript += cheetahTranscript.transcript;
           if (cheetahTranscript.isFlushed) {
+            isTranscriptFinalized = true;
             resolve();
           }
         },
@@ -127,6 +129,7 @@ const runProcTest = async (
         {
           enableAutomaticPunctuation: enablePunctuation,
           processErrorCallback: (error: CheetahError) => {
+            isTranscriptFinalized = true;
             reject(error);
           }
         }
@@ -141,7 +144,9 @@ const runProcTest = async (
       }
       await cheetah.flush();
 
-      await delay(1000);
+      while (!isTranscriptFinalized) {
+        await new Promise(r => setTimeout(r, 250));
+      }
 
       if (cheetah instanceof CheetahWorker) {
         cheetah.terminate();
@@ -281,58 +286,42 @@ describe("Cheetah Binding", function () {
     });
 
     for (const testParam of testData.tests.language_tests) {
-      it(`should be able to process (${testParam.language}) (${instanceString})`, () => {
-        try {
-          cy.getFramesFromFile(`audio_samples/${testParam.audio_file}`).then(
-            async pcm => {
-              const suffix =
-                testParam.language === 'en' ? '' : `_${testParam.language}`;
-              await runProcTest(
-                instance,
-                pcm,
-                testParam.punctuations,
-                testParam.transcript,
-                testParam.error_rate,
-                {
-                  model: {
-                    publicPath: `/test/cheetah_params${suffix}.pv`,
-                    forceWrite: true,
-                  },
-                }
-              );
-            }
-          );
-        } catch (e) {
-          expect(e).to.be.undefined;
-        }
-      });
+      const suffix = testParam.language === 'en' ? '' : `_${testParam.language}`;
 
-      it(`should be able to process with punctuation (${testParam.language}) (${instanceString})`, () => {
-        try {
-          cy.getFramesFromFile(`audio_samples/${testParam.audio_file}`).then(
-            async pcm => {
-              const suffix =
-                testParam.language === 'en' ? '' : `_${testParam.language}`;
-              await runProcTest(
-                instance,
-                pcm,
-                testParam.punctuations,
-                testParam.transcript,
-                testParam.error_rate,
-                {
-                  model: {
-                    publicPath: `/test/cheetah_params${suffix}.pv`,
-                    forceWrite: true,
-                  },
-                  enablePunctuation: true,
-                }
-              );
-            }
-          );
-        } catch (e) {
-          expect(e).to.be.undefined;
-        }
-      });
+      it(`should be able to process (${testParam.language}) (${instanceString})`, () => cy.getFramesFromFile(
+        `audio_samples/${testParam.audio_file}`).then(
+        (pcm: Int16Array) => runProcTest(
+          instance,
+          pcm,
+          testParam.punctuations,
+          testParam.transcript,
+          testParam.error_rate,
+          {
+            model: {
+              publicPath: `/test/cheetah_params${suffix}.pv`,
+              forceWrite: true,
+            },
+          }
+        )
+      ));
+
+      it(`should be able to process with punctuation (${testParam.language}) (${instanceString})`, () => cy.getFramesFromFile(
+        `audio_samples/${testParam.audio_file}`).then(
+        (pcm: Int16Array) => runProcTest(
+          instance,
+          pcm,
+          testParam.punctuations,
+          testParam.transcript,
+          testParam.error_rate,
+          {
+            model: {
+              publicPath: `/test/cheetah_params${suffix}.pv`,
+              forceWrite: true,
+            },
+            enablePunctuation: true,
+          }
+        )
+      ));
     }
   }
 });

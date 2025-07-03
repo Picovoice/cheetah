@@ -1,6 +1,6 @@
 node_modules
 dist
-lib/pv_cheetah*.wasm
+src/lib/*
 cypress/fixtures/audio_samples/*
 test/cheetah_params*.js
 test/cheetah_params*.pv

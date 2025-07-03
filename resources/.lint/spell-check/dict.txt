@@ -5,6 +5,7 @@ armv7l
 calcsize
 camelcase
 ccall
+ccall
 ccheetah
 Cdecl
 cheetahdemo
@@ -16,6 +17,7 @@ cocoapods
 codesign
 Compat
 constraintlayout
+cwrap
 cstring
 cwrap
 dlfcn
@@ -26,6 +28,7 @@ downsampled
 drwav
 dylib
 emscripten
+emscripten
 endpointing
 exopackage
 Fastenshtein
@@ -35,6 +38,8 @@ gradlew
 HEAPF
 HEAPU
 heteronyms
+HEAPF
+HEAPU
 HMODULE
 IIFE
 instanceof
