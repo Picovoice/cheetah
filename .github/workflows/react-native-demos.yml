@@ -47,8 +47,11 @@ jobs:
       run: yarn pkg
       working-directory: binding/react-native
 
-    - name: Clean Yarn cache
-      run: yarn cache clean
+    - name: Remove old package
+      run: yarn remove @picovoice/cheetah-react-native
+
+    - name: Add new local package
+      run: yarn add ../../binding/react-native/pkg/picovoice-cheetah-react-native-2.2.0.tgz
 # ************** REMOVE AFTER RELEASE ********************
 
     - name: Install dependencies
@@ -88,8 +91,11 @@ jobs:
       run: yarn pkg
       working-directory: binding/react-native
 
-    - name: Clean Yarn cache
-      run: yarn cache clean
+    - name: Remove old package
+      run: yarn remove @picovoice/cheetah-react-native
+
+    - name: Add new local package
+      run: yarn add ../../binding/react-native/pkg/picovoice-cheetah-react-native-2.2.0.tgz
 # ************** REMOVE AFTER RELEASE ********************
 
     - name: Install dependencies
