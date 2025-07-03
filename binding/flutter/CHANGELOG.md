@@ -28,3 +28,6 @@
 
 ## [2.1.1] - 2025-03-18
 * Improved endpointing
+
+## [2.2.0] - 2025-06-03
+* Improved punctuations
