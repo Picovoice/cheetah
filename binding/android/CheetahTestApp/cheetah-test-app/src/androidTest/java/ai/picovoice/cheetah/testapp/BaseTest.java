@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2024 Picovoice Inc.
+    Copyright 2022-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -43,8 +43,7 @@ public class BaseTest {
     Context testContext;
     Context appContext;
     AssetManager assetManager;
-    String testResourcesPath;
-    String defaultModelPath;
+    String defaultModelFile;
     String accessKey;
 
     @Before
@@ -53,8 +52,7 @@ public class BaseTest {
         testContext = InstrumentationRegistry.getInstrumentation().getContext();
         appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         assetManager = testContext.getAssets();
-        testResourcesPath = new File(appContext.getFilesDir(), "test_resources").getAbsolutePath();
-        defaultModelPath = new File(testResourcesPath, "model_files/cheetah_params.pv").getAbsolutePath();
+        defaultModelFile = "cheetah_params.pv";
 
         accessKey = appContext.getString(R.string.pvTestingAccessKey);
     }

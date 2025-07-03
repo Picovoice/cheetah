@@ -1,5 +1,5 @@
 /*
-    Copyright 2024 Picovoice Inc.
+    Copyright 2024-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.IOException;
 
 import ai.picovoice.cheetah.Cheetah;
 import ai.picovoice.cheetah.CheetahException;
@@ -28,11 +29,13 @@ import ai.picovoice.cheetah.CheetahException;
 
 @RunWith(AndroidJUnit4.class)
 public class StandardTests extends BaseTest {
+
     @Test
-    public void getVersion() throws CheetahException {
+    public void getVersion() throws CheetahException, IOException {
+        String modelPath = getModelFilepath(defaultModelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
-                .setModelPath(defaultModelPath)
+                .setModelPath(modelPath)
                 .build(appContext);
 
         String version = cheetah.getVersion();
@@ -42,10 +45,11 @@ public class StandardTests extends BaseTest {
     }
 
     @Test
-    public void getFrameLength() throws CheetahException {
+    public void getFrameLength() throws CheetahException, IOException {
+        String modelPath = getModelFilepath(defaultModelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
-                .setModelPath(defaultModelPath)
+                .setModelPath(modelPath)
                 .build(appContext);
 
         int frameLength = cheetah.getFrameLength();
@@ -55,10 +59,11 @@ public class StandardTests extends BaseTest {
     }
 
     @Test
-    public void getSampleRate() throws CheetahException {
+    public void getSampleRate() throws CheetahException, IOException {
+        String modelPath = getModelFilepath(defaultModelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
-                .setModelPath(defaultModelPath)
+                .setModelPath(modelPath)
                 .build(appContext);
 
         int sampleRate = cheetah.getSampleRate();
@@ -68,12 +73,14 @@ public class StandardTests extends BaseTest {
     }
 
     @Test
-    public void testErrorStack() {
+    public void testErrorStack() throws IOException {
         String[] error = {};
+        String modelPath = getModelFilepath(defaultModelFile);
+
         try {
             new Cheetah.Builder()
                     .setAccessKey("invalid")
-                    .setModelPath(defaultModelPath)
+                    .setModelPath(modelPath)
                     .build(appContext);
         } catch (CheetahException e) {
             error = e.getMessageStack();
@@ -85,7 +92,7 @@ public class StandardTests extends BaseTest {
         try {
             new Cheetah.Builder()
                     .setAccessKey("invalid")
-                    .setModelPath(defaultModelPath)
+                    .setModelPath(modelPath)
                     .build(appContext);
         } catch (CheetahException e) {
             for (int i = 0; i < error.length; i++) {

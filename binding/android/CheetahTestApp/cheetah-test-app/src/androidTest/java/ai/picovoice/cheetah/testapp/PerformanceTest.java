@@ -42,12 +42,14 @@ public class PerformanceTest extends BaseTest {
 
         double initPerformanceThresholdSec = Double.parseDouble(initThresholdString);
 
+        String modelPath = getModelFilepath(defaultModelFile);
+
         long totalNSec = 0;
         for (int i = 0; i < numTestIterations + 1; i++) {
             long before = System.nanoTime();
             Cheetah cheetah = new Cheetah.Builder()
                     .setAccessKey(accessKey)
-                    .setModelPath(defaultModelPath)
+                    .setModelPath(modelPath)
                     .build(appContext);
             long after = System.nanoTime();
 
@@ -74,11 +76,12 @@ public class PerformanceTest extends BaseTest {
 
         double procPerformanceThresholdSec = Double.parseDouble(procThresholdString);
 
+        String modelPath = getModelFilepath(defaultModelFile);
         Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
-                .setModelPath(defaultModelPath)
+                .setModelPath(modelPath)
                 .build(appContext);
 
-        File testAudio = new File(testResourcesPath, "audio_samples/test.wav");
+        File testAudio = new File(getAudioFilepath("test.wav"));
 
         long totalNSec = 0;
         for (int i = 0; i < numTestIterations + 1; i++) {
