@@ -1210,10 +1210,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@picovoice/cheetah-web@~2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-2.1.1.tgz#a8a7a02208ab25935d7a2fcb554e59b6adb72ee7"
-  integrity sha512-7SCO7EYQgxVG11fN4HqmwiULB7Tv32ytT9M4/SFRHYN4hY1GGCv2fPCMafsa5NOE/Yra/j9ORTNC9eHt17JjCQ==
+"@picovoice/cheetah-web@~2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-2.2.0.tgz#7db7dd2a0ab9af156aed36183281309d2e6dfa73"
+  integrity sha512-AjJ7odYpUVCYidSaap4C60Igk0zojohBjtP40gibtOKvoshRJUKOJh6O2F+/NbPfwuI89FDa9730R54BVu57VA==
   dependencies:
     "@picovoice/web-utils" "=1.4.3"
 
@@ -3158,7 +3158,7 @@ log-update@^4.0.0:
 
 loose-envify@^1.1.0:
   version "1.4.0"
-  resolved "https://registry.npmjs.org/loose-envify/-/loose-envify-1.4.0.tgz"
+  resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
   integrity sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
@@ -3319,7 +3319,7 @@ npm-run-path@^4.0.0:
 
 object-assign@^4.1.1:
   version "4.1.1"
-  resolved "https://registry.npmjs.org/object-assign/-/object-assign-4.1.1.tgz"
+  resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
   integrity sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==
 
 object-inspect@^1.13.1, object-inspect@^1.9.0:
@@ -3590,7 +3590,7 @@ randombytes@^2.1.0:
 
 react-dom@^17.0.2:
   version "17.0.2"
-  resolved "https://registry.npmjs.org/react-dom/-/react-dom-17.0.2.tgz"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
   integrity sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==
   dependencies:
     loose-envify "^1.1.0"
@@ -3814,7 +3814,7 @@ safer-buffer@^2.0.2, safer-buffer@^2.1.0, safer-buffer@~2.1.0:
 
 scheduler@^0.20.2:
   version "0.20.2"
-  resolved "https://registry.npmjs.org/scheduler/-/scheduler-0.20.2.tgz"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.20.2.tgz#4baee39436e34aa93b4874bddcbf0fe8b8b50e91"
   integrity sha512-2eWfGgAqqWFGqtdMmcL5zCMK1U8KlXv8SQFGglL3CEtd0aDVDWgeF/YoCmvln55m5zSk3J/20hTaSBeSObsQDQ==
   dependencies:
     loose-envify "^1.1.0"
