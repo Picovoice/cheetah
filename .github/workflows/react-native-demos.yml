@@ -39,10 +39,15 @@ jobs:
       run: npm install -g yarn
 
 # ************** REMOVE AFTER RELEASE ********************
+    - name: Install React Native Binding Dependencies
+      run: yarn install
+      working-directory: binding/react-native
+
     - name: Build Local tarball
       run: yarn pkg
       working-directory: binding/react-native
 # ************** REMOVE AFTER RELEASE ********************
+
 
     - name: Install dependencies
       run: yarn android-install
