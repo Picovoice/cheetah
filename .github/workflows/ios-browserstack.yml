@@ -5,12 +5,12 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'binding/ios/CheetahAppTest/Podfile.lock'
+      - 'binding/ios/CheetahAppTest/**'
       - '.github/workflows/ios-browserstack.yml'
   pull_request:
     branches: [ master, 'v[0-9]+.[0-9]+' ]
     paths:
-      - 'binding/ios/CheetahAppTest/Podfile.lock'
+      - 'binding/ios/CheetahAppTest/**'
       - '.github/workflows/ios-browserstack.yml'
 
 defaults:

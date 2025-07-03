@@ -16,7 +16,7 @@ end
 
 target 'CheetahTestApp' do
   config = use_native_modules!
-  pod 'Cheetah-iOS', '~> 2.1.1'
+  pod 'Cheetah-iOS', '~> 2.2.0'
 
   use_react_native!(
     :path => config[:reactNativePath],

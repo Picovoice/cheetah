@@ -12,6 +12,7 @@
 import { PvModel } from '@picovoice/web-utils';
 import { CheetahError } from './cheetah_errors';
 
+// eslint-disable-next-line no-shadow
 export enum PvStatus {
   SUCCESS = 10000,
   OUT_OF_MEMORY,
@@ -53,7 +54,9 @@ export type CheetahWorkerInitRequest = {
   modelPath: string;
   options: CheetahOptions;
   wasm: string;
+  wasmLib: string;
   wasmSimd: string;
+  wasmSimdLib: string;
   sdk: string;
 };
 

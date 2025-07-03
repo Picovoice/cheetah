@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>net8.0;net6.0;netcoreapp3.0;netstandard2.0;</TargetFrameworks>
-        <Version>2.1.8</Version>
+        <Version>2.2.0</Version>
         <Authors>Picovoice</Authors>
         <Company />
         <Product>Cheetah Speech-to-Text Engine</Product>
@@ -11,7 +11,7 @@
         <RepositoryType>git</RepositoryType>
         <PackageTags>Speech-to-Text, Speech Recognition, Voice Recognition, ASR</PackageTags>
         <PackageReleaseNotes>See https://github.com/Picovoice/cheetah/ </PackageReleaseNotes>
-        <Copyright>Picovoice 2022-2024</Copyright>
+        <Copyright>Picovoice 2022-2025</Copyright>
         <Description>
             Cheetah is an on-device speech-to-text engine. Cheetah is:
 

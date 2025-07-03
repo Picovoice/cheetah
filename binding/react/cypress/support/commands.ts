@@ -9,7 +9,7 @@ Cypress.Commands.add('wrapHook', (fn: () => Promise<any>) =>
   })
 );
 
-Cypress.Commands.add('mockRecording', (path: string, delayMs = 1000) => {
+Cypress.Commands.add('mockRecording', (path: string, delayMs = 2000) => {
   // @ts-ignore
   const instance = WebVoiceProcessor.instance();
 
