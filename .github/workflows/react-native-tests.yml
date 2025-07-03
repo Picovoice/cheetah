@@ -30,14 +30,6 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: Pre-build dependencies
-      run: |
-        yarn install
-        ./copy_test_resources.sh
-
-    - name: Inject AppID
-      run: sed -i 's:{TESTING_ACCESS_KEY_HERE}:${{secrets.PV_VALID_ACCESS_KEY}}:' Tests.ts
-
 # ************** REMOVE AFTER RELEASE ********************
     - name: Install React Native Binding Dependencies
       run: yarn install
@@ -53,6 +45,14 @@ jobs:
     - name: Add new local package
       run: yarn add ../../pkg/picovoice-cheetah-react-native-2.2.0.tgz
 # ************** REMOVE AFTER RELEASE ********************
+
+    - name: Pre-build dependencies
+      run: |
+        yarn install
+        ./copy_test_resources.sh
+
+    - name: Inject AppID
+      run: sed -i 's:{TESTING_ACCESS_KEY_HERE}:${{secrets.PV_VALID_ACCESS_KEY}}:' Tests.ts
 
     - name: Build tests
       run: detox build --configuration android.att.release
@@ -69,18 +69,6 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: Pre-build dependencies
-      run: |
-        yarn install
-        ./copy_test_resources.sh
-
-    - name: Cocoapods install
-      working-directory: binding/react-native/test-app/CheetahTestApp/ios
-      run: pod install --repo-update
-
-    - name: Inject AppID
-      run: sed -i '.bak' 's:{TESTING_ACCESS_KEY_HERE}:${{secrets.PV_VALID_ACCESS_KEY}}:' Tests.ts
-
 # ************** REMOVE AFTER RELEASE ********************
     - name: Install React Native Binding Dependencies
       run: yarn install
@@ -96,6 +84,18 @@ jobs:
     - name: Add new local package
       run: yarn add ../../pkg/picovoice-cheetah-react-native-2.2.0.tgz
 # ************** REMOVE AFTER RELEASE ********************
+
+    - name: Pre-build dependencies
+      run: |
+        yarn install
+        ./copy_test_resources.sh
+
+    - name: Cocoapods install
+      working-directory: binding/react-native/test-app/CheetahTestApp/ios
+      run: pod install --repo-update
+
+    - name: Inject AppID
+      run: sed -i '.bak' 's:{TESTING_ACCESS_KEY_HERE}:${{secrets.PV_VALID_ACCESS_KEY}}:' Tests.ts
 
     - name: Build tests
       run: detox build --configuration ios.sim.release
