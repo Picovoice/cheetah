@@ -1752,9 +1752,9 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@picovoice/cheetah-react-native@../../binding/react-native/pkg/picovoice-cheetah-react-native-2.2.0.tgz":
+"@picovoice/cheetah-react-native@../../pkg/picovoice-cheetah-react-native-2.2.0.tgz":
   version "2.2.0"
-  resolved "../../binding/react-native/pkg/picovoice-cheetah-react-native-2.2.0.tgz#7f94295b9747195c94acc2b0f700202b183e3db4"
+  resolved "../../pkg/picovoice-cheetah-react-native-2.2.0.tgz#cd33557e706c7b4604824997d9e81bbb42883b33"
 
 "@react-native-community/cli-clean@15.0.1":
   version "15.0.1"
