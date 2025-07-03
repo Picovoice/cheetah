@@ -193,7 +193,7 @@ async function runProcTestCase(
     let normalizedTranscript = expectedTranscript;
     if (!enablePunctuation) {
       for (const punctuation of punctuations) {
-        normalizedTranscript = normalizedTranscript.replace(punctuation, '');
+        normalizedTranscript = normalizedTranscript.replaceAll(punctuation, '');
       }
     }
 
