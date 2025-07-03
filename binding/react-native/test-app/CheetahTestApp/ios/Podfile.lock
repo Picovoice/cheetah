@@ -1,8 +1,8 @@
 PODS:
   - boost (1.84.0)
-  - Cheetah-iOS (2.1.1)
-  - cheetah-react-native (2.1.0):
-    - Cheetah-iOS (~> 2.1.0)
+  - Cheetah-iOS (2.2.0)
+  - cheetah-react-native (2.2.0):
+    - Cheetah-iOS (~> 2.2.0)
     - React
   - DoubleConversion (1.1.6)
   - fast_float (6.1.4)
@@ -1536,7 +1536,7 @@ PODS:
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
-  - Cheetah-iOS (from `https://raw.githubusercontent.com/Picovoice/cheetah/release-cheetah-others/binding/ios/Cheetah-iOS.podspec`)
+  - Cheetah-iOS (~> 2.2.0)
   - "cheetah-react-native (from `../node_modules/@picovoice/cheetah-react-native`)"
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
@@ -1609,13 +1609,12 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Cheetah-iOS
     - SocketRocket
 
 EXTERNAL SOURCES:
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
-  Cheetah-iOS:
-    :podspec: https://raw.githubusercontent.com/Picovoice/cheetah/release-cheetah-others/binding/ios/Cheetah-iOS.podspec
   cheetah-react-native:
     :path: "../node_modules/@picovoice/cheetah-react-native"
   DoubleConversion:
@@ -1752,15 +1751,10 @@ EXTERNAL SOURCES:
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
-CHECKOUT OPTIONS:
-  Cheetah-iOS:
-    :commit: dc837953564a3da3f46fd1c4a33373d1e2a1ac8b
-    :git: https://github.com/Picovoice/cheetah.git
-
 SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
-  Cheetah-iOS: 8801e227fc1ad49be8af578a671e1bbe80d8d1c6
-  cheetah-react-native: dd709d4c52c07bf45828003b58fe4072783e4320
+  Cheetah-iOS: 4b1c1821ec044f022f0cbc7577dcdbc721cf8f96
+  cheetah-react-native: be969816671af34cac2ec728da121b5c78f2880a
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: 6fe148afcef2e3213e484758e3459609d40d57f5
@@ -1827,8 +1821,8 @@ SPEC CHECKSUMS:
   ReactCommon: 3d39389f8e2a2157d5c999f8fba57bd1c8f226f0
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  Yoga: 9b7fb56e7b08cde60e2153344fa6afbd88e5d99f
+  Yoga: afd04ff05ebe0121a00c468a8a3c8080221cb14c
 
-PODFILE CHECKSUM: 73f26e49192aff90e80e706ff49a835f637366b5
+PODFILE CHECKSUM: 735fcb09b8288cedd3cf1c2008e60fd3121ba96f
 
 COCOAPODS: 1.16.2

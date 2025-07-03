@@ -41,7 +41,7 @@ const levenshteinDistance = (words1: string[], words2: string[]) => {
 
 const wordErrorRate = (reference: string, hypothesis: string): number => {
   const ed = levenshteinDistance(reference.split(' '), hypothesis.split(' '));
-  return ed / reference.length;
+  return ed / reference.split(' ').length;
 };
 
 function logResult(result: Result) {
@@ -193,7 +193,7 @@ async function runProcTestCase(
     let normalizedTranscript = expectedTranscript;
     if (!enablePunctuation) {
       for (const punctuation of punctuations) {
-        normalizedTranscript = normalizedTranscript.replace(punctuation, '');
+        normalizedTranscript = normalizedTranscript.replaceAll(punctuation, '');
       }
     }
 
