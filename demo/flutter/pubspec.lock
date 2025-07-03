@@ -32,9 +32,9 @@ packages:
   cheetah_flutter:
     dependency: "direct main"
     description:
-      name: cheetah_flutter
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../../binding/flutter"
+      relative: true
+    source: path
     version: "2.1.1"
   clock:
     dependency: transitive
