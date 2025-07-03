@@ -785,6 +785,10 @@ function App(props) {
 
 ## Releases
 
+### v2.2.0 - July 3rd, 2025
+
+- Improved automatic punctuation insertion
+
 ### v2.1.0 - December 10th, 2024
 
 - Added language support for French, German, Italian, Portuguese and Spanish
