@@ -71,7 +71,7 @@ def _append_language(s: str, language: str) -> str:
 def get_word_error_rate(transcript: str, expected_transcript: str, use_cer: bool = False) -> float:
     transcript_split = list(transcript) if use_cer else transcript.split()
     expected_split = list(expected_transcript) if use_cer else expected_transcript.split()
-    return _levenshtein_distance(transcript_split, expected_split) / len(transcript)
+    return _levenshtein_distance(transcript_split, expected_split) / len(transcript_split)
 
 
 def _levenshtein_distance(words1: Sequence[str], words2: Sequence[str]) -> int:
