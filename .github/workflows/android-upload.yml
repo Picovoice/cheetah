@@ -29,12 +29,6 @@ jobs:
         java-version: 17
         distribution: 'temurin'
 
-############## REMOVE AFTER RELEASE ##########################
-    - name: Build binding
-      run: ./gradlew assembleRelease --info
-      working-directory: binding/android/Cheetah
-############## REMOVE AFTER RELEASE ##########################
-
     - name: Set up service json
       run: echo ${{secrets.GOOGLE_PLAY_SERVICE_JSON}} | base64 -d > ./service-account.json
 
