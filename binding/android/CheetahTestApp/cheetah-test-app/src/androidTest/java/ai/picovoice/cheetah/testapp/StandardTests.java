@@ -32,10 +32,9 @@ public class StandardTests extends BaseTest {
 
     @Test
     public void getVersion() throws CheetahException, IOException {
-        String modelPath = getModelFilepath(defaultModelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
-                .setModelPath(modelPath)
+                .setModelPath(defaultModelPath)
                 .build(appContext);
 
         String version = cheetah.getVersion();
@@ -46,10 +45,9 @@ public class StandardTests extends BaseTest {
 
     @Test
     public void getFrameLength() throws CheetahException, IOException {
-        String modelPath = getModelFilepath(defaultModelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
-                .setModelPath(modelPath)
+                .setModelPath(defaultModelPath)
                 .build(appContext);
 
         int frameLength = cheetah.getFrameLength();
@@ -60,10 +58,9 @@ public class StandardTests extends BaseTest {
 
     @Test
     public void getSampleRate() throws CheetahException, IOException {
-        String modelPath = getModelFilepath(defaultModelFile);
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
-                .setModelPath(modelPath)
+                .setModelPath(defaultModelPath)
                 .build(appContext);
 
         int sampleRate = cheetah.getSampleRate();
@@ -75,12 +72,11 @@ public class StandardTests extends BaseTest {
     @Test
     public void testErrorStack() throws IOException {
         String[] error = {};
-        String modelPath = getModelFilepath(defaultModelFile);
 
         try {
             new Cheetah.Builder()
                     .setAccessKey("invalid")
-                    .setModelPath(modelPath)
+                    .setModelPath(defaultModelPath)
                     .build(appContext);
         } catch (CheetahException e) {
             error = e.getMessageStack();
@@ -92,7 +88,7 @@ public class StandardTests extends BaseTest {
         try {
             new Cheetah.Builder()
                     .setAccessKey("invalid")
-                    .setModelPath(modelPath)
+                    .setModelPath(defaultModelPath)
                     .build(appContext);
         } catch (CheetahException e) {
             for (int i = 0; i < error.length; i++) {

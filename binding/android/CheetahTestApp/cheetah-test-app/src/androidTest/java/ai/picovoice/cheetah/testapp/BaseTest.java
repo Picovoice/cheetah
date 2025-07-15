@@ -43,7 +43,7 @@ public class BaseTest {
     Context testContext;
     Context appContext;
     AssetManager assetManager;
-    String defaultModelFile;
+    String defaultModelPath;
     String accessKey;
 
     @Before
@@ -52,7 +52,7 @@ public class BaseTest {
         testContext = InstrumentationRegistry.getInstrumentation().getContext();
         appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         assetManager = testContext.getAssets();
-        defaultModelFile = "cheetah_params.pv";
+        defaultModelPath = getModelFilepath("cheetah_params.pv");
 
         accessKey = appContext.getString(R.string.pvTestingAccessKey);
     }
