@@ -1,0 +1,52 @@
+PODS:
+  - Cheetah-iOS (2.2.0)
+  - cheetah_flutter (2.2.0):
+    - Cheetah-iOS (~> 2.2.0)
+    - Flutter
+  - Flutter (1.0.0)
+  - flutter_voice_processor (1.1.2):
+    - Flutter
+    - ios-voice-processor (~> 1.2.0)
+  - integration_test (0.0.1):
+    - Flutter
+  - ios-voice-processor (1.2.0)
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - cheetah_flutter (from `.symlinks/plugins/cheetah_flutter/ios`)
+  - Flutter (from `Flutter`)
+  - flutter_voice_processor (from `.symlinks/plugins/flutter_voice_processor/ios`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+
+SPEC REPOS:
+  trunk:
+    - Cheetah-iOS
+    - ios-voice-processor
+
+EXTERNAL SOURCES:
+  cheetah_flutter:
+    :path: ".symlinks/plugins/cheetah_flutter/ios"
+  Flutter:
+    :path: Flutter
+  flutter_voice_processor:
+    :path: ".symlinks/plugins/flutter_voice_processor/ios"
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+
+SPEC CHECKSUMS:
+  Cheetah-iOS: 4b1c1821ec044f022f0cbc7577dcdbc721cf8f96
+  cheetah_flutter: a17ec44b0e3f5897c78b694b693289868b751e96
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_voice_processor: f60363f959515eaebc35bcaaf26017596c953fc6
+  integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
+  ios-voice-processor: 6b5ca08962f39e434fe39dca0f483d923a3b1b97
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+
+PODFILE CHECKSUM: f8c2dcdfb50bb67645580d28a6bf814fca30bdec
+
+COCOAPODS: 1.16.2
