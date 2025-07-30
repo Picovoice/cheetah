@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        flutter-version: ['3.3.0', '3.22.2']
+        flutter-version: ['3.24.0', '3.32.0']
 
     steps:
     - uses: actions/checkout@v3
@@ -53,7 +53,7 @@ jobs:
     runs-on: macos-14
     strategy:
       matrix:
-        flutter-version: ['3.3.0', '3.22.2']
+        flutter-version: ['3.24.0', '3.32.0']
 
     steps:
     - uses: actions/checkout@v3
