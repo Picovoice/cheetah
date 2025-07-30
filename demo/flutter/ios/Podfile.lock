@@ -1,7 +1,7 @@
 PODS:
-  - Cheetah-iOS (2.1.0)
-  - cheetah_flutter (2.1.0):
-    - Cheetah-iOS (~> 2.1.0)
+  - Cheetah-iOS (2.2.0)
+  - cheetah_flutter (2.2.0):
+    - Cheetah-iOS (~> 2.2.0)
     - Flutter
   - Flutter (1.0.0)
   - flutter_voice_processor (1.1.2):
@@ -15,7 +15,6 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
-  - Cheetah-iOS (from `https://raw.githubusercontent.com/Picovoice/cheetah/v2.1-flutter/binding/ios/Cheetah-iOS.podspec`)
   - cheetah_flutter (from `.symlinks/plugins/cheetah_flutter/ios`)
   - Flutter (from `Flutter`)
   - flutter_voice_processor (from `.symlinks/plugins/flutter_voice_processor/ios`)
@@ -24,11 +23,10 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Cheetah-iOS
     - ios-voice-processor
 
 EXTERNAL SOURCES:
-  Cheetah-iOS:
-    :podspec: https://raw.githubusercontent.com/Picovoice/cheetah/v2.1-flutter/binding/ios/Cheetah-iOS.podspec
   cheetah_flutter:
     :path: ".symlinks/plugins/cheetah_flutter/ios"
   Flutter:
@@ -40,20 +38,15 @@ EXTERNAL SOURCES:
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
 
-CHECKOUT OPTIONS:
-  Cheetah-iOS:
-    :commit: 0efbc0dff9ee5ad8fcb2f419ffb95618cb3941e0
-    :git: https://github.com/Picovoice/cheetah.git
-
 SPEC CHECKSUMS:
-  Cheetah-iOS: 86718b271b5938e2813bdcd084d7641f090d9792
-  cheetah_flutter: 87138473d412f0dc03e083389266a8891c40b81d
+  Cheetah-iOS: 4b1c1821ec044f022f0cbc7577dcdbc721cf8f96
+  cheetah_flutter: a17ec44b0e3f5897c78b694b693289868b751e96
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_voice_processor: 9ebe2cae6612db22d20e7e7833937ea19fa3e59c
-  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
+  flutter_voice_processor: f60363f959515eaebc35bcaaf26017596c953fc6
+  integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
   ios-voice-processor: 6b5ca08962f39e434fe39dca0f483d923a3b1b97
-  path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
 
-PODFILE CHECKSUM: f7a7ce4b5e489d8907d89c46a82c25ff03813df4
+PODFILE CHECKSUM: f8c2dcdfb50bb67645580d28a6bf814fca30bdec
 
 COCOAPODS: 1.16.2

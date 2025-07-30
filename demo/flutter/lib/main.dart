@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2024 Picovoice Inc.
+// Copyright 2022-2025 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -21,11 +21,13 @@ void main() {
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> {
   final String accessKey =
       '{YOUR_ACCESS_KEY_HERE}'; // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
 
@@ -53,14 +55,18 @@ class _MyAppState extends State<MyApp> {
   Future<void> initCheetah() async {
     String language = "";
     try {
-      final paramsString =
-          await DefaultAssetBundle.of(context).loadString('assets/params.json');
+      final paramsString = await DefaultAssetBundle.of(
+        context,
+      ).loadString('assets/params.json');
       final params = json.decode(paramsString);
 
       language = params["language"];
     } catch (_) {
-      errorCallback(CheetahException(
-          "Could not find `params.json`. Ensure 'prepare_demo.dart' script was run before launching the demo."));
+      errorCallback(
+        CheetahException(
+          "Could not find `params.json`. Ensure 'prepare_demo.dart' script was run before launching the demo.",
+        ),
+      );
       return;
     }
 
@@ -69,20 +75,23 @@ class _MyAppState extends State<MyApp> {
 
     try {
       _cheetahManager = await CheetahManager.create(
-          accessKey,
-          modelPath,
-          transcriptCallback,
-          errorCallback);
+        accessKey,
+        modelPath,
+        transcriptCallback,
+        errorCallback,
+      );
     } on CheetahActivationException {
       errorCallback(CheetahActivationException("AccessKey activation error."));
     } on CheetahActivationLimitException {
-      errorCallback(CheetahActivationLimitException(
-          "AccessKey reached its device limit."));
+      errorCallback(
+        CheetahActivationLimitException("AccessKey reached its device limit."),
+      );
     } on CheetahActivationRefusedException {
       errorCallback(CheetahActivationRefusedException("AccessKey refused."));
     } on CheetahActivationThrottledException {
       errorCallback(
-          CheetahActivationThrottledException("AccessKey has been throttled."));
+        CheetahActivationThrottledException("AccessKey has been throttled."),
+      );
     } on CheetahException catch (ex) {
       errorCallback(ex);
     }
@@ -156,7 +165,7 @@ class _MyAppState extends State<MyApp> {
             buildCheetahTextArea(context),
             buildErrorMessage(context),
             buildStartButton(context),
-            footer
+            footer,
           ],
         ),
       ),
@@ -165,76 +174,89 @@ class _MyAppState extends State<MyApp> {
 
   buildStartButton(BuildContext context) {
     final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
-        backgroundColor: picoBlue,
-        shape: CircleBorder(),
-        textStyle: TextStyle(color: Colors.white));
+      backgroundColor: picoBlue,
+      shape: CircleBorder(),
+      textStyle: TextStyle(color: Colors.white),
+    );
 
     return Expanded(
       flex: 2,
-      child: Container(
-          child: SizedBox(
-              width: 130,
-              height: 130,
-              child: ElevatedButton(
-                style: buttonStyle,
-                onPressed: isError
-                    ? null
-                    : isProcessing
-                        ? _stopProcessing
-                        : _startProcessing,
-                child: Text(isProcessing ? "Stop" : "Start",
-                    style: TextStyle(fontSize: 30)),
-              ))),
+      child: SizedBox(
+        width: 130,
+        height: 130,
+        child: ElevatedButton(
+          style: buttonStyle,
+          onPressed: isError
+              ? null
+              : isProcessing
+                  ? _stopProcessing
+                  : _startProcessing,
+          child: Text(
+            isProcessing ? "Stop" : "Start",
+            style: TextStyle(fontSize: 30),
+          ),
+        ),
+      ),
     );
   }
 
   buildCheetahTextArea(BuildContext context) {
     return Expanded(
-        flex: 6,
-        child: Container(
-            alignment: Alignment.topCenter,
-            color: Color(0xff25187e),
-            margin: EdgeInsets.all(10),
-            child: SingleChildScrollView(
-                controller: _controller,
-                scrollDirection: Axis.vertical,
-                padding: EdgeInsets.all(10),
-                physics: RangeMaintainingScrollPhysics(),
-                child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      transcriptText,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    )))));
+      flex: 6,
+      child: Container(
+        alignment: Alignment.topCenter,
+        color: Color(0xff25187e),
+        margin: EdgeInsets.all(10),
+        child: SingleChildScrollView(
+          controller: _controller,
+          scrollDirection: Axis.vertical,
+          padding: EdgeInsets.all(10),
+          physics: RangeMaintainingScrollPhysics(),
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: Text(
+              transcriptText,
+              textAlign: TextAlign.left,
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   buildErrorMessage(BuildContext context) {
     return Expanded(
-        flex: isError ? 2 : 0,
-        child: Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.only(left: 20, right: 20),
-            padding: EdgeInsets.all(5),
-            decoration: !isError
-                ? null
-                : BoxDecoration(
-                    color: Colors.red, borderRadius: BorderRadius.circular(5)),
-            child: !isError
-                ? null
-                : Text(
-                    errorMessage,
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  )));
+      flex: isError ? 2 : 0,
+      child: Container(
+        alignment: Alignment.center,
+        margin: EdgeInsets.only(left: 20, right: 20),
+        padding: EdgeInsets.all(5),
+        decoration: !isError
+            ? null
+            : BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(5),
+              ),
+        child: !isError
+            ? null
+            : Text(
+                errorMessage,
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+      ),
+    );
   }
 
   Widget footer = Expanded(
-      flex: 1,
-      child: Container(
-          alignment: Alignment.bottomCenter,
-          padding: EdgeInsets.only(bottom: 20),
-          child: const Text(
-            "Made in Vancouver, Canada by Picovoice",
-            style: TextStyle(color: Color(0xff666666)),
-          )));
+    flex: 1,
+    child: Container(
+      alignment: Alignment.bottomCenter,
+      padding: EdgeInsets.only(bottom: 20),
+      child: const Text(
+        "Made in Vancouver, Canada by Picovoice",
+        style: TextStyle(color: Color(0xff666666)),
+      ),
+    ),
+  );
 }

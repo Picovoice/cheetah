@@ -92,6 +92,7 @@ vtable
 wargv
 wavefile
 webfonts
+xcassets
 xcframework
 xcodeproj
 xcuitest

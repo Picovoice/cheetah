@@ -111,7 +111,7 @@ class CheetahManager {
       }
 
       CheetahTranscript cheetahTranscript = await _cheetah!.flush();
-      _transcriptCallback((cheetahTranscript.transcript) + " ");
+      _transcriptCallback("${cheetahTranscript.transcript} ");
     }
   }
 
