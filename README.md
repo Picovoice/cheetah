@@ -3,7 +3,6 @@
 [![GitHub release](https://img.shields.io/github/release/Picovoice/Cheetah.svg)](https://github.com/Picovoice/Cheetah/releases)
 [![GitHub](https://img.shields.io/github/license/Picovoice/cheetah)](https://github.com/Picovoice/cheetah/)
 
-[![Crates.io](https://img.shields.io/crates/v/pv_cheetah)](https://crates.io/crates/pv_cheetah)<!-- markdown-link-check-disable-line -->
 [![Maven Central](https://img.shields.io/maven-central/v/ai.picovoice/cheetah-android?label=maven-central%20%5Bandroid%5D)](https://repo1.maven.org/maven2/ai/picovoice/cheetah-android/)
 [![Maven Central](https://img.shields.io/maven-central/v/ai.picovoice/cheetah-java?label=maven%20central%20%5Bjava%5D)](https://repo1.maven.org/maven2/ai/picovoice/cheetah-java/)
 [![npm](https://img.shields.io/npm/v/@picovoice/cheetah-node?label=npm%20%5Bnode%5D)](https://www.npmjs.com/package/@picovoice/cheetah-node)
@@ -47,7 +46,6 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [Java](#java-demos)
         - [Node.js](#nodejs-demo)
         - [.Net](#net-demo)
-        - [Rust](#rust-demo)
         - [Web](#web-demos)
           - [Vanilla JavaScript and HTML](#vanilla-javascript-and-html)
           - [React](#react-demo)
@@ -61,7 +59,6 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
         - [Node.js](#nodejs)
         - [Java](#java)
         - [.Net](#net)
-        - [Rust](#rust)
         - [Web](#web)
           - [Vanilla JavaScript and HTML (ES Modules)](#vanilla-javascript-and-html-es-modules)
           - [React](#react)
@@ -229,24 +226,6 @@ dotnet run -c MicDemo.Release -- --access_key ${ACCESS_KEY}
 Replace `${ACCESS_KEY}` with your Picovoice `AccessKey`.
 
 For more information about .NET demos, go to [demo/dotnet](./demo/dotnet).
-
-### Rust Demo
-
-> Rust SDKs will no longer be maintained after **July 15, 2025**. If you plan to use the Cheetah Streaming Speech-to-Text Rust SDK for commercial purposes, please [contact us](https://picovoice.ai/contact/).
-
-[Cheetah Rust demo](./demo/rust) is a command-line application that lets you choose between running Cheetah on an audio
-file or on real-time microphone input.
-
-Make sure there is a working microphone connected to your device. From [demo/rust/micdemo](demo/rust/micdemo)
-run the following in the terminal:
-
-```console
-cargo run --release -- --access_key ${ACCESS_KEY}
-```
-
-Replace `${ACCESS_KEY}` with your Picovoice `AccessKey`.
-
-For more information about Rust demos, go to [demo/rust](./demo/rust).
 
 ### Web Demos
 
@@ -643,43 +622,6 @@ using(Cheetah handle = Cheetah.Create(accessKey))
     // .. Cheetah usage here
 }
 ```
-
-
-### Rust
-
-> Rust SDKs will no longer be maintained after **July 15, 2025**. If you plan to use the Cheetah Streaming Speech-to-Text Rust SDK for commercial purposes, please [contact us](https://picovoice.ai/contact/).
-
-First you will need [Rust and Cargo](https://rustup.rs/) installed on your system.
-
-To add the cheetah library into your app, add `pv_cheetah` to your app's `Cargo.toml` manifest:
-```toml
-[dependencies]
-pv_cheetah = "*"
-```
-
-Create an instance of the engine using `CheetahBuilder` instance and transcribe an audio file:
-
-```rust
-use cheetah::CheetahBuilder;
-
-fn next_audio_frame() -> Vec<i16> {
-  // get audio frame
-}
-
-let access_key = "${ACCESS_KEY}"; // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
-let cheetah: Cheetah = CheetahBuilder::new().access_key(access_key).init().expect("Unable to create Cheetah");
-
-if let Ok(cheetahTranscript) = cheetah.process(&next_audio_frame()) {
-  println!("{}", cheetahTranscript.transcript)
-  if cheetahTranscript.is_endpoint {
-    if let Ok(cheetahTranscript) = cheetah.flush() {
-      println!("{}", cheetahTranscript.transcript)
-    }
-  }
-}
-```
-
-Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/).
 
 ### Web
 

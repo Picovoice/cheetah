@@ -33,7 +33,6 @@ body:
         - Python
         - React Native
         - React
-        - Rust
         - Web
     validations:
       required: true

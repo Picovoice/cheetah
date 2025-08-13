@@ -82,9 +82,6 @@
     "**/binding/react-native/test-app/**/*.swift",
     "**/demo/react-native/**/*.patch",
 
-    // rust
-    "**/Cargo.toml",
-
     // wasm
     "**/lib/wasm/**/*.js",
   ]
