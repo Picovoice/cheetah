@@ -3,7 +3,6 @@
 [![GitHub release](https://img.shields.io/github/release/Picovoice/Cheetah.svg)](https://github.com/Picovoice/Cheetah/releases)
 [![GitHub](https://img.shields.io/github/license/Picovoice/cheetah)](https://github.com/Picovoice/cheetah/)
 
-[![Crates.io](https://img.shields.io/crates/v/pv_cheetah)](https://crates.io/crates/pv_cheetah)<!-- markdown-link-check-disable-line -->
 [![Maven Central](https://img.shields.io/maven-central/v/ai.picovoice/cheetah-android?label=maven-central%20%5Bandroid%5D)](https://repo1.maven.org/maven2/ai/picovoice/cheetah-android/)
 [![Maven Central](https://img.shields.io/maven-central/v/ai.picovoice/cheetah-java?label=maven%20central%20%5Bjava%5D)](https://repo1.maven.org/maven2/ai/picovoice/cheetah-java/)
 [![npm](https://img.shields.io/npm/v/@picovoice/cheetah-node?label=npm%20%5Bnode%5D)](https://www.npmjs.com/package/@picovoice/cheetah-node)
