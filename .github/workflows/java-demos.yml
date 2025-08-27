@@ -73,7 +73,7 @@ jobs:
 
       # ************** REMOVE AFTER RELEASE ********************
     - name: Build Local Packages
-      run: gradle assemble
+      run: ./gradlew assemble
       working-directory: binding/java
       # ********************************************************
 
