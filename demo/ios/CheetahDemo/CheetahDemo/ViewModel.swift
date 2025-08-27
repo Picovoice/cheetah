@@ -23,6 +23,7 @@ enum UIState {
 
 class ViewModel: ObservableObject {
     private let ACCESS_KEY = "${YOUR_ACCESS_KEY_HERE}" // Obtained from Picovoice Console (https://console.picovoice.ai)
+    private let model = ProcessInfo.processInfo.environment["MODEL"] ?? ""
 
     private var cheetah: Cheetah!
 
@@ -40,10 +41,9 @@ class ViewModel: ObservableObject {
     public func initialize() {
         state = UIState.INIT
         do {
-            let modelPath = Bundle(for: type(of: self)).path(forResource: "cheetah_params", ofType: "pv")!
             try cheetah = Cheetah(
                     accessKey: ACCESS_KEY,
-                    modelPath: modelPath,
+                    modelPath: "cheetah_params\(model).pv",
                     enableAutomaticPunctuation: true)
 
             VoiceProcessor.instance.addFrameListener(VoiceProcessorFrameListener(audioCallback))
