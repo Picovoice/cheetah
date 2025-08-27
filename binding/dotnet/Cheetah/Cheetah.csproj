@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>net8.0;net6.0;netcoreapp3.0;netstandard2.0;</TargetFrameworks>
-        <Version>2.2.0</Version>
+        <Version>2.3.0</Version>
         <Authors>Picovoice</Authors>
         <Company />
         <Product>Cheetah Speech-to-Text Engine</Product>
