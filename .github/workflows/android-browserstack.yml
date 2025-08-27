@@ -39,6 +39,12 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+    
+############## REMOVE AFTER RELEASE ##########################
+    - name: Build binding
+      run: ./gradlew assembleRelease --info
+      working-directory: binding/android/Cheetah
+############## REMOVE AFTER RELEASE ##########################
 
     - name: Copy test_resources
       run: ./copy_test_resources.sh
@@ -97,6 +103,12 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+    
+############## REMOVE AFTER RELEASE ##########################
+    - name: Build binding
+      run: ./gradlew assembleRelease --info
+      working-directory: binding/android/Cheetah
+############## REMOVE AFTER RELEASE ##########################
 
     - name: Copy test_resources
       run: ./copy_test_resources.sh
