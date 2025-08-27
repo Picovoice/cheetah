@@ -53,15 +53,10 @@ android {
     def parsedJson = new JsonSlurper().parseText(testDataFile.text)
     def models = []
     parsedJson.tests.language_tests.each { test ->
-        test.models.each { m ->
-            if (m == "cheetah_params.pv") {
-                models.add("en")
-            } else if (m == "cheetah_params_fast.pv") {
-                models.add("enFast")
-            } else {
-                def language = m.replace("cheetah_params_", "").replace(".pv", "").split("_")[0]
-                models.add(language)
-                models.add("${language}Fast")
+        models.add("${test.language}")
+        test.models.each { model ->
+            if (model.contains("_fast")) {
+                models.add("${test.language}Fast")
             }
         }
     }
