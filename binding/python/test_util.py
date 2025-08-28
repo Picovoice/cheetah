@@ -1,5 +1,5 @@
 #
-# Copyright 2023-2024 Picovoice Inc.
+# Copyright 2023-2025 Picovoice Inc.
 #
 # You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 # file accompanying this source.
@@ -23,16 +23,19 @@ def load_test_data() -> List[Tuple[str, str, str, List[str], float]]:
         json_test_data = data_file.read()
     test_data = json.loads(json_test_data)['tests']
 
-    language_tests = [
-        (
-            t['language'],
-            t['audio_file'],
-            t['transcript'],
-            t['punctuations'],
-            t['error_rate'],
-        )
-        for t in test_data['language_tests']
-    ]
+    language_tests = list()
+    for t in test_data['language_tests']:
+        for model_file in t['models']:
+            language_tests.append(
+                (
+                    t['language'],
+                    model_file,
+                    t['audio_file'],
+                    t['transcript'],
+                    t['punctuations'],
+                    t['error_rate']
+                )
+            )
 
     return language_tests
 
@@ -57,15 +60,9 @@ def read_wav_file(file_name: str, sample_rate: int) -> Tuple:
     return frames[::channels]
 
 
-def get_model_path_by_language(language: str) -> str:
-    model_path_subdir = _append_language('../../lib/common/cheetah_params', language)
-    return os.path.join(os.path.dirname(__file__), f'{model_path_subdir}.pv')
-
-
-def _append_language(s: str, language: str) -> str:
-    if language == 'en':
-        return s
-    return "%s_%s" % (s, language)
+def get_model_path(model_file: str) -> str:
+    model_path_subdir = '../../lib/common/' + model_file
+    return os.path.join(os.path.dirname(__file__), model_path_subdir)
 
 
 def get_word_error_rate(transcript: str, expected_transcript: str, use_cer: bool = False) -> float:
