@@ -81,6 +81,7 @@ rodio
 RTLD
 Rustonomicon
 signup
+SRCROOT
 stdbool
 stdint
 stdlib

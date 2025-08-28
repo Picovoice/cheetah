@@ -15,6 +15,9 @@ build/*
 *.perspective
 *.perspectivev3
 *.pbxuser
+*.xcworkspace
+project.xcworkspace
+contents.xcworkspacedata
 xcuserdata
 Pods
 ddp
