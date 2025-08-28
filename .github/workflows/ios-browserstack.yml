@@ -47,7 +47,7 @@ jobs:
         run: xcrun xcodebuild build-for-testing
           -configuration Debug
           -project CheetahAppTest.xcodeproj
-          -sdk iphoneos
+          -sdk iphoneos=17.5
           -scheme CheetahAppTest
           -derivedDataPath ddp
           CODE_SIGNING_ALLOWED=NO

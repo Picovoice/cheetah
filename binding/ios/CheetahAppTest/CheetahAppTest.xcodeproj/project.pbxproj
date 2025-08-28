@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		072F6D492D02533000E29DF3 /* test_resources in Resources */ = {isa = PBXBuildFile; fileRef = 072F6D482D02533000E29DF3 /* test_resources */; };
-		076CC4812E15E0FF004995F2 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 076CC4802E15E0FF004995F2 /* Cheetah */; };
 		076CC4842E15FB93004995F2 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 076CC4832E15FB93004995F2 /* Cheetah */; };
 		1E00655827CFF7EB006FF6E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E00655727CFF7EB006FF6E9 /* AppDelegate.swift */; };
 		1E00655C27CFF7EB006FF6E9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E00655B27CFF7EB006FF6E9 /* ViewController.swift */; };
@@ -20,7 +19,8 @@
 		1E5B7B362800F77300F8BDDB /* test.wav in Resources */ = {isa = PBXBuildFile; fileRef = 1E5B7B352800F77300F8BDDB /* test.wav */; };
 		1E5B7B382800F7AA00F8BDDB /* cheetah_params.pv in Resources */ = {isa = PBXBuildFile; fileRef = 1E5B7B372800F7AA00F8BDDB /* cheetah_params.pv */; };
 		D23A4B5C0E110877F4A85325 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
-		E1E0C8012CF120B0001D6D84 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E1E0C8002CF120B0001D6D84 /* Cheetah */; };
+		E10D9F832E5FE4B800CA78F8 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E10D9F822E5FE4B800CA78F8 /* Cheetah */; };
+		E10D9F852E5FE4CC00CA78F8 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E10D9F842E5FE4CC00CA78F8 /* Cheetah */; };
 		E1E0C8032CF120B7001D6D84 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E1E0C8022CF120B7001D6D84 /* Cheetah */; };
 		E1E0C8052CF120BE001D6D84 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E1E0C8042CF120BE001D6D84 /* Cheetah */; };
 /* End PBXBuildFile section */
@@ -81,8 +81,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				076CC4842E15FB93004995F2 /* Cheetah in Frameworks */,
-				E1E0C8012CF120B0001D6D84 /* Cheetah in Frameworks */,
-				076CC4812E15E0FF004995F2 /* Cheetah in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +88,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E10D9F832E5FE4B800CA78F8 /* Cheetah in Frameworks */,
+				E10D9F852E5FE4CC00CA78F8 /* Cheetah in Frameworks */,
 				D23A4B5C0E110877F4A85325 /* (null) in Frameworks */,
 				E1E0C8032CF120B7001D6D84 /* Cheetah in Frameworks */,
 			);
@@ -295,7 +295,7 @@
 			);
 			mainGroup = 1E00654B27CFF7EB006FF6E9;
 			packageReferences = (
-				E10D9F352E5FA2B100CA78F8 /* XCLocalSwiftPackageReference "../../../../cheetah" */,
+				E10D9F862E5FE50F00CA78F8 /* XCLocalSwiftPackageReference "../../../../cheetah" */,
 			);
 			productRefGroup = 1E00655527CFF7EB006FF6E9 /* Products */;
 			projectDirPath = "";
@@ -576,7 +576,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8TK4L7UF2X;
+				DEVELOPMENT_TEAM = 65723695GD;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -598,7 +598,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8TK4L7UF2X;
+				DEVELOPMENT_TEAM = 65723695GD;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -704,7 +704,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		E10D9F352E5FA2B100CA78F8 /* XCLocalSwiftPackageReference "../../../../cheetah" */ = {
+		E10D9F862E5FE50F00CA78F8 /* XCLocalSwiftPackageReference "../../../../cheetah" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../../../cheetah;
 		};
@@ -726,18 +726,17 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		076CC4802E15E0FF004995F2 /* Cheetah */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Cheetah;
-		};
 		076CC4832E15FB93004995F2 /* Cheetah */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 076CC4822E15FB93004995F2 /* XCRemoteSwiftPackageReference "cheetah" */;
 			productName = Cheetah;
 		};
-		E1E0C8002CF120B0001D6D84 /* Cheetah */ = {
+		E10D9F822E5FE4B800CA78F8 /* Cheetah */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = E1E0C7FE2CF11FD9001D6D84 /* XCLocalSwiftPackageReference "../../../../cheetah" */;
+			productName = Cheetah;
+		};
+		E10D9F842E5FE4CC00CA78F8 /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
 			productName = Cheetah;
 		};
 		E1E0C8022CF120B7001D6D84 /* Cheetah */ = {
