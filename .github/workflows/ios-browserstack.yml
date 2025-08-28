@@ -20,7 +20,7 @@ defaults:
 jobs:
   build:
     name: Run iOS Tests on BrowserStack
-    runs-on: macos-latest
+    runs-on: macos-14
 
     steps:
       - name: Checkout
@@ -47,7 +47,7 @@ jobs:
         run: xcrun xcodebuild build-for-testing
           -configuration Debug
           -project CheetahAppTest.xcodeproj
-          -sdk iphoneos=17.5
+          -sdk iphoneos
           -scheme CheetahAppTest
           -derivedDataPath ddp
           CODE_SIGNING_ALLOWED=NO
