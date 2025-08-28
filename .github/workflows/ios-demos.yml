@@ -39,6 +39,6 @@ jobs:
           -configuration Debug
           -project CheetahDemo.xcodeproj
           -sdk iphoneos
-          -scheme frFastDemo
+          -scheme CheetahFrFastDemo
           -derivedDataPath ddp
           CODE_SIGNING_ALLOWED=NO
