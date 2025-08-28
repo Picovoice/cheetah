@@ -286,42 +286,44 @@ describe("Cheetah Binding", function () {
     });
 
     for (const testParam of testData.tests.language_tests) {
-      const suffix = testParam.language === 'en' ? '' : `_${testParam.language}`;
+      for (const modelFile of testParam.models) {
+        const modelFileType = modelFile.includes("_fast") ? "fast" : "default";
 
-      it(`should be able to process (${testParam.language}) (${instanceString})`, () => cy.getFramesFromFile(
-        `audio_samples/${testParam.audio_file}`).then(
-        (pcm: Int16Array) => runProcTest(
-          instance,
-          pcm,
-          testParam.punctuations,
-          testParam.transcript,
-          testParam.error_rate,
-          {
-            model: {
-              publicPath: `/test/cheetah_params${suffix}.pv`,
-              forceWrite: true,
-            },
-          }
-        )
-      ));
+        it(`should be able to process (${testParam.language}) (${modelFileType} model) (${instanceString})`, () => cy.getFramesFromFile(
+            `audio_samples/${testParam.audio_file}`).then(
+            (pcm: Int16Array) => runProcTest(
+                instance,
+                pcm,
+                testParam.punctuations,
+                testParam.transcript,
+                testParam.error_rate,
+                {
+                  model: {
+                    publicPath: `/test/${modelFile}`,
+                    forceWrite: true,
+                  },
+                }
+            )
+        ));
 
-      it(`should be able to process with punctuation (${testParam.language}) (${instanceString})`, () => cy.getFramesFromFile(
-        `audio_samples/${testParam.audio_file}`).then(
-        (pcm: Int16Array) => runProcTest(
-          instance,
-          pcm,
-          testParam.punctuations,
-          testParam.transcript,
-          testParam.error_rate,
-          {
-            model: {
-              publicPath: `/test/cheetah_params${suffix}.pv`,
-              forceWrite: true,
-            },
-            enablePunctuation: true,
-          }
-        )
-      ));
+        it(`should be able to process with punctuation (${testParam.language}) (${modelFileType} model) (${instanceString})`, () => cy.getFramesFromFile(
+            `audio_samples/${testParam.audio_file}`).then(
+            (pcm: Int16Array) => runProcTest(
+                instance,
+                pcm,
+                testParam.punctuations,
+                testParam.transcript,
+                testParam.error_rate,
+                {
+                  model: {
+                    publicPath: `/test/${modelFile}`,
+                    forceWrite: true,
+                  },
+                  enablePunctuation: true,
+                }
+            )
+        ));
+      }
     }
   }
 });

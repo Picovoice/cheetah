@@ -26,7 +26,11 @@ if (!availableLanguages.includes(language)) {
   process.exit(1);
 }
 
-const suffix = language === "en" ? "" : `_${language}`;
+let suffix = language === "en" ? "" : `_${language}`;
+if (process.argv.length > 3 && process.argv[3] === "fast") {
+  suffix += "_fast";
+}
+
 const rootDir = path.join(__dirname, "..", "..", "..");
 
 let outputDirectory = path.join(__dirname, "..", "models");
