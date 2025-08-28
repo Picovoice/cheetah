@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2024 Picovoice Inc.
+    Copyright 2022-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -39,13 +39,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class CheetahTest {
     private final String accessKey = System.getProperty("pvTestingAccessKey");
-
-    private static String appendLanguage(String s, String language) {
-        if (language.equals("en")) {
-            return s;
-        }
-        return s + "_" + language;
-    }
 
     private static int levenshteinDistance(String[] transcript, String[] reference) {
         int m = transcript.length;
@@ -104,8 +97,16 @@ public class CheetahTest {
             for (int j = 0; j < punctuationsJson.size(); j++) {
                 punctuations[j] = punctuationsJson.get(j).getAsString();
             }
+
+            final JsonArray modelsJson = testData.getAsJsonArray("models");
+            final String[] models = new String[modelsJson.size()];
+            for (int j = 0; j < modelsJson.size(); j++) {
+                models[j] = modelsJson.get(j).getAsString();
+            }
+
             processTestData[i] = new ProcessTestData(
                     language,
+                    models,
                     testAudioFile,
                     transcript,
                     punctuations,
@@ -118,20 +119,24 @@ public class CheetahTest {
         final ProcessTestData[] processTestData = loadProcessTestData();
         final ArrayList<Arguments> testArgs = new ArrayList<>();
         for (ProcessTestData processTestDataItem : processTestData) {
-            testArgs.add(Arguments.of(
+            for (String modelPath : processTestDataItem.models) {
+                testArgs.add(Arguments.of(
                     processTestDataItem.language,
+                    modelPath,
                     processTestDataItem.audioFile,
                     processTestDataItem.transcript,
                     processTestDataItem.punctuations,
                     false,
                     processTestDataItem.errorRate));
-            testArgs.add(Arguments.of(
+                testArgs.add(Arguments.of(
                     processTestDataItem.language,
+                    modelPath,
                     processTestDataItem.audioFile,
                     processTestDataItem.transcript,
                     processTestDataItem.punctuations,
                     true,
                     processTestDataItem.errorRate));
+            }
         }
 
         return testArgs.stream();
@@ -189,17 +194,18 @@ public class CheetahTest {
         }
     }
 
-    @ParameterizedTest(name = "test process data for ''{0}'' with punctuation ''{4}''")
+    @ParameterizedTest(name = "test process data for ''{1}'' with punctuation ''{5}''")
     @MethodSource("processTestProvider")
     void process(
             String language,
+            String modelFile,
             String testAudioFile,
             String referenceTranscript,
             String[] punctuations,
             boolean enableAutomaticPunctuation,
             float targetErrorRate) throws Exception {
         String modelPath = Paths.get(System.getProperty("user.dir"))
-                .resolve(String.format("../../lib/common/%s.pv", appendLanguage("cheetah_params", language)))
+                .resolve(String.format("../../lib/common/%s", modelFile))
                 .toString();
 
         Cheetah cheetah = new Cheetah.Builder()
@@ -247,6 +253,7 @@ public class CheetahTest {
 
     private static class ProcessTestData {
         public final String language;
+        public final String[] models;
         public final String audioFile;
         public final String transcript;
         public final String[] punctuations;
@@ -254,11 +261,13 @@ public class CheetahTest {
 
         public ProcessTestData(
                 String language,
+                String[] models,
                 String audioFile,
                 String transcript,
                 String[] punctuations,
                 float errorRate) {
             this.language = language;
+            this.models = models;
             this.audioFile = audioFile;
             this.transcript = transcript;
             this.punctuations = punctuations;
