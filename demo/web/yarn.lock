@@ -96,8 +96,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/retry/-/retry-0.4.2.tgz#1860473de7dfa1546767448f333db80cb0ff2161"
   integrity sha512-xeO57FpIu4p1Ri3Jq/EXq4ClRm86dVF2z/+kvFnyqVYRavTZmaFaUBbWCOuuTh0o/g7DSsk6kc2vrS4Vl5oPOQ==
 
-"@picovoice/cheetah-web@file:../../binding/web":
+"@picovoice/cheetah-web@2.3.0":
   version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-2.3.0.tgz#35eee7deb4ae463fe4a350bddc76d76be0e1347a"
+  integrity sha512-uSBekI0eAPK/JDA39w1HK67decp7g5I4majqXjvLKgCeLNdfqR2aqBQGqs2RL06Ye203nugu8JUiMdsm97zTnQ==
   dependencies:
     "@picovoice/web-utils" "=1.4.3"
 
