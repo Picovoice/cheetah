@@ -121,21 +121,21 @@ public class CheetahTest {
         for (ProcessTestData processTestDataItem : processTestData) {
             for (String modelPath : processTestDataItem.models) {
                 testArgs.add(Arguments.of(
-                    processTestDataItem.language,
-                    modelPath,
-                    processTestDataItem.audioFile,
-                    processTestDataItem.transcript,
-                    processTestDataItem.punctuations,
-                    false,
-                    processTestDataItem.errorRate));
+                        processTestDataItem.language,
+                        modelPath,
+                        processTestDataItem.audioFile,
+                        processTestDataItem.transcript,
+                        processTestDataItem.punctuations,
+                        false,
+                        processTestDataItem.errorRate));
                 testArgs.add(Arguments.of(
-                    processTestDataItem.language,
-                    modelPath,
-                    processTestDataItem.audioFile,
-                    processTestDataItem.transcript,
-                    processTestDataItem.punctuations,
-                    true,
-                    processTestDataItem.errorRate));
+                        processTestDataItem.language,
+                        modelPath,
+                        processTestDataItem.audioFile,
+                        processTestDataItem.transcript,
+                        processTestDataItem.punctuations,
+                        true,
+                        processTestDataItem.errorRate));
             }
         }
 
