@@ -187,7 +187,7 @@ describe('Cheetah binding', () => {
   });
 
   for (const testParam of testData.tests.language_tests) {
-    for (const modelFile of testParam) {
+    for (const modelFile of testParam.models) {
       it(`should be able to process (${testParam.language} ${modelFile})`, () => {
         cy.wrap(null).then(async () => {
           await runProcTest(
