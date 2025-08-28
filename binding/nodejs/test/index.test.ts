@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2024 Picovoice Inc.
+// Copyright 2022-2025 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -20,7 +20,7 @@ import { WaveFile } from 'wavefile';
 import { getSystemLibraryPath } from '../src/platforms';
 
 import {
-  getModelPathByLanguage,
+  getModelPath,
   getAudioFile,
   getLanguageTestParameters,
 } from './test_utils';
@@ -95,14 +95,14 @@ const cheetahProcessWaveFile = (
 
 
 const testCheetahProcess = (
-  language: string,
+  modelFile: string,
   audioFile: string,
   referenceTranscript: string,
   punctuations: string[],
   enableAutomaticPunctuation: boolean,
   errorRate: number,
 ) => {
-  const modelPath = getModelPathByLanguage(language);
+  const modelPath = getModelPath(modelFile);
 
   let cheetahEngine = new Cheetah(ACCESS_KEY, {
     modelPath,
@@ -126,45 +126,37 @@ const testCheetahProcess = (
 };
 
 describe('successful processes', () => {
-  it.each(LANGUAGE_TEST_PARAMETERS)(
-    'testing process `%p`',
-    (
-      language: string,
-      audioFile: string,
-      transcript: string,
-      punctuations: string[],
-      errorRate: number,
-    ) => {
-      testCheetahProcess(
-        language,
-        audioFile,
-        transcript,
-        punctuations,
-        false,
-        errorRate,
-      );
-    }
-  );
+  for (const [
+    models,
+    audioFile,
+    transcript,
+    punctuations,
+    errorRate
+  ] of LANGUAGE_TEST_PARAMETERS) {
+    for (const modelFile of models) {
+      it(`testing process: ${modelFile}`, () => {
+        testCheetahProcess(
+          modelFile,
+          audioFile,
+          transcript,
+          punctuations,
+          false,
+          errorRate,
+        );
+      });
 
-  it.each(LANGUAGE_TEST_PARAMETERS)(
-    'testing process `%p`  with punctuation',
-    (
-      language: string,
-      audioFile: string,
-      transcript: string,
-      punctuations: string[],
-      errorRate: number,
-    ) => {
-      testCheetahProcess(
-        language,
-        audioFile,
-        transcript,
-        punctuations,
-        true,
-        errorRate,
-      );
+      it(`testing process with punctuation: ${modelFile}`, () => {
+        testCheetahProcess(
+          modelFile,
+          audioFile,
+          transcript,
+          punctuations,
+          true,
+          errorRate,
+        );
+      });
     }
-  );
+  }
 });
 
 describe('Defaults', () => {
@@ -177,7 +169,7 @@ describe('Defaults', () => {
 
 describe('manual paths', () => {
   test('manual model path', () => {
-    let cheetahEngine = new Cheetah(ACCESS_KEY, { modelPath: getModelPathByLanguage("en") });
+    let cheetahEngine = new Cheetah(ACCESS_KEY, { modelPath: getModelPath("cheetah_params.pv") });
 
     let [transcript] = cheetahProcessWaveFile(
       cheetahEngine,
@@ -192,7 +184,7 @@ describe('manual paths', () => {
     const libraryPath = getSystemLibraryPath();
 
     let cheetahEngine = new Cheetah(ACCESS_KEY, {
-      modelPath: getModelPathByLanguage("en"),
+      modelPath: getModelPath("cheetah_params.pv"),
       libraryPath: libraryPath,
       endpointDurationSec: 0.2,
     });
@@ -211,7 +203,7 @@ describe("error message stack", () => {
   test("message stack cleared after read", () => {
     let error: string[] = [];
     try {
-      new Cheetah('invalid', { modelPath: getModelPathByLanguage("en") });
+      new Cheetah('invalid', { modelPath: getModelPath("cheetah_params.pv") });
     } catch (e: any) {
       error = e.messageStack;
     }
@@ -220,7 +212,7 @@ describe("error message stack", () => {
     expect(error.length).toBeLessThanOrEqual(8);
 
     try {
-      new Cheetah('invalid', { modelPath: getModelPathByLanguage("en") });
+      new Cheetah('invalid', { modelPath: getModelPath("cheetah_params.pv") });
     } catch (e: any) {
       for (let i = 0; i < error.length; i++) {
         expect(error[i]).toEqual(e.messageStack[i]);

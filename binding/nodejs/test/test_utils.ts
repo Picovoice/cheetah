@@ -1,5 +1,5 @@
 //
-// Copyright 2024 Picovoice Inc.
+// Copyright 2024-2025 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -18,17 +18,10 @@ const TEST_DATA_JSON = require(path.join(
 ));
 const MB_40 = 1024 * 1024 * 40;
 
-function appendLanguage(s: string, language: string): string {
-  if (language === 'en') {
-    return s;
-  }
-  return s + '_' + language;
-}
-
-export function getModelPathByLanguage(language: string): string {
+export function getModelPath(modelFile: string): string {
   return path.join(
     ROOT_DIR,
-    `${appendLanguage('lib/common/cheetah_params', language)}.pv`
+    `lib/common/${modelFile}`
   );
 }
 
@@ -50,14 +43,14 @@ function getCpuPart(): string {
   return "";
 }
 
-function getModelSize(language: string): number {
-  const modelPath = getModelPathByLanguage(language);
+function getModelSize(modelFile: string): number {
+  const modelPath = getModelPath(modelFile);
   const stats = fs.statSync(modelPath);
   return stats.size;
 }
 
 export function getLanguageTestParameters(): [
-  string,
+  string[],
   string,
   string,
   string[],
@@ -66,10 +59,12 @@ export function getLanguageTestParameters(): [
   const cpuPart = getCpuPart();
   let parametersJson = TEST_DATA_JSON.tests.language_tests;
   if (cpuPart === "0xd03") {
-    parametersJson = parametersJson.filter((x: any) => (getModelSize(x.language) < MB_40));
+    parametersJson = parametersJson.filter((x: any) => {
+      return x.models.every((model: any) => getModelSize(model) < MB_40);
+    });
   }
   return parametersJson.map((x: any) => [
-    x.language,
+    x.models,
     x.audio_file,
     x.transcript,
     x.punctuations,
