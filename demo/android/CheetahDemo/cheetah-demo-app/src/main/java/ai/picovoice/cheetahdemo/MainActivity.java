@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2023 Picovoice Inc.
+    Copyright 2022-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -41,8 +41,7 @@ import ai.picovoice.cheetah.CheetahTranscript;
 public class MainActivity extends AppCompatActivity {
     private static final String ACCESS_KEY = "${YOUR_ACCESS_KEY_HERE}";
 
-    private static final String MODEL_FILE = "cheetah_params.pv";
-
+    private static final String flavor = BuildConfig.FLAVOR;
     private final VoiceProcessor voiceProcessor = VoiceProcessor.getInstance();
 
     public Cheetah cheetah;
@@ -61,12 +60,15 @@ public class MainActivity extends AppCompatActivity {
                     .setEndpointDuration(1f)
                     .setEnableAutomaticPunctuation(true);
 
-            String model;
-            if (Objects.equals(BuildConfig.FLAVOR, "en")) {
-                model = "cheetah_params.pv";
-            } else {
-                model = "cheetah_params_" + BuildConfig.FLAVOR + ".pv";
+            String model = "cheetah_params";
+            String language = flavor.substring(0, 2);
+            if (!language.equals("en")) {
+                model += "_" + language;
             }
+            if (flavor.contains("Fast")) {
+                model += "_fast";
+            }
+            model += ".pv";
             builder.setModelPath("models/" + model);
 
             cheetah = builder.build(getApplicationContext());
