@@ -1,5 +1,5 @@
 #
-# Copyright 2018-2024 Picovoice Inc.
+# Copyright 2018-2025 Picovoice Inc.
 #
 # You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 # file accompanying this source.
@@ -30,10 +30,10 @@ class CheetahTestCase(unittest.TestCase):
         cls._audio_directory = os.path.join('..', '..', 'resources', 'audio_samples')
 
     @classmethod
-    def _create_cheetah(cls, language: str, enable_automatic_punctuation: bool) -> Cheetah:
+    def _create_cheetah(cls, model_file: str, enable_automatic_punctuation: bool) -> Cheetah:
         return Cheetah(
             access_key=cls._access_key,
-            model_path=get_model_path_by_language(language=language),
+            model_path=get_model_path(model_file=model_file),
             library_path=default_library_path('../..'),
             enable_automatic_punctuation=enable_automatic_punctuation)
 
@@ -41,6 +41,7 @@ class CheetahTestCase(unittest.TestCase):
     def test_process(
             self,
             language: str,
+            model_file: str,
             audio_file: str,
             expected_transcript: str,
             punctuations: List[str],
@@ -48,7 +49,7 @@ class CheetahTestCase(unittest.TestCase):
         o = None
 
         try:
-            o = self._create_cheetah(language=language, enable_automatic_punctuation=False)
+            o = self._create_cheetah(model_file=model_file, enable_automatic_punctuation=False)
 
             pcm = read_wav_file(
                 file_name=os.path.join(self._audio_directory, audio_file),
@@ -79,6 +80,7 @@ class CheetahTestCase(unittest.TestCase):
     def test_process_with_punctuation(
             self,
             language: str,
+            model_file: str,
             audio_file: str,
             expected_transcript: str,
             punctuations: List[str],
@@ -86,7 +88,7 @@ class CheetahTestCase(unittest.TestCase):
         o = None
 
         try:
-            o = self._create_cheetah(language=language, enable_automatic_punctuation=True)
+            o = self._create_cheetah(model_file=model_file, enable_automatic_punctuation=True)
 
             pcm = read_wav_file(
                 file_name=os.path.join(self._audio_directory, audio_file),
