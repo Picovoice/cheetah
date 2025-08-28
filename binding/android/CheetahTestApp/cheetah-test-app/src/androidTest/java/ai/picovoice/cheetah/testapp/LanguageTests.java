@@ -80,21 +80,22 @@ public class LanguageTests extends BaseTest {
                 punctuations[j] = punctuationsJson.get(j).getAsString();
             }
 
-            String modelFile;
-            if (language.equals("en")) {
-                modelFile = "cheetah_params.pv";
-            } else {
-                modelFile = String.format("cheetah_params_%s.pv", language);
+            final JsonArray modelsJson = testData.getAsJsonArray("models");
+            final String[] modelFiles = new String[modelsJson.size()];
+            for (int j = 0; j < modelsJson.size(); j++) {
+                modelFiles[j] = modelsJson.get(j).getAsString();
             }
 
-            parameters.add(new Object[]{
-                    language,
-                    modelFile,
-                    audioFile,
-                    transcript,
-                    punctuations,
-                    errorRate
-            });
+            for (String modelFile : modelFiles) {
+                parameters.add(new Object[]{
+                        language,
+                        modelFile,
+                        audioFile,
+                        transcript,
+                        punctuations,
+                        errorRate
+                });
+            }
         }
 
         return parameters;
