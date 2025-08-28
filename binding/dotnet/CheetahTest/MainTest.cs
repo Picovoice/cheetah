@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2023 Picovoice Inc.
+    Copyright 2022-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -36,42 +36,53 @@ namespace CheetahTest
         }
 
         [Serializable]
+        private class TestDataJson
+        {
+            public TestsJson tests { get; set; }
+        }
+
+        [Serializable]
+        private class TestsJson
+        {
+            public LanguageTestJson[] language_tests { get; set; }
+        }
+
+        [Serializable]
         private class LanguageTestJson
         {
             public string language { get; set; }
+
+            public string[] models { get; set; }
+
             public string audio_file { get; set; }
+
             public string transcript { get; set; }
 
             public string[] punctuations { get; set; }
+
             public float error_rate { get; set; }
         }
 
-        private static JObject LoadJsonTestData()
+        private static TestDataJson LoadJsonTestData()
         {
             string content = File.ReadAllText(Path.Combine(ROOT_DIR, "resources/.test/test_data.json"));
-            return JObject.Parse(content);
+            return JObject.Parse(content).ToObject<TestDataJson>();
         }
 
         private static IEnumerable<object[]> LanguageTestParameters
         {
             get
             {
-                JObject testDataJson = LoadJsonTestData();
-                IList<LanguageTestJson> languageTestJson = ((JArray)testDataJson["tests"]["language_tests"]).ToObject<IList<LanguageTestJson>>();
-                return languageTestJson
-                    .Select(x => new object[] {
-                        x.language,
+                TestDataJson testData = LoadJsonTestData();
+                return testData.tests.language_tests
+                    .SelectMany(x => x.models.Select(model => new object[] {
+                        model,
                         x.audio_file,
                         x.transcript,
                         x.punctuations,
                         x.error_rate,
-                    });
+                    }));
             }
-        }
-
-        private static string AppendLanguage(string s, string language)
-        {
-            return language == "en" ? s : $"{s}_{language}";
         }
 
         private static int LevenshteinDistance(string[] transcriptWords, string[] referenceWords)
@@ -109,12 +120,9 @@ namespace CheetahTest
             return (double)editDistance / referenceTranscriptWords.Length;
         }
 
-        private static string GetModelPath(string language)
+        private static string GetModelPath(string modelFile)
         {
-            return Path.Combine(
-                ROOT_DIR,
-                "lib/common",
-                $"{AppendLanguage("cheetah_params", language)}.pv");
+            return Path.Combine(ROOT_DIR, "lib/common", modelFile);
         }
 
         private List<short> GetPcmFromFile(string audioFilePath, int expectedSampleRate)
@@ -167,7 +175,7 @@ namespace CheetahTest
         [TestMethod]
         [DynamicData(nameof(LanguageTestParameters))]
         public void TestProcess(
-            string language,
+            string modelFile,
             string testAudioFile,
             string referenceTranscript,
             string[] punctuations,
@@ -175,7 +183,7 @@ namespace CheetahTest
         {
             using (Cheetah cheetah = Cheetah.Create(
                 accessKey: _accessKey,
-                modelPath: GetModelPath(language),
+                modelPath: GetModelPath(modelFile),
                 endpointDurationSec: 0.2f,
                 enableAutomaticPunctuation: false))
             {
@@ -211,7 +219,7 @@ namespace CheetahTest
         [TestMethod]
         [DynamicData(nameof(LanguageTestParameters))]
         public void TestProcessWithPunctuation(
-            string language,
+            string modelFile,
             string testAudioFile,
             string referenceTranscript,
             string[] _,
@@ -219,7 +227,7 @@ namespace CheetahTest
         {
             using (Cheetah cheetah = Cheetah.Create(
                 accessKey: _accessKey,
-                modelPath: GetModelPath(language),
+                modelPath: GetModelPath(modelFile),
                 endpointDurationSec: 0.2f,
                 enableAutomaticPunctuation: true))
             {
@@ -249,7 +257,7 @@ namespace CheetahTest
         [TestMethod]
         public void TestMessageStack()
         {
-            string modelPath = GetModelPath("en");
+            string modelPath = GetModelPath("cheetah_params.pv");
 
             Cheetah c;
             string[] messageList = new string[] { };
@@ -292,7 +300,7 @@ namespace CheetahTest
         [TestMethod]
         public void TestProcessFlushMessageStack()
         {
-            string modelPath = GetModelPath("en");
+            string modelPath = GetModelPath("cheetah_params.pv");
 
             Cheetah c = Cheetah.Create(
                 accessKey: _accessKey,
