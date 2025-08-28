@@ -10,7 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@picovoice/cheetah-react-native": "2.2.0",
+    "@picovoice/cheetah-react-native": "../../pkg/picovoice-cheetah-react-native-2.3.0.tgz",
     "base-64": "^1.0.0",
     "react": "19.0.0",
     "react-native": "0.78.0",
