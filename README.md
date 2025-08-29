@@ -727,6 +727,11 @@ function App(props) {
 
 ## Releases
 
+### v2.3.0 - August 29th, 2025
+
+- Added support for low latency Cheetah Fast models
+- Improved engine accuracy
+
 ### v2.2.0 - July 3rd, 2025
 
 - Improved automatic punctuation insertion
