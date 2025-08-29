@@ -54,6 +54,7 @@ class MyAppState extends State<MyApp> {
 
   Future<void> initCheetah() async {
     String language = "";
+    String modelType = "";
     try {
       final paramsString = await DefaultAssetBundle.of(
         context,
@@ -61,6 +62,7 @@ class MyAppState extends State<MyApp> {
       final params = json.decode(paramsString);
 
       language = params["language"];
+      modelType = params["modelType"];
     } catch (_) {
       errorCallback(
         CheetahException(
@@ -70,7 +72,10 @@ class MyAppState extends State<MyApp> {
       return;
     }
 
-    final String suffix = language != "en" ? "_$language" : "";
+    String suffix = language != "en" ? "_$language" : "";
+    if (modelType != "") {
+      suffix += "_$modelType";
+    }
     final String modelPath = "assets/models/cheetah_params$suffix.pv";
 
     try {

@@ -151,7 +151,7 @@ async function runInitTestCase(
 }
 
 async function runProcTestCase(
-  language: string,
+  modelFile: string,
   audioFile: string,
   expectedTranscript: string,
   punctuations: string[],
@@ -165,10 +165,7 @@ async function runProcTestCase(
   const result: Result = {testName: '', success: false};
 
   try {
-    const modelPath =
-      language === 'en'
-        ? getPath('model_files/cheetah_params.pv')
-        : getPath(`model_files/cheetah_params_${language}.pv`);
+    const modelPath = getPath(`model_files/${modelFile}`);
     const audioPath = getPath(`audio_samples/${audioFile}`);
 
     const cheetah = await Cheetah.create(TEST_ACCESS_KEY, modelPath, {
@@ -237,32 +234,36 @@ async function processTests(): Promise<Result[]> {
   const results: Result[] = [];
 
   for (const testParam of testData.tests.language_tests) {
-    const result = await runProcTestCase(
-      testParam.language,
-      testParam.audio_file,
-      testParam.transcript,
-      testParam.punctuations,
-      testParam.error_rate,
-    );
-    result.testName = `Process test for '${testParam.language}'`;
-    logResult(result);
-    results.push(result);
+    for (const modelFile of testParam.models) {
+      const result = await runProcTestCase(
+        modelFile,
+        testParam.audio_file,
+        testParam.transcript,
+        testParam.punctuations,
+        testParam.error_rate,
+      );
+      result.testName = `Process test for '${modelFile}'`;
+      logResult(result);
+      results.push(result);
+    }
   }
 
   for (const testParam of testData.tests.language_tests) {
-    const result = await runProcTestCase(
-      testParam.language,
-      testParam.audio_file,
-      testParam.transcript,
-      testParam.punctuations,
-      testParam.error_rate,
-      {
-        enablePunctuation: true,
-      },
-    );
-    result.testName = `Process test with punctuation for '${testParam.language}'`;
-    logResult(result);
-    results.push(result);
+    for (const modelFile of testParam.models) {
+      const result = await runProcTestCase(
+        modelFile,
+        testParam.audio_file,
+        testParam.transcript,
+        testParam.punctuations,
+        testParam.error_rate,
+        {
+          enablePunctuation: true,
+        },
+      );
+      result.testName = `Process test with punctuation for '${modelFile}'`;
+      logResult(result);
+      results.push(result);
+    }
   }
 
   return results;

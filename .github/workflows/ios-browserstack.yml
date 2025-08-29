@@ -20,7 +20,7 @@ defaults:
 jobs:
   build:
     name: Run iOS Tests on BrowserStack
-    runs-on: macos-latest
+    runs-on: macos-14
 
     steps:
       - name: Checkout

@@ -12,8 +12,22 @@
 		3276967434C9CEBD0AF09237 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 327694975368499C3B7946DD /* Assets.xcassets */; };
 		327698EADFD16D8F70823520 /* CheetahDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327697358B823E5B2EF0FA8C /* CheetahDemoApp.swift */; };
 		32769B2E1B2C5A2A897FFB10 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32769F3923C69C8C0C435CCF /* ContentView.swift */; };
-		32769C58D7E56BA187567FE6 /* cheetah_params.pv in Resources */ = {isa = PBXBuildFile; fileRef = 327698B2EA8A4DD88C527110 /* cheetah_params.pv */; };
+		E10D9F682E5FE21900CA78F8 /* pre-build.sh in Resources */ = {isa = PBXBuildFile; fileRef = E10D9F1B2E5F9DE300CA78F8 /* pre-build.sh */; };
+		E10D9F752E5FE24200CA78F8 /* cheetah_params_de_fast.pv in Resources */ = {isa = PBXBuildFile; fileRef = E10D9F692E5FE24100CA78F8 /* cheetah_params_de_fast.pv */; };
+		E10D9F762E5FE24200CA78F8 /* cheetah_params_fast.pv in Resources */ = {isa = PBXBuildFile; fileRef = E10D9F6A2E5FE24200CA78F8 /* cheetah_params_fast.pv */; };
+		E10D9F772E5FE24200CA78F8 /* cheetah_params_fr.pv in Resources */ = {isa = PBXBuildFile; fileRef = E10D9F6B2E5FE24200CA78F8 /* cheetah_params_fr.pv */; };
+		E10D9F782E5FE24200CA78F8 /* cheetah_params_it_fast.pv in Resources */ = {isa = PBXBuildFile; fileRef = E10D9F6C2E5FE24200CA78F8 /* cheetah_params_it_fast.pv */; };
+		E10D9F792E5FE24200CA78F8 /* cheetah_params_pt.pv in Resources */ = {isa = PBXBuildFile; fileRef = E10D9F6D2E5FE24200CA78F8 /* cheetah_params_pt.pv */; };
+		E10D9F7A2E5FE24200CA78F8 /* cheetah_params_es_fast.pv in Resources */ = {isa = PBXBuildFile; fileRef = E10D9F6E2E5FE24200CA78F8 /* cheetah_params_es_fast.pv */; };
+		E10D9F7B2E5FE24200CA78F8 /* cheetah_params_it.pv in Resources */ = {isa = PBXBuildFile; fileRef = E10D9F6F2E5FE24200CA78F8 /* cheetah_params_it.pv */; };
+		E10D9F7C2E5FE24200CA78F8 /* cheetah_params_es.pv in Resources */ = {isa = PBXBuildFile; fileRef = E10D9F702E5FE24200CA78F8 /* cheetah_params_es.pv */; };
+		E10D9F7D2E5FE24200CA78F8 /* cheetah_params_fr_fast.pv in Resources */ = {isa = PBXBuildFile; fileRef = E10D9F712E5FE24200CA78F8 /* cheetah_params_fr_fast.pv */; };
+		E10D9F7E2E5FE24200CA78F8 /* cheetah_params_pt_fast.pv in Resources */ = {isa = PBXBuildFile; fileRef = E10D9F722E5FE24200CA78F8 /* cheetah_params_pt_fast.pv */; };
+		E10D9F7F2E5FE24200CA78F8 /* cheetah_params.pv in Resources */ = {isa = PBXBuildFile; fileRef = E10D9F732E5FE24200CA78F8 /* cheetah_params.pv */; };
+		E10D9F802E5FE24200CA78F8 /* cheetah_params_de.pv in Resources */ = {isa = PBXBuildFile; fileRef = E10D9F742E5FE24200CA78F8 /* cheetah_params_de.pv */; };
 		E15A377F2CF7B8ED00A96F85 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E15A377E2CF7B8ED00A96F85 /* Cheetah */; };
+		E1B3E5A12E61000900915974 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E1B3E5A02E61000900915974 /* Cheetah */; };
+		E1B954872E5E8E4600D188FD /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E1B954862E5E8E4600D188FD /* Cheetah */; };
 		E1E0C8082CF12744001D6D84 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E1E0C8072CF12744001D6D84 /* Cheetah */; };
 		E1E0C80B2CF12778001D6D84 /* ios_voice_processor in Frameworks */ = {isa = PBXBuildFile; productRef = E1E0C80A2CF12778001D6D84 /* ios_voice_processor */; };
 /* End PBXBuildFile section */
@@ -22,10 +36,22 @@
 		327694975368499C3B7946DD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		327695EA9D71F6A29C6D079A /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		327697358B823E5B2EF0FA8C /* CheetahDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheetahDemoApp.swift; sourceTree = "<group>"; };
-		327698B2EA8A4DD88C527110 /* cheetah_params.pv */ = {isa = PBXFileReference; lastKnownFileType = file.pv; name = cheetah_params.pv; path = ../../../../lib/common/cheetah_params.pv; sourceTree = "<group>"; };
 		327699927E572962C40A7A04 /* CheetahDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheetahDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32769E49F724E169E0E13E27 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		32769F3923C69C8C0C435CCF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E10D9F1B2E5F9DE300CA78F8 /* pre-build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "pre-build.sh"; sourceTree = "<group>"; };
+		E10D9F692E5FE24100CA78F8 /* cheetah_params_de_fast.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params_de_fast.pv; path = ../../../../lib/common/cheetah_params_de_fast.pv; sourceTree = "<group>"; };
+		E10D9F6A2E5FE24200CA78F8 /* cheetah_params_fast.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params_fast.pv; path = ../../../../lib/common/cheetah_params_fast.pv; sourceTree = "<group>"; };
+		E10D9F6B2E5FE24200CA78F8 /* cheetah_params_fr.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params_fr.pv; path = ../../../../lib/common/cheetah_params_fr.pv; sourceTree = "<group>"; };
+		E10D9F6C2E5FE24200CA78F8 /* cheetah_params_it_fast.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params_it_fast.pv; path = ../../../../lib/common/cheetah_params_it_fast.pv; sourceTree = "<group>"; };
+		E10D9F6D2E5FE24200CA78F8 /* cheetah_params_pt.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params_pt.pv; path = ../../../../lib/common/cheetah_params_pt.pv; sourceTree = "<group>"; };
+		E10D9F6E2E5FE24200CA78F8 /* cheetah_params_es_fast.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params_es_fast.pv; path = ../../../../lib/common/cheetah_params_es_fast.pv; sourceTree = "<group>"; };
+		E10D9F6F2E5FE24200CA78F8 /* cheetah_params_it.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params_it.pv; path = ../../../../lib/common/cheetah_params_it.pv; sourceTree = "<group>"; };
+		E10D9F702E5FE24200CA78F8 /* cheetah_params_es.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params_es.pv; path = ../../../../lib/common/cheetah_params_es.pv; sourceTree = "<group>"; };
+		E10D9F712E5FE24200CA78F8 /* cheetah_params_fr_fast.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params_fr_fast.pv; path = ../../../../lib/common/cheetah_params_fr_fast.pv; sourceTree = "<group>"; };
+		E10D9F722E5FE24200CA78F8 /* cheetah_params_pt_fast.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params_pt_fast.pv; path = ../../../../lib/common/cheetah_params_pt_fast.pv; sourceTree = "<group>"; };
+		E10D9F732E5FE24200CA78F8 /* cheetah_params.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params.pv; path = ../../../../lib/common/cheetah_params.pv; sourceTree = "<group>"; };
+		E10D9F742E5FE24200CA78F8 /* cheetah_params_de.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params_de.pv; path = ../../../../lib/common/cheetah_params_de.pv; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +62,8 @@
 				E15A377F2CF7B8ED00A96F85 /* Cheetah in Frameworks */,
 				076CC4872E15FEAA004995F2 /* Cheetah in Frameworks */,
 				E1E0C80B2CF12778001D6D84 /* ios_voice_processor in Frameworks */,
+				E1B3E5A12E61000900915974 /* Cheetah in Frameworks */,
+				E1B954872E5E8E4600D188FD /* Cheetah in Frameworks */,
 				E1E0C8082CF12744001D6D84 /* Cheetah in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -46,6 +74,7 @@
 		327692BCE8C735F3534C318E = {
 			isa = PBXGroup;
 			children = (
+				E10D9F1B2E5F9DE300CA78F8 /* pre-build.sh */,
 				32769B87809678D96B1C6C55 /* Products */,
 				32769C17C8FD0599F872D3D1 /* CheetahDemo */,
 			);
@@ -62,15 +91,34 @@
 		32769C17C8FD0599F872D3D1 /* CheetahDemo */ = {
 			isa = PBXGroup;
 			children = (
+				E10D9F432E5FDFD300CA78F8 /* models */,
 				327694975368499C3B7946DD /* Assets.xcassets */,
 				327697358B823E5B2EF0FA8C /* CheetahDemoApp.swift */,
 				32769F3923C69C8C0C435CCF /* ContentView.swift */,
 				327695EA9D71F6A29C6D079A /* ViewModel.swift */,
 				32769E49F724E169E0E13E27 /* Info.plist */,
-				327698B2EA8A4DD88C527110 /* cheetah_params.pv */,
 			);
 			path = CheetahDemo;
 			sourceTree = "<group>";
+		};
+		E10D9F432E5FDFD300CA78F8 /* models */ = {
+			isa = PBXGroup;
+			children = (
+				E10D9F732E5FE24200CA78F8 /* cheetah_params.pv */,
+				E10D9F742E5FE24200CA78F8 /* cheetah_params_de.pv */,
+				E10D9F692E5FE24100CA78F8 /* cheetah_params_de_fast.pv */,
+				E10D9F702E5FE24200CA78F8 /* cheetah_params_es.pv */,
+				E10D9F6E2E5FE24200CA78F8 /* cheetah_params_es_fast.pv */,
+				E10D9F6A2E5FE24200CA78F8 /* cheetah_params_fast.pv */,
+				E10D9F6B2E5FE24200CA78F8 /* cheetah_params_fr.pv */,
+				E10D9F712E5FE24200CA78F8 /* cheetah_params_fr_fast.pv */,
+				E10D9F6F2E5FE24200CA78F8 /* cheetah_params_it.pv */,
+				E10D9F6C2E5FE24200CA78F8 /* cheetah_params_it_fast.pv */,
+				E10D9F6D2E5FE24200CA78F8 /* cheetah_params_pt.pv */,
+				E10D9F722E5FE24200CA78F8 /* cheetah_params_pt_fast.pv */,
+			);
+			path = models;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -99,12 +147,6 @@
 			isa = PBXProject;
 			attributes = {
 				ORGANIZATIONNAME = "";
-				TargetAttributes = {
-					327696DE3A6139B4D33CA898 = {
-						DevelopmentTeam = 65723695GD;
-						ProvisioningStyle = Automatic;
-					};
-				};
 			};
 			buildConfigurationList = 327696958E0082B4F28106AE /* Build configuration list for PBXProject "CheetahDemo" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -117,7 +159,7 @@
 			mainGroup = 327692BCE8C735F3534C318E;
 			packageReferences = (
 				E1E0C8092CF12777001D6D84 /* XCRemoteSwiftPackageReference "ios-voice-processor" */,
-				076CC4852E15FEAA004995F2 /* XCRemoteSwiftPackageReference "cheetah" */,
+				E1B3E59F2E61000900915974 /* XCRemoteSwiftPackageReference "cheetah" */,
 			);
 			productRefGroup = 32769B87809678D96B1C6C55 /* Products */;
 			projectDirPath = "";
@@ -133,8 +175,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E10D9F682E5FE21900CA78F8 /* pre-build.sh in Resources */,
+				E10D9F752E5FE24200CA78F8 /* cheetah_params_de_fast.pv in Resources */,
+				E10D9F762E5FE24200CA78F8 /* cheetah_params_fast.pv in Resources */,
+				E10D9F772E5FE24200CA78F8 /* cheetah_params_fr.pv in Resources */,
+				E10D9F782E5FE24200CA78F8 /* cheetah_params_it_fast.pv in Resources */,
+				E10D9F792E5FE24200CA78F8 /* cheetah_params_pt.pv in Resources */,
+				E10D9F7A2E5FE24200CA78F8 /* cheetah_params_es_fast.pv in Resources */,
+				E10D9F7B2E5FE24200CA78F8 /* cheetah_params_it.pv in Resources */,
+				E10D9F7C2E5FE24200CA78F8 /* cheetah_params_es.pv in Resources */,
+				E10D9F7D2E5FE24200CA78F8 /* cheetah_params_fr_fast.pv in Resources */,
+				E10D9F7E2E5FE24200CA78F8 /* cheetah_params_pt_fast.pv in Resources */,
+				E10D9F7F2E5FE24200CA78F8 /* cheetah_params.pv in Resources */,
+				E10D9F802E5FE24200CA78F8 /* cheetah_params_de.pv in Resources */,
 				3276967434C9CEBD0AF09237 /* Assets.xcassets in Resources */,
-				32769C58D7E56BA187567FE6 /* cheetah_params.pv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,6 +271,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 65723695GD;
@@ -236,6 +291,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.picovoice.CheetahDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -247,6 +303,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 65723695GD;
@@ -266,6 +323,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ai.picovoice.CheetahDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -376,6 +434,14 @@
 				version = 2.2.0;
 			};
 		};
+		E1B3E59F2E61000900915974 /* XCRemoteSwiftPackageReference "cheetah" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Picovoice/cheetah";
+			requirement = {
+				kind = exactVersion;
+				version = 2.3.0;
+			};
+		};
 		E1E0C8092CF12777001D6D84 /* XCRemoteSwiftPackageReference "ios-voice-processor" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Picovoice/ios-voice-processor";
@@ -395,6 +461,15 @@
 		E15A377E2CF7B8ED00A96F85 /* Cheetah */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E15A377D2CF7B8ED00A96F85 /* XCRemoteSwiftPackageReference "cheetah" */;
+			productName = Cheetah;
+		};
+		E1B3E5A02E61000900915974 /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1B3E59F2E61000900915974 /* XCRemoteSwiftPackageReference "cheetah" */;
+			productName = Cheetah;
+		};
+		E1B954862E5E8E4600D188FD /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
 			productName = Cheetah;
 		};
 		E1E0C8072CF12744001D6D84 /* Cheetah */ = {

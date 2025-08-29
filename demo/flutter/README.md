@@ -16,7 +16,7 @@ Replace your `AccessKey` in [lib/main.dart](lib/main.dart) file:
 final String accessKey = "{YOUR_ACCESS_KEY_HERE}"; // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
 ```
 
-Before launching the app, use the prepare_demo.dart script to copy the cheetah demo model file into the demo project.
+Before launching the app, run `scripts/prepare_demo.dart` to copy the cheetah demo model file into the demo project.
 
 Run the following command from `demo/flutter` to build and deploy the demo to your device:
 ```console

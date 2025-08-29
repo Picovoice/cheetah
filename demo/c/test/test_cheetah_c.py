@@ -1,5 +1,5 @@
 #
-# Copyright 2023 Picovoice Inc.
+# Copyright 2023-2025 Picovoice Inc.
 #
 # You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 # file accompanying this source.
@@ -28,7 +28,7 @@ class CheetahCTestCase(unittest.TestCase):
         cls._arch = "" if len(sys.argv) != 4 else sys.argv[3]
         cls._root_dir = os.path.join(os.path.dirname(__file__), "../../..")
 
-        cls._ground_truth = "Mr. Quilter is the apostle of the middle classes and we are glad to welcome his gospel."
+        cls._ground_truth = "Today only platforms one and three are used."
         cls._error_rate = 0.025
 
     def _get_library_file(self):

@@ -51,12 +51,17 @@ android {
 
     def testDataFile = file('../../../../resources/.test/test_data.json')
     def parsedJson = new JsonSlurper().parseText(testDataFile.text)
-    def languages = []
-    parsedJson.tests.language_tests.each { a ->
-        languages.add(a.language)
+    def models = []
+    parsedJson.tests.language_tests.each { test ->
+        models.add("${test.language}")
+        test.models.each { model ->
+            if (model.contains("_fast")) {
+                models.add("${test.language}Fast")
+            }
+        }
     }
 
-    flavorDimensions "language"
+    flavorDimensions "model"
     productFlavors {
         en {
             if (agpVersion.tokenize('.')[0].toInteger() >= 7) {
@@ -64,10 +69,9 @@ android {
             }
         }
 
-        languages.each { language ->
-            "$language" {
-                applicationIdSuffix ".$language"
-
+        models.each { model ->
+            "$model" {
+                applicationIdSuffix ".$model"
             }
         }
 
@@ -75,14 +79,23 @@ android {
             delete fileTree("$projectDir/src/main/assets") {
                 exclude '**/.gitkeep'
             }
-            task("${flavor.name}CopyParams", type: Copy) {
-                if (flavor.name != 'en') {
-                    from("$projectDir/../../../../lib/common/")
-                    include("cheetah_params_${flavor.name}.pv")
-                    into("$projectDir/src/${flavor.name}/assets/models")
-                } else {
-                    from("$projectDir/../../../../lib/common/")
-                    include("cheetah_params.pv")
+
+            def language = flavor.name.substring(0, 2)
+            def fast = flavor.name.substring(2)
+            def modelName = "cheetah_params"
+            if (language != "en") {
+                modelName += "_" + language
+            }
+            if (fast != "") {
+                modelName += "_" + fast.toLowerCase()
+            }
+            modelName += ".pv"
+            def modelFile = file("$projectDir/../../../../lib/common/$modelName")
+
+            if (modelFile.exists()) {
+                task("${flavor.name}CopyParams", type: Copy) {
+                    from(modelFile.parent)
+                    include(modelName)
                     into("$projectDir/src/${flavor.name}/assets/models")
                 }
             }
@@ -104,11 +117,10 @@ android {
 }
 
 dependencies {
-
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'ai.picovoice:cheetah-android:2.2.0'
+    implementation 'ai.picovoice:cheetah-android:2.3.0'
     implementation 'ai.picovoice:android-voice-processor:1.0.2'
 }
 
@@ -117,5 +129,29 @@ afterEvaluate {
         flavor ->
             tasks."merge${flavor.name.capitalize()}DebugAssets".dependsOn "${flavor.name}CopyParams"
             tasks."merge${flavor.name.capitalize()}ReleaseAssets".dependsOn "${flavor.name}CopyParams"
+
+            def generateDebugLintReportModelTask = tasks.findByName(
+                    "generate${flavor.name.capitalize()}DebugLintReportModel")
+            if (generateDebugLintReportModelTask) {
+                generateDebugLintReportModelTask.dependsOn "${flavor.name}CopyParams"
+            }
+
+            def generateReleaseLintVitalReportModelTask = tasks.findByName(
+                    "generate${flavor.name.capitalize()}ReleaseLintVitalReportModel")
+            if (generateReleaseLintVitalReportModelTask) {
+                generateReleaseLintVitalReportModelTask.dependsOn "${flavor.name}CopyParams"
+            }
+
+            def lintAnalyzeDebugTask = tasks.findByName(
+                    "lintAnalyze${flavor.name.capitalize()}Debug")
+            if (lintAnalyzeDebugTask) {
+                lintAnalyzeDebugTask.dependsOn "${flavor.name}CopyParams"
+            }
+
+            def lintVitalAnalyzeReleaseTask = tasks.findByName(
+                    "lintVitalAnalyze${flavor.name.capitalize()}Release")
+            if (lintVitalAnalyzeReleaseTask) {
+                lintVitalAnalyzeReleaseTask.dependsOn "${flavor.name}CopyParams"
+            }
     }
 }
