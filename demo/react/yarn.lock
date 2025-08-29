@@ -1572,8 +1572,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@picovoice/cheetah-react@file:../../binding/react":
+"@picovoice/cheetah-react@~2.3.0":
   version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-react/-/cheetah-react-2.3.0.tgz#2ddf0c73e75dee92809f9fa608f3bc4806e2f5ac"
+  integrity sha512-iesL2AK86N6oL8wP8gcLb04tqjg6Ee9tOS7JTgmnuUdtpdnUs3m2mz8qHGWtfsLxPxkcCFAbO1IfnYQqkPohLw==
   dependencies:
     "@picovoice/cheetah-web" "~2.3.0"
 

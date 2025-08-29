@@ -7,8 +7,8 @@ const availableLanguages = testData["tests"]["language_tests"].map(
   (x) => x["language"]
 );
 
-const args = process.argv.slice(2, -1);
-const language = process.argv.slice(-1)[0];
+const args = process.argv.slice(2);
+const language = args[1];
 if (!language) {
   console.error(
     `Choose the language you would like to run the demo in with "yarn start [language]".\nAvailable languages are ${availableLanguages.join(
@@ -27,8 +27,8 @@ if (!availableLanguages.includes(language)) {
   process.exit(1);
 }
 
-const suffix = language === "en" ? "" : `_${language}`;
-if (process.argv.length > 3 && process.argv[3] === "fast") {
+let suffix = language === "en" ? "" : `_${language}`;
+if (args.length > 2 && args[2] === "fast") {
   suffix += "_fast";
 }
 
