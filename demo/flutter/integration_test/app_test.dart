@@ -14,8 +14,8 @@ void main() {
 
   final String accessKey = "{TESTING_ACCESS_KEY_HERE}";
 
-  String getModelPath(String language) {
-    return "assets/test_resources/model_files/cheetah_params${language != "en" ? "_$language" : ""}.pv";
+  String getModelPath(String modelFile) {
+    return "assets/test_resources/model_files/$modelFile";
   }
 
   String getAudioPath(String audioFile) {
@@ -88,13 +88,13 @@ void main() {
     });
 
     Future<void> runCheetahProcess(
-        String language,
+        String modelFile,
         String transcript,
         List<String> punctuations,
         bool testPunctuations,
         double errorRate,
         String audioFile) async {
-      String modelPath = getModelPath(language);
+      String modelPath = getModelPath(modelFile);
 
       String normTranscript = transcript;
       if (!testPunctuations) {
@@ -108,8 +108,7 @@ void main() {
         cheetah = await Cheetah.create(accessKey, modelPath,
             enableAutomaticPunctuation: testPunctuations);
       } on CheetahException catch (ex) {
-        expect(ex, equals(null),
-            reason: "Failed to initialize Cheetah: $ex");
+        expect(ex, equals(null), reason: "Failed to initialize Cheetah: $ex");
         return;
       }
 
@@ -118,7 +117,8 @@ void main() {
 
       final int frameLength = cheetah.frameLength;
       for (var i = 0; i < (pcm.length - frameLength); i += frameLength) {
-        CheetahTranscript res = await cheetah.process(pcm.sublist(i, i + frameLength));
+        CheetahTranscript res =
+            await cheetah.process(pcm.sublist(i, i + frameLength));
         partialTranscript += res.transcript;
       }
       CheetahTranscript res = await cheetah.flush();
@@ -132,34 +132,42 @@ void main() {
     }
 
     testWidgets('Test Process all languages', (tester) async {
-      for (int t = 0; t < testData['tests']['language_tests'].length; t++) {
-        String language = testData['tests']['language_tests'][t]['language'];
-        String transcript = testData['tests']['language_tests'][t]['transcript'];
-        List<dynamic> punctuationsRaw = testData['tests']['language_tests'][t]['punctuations'];
-        List<String> punctuations = punctuationsRaw.map((p) => p.toString()).toList();
-        double errorRate = testData['tests']['language_tests'][t]['error_rate'];
-        String audioFile = testData['tests']['language_tests'][t]['audio_file'];
+      final languageTests = testData['tests']['language_tests'];
+      for (int t = 0; t < languageTests.length; t++) {
+        for (int j = 0; j < languageTests[t]['models'].length; j++) {
+          String modelFile = languageTests[t]['models'][j];
+          String transcript = languageTests[t]['transcript'];
+          List<dynamic> punctuationsRaw = languageTests[t]['punctuations'];
+          List<String> punctuations =
+              punctuationsRaw.map((p) => p.toString()).toList();
+          double errorRate = languageTests[t]['error_rate'];
+          String audioFile = languageTests[t]['audio_file'];
 
-        for (int p = 0; p < punctuations.length; p++) {
-          transcript = transcript.replaceAll(punctuations[p], "");
+          for (int p = 0; p < punctuations.length; p++) {
+            transcript = transcript.replaceAll(punctuations[p], "");
+          }
+
+          await runCheetahProcess(
+              modelFile, transcript, punctuations, false, errorRate, audioFile);
         }
-
-        await runCheetahProcess(
-            language, transcript, punctuations, false, errorRate, audioFile);
       }
     });
 
     testWidgets('Test Process all languages with Punctuation', (tester) async {
-      for (int t = 0; t < testData['tests']['language_tests'].length; t++) {
-        String language = testData['tests']['language_tests'][t]['language'];
-        String transcript = testData['tests']['language_tests'][t]['transcript'];
-        List<dynamic> punctuationsRaw = testData['tests']['language_tests'][t]['punctuations'];
-        List<String> punctuations = punctuationsRaw.map((p) => p.toString()).toList();
-        double errorRate = testData['tests']['language_tests'][t]['error_rate'];
-        String audioFile = testData['tests']['language_tests'][t]['audio_file'];
+      final languageTests = testData['tests']['language_tests'];
+      for (int t = 0; t < languageTests.length; t++) {
+        for (int j = 0; j < languageTests[t]['models'].length; j++) {
+          String modelFile = languageTests[t]['models'][j];
+          String transcript = languageTests[t]['transcript'];
+          List<dynamic> punctuationsRaw = languageTests[t]['punctuations'];
+          List<String> punctuations =
+              punctuationsRaw.map((p) => p.toString()).toList();
+          double errorRate = languageTests[t]['error_rate'];
+          String audioFile = languageTests[t]['audio_file'];
 
-        await runCheetahProcess(
-            language, transcript, punctuations, true, errorRate, audioFile);
+          await runCheetahProcess(
+              modelFile, transcript, punctuations, true, errorRate, audioFile);
+        }
       }
     });
   });

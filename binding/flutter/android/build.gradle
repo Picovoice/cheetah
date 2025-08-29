@@ -1,5 +1,5 @@
 group 'ai.picovoice.flutter.cheetah'
-version '2.2.0'
+version '2.3.0'
 
 buildscript {
     repositories {
@@ -44,5 +44,5 @@ android {
 }
 
 dependencies {
-    implementation 'ai.picovoice:cheetah-android:2.2.0'
+    implementation 'ai.picovoice:cheetah-android:2.3.0'
 }

@@ -9,7 +9,8 @@ final String libPath =
     join(dirname(Platform.script.toFilePath()), "..", "..", "..", "lib");
 final String testDataPath = join(resourcePath, ".test", "test_data.json");
 
-final String assetsPath = join(dirname(Platform.script.toFilePath()), "..", "assets");
+final String assetsPath =
+    join(dirname(Platform.script.toFilePath()), "..", "assets");
 final String modelsPath = join(assetsPath, "models");
 
 Future<Map> readJsonFile(String filePath) async {
@@ -25,8 +26,9 @@ void main(List<String> arguments) async {
 
   if (arguments.isEmpty) {
     print(
-        "Choose the language you would like to run the demo in with 'dart scripts/prepare_demo.dart [language]'.\n"
-        "Available languages are ${availableLanguages.join(", ")}.");
+        "Choose the language you would like to run the demo in with 'dart scripts/prepare_demo.dart [language] (fast)'.\n"
+        "Available languages are ${availableLanguages.join(", ")}.\n"
+        "To use the 'fast' model version, add 'fast'.");
     exit(1);
   }
 
@@ -38,6 +40,11 @@ void main(List<String> arguments) async {
     exit(1);
   }
 
+  bool isFast = arguments.length > 1 && arguments[1] == "fast";
+  if (isFast) {
+    suffix += "_fast";
+  }
+
   var modelDir = Directory(modelsPath);
   if (modelDir.existsSync()) {
     modelDir.deleteSync(recursive: true);
@@ -46,6 +53,7 @@ void main(List<String> arguments) async {
 
   var params = <String, String>{};
   params["language"] = language;
+  params["modelType"] = isFast ? "fast" : "";
 
   File model = File(join(libPath, "common", "cheetah_params$suffix.pv"));
   model.copySync(join(modelDir.path, basename(model.path)));
