@@ -28,6 +28,10 @@ if (!availableLanguages.includes(language)) {
 }
 
 const suffix = language === "en" ? "" : `_${language}`;
+if (process.argv.length > 3 && process.argv[3] === "fast") {
+  suffix += "_fast";
+}
+
 const rootDir = path.join(__dirname, "..", "..", "..");
 
 const libDirectory = path.join(__dirname, "..", "src", "lib");

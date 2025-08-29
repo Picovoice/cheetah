@@ -191,16 +191,16 @@ describe('Cheetah binding', () => {
       it(`should be able to process (${testParam.language} ${modelFile})`, () => {
         cy.wrap(null).then(async () => {
           await runProcTest(
-              `audio_samples/${testParam.audio_file}`,
-              testParam.punctuations,
-              testParam.transcript,
-              testParam.error_rate,
-              {
-                model: {
-                  publicPath: `/test/${modelFile}`,
-                  forceWrite: true,
-                },
-              }
+            `audio_samples/${testParam.audio_file}`,
+            testParam.punctuations,
+            testParam.transcript,
+            testParam.error_rate,
+            {
+              model: {
+                publicPath: `/test/${modelFile}`,
+                forceWrite: true,
+              },
+            }
           );
         });
       });
@@ -208,17 +208,17 @@ describe('Cheetah binding', () => {
       it(`should be able to process with punctuation (${testParam.language} ${modelFile})`, () => {
         cy.wrap(null).then(async () => {
           await runProcTest(
-              `audio_samples/${testParam.audio_file}`,
-              testParam.punctuations,
-              testParam.transcript,
-              testParam.error_rate,
-              {
-                model: {
-                  publicPath: `/test/${modelFile}`,
-                  forceWrite: true,
-                },
-                enablePunctuation: true,
-              }
+            `audio_samples/${testParam.audio_file}`,
+            testParam.punctuations,
+            testParam.transcript,
+            testParam.error_rate,
+            {
+              model: {
+                publicPath: `/test/${modelFile}`,
+                forceWrite: true,
+              },
+              enablePunctuation: true,
+            }
           );
         });
       });
