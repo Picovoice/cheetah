@@ -32,3 +32,7 @@
 ## [2.2.0] - 2025-07-03
 * Improved punctuations
 * Added support for comma and question mark punctuation
+
+## [2.3.0] - 2025-08-28
+* Added support for low latency Cheetah Fast models
+* Improved engine accuracy
