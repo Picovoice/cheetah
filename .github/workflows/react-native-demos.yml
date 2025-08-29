@@ -38,22 +38,6 @@ jobs:
     - name: Pre-build dependencies
       run: npm install -g yarn
 
-# ************** REMOVE AFTER RELEASE ********************
-    - name: Install React Native Binding Dependencies
-      run: yarn install
-      working-directory: binding/react-native
-
-    - name: Build Local tarball
-      run: yarn pkg
-      working-directory: binding/react-native
-
-    - name: Remove old package
-      run: yarn remove @picovoice/cheetah-react-native
-
-    - name: Add new local package
-      run: yarn add ../../binding/react-native/pkg/picovoice-cheetah-react-native-2.3.0.tgz
-# ************** REMOVE AFTER RELEASE ********************
-
     - name: Install dependencies
       run: yarn android-install
 
@@ -81,22 +65,6 @@ jobs:
 
     - name: Pre-build dependencies
       run: npm install -g yarn
-
-# ************** REMOVE AFTER RELEASE ********************
-    - name: Install React Native Binding Dependencies
-      run: yarn install
-      working-directory: binding/react-native
-
-    - name: Build Local tarball
-      run: yarn pkg
-      working-directory: binding/react-native
-
-    - name: Remove old package
-      run: yarn remove @picovoice/cheetah-react-native
-
-    - name: Add new local package
-      run: yarn add ../../binding/react-native/pkg/picovoice-cheetah-react-native-2.3.0.tgz
-# ************** REMOVE AFTER RELEASE ********************
 
     - name: Install dependencies
       run: yarn ios-install
