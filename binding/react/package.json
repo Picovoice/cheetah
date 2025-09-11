@@ -50,6 +50,7 @@
     "@rollup/plugin-terser": "^0.4.0",
     "@rollup/pluginutils": "^5.0.2",
     "@testing-library/react-hooks": "^8.0.1",
+    "@types/node": "^20.8.10",
     "@types/react": "^17.0.2",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
