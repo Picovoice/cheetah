@@ -49,7 +49,7 @@ jobs:
       working-directory: demo/react-native/android
 
   build-ios:
-    runs-on: macos-13
+    runs-on: macos-latest
 
     strategy:
       matrix:
