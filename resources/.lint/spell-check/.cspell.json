@@ -81,6 +81,7 @@
     "**/binding/react-native/test-app/**/*.kt",
     "**/binding/react-native/test-app/**/*.swift",
     "**/demo/react-native/**/*.patch",
+    "**/demo/react-native/CheetahDemo/Gemfile",
 
     // wasm
     "**/lib/wasm/**/*.js",

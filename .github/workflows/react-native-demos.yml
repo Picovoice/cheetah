@@ -17,7 +17,7 @@ on:
 
 defaults:
   run:
-    working-directory: demo/react-native
+    working-directory: demo/react-native/CheetahDemo
 
 jobs:
   build-android:
@@ -46,7 +46,7 @@ jobs:
 
     - name: Build
       run: ./gradlew assembleDebug
-      working-directory: demo/react-native/android
+      working-directory: demo/react-native/CheetahDemo/android
 
   build-ios:
     runs-on: macos-latest
@@ -80,4 +80,4 @@ jobs:
         -scheme CheetahDemo
         -derivedDataPath ddp
         CODE_SIGNING_ALLOWED=NO
-      working-directory: demo/react-native/ios
+      working-directory: demo/react-native/CheetahDemo/ios

@@ -1,15 +1,23 @@
 {
-  "name": "CheetahDemo",
-  "version": "0.0.1",
+  "name": "cheetah-react-native-demo",
+  "version": "2.3.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "android-run": "node scripts/run_demo.js run-android",
+    "android-install": "yarn",
+    "android-bundle": "node scripts/run_demo.js bundle --dev false --platform android --entry-file index.js --bundle-output ./android/app/src/main/assets/app.jsbundle --assets-dest ./android/app/src/main/res/",
+    "ios-run": "node scripts/run_demo.js run-ios",
+    "ios-link": "cd ios && pod install && cd ..",
+    "ios-install": "yarn && yarn ios-link",
+    "ios-bundle": "node scripts/run_demo.js bundle --dev false --platform ios --entry-file index.js --bundle-output ios/app.jsbundle"
   },
   "dependencies": {
+    "@picovoice/cheetah-react-native": "2.3.0",
+    "@picovoice/react-native-voice-processor": "1.2.3",
+    "@react-native-picker/picker": "^2.11.4",
     "react": "19.1.1",
     "react-native": "0.82.0",
     "@react-native/new-app-screen": "0.82.0",

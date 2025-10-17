@@ -171,15 +171,15 @@ been set up, navigate to [demo/react-native](./demo/react-native) to run the fol
 For Android:
 
 ```console
-yarn android-install    # sets up environment
-yarn android-run        # builds and deploys to Android
+yarn android-install          # sets up environment
+yarn android-run ${LANGUAGE}  # builds and deploys to Android
 ```
 
 For iOS:
 
 ```console
-yarn ios-install        # sets up environment
-yarn ios-run
+yarn ios-install              # sets up environment
+yarn ios-run ${LANGUAGE}      # builds and deploys to iOS
 ```
 ### Node.js Demo
 
