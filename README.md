@@ -166,7 +166,7 @@ flutter run
 
 To run the React Native Cheetah demo app you will first need to set up your React Native environment. For this,
 please refer to [React Native's documentation](https://reactnative.dev/docs/environment-setup). Once your environment has
-been set up, navigate to [demo/react-native](./demo/react-native) to run the following commands:
+been set up, navigate to [demo/react-native/CheetahDemo](./demo/react-native/CheetahDemo) to run the following commands:
 
 For Android:
 
