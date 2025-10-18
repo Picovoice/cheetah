@@ -5,10 +5,10 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/ai.picovoice/cheetah-android?label=maven-central%20%5Bandroid%5D)](https://repo1.maven.org/maven2/ai/picovoice/cheetah-android/)
 [![Maven Central](https://img.shields.io/maven-central/v/ai.picovoice/cheetah-java?label=maven%20central%20%5Bjava%5D)](https://repo1.maven.org/maven2/ai/picovoice/cheetah-java/)
-[![npm](https://img.shields.io/npm/v/@picovoice/cheetah-node?label=npm%20%5Bnode%5D)](https://www.npmjs.com/package/@picovoice/cheetah-node)
-[![npm](https://img.shields.io/npm/v/@picovoice/cheetah-react?label=npm%20%5Breact%5D)](https://www.npmjs.com/package/@picovoice/cheetah-react)
-[![npm](https://img.shields.io/npm/v/@picovoice/cheetah-react-native?label=npm%20%5Breact-native%5D)](https://www.npmjs.com/package/@picovoice/cheetah-react-native)
-[![npm](https://img.shields.io/npm/v/@picovoice/cheetah-web?label=npm%20%5Bweb%5D)](https://www.npmjs.com/package/@picovoice/cheetah-web)
+[![npm](https://img.shields.io/npm/v/@picovoice/cheetah-node?label=npm%20%5Bnode%5D)](https://www.npmjs.com/package/@picovoice/cheetah-node)<!-- markdown-link-check-disable-line -->
+[![npm](https://img.shields.io/npm/v/@picovoice/cheetah-react?label=npm%20%5Breact%5D)](https://www.npmjs.com/package/@picovoice/cheetah-react)<!-- markdown-link-check-disable-line -->
+[![npm](https://img.shields.io/npm/v/@picovoice/cheetah-react-native?label=npm%20%5Breact-native%5D)](https://www.npmjs.com/package/@picovoice/cheetah-react-native)<!-- markdown-link-check-disable-line -->
+[![npm](https://img.shields.io/npm/v/@picovoice/cheetah-web?label=npm%20%5Bweb%5D)](https://www.npmjs.com/package/@picovoice/cheetah-web)<!-- markdown-link-check-disable-line -->
 [![Nuget](https://img.shields.io/nuget/v/picovoice.cheetah)](https://www.nuget.org/packages/Picovoice.Cheetah/)
 [![CocoaPods](https://img.shields.io/cocoapods/v/Cheetah-iOS)](https://cocoapods.org/pods/Cheetah-iOS)<!-- markdown-link-check-disable-line -->
 [![Pub Version](https://img.shields.io/pub/v/cheetah_flutter)](https://pub.dev/packages/cheetah_flutter)
@@ -465,7 +465,7 @@ Replace `${ACCESS_KEY}` with your `AccessKey` obtained from [Picovoice Console](
 
 ### React Native
 
-The Cheetah React Native binding is available via [NPM](https://www.npmjs.com/package/@picovoice/cheetah-react-native). Add it via the following command:
+The Cheetah React Native binding is available via [NPM](https://www.npmjs.com/package/@picovoice/cheetah-react-native)<!-- markdown-link-check-disable-line -->. Add it via the following command:
 
 ```console
 yarn add @picovoice/cheetah-react-native

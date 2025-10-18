@@ -1,6 +1,6 @@
 # cheetah-web-react-demo
 
-This demo application consists of a `VoiceWidget` component which uses the `useCheetah` react hook to perform real-time speech-to-text. It instantiates a Cheetah worker engine and uses it with the [@picovoice/web-voice-processor](https://www.npmjs.com/package/@picovoice/web-voice-processor) to access (and automatically downsample) microphone audio.
+This demo application consists of a `VoiceWidget` component which uses the `useCheetah` react hook to perform real-time speech-to-text. It instantiates a Cheetah worker engine and uses it with the [@picovoice/web-voice-processor](https://www.npmjs.com/package/@picovoice/web-voice-processor)<!-- markdown-link-check-disable-line --> to access (and automatically downsample) microphone audio.
 
 If you decline microphone permission in the browser, or another such issue prevents Cheetah from starting, the error will be displayed.
 

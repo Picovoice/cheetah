@@ -42,7 +42,7 @@ jobs:
       run: yarn android-install
 
     - name: Build bundle
-      run: yarn android-bundle
+      run: yarn android-bundle en
 
     - name: Build
       run: ./gradlew assembleDebug
@@ -70,7 +70,7 @@ jobs:
       run: yarn ios-install
 
     - name: Build bundle
-      run: yarn ios-bundle
+      run: yarn ios-bundle es
 
     - name: Build
       run: xcrun xcodebuild build

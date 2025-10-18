@@ -5,8 +5,9 @@ const testData = require('../../../../resources/.test/test_data.json');
 
 const availableLanguages = testData.tests.language_tests.map((x) => x.language);
 
-const args = process.argv.slice(2);
-const language = args[1];
+const isFast = process.argv.slice(-1)[0] === 'fast'
+const args = process.argv.slice(2, isFast ? -2 : -1);
+const language = process.argv.slice(isFast ? -2 : -1)[0];
 if (!language) {
     console.error(
         `Choose the language you would like to run the demo in with "yarn [android/ios]-run [language]".
@@ -25,7 +26,7 @@ if (!availableLanguages.includes(language)) {
 }
 
 let suffix = language === 'en' ? '' : `_${language}`;
-if (args.length > 2 && args[2] === "fast") {
+if (isFast) {
     suffix += "_fast";
 }
 
