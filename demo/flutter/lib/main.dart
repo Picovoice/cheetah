@@ -194,8 +194,8 @@ class MyAppState extends State<MyApp> {
           onPressed: isError
               ? null
               : isProcessing
-                  ? _stopProcessing
-                  : _startProcessing,
+              ? _stopProcessing
+              : _startProcessing,
           child: Text(
             isProcessing ? "Stop" : "Start",
             style: TextStyle(fontSize: 30),
