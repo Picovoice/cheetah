@@ -47,6 +47,7 @@ IntelliJ
 Itertools
 Jetson
 jiwer
+jsbundle
 LDFLAGS
 libc
 libloading

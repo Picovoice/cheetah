@@ -70,4 +70,4 @@ language models with custom vocabulary and boost words in the existing vocabular
 
 ## Demos
 
-[Cheetah Node.js demo package](https://www.npmjs.com/package/@picovoice/cheetah-node-demo) provides command-line utilities for processing audio using cheetah.
+[Cheetah Node.js demo package](https://www.npmjs.com/package/@picovoice/cheetah-node-demo)<!-- markdown-link-check-disable-line --> provides command-line utilities for processing audio using cheetah.
