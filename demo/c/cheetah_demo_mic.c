@@ -118,12 +118,13 @@ int picovoice_main(int argc, char *argv[]) {
     const char *access_key = NULL;
     const char *model_path = NULL;
     const char *library_path = NULL;
+    const char *device = "best";
     float endpoint_duration_sec = 0.f;
     bool enable_automatic_punctuation = true;
     int32_t device_index = -1;
 
     int opt;
-    while ((opt = getopt(argc, argv, "a:m:l:e:di:s")) != -1) {
+    while ((opt = getopt(argc, argv, "a:m:l:e:d:pi:s")) != -1) {
         switch (opt) {
             case 'a':
                 access_key = optarg;
@@ -134,6 +135,9 @@ int picovoice_main(int argc, char *argv[]) {
             case 'l':
                 library_path = optarg;
                 break;
+            case 'd':
+                device = optarg;
+                break;
             case 'e':
                 endpoint_duration_sec = (float) strtod(optarg, NULL);
                 if (endpoint_duration_sec < 0.f) {
@@ -143,7 +147,7 @@ int picovoice_main(int argc, char *argv[]) {
                     exit(1);
                 }
                 break;
-            case 'd':
+            case 'p':
                 enable_automatic_punctuation = false;
                 break;
             case 'i':
@@ -163,7 +167,7 @@ int picovoice_main(int argc, char *argv[]) {
 
     if (!(access_key && library_path && model_path)) {
         fprintf(stderr,
-                "usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-e ENDPOINT_DURATION] [-d] [-i DEVICE_INDEX]\n-s (show audio device indices)\n");
+                "usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-d DEVICE] [-e ENDPOINT_DURATION] [-p] [-i DEVICE_INDEX]\n-s (show audio device indices)\n");
         exit(1);
     }
 
@@ -185,7 +189,7 @@ int picovoice_main(int argc, char *argv[]) {
         exit(1);
     }
 
-    pv_status_t (*pv_cheetah_init_func)(const char *, const char *, float, bool, pv_cheetah_t **) =
+    pv_status_t (*pv_cheetah_init_func)(const char *, const char *, const char *, float, bool, pv_cheetah_t **) =
             load_symbol(dl_handle, "pv_cheetah_init");
     if (!pv_cheetah_init_func) {
         print_dl_error("failed to load `pv_cheetah_init`");
@@ -250,6 +254,7 @@ int picovoice_main(int argc, char *argv[]) {
     pv_status_t status = pv_cheetah_init_func(
         access_key,
         model_path,
+        device,
         endpoint_duration_sec,
         enable_automatic_punctuation,
         &cheetah);

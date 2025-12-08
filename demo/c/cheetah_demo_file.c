@@ -96,10 +96,11 @@ int picovoice_main(int argc, char **argv) {
     const char *access_key = NULL;
     const char *model_path = NULL;
     const char *library_path = NULL;
+    const char *device = "best";
     bool enable_automatic_punctuation = true;
 
     int opt;
-    while ((opt = getopt(argc, argv, "a:m:l:e:d")) != -1) {
+    while ((opt = getopt(argc, argv, "a:m:l:e:d:p")) != -1) {
         switch (opt) {
             case 'a':
                 access_key = optarg;
@@ -111,6 +112,9 @@ int picovoice_main(int argc, char **argv) {
                 library_path = optarg;
                 break;
             case 'd':
+                device = optarg;
+                break;
+            case 'p':
                 enable_automatic_punctuation = false;
             default:
                 break;
@@ -118,7 +122,7 @@ int picovoice_main(int argc, char **argv) {
     }
 
     if (!(access_key && library_path && model_path && (optind < argc))) {
-        fprintf(stderr, "usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-d] wav_path0 wav_path1 ...\n");
+        fprintf(stderr, "usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-d DEVICE] [-p] wav_path0 wav_path1 ...\n");
         exit(1);
     }
 
@@ -134,7 +138,7 @@ int picovoice_main(int argc, char **argv) {
         exit(1);
     }
 
-    pv_status_t (*pv_cheetah_init_func)(const char *, const char *, float, bool, pv_cheetah_t **) =
+    pv_status_t (*pv_cheetah_init_func)(const char *, const char *, const char *, float, bool, pv_cheetah_t **) =
             load_symbol(dl_handle, "pv_cheetah_init");
     if (!pv_cheetah_init_func) {
         print_dl_error("failed to load `pv_cheetah_init`");
@@ -205,7 +209,7 @@ int picovoice_main(int argc, char **argv) {
     pv_status_t error_status = PV_STATUS_RUNTIME_ERROR;
 
     pv_cheetah_t *cheetah = NULL;
-    pv_status_t status = pv_cheetah_init_func(access_key, model_path, 0.f, enable_automatic_punctuation, &cheetah);
+    pv_status_t status = pv_cheetah_init_func(access_key, model_path, device, 0.f, enable_automatic_punctuation, &cheetah);
     if (status != PV_STATUS_SUCCESS) {
         fprintf(
             stderr,
