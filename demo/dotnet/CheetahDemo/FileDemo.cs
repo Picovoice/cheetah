@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2022-2023 Picovoice Inc.
+    Copyright 2022-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -19,7 +19,7 @@ namespace CheetahDemo
 {
     /// <summary>
     /// File Demo for Cheetah Speech-to-Text engine. The demo takes an input audio file and returns prints the the transcription.
-    /// </summary>                
+    /// </summary>
     public class FileDemo
     {
 
@@ -29,6 +29,13 @@ namespace CheetahDemo
         /// <param name="inputAudioPath">Required argument. Absolute path to input audio file.</param>
         /// <param name="accessKey">AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).</param>
         /// <param name="modelPath">Absolute path to the file containing model parameters. If not set it will be set to the default location.</param>
+        /// <param name="device">
+        /// String representation of the device (e.g., CPU or GPU) to use. If set to `best`, the most
+        /// suitable device is selected automatically. If set to `gpu`, the engine uses the first available GPU device. To select a specific
+        /// GPU device, set this argument to `gpu:${GPU_INDEX}`, where `${GPU_INDEX}` is the index of the target GPU. If set to
+        /// `cpu`, the engine will run on the CPU with the default number of threads. To specify the number of threads, set this
+        /// argument to `cpu:${NUM_THREADS}`, where `${NUM_THREADS}` is the desired number of threads.
+        /// </param>
         /// <param name="enableAutomaticPunctuation">
         /// Set to `true` to enable automatic punctuation insertion.
         /// </param>
@@ -37,12 +44,14 @@ namespace CheetahDemo
             string accessKey,
             string inputAudioPath,
             string modelPath,
+            string device,
             bool enableAutomaticPunctuation)
         {
             // init Cheetah speech-to-text engine
             using (Cheetah cheetah = Cheetah.Create(
                 accessKey: accessKey,
                 modelPath: modelPath,
+                device: device,
                 enableAutomaticPunctuation: enableAutomaticPunctuation))
             {
 
@@ -139,6 +148,7 @@ namespace CheetahDemo
             string inputAudioPath = null;
             string accessKey = null;
             string modelPath = null;
+            string device = null;
             bool enableAutomaticPunctuation = true;
             bool showHelp = false;
 
@@ -165,6 +175,13 @@ namespace CheetahDemo
                     if (++argIndex < args.Length)
                     {
                         modelPath = args[argIndex++];
+                    }
+                }
+                else if (args[argIndex] == "--device")
+                {
+                    if (++argIndex < args.Length)
+                    {
+                        device = args[argIndex++];
                     }
                 }
                 else if (args[argIndex] == "--disable_automatic_punctuation")
@@ -205,6 +222,7 @@ namespace CheetahDemo
                 accessKey,
                 inputAudioPath,
                 modelPath,
+                device,
                 enableAutomaticPunctuation);
         }
 
@@ -218,6 +236,7 @@ namespace CheetahDemo
         private static readonly string HELP_STR = "Available options: \n" +
             "\t--input_audio_path (required): Absolute path to input audio file.\n" +
             "\t--access_key (required): AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)\n" +
+            "\t--device: Device to run inference on (`best`, `cpu:{num_threads}` or `gpu:{gpu_index}`). Default: automatically selects best device.\n" +
             "\t--model_path: Absolute path to the file containing model parameters.\n" +
             "\t--disable_automatic_punctuation: Disable automatic punctuation.\n";
 

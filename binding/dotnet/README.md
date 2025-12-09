@@ -21,25 +21,21 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
 
 ## Compatibility
 
-Platform compatible with .NET Framework 4.6.1+:
-
-- Windows (x86_64, arm64)
-
-Platforms compatible with .NET Core 2.0+:
+Platforms compatible with .NET Standard 2.0+:
 
 - macOS (x86_64)
 - Windows (x86_64)
+- macOS (x86_64, arm64)
 
-Platform compatible with .NET 6.0+:
+Platforms compatible with .NET 6.0+:
 
+- Linux (x86_64)
+- macOS (x86_64, arm64)
+- Windows (x86_64, arm64)
 - Raspberry Pi:
   - 3 (32 and 64 bit)
   - 4 (32 and 64 bit)
   - 5 (32 and 64 bit)
-
-- macOS (arm64)
-- Linux (x86_64)
-- Windows (arm64)
 
 ## Installation
 

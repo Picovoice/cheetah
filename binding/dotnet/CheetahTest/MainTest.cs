@@ -27,12 +27,14 @@ namespace CheetahTest
     public class MainTest
     {
         private static string _accessKey;
+        private static string _device;
         private static readonly string ROOT_DIR = Path.Combine(AppContext.BaseDirectory, "../../../../../..");
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext _)
         {
             _accessKey = Environment.GetEnvironmentVariable("ACCESS_KEY");
+            _device = Environment.GetEnvironmentVariable("DEVICE");
         }
 
         [Serializable]
@@ -144,9 +146,20 @@ namespace CheetahTest
         }
 
         [TestMethod]
+        public void TestGetAvailableDevices()
+        {
+            string[] devices = Cheetah.GetAvailableDevices();
+            Assert.IsTrue(devices.Length > 0);
+            foreach (string device in devices)
+            {
+                Assert.IsFalse(string.IsNullOrEmpty(device));
+            }
+        }
+
+        [TestMethod]
         public void TestVersion()
         {
-            using (Cheetah cheetah = Cheetah.Create(_accessKey))
+            using (Cheetah cheetah = Cheetah.Create(_accessKey, device: _device))
             {
                 Assert.IsFalse(string.IsNullOrWhiteSpace(cheetah?.Version), "Cheetah did not return a valid version number.");
             }
@@ -155,7 +168,7 @@ namespace CheetahTest
         [TestMethod]
         public void TestSampleRate()
         {
-            using (Cheetah cheetah = Cheetah.Create(_accessKey))
+            using (Cheetah cheetah = Cheetah.Create(_accessKey, device: _device))
             {
                 int num = 0;
                 Assert.IsTrue(int.TryParse(cheetah.SampleRate.ToString(), out num), "Cheetah did not return a valid sample rate.");
@@ -165,7 +178,7 @@ namespace CheetahTest
         [TestMethod]
         public void TestFrameLength()
         {
-            using (Cheetah cheetah = Cheetah.Create(_accessKey))
+            using (Cheetah cheetah = Cheetah.Create(_accessKey, device: _device))
             {
                 int num = 0;
                 Assert.IsTrue(int.TryParse(cheetah.FrameLength.ToString(), out num), "Cheetah did not return a valid frame length.");
@@ -184,6 +197,7 @@ namespace CheetahTest
             using (Cheetah cheetah = Cheetah.Create(
                 accessKey: _accessKey,
                 modelPath: GetModelPath(modelFile),
+                device: _device,
                 endpointDurationSec: 0.2f,
                 enableAutomaticPunctuation: false))
             {
@@ -228,6 +242,7 @@ namespace CheetahTest
             using (Cheetah cheetah = Cheetah.Create(
                 accessKey: _accessKey,
                 modelPath: GetModelPath(modelFile),
+                device: _device,
                 endpointDurationSec: 0.2f,
                 enableAutomaticPunctuation: true))
             {
@@ -267,6 +282,7 @@ namespace CheetahTest
                 c = Cheetah.Create(
                     accessKey: "invalid",
                     modelPath: modelPath,
+                    device: _device,
                     enableAutomaticPunctuation: true);
                 Assert.IsNull(c);
                 c.Dispose();
@@ -284,6 +300,7 @@ namespace CheetahTest
                 c = Cheetah.Create(
                     accessKey: "invalid",
                     modelPath: modelPath,
+                    device: _device,
                     enableAutomaticPunctuation: true);
                 Assert.IsNull(c);
                 c.Dispose();
@@ -305,6 +322,7 @@ namespace CheetahTest
             Cheetah c = Cheetah.Create(
                 accessKey: _accessKey,
                 modelPath: modelPath,
+                device: _device,
                 enableAutomaticPunctuation: false);
             short[] testPcm = new short[c.FrameLength];
 

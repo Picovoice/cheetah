@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2022-2023 Picovoice Inc.
+    Copyright 2022-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -26,6 +26,13 @@ namespace CheetahDemo
         /// </summary>
         /// <param name="accessKey">AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).</param>
         /// <param name="modelPath">Absolute path to the file containing model parameters. If not set it will be set to the default location.</param>  
+        /// <param name="device">
+        /// String representation of the device (e.g., CPU or GPU) to use. If set to `best`, the most
+        /// suitable device is selected automatically. If set to `gpu`, the engine uses the first available GPU device. To select a specific
+        /// GPU device, set this argument to `gpu:${GPU_INDEX}`, where `${GPU_INDEX}` is the index of the target GPU. If set to
+        /// `cpu`, the engine will run on the CPU with the default number of threads. To specify the number of threads, set this
+        /// argument to `cpu:${NUM_THREADS}`, where `${NUM_THREADS}` is the desired number of threads.
+        /// </param>
         /// <param name="endpointDurationSec">
         /// Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio(with a duration specified herein) after 
         /// an utterance without any speech in it. Set to `0` to disable
@@ -37,6 +44,7 @@ namespace CheetahDemo
         public static void RunDemo(
             string accessKey,
             string modelPath,
+            string device,
             float endpointDurationSec,
             bool enableAutomaticPunctuation,
             int audioDeviceIndex)
@@ -45,6 +53,7 @@ namespace CheetahDemo
             using (Cheetah cheetah = Cheetah.Create(
                 accessKey: accessKey,
                 modelPath: modelPath,
+                device: device,
                 endpointDurationSec: endpointDurationSec,
                 enableAutomaticPunctuation: enableAutomaticPunctuation))
             {
@@ -115,6 +124,7 @@ namespace CheetahDemo
 
             string accessKey = null;
             string modelPath = null;
+            string device = null;
             float endpointDurationSec = 3.0f;
             bool enableAutomaticPunctuation = true;
             int audioDeviceIndex = -1;
@@ -137,6 +147,13 @@ namespace CheetahDemo
                     if (++argIndex < args.Length)
                     {
                         modelPath = args[argIndex++];
+                    }
+                }
+                else if (args[argIndex] == "--device")
+                {
+                    if (++argIndex < args.Length)
+                    {
+                        device = args[argIndex++];
                     }
                 }
                 else if (args[argIndex] == "--endpoint_duration")
@@ -196,6 +213,7 @@ namespace CheetahDemo
             RunDemo(
                 accessKey,
                 modelPath,
+                device,
                 endpointDurationSec,
                 enableAutomaticPunctuation,
                 audioDeviceIndex);
@@ -211,6 +229,7 @@ namespace CheetahDemo
         private static readonly string HELP_STR = "Available options: \n " +
             "\t--access_key (required): AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)\n" +
             "\t--model_path: Absolute path to the file containing model parameters.\n" +
+            "\t--device: Device to run inference on (`best`, `cpu:{num_threads}` or `gpu:{gpu_index}`). Default: automatically selects best device.\n" +
             "\t--endpoint_duration: Duration of endpoint in seconds. " +
             "A speech endpoint is detected when there is a chunk of audio (with a duration specified herein)" +
             " after an utterance without any speech in it. Set duration to 0 to disable this. Default is 3 seconds\n" +
