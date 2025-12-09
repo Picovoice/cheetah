@@ -48,6 +48,7 @@ public class PerformanceTest extends BaseTest {
             Cheetah cheetah = new Cheetah.Builder()
                     .setAccessKey(accessKey)
                     .setModelPath(defaultModelPath)
+                    .setDevice(device)
                     .build(appContext);
             long after = System.nanoTime();
 
@@ -76,6 +77,7 @@ public class PerformanceTest extends BaseTest {
 
         Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
                 .setModelPath(defaultModelPath)
+                .setDevice(device)
                 .build(appContext);
 
         File testAudio = new File(getAudioFilepath("test.wav"));
