@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2023 Picovoice Inc.
+    Copyright 2022-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -30,6 +30,7 @@ public class FileDemo {
     public static void runDemo(
             String accessKey,
             String modelPath,
+            String device,
             String libraryPath,
             boolean enableAutomaticPunctuation,
             File inputAudioFile) {
@@ -51,6 +52,7 @@ public class FileDemo {
                     .setAccessKey(accessKey)
                     .setLibraryPath(libraryPath)
                     .setModelPath(modelPath)
+                    .setDevice(device)
                     .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
                     .build();
 
@@ -122,6 +124,7 @@ public class FileDemo {
         String accessKey = cmd.getOptionValue("access_key");
         String libraryPath = cmd.getOptionValue("library_path");
         String modelPath = cmd.getOptionValue("model_path");
+        String device = cmd.getOptionValue("device");
         boolean enableAutomaticPunctuation = !cmd.hasOption("disable_automatic_punctuation");
         String inputAudioPath = cmd.getOptionValue("input_audio_path");
 
@@ -145,9 +148,14 @@ public class FileDemo {
             modelPath = Cheetah.MODEL_PATH;
         }
 
+        if (device == null) {
+            device = "best";
+        }
+
         runDemo(
                 accessKey,
                 modelPath,
+                device,
                 libraryPath,
                 enableAutomaticPunctuation,
                 inputAudioFile);
@@ -166,6 +174,13 @@ public class FileDemo {
                 .longOpt("model_path")
                 .hasArg(true)
                 .desc("Absolute path to the file containing model parameters.")
+                .build());
+
+        options.addOption(Option.builder("d")
+                .longOpt("device")
+                .hasArg(true)
+                .desc("Device to run inference on (`best`, `cpu:{num_threads}` or `gpu:{gpu_index}`). " +
+                        "Default: automatically selects best device.")
                 .build());
 
         options.addOption(Option.builder("l")

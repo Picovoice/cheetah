@@ -28,6 +28,7 @@ public class MicDemo {
     public static void runDemo(
             String accessKey,
             String modelPath,
+            String device,
             String libraryPath,
             float endpointDuration,
             boolean enableAutomaticPunctuation,
@@ -59,6 +60,7 @@ public class MicDemo {
                     .setAccessKey(accessKey)
                     .setLibraryPath(libraryPath)
                     .setModelPath(modelPath)
+                    .setDevice(device)
                     .setEndpointDuration(endpointDuration)
                     .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
                     .build();
@@ -210,6 +212,7 @@ public class MicDemo {
 
         String accessKey = cmd.getOptionValue("access_key");
         String modelPath = cmd.getOptionValue("model_path");
+        String device = cmd.getOptionValue("device");
         String libraryPath = cmd.getOptionValue("library_path");
         String endpointDurationStr = cmd.getOptionValue("endpoint_duration_sec");
         boolean enableAutomaticPunctuation = !cmd.hasOption("disable_automatic_punctuation");
@@ -226,6 +229,10 @@ public class MicDemo {
 
         if (modelPath == null) {
             modelPath = Cheetah.MODEL_PATH;
+        }
+
+        if (device == null) {
+            device = "best";
         }
 
         float endpointDuration = 1f;
@@ -260,6 +267,7 @@ public class MicDemo {
         runDemo(
                 accessKey,
                 modelPath,
+                device,
                 libraryPath,
                 endpointDuration,
                 enableAutomaticPunctuation,
@@ -280,6 +288,13 @@ public class MicDemo {
                 .longOpt("model_path")
                 .hasArg(true)
                 .desc("Absolute path to the file containing model parameters.")
+                .build());
+
+        options.addOption(Option.builder("d")
+                .longOpt("device")
+                .hasArg(true)
+                .desc("Device to run inference on (`best`, `cpu:{num_threads}` or `gpu:{gpu_index}`). " +
+                        "Default: automatically selects best device.")
                 .build());
 
         options.addOption(Option.builder("l")

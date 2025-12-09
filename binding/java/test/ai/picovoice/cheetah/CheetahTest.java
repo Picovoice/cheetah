@@ -39,6 +39,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class CheetahTest {
     private final String accessKey = System.getProperty("pvTestingAccessKey");
+    private final String device = System.getProperty("pvTestingDevice");
 
     private static int levenshteinDistance(String[] transcript, String[] reference) {
         int m = transcript.length;
@@ -146,6 +147,7 @@ public class CheetahTest {
     void getVersion() throws CheetahException {
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
+                .setDevice(device)
                 .build();
         assertTrue(cheetah.getVersion() != null && !cheetah.getVersion().equals(""));
         cheetah.delete();
@@ -155,6 +157,7 @@ public class CheetahTest {
     void getFrameLength() throws CheetahException {
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
+                .setDevice(device)
                 .build();
         assertTrue(cheetah.getFrameLength() > 0);
         cheetah.delete();
@@ -164,6 +167,7 @@ public class CheetahTest {
     void getSampleRate() throws CheetahException {
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
+                .setDevice(device)
                 .build();
         assertTrue(cheetah.getSampleRate() > 0);
         cheetah.delete();
@@ -175,6 +179,7 @@ public class CheetahTest {
         try {
             new Cheetah.Builder()
                     .setAccessKey("invalid")
+                    .setDevice(device)
                     .build();
         } catch (CheetahException e) {
             error = e.getMessageStack();
@@ -186,6 +191,7 @@ public class CheetahTest {
         try {
             new Cheetah.Builder()
                     .setAccessKey("invalid")
+                    .setDevice(device)
                     .build();
         } catch (CheetahException e) {
             for (int i = 0; i < error.length; i++) {
@@ -211,6 +217,7 @@ public class CheetahTest {
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
                 .setModelPath(modelPath)
+                .setDevice(device)
                 .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
                 .build();
 

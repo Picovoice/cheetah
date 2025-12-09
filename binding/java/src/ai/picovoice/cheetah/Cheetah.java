@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2023 Picovoice Inc.
+    Copyright 2022-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -13,6 +13,7 @@
 package ai.picovoice.cheetah;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Cheetah Class.
@@ -40,6 +41,13 @@ public class Cheetah {
      *
      * @param accessKey                  AccessKey obtained from Picovoice Console.
      * @param modelPath                  Absolute path to the file containing model parameters.
+     * @param device                     String representation of the device (e.g., CPU or GPU) to use. If set to `best`, the most
+     *                                   suitable device is selected automatically. If set to `gpu`, the engine uses the first
+     *                                   available GPU device. To select a specific GPU device, set this argument to
+     *                                   `gpu:${GPU_INDEX}`, where `${GPU_INDEX}` is the index of the target GPU. If set to `cpu`,
+     *                                   the engine will run on the CPU with the default number of threads. To specify the number
+     *                                   of threads, set this argument to `cpu:${NUM_THREADS}`, where `${NUM_THREADS}`
+     *                                   is the desired number of threads.
      * @param libraryPath                Absolute path to the native Cheetah library.
      * @param endpointDurationSec        Duration of endpoint in seconds. A speech endpoint is detected when there is a
      *                                   chunk of audio (with a duration specified herein) after an utterance without
@@ -51,10 +59,15 @@ public class Cheetah {
     private Cheetah(
             String accessKey,
             String modelPath,
+            String device,
             String libraryPath,
             float endpointDurationSec,
             boolean enableAutomaticPunctuation) throws CheetahException {
         try {
+            ArrayList<String> libraryDependencies = Utils.getLibraryDependencyPaths(libraryPath);
+            for (String dependency : libraryDependencies) {
+                System.load(dependency);
+            }
             System.load(libraryPath);
         } catch (Exception exception) {
             throw new CheetahException(exception);
@@ -64,6 +77,7 @@ public class Cheetah {
         handle = CheetahNative.init(
                 accessKey,
                 modelPath,
+                device,
                 endpointDurationSec,
                 enableAutomaticPunctuation);
     }
@@ -146,11 +160,44 @@ public class Cheetah {
     }
 
     /**
+     * Retrieves a list of available hardware devices that Cheetah can use to run inference.
+     *
+     * @param libraryPath Path to a native Cheetah library. Set to `null` to use default library.
+     *
+     * @return List of available hardware devices that Cheetah can use to run inference.
+     * @throws CheetahException if the library file cannot be loaded.
+     */
+    public static String[] getAvailableDevices(String libraryPath) throws CheetahException {
+        try {
+            System.load(libraryPath);
+        } catch (Exception exception) {
+            throw new CheetahException(exception);
+        }
+        return CheetahNative.listHardwareDevices();
+    }
+
+    /**
+     * Retrieves a list of available hardware devices that Cheetah can use to run inference.
+     *
+     * @return List of available hardware devices that Cheetah can use to run inference.
+     * @throws CheetahException if the default library file cannot be loaded.
+     */
+    public static String[] getAvailableDevices() throws CheetahException {
+        if (Utils.isResourcesAvailable()) {
+            return Cheetah.getAvailableDevices(LIBRARY_PATH);
+        } else {
+            throw new CheetahInvalidArgumentException("Default library unavailable. " +
+                    "Please provide a valid native Cheetah library path.");
+        }
+    }
+
+    /**
      * Builder for creating an instance of Cheetah with a mixture of default arguments.
      */
     public static class Builder {
         private String accessKey = null;
         private String libraryPath = null;
+        private String device = null;
         private String modelPath = null;
         private float endpointDuration = 1f;
         private boolean enableAutomaticPunctuation = false;
@@ -172,6 +219,11 @@ public class Cheetah {
          */
         public Builder setModelPath(String modelPath) {
             this.modelPath = modelPath;
+            return this;
+        }
+
+        public Builder setDevice(String device) {
+            this.device = device;
             return this;
         }
 
@@ -213,6 +265,10 @@ public class Cheetah {
                 throw new CheetahInvalidArgumentException("AccessKey must not be null");
             }
 
+            if (device == null) {
+                device = "best";
+            }
+
             if (libraryPath == null) {
                 if (Utils.isResourcesAvailable()) {
                     libraryPath = LIBRARY_PATH;
@@ -246,6 +302,7 @@ public class Cheetah {
             return new Cheetah(
                     accessKey,
                     modelPath,
+                    device,
                     libraryPath,
                     endpointDuration,
                     enableAutomaticPunctuation);

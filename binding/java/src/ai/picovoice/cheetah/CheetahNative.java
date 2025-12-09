@@ -25,6 +25,7 @@ class CheetahNative {
     static native long init(
             String accessKey,
             String modelPath,
+            String device,
             float endpointDurationSec,
             boolean enableAutomaticPunctuation) throws CheetahException;
 
@@ -33,5 +34,7 @@ class CheetahNative {
     static native CheetahTranscript process(long object, short[] pcm) throws CheetahException;
 
     static native CheetahTranscript flush(long object) throws CheetahException;
+
+    static native String[] listHardwareDevices() throws CheetahException;
 
 }
