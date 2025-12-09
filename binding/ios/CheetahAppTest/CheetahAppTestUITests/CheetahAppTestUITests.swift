@@ -77,6 +77,7 @@ struct LanguageTest: Decodable {
 
 class CheetahDemoUITests: XCTestCase {
     let accessKey: String = "{TESTING_ACCESS_KEY_HERE}"
+    let device: String = "{TESTING_DEVICE_HERE}"
 
     override func setUpWithError() throws {
         continueAfterFailure = true
@@ -123,6 +124,7 @@ class CheetahDemoUITests: XCTestCase {
         let cheetah = try Cheetah(
                 accessKey: accessKey,
                 modelPath: modelPath,
+                device: device,
                 enableAutomaticPunctuation: enableAutomaticPunctuation)
 
         let res: String = try processFile(cheetah: cheetah, fileURL: audioFileURL)
@@ -212,6 +214,14 @@ class CheetahDemoUITests: XCTestCase {
         XCTAssertGreaterThan(Cheetah.version, "")
     }
 
+    func testGetAvailableDevices() throws {
+        let devices = try Cheetah.getAvailableDevices()
+        XCTAssert(!devices.isEmpty)
+        for device in devices {
+            XCTAssert(!device.isEmpty)
+        }
+    }
+
     func testMessageStack() throws {
         let bundle = Bundle(for: type(of: self))
         let modelURL: URL = bundle.url(
@@ -221,7 +231,7 @@ class CheetahDemoUITests: XCTestCase {
 
         var first_error: String = ""
         do {
-            let cheetah = try Cheetah.init(accessKey: "invalid", modelURL: modelURL)
+            let cheetah = try Cheetah.init(accessKey: "invalid", modelURL: modelURL, device: device)
             XCTAssertNil(cheetah)
         } catch {
             first_error = "\(error.localizedDescription)"
@@ -229,7 +239,7 @@ class CheetahDemoUITests: XCTestCase {
         }
 
         do {
-            let cheetah = try Cheetah.init(accessKey: "invalid", modelURL: modelURL)
+            let cheetah = try Cheetah.init(accessKey: "invalid", modelURL: modelURL, device: device)
             XCTAssertNil(cheetah)
         } catch {
             XCTAssert("\(error.localizedDescription)".count == first_error.count)
@@ -243,7 +253,7 @@ class CheetahDemoUITests: XCTestCase {
             withExtension: "pv",
             subdirectory: "test_resources/model_files")!
 
-        let cheetah = try Cheetah(accessKey: accessKey, modelURL: modelURL)
+        let cheetah = try Cheetah(accessKey: accessKey, modelURL: modelURL, device: device)
         cheetah.delete()
 
         var testPcm: [Int16] = []
