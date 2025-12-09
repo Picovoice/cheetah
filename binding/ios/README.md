@@ -15,6 +15,10 @@ Cheetah is a streaming on-device speech-to-text engine. Cheetah is:
   - Chrome, Safari, Firefox, and Edge
   - Raspberry Pi (3, 4, 5)
 
+## Compatibility
+
+- iOS 16.0+
+
 ## Installation
 
 <!-- markdown-link-check-disable -->
