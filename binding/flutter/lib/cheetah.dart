@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2024 Picovoice Inc.
+// Copyright 2022-2025 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -61,6 +61,13 @@ class Cheetah {
   ///
   /// [modelPath] Path to the file containing model parameters.
   ///
+  /// [device] (Optional) String representation of the device (e.g., CPU or GPU) to use. If set to `best`, the most
+  ///                     suitable device is selected automatically. If set to `gpu`, the engine uses the first
+  ///                     available GPU device. To select a specific GPU device, set this argument to `gpu:${GPU_INDEX}`,
+  ///                     where `${GPU_INDEX}` is the index of the target GPU. If set to `cpu`, the engine will run on the CPU
+  ///                     with the default number of threads. To specify the number of threads, set this argument to
+  ///                     `cpu:${NUM_THREADS}`, where `${NUM_THREADS}` is the desired number of threads.
+  ///
   /// [endpointDuration] (Optional) Duration of endpoint in seconds. A speech endpoint is detected when there is a
   ///                               chunk of audio (with a duration specified herein) after an utterance without
   ///                               any speech in it. Set duration to 0 to disable this. Default is 1 second.
@@ -70,7 +77,7 @@ class Cheetah {
   ///
   /// returns an instance of the Cheetah Speech-to-Text engine
   static Future<Cheetah> create(String accessKey, String modelPath,
-      {double endpointDuration = 1, enableAutomaticPunctuation = false}) async {
+      {String device = "best", double endpointDuration = 1, enableAutomaticPunctuation = false}) async {
     modelPath = await _tryExtractFlutterAsset(modelPath);
 
     try {
@@ -78,6 +85,7 @@ class Cheetah {
           await _channel.invokeMethod(_NativeFunctions.CREATE.name, {
         'accessKey': accessKey,
         'modelPath': modelPath,
+        'device': device,
         'endpointDuration': endpointDuration,
         'enableAutomaticPunctuation': enableAutomaticPunctuation
       }));
