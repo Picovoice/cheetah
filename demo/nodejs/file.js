@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 //
-// Copyright 2020 Picovoice Inc.
+// Copyright 2020-2025 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -28,11 +28,14 @@ program
     "input wav file"
   )
   .option(
+    "-d, --device <string>",
+    "Device to run inference on (`best`, `cpu:{num_threads}`, `gpu:{gpu_index}`). Default: selects best device for `pvcheetah`")
+  .option(
     "-l, --library_file_path <string>",
     "absolute path to cheetah dynamic library"
   )
   .option("-m, --model_file_path <string>", "absolute path to cheetah model")
-  .option("-d, --disable_automatic_punctuation", "disable automatic punctuation")
+  .option("-p, --disable_automatic_punctuation", "disable automatic punctuation")
 
 if (process.argv.length < 2) {
   program.help();
@@ -44,12 +47,21 @@ function fileDemo() {
   let accessKey = program["access_key"]
   let libraryFilePath = program["library_file_path"];
   let modelFilePath = program["model_file_path"];
+  let device = program["device"];
   let disableAutomaticPunctuation = program["disable_automatic_punctuation"];
+
+  if (accessKey === undefined || audioPath === undefined) {
+    console.error(
+      "`--access_key` and `--input_audio_file_path` are required arguments"
+    );
+    return;
+  }
 
   let engineInstance = new Cheetah(
     accessKey,
     {
       modelPath: modelFilePath,
+      device: device,
       libraryPath: libraryFilePath,
       endpointDurationSec: 0.4,
       enableAutomaticPunctuation: !disableAutomaticPunctuation

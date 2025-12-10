@@ -8,6 +8,7 @@
 */
 
 export type CheetahInitOptions = {
+  device?: string;
   endpointDurationSec?: number;
   enableAutomaticPunctuation?: boolean;
 };
