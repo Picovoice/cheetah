@@ -25,6 +25,7 @@ class CheetahPerformanceTestCase(unittest.TestCase):
     NUM_TEST_ITERATIONS = int(sys.argv[2])
     INIT_PERFORMANCE_THRESHOLD_SEC = float(sys.argv[3])
     PROC_PERFORMANCE_THRESHOLD_SEC = float(sys.argv[4])
+    DEVICE = sys.argv[5]
     AUDIO_PATH = os.path.join(os.path.dirname(__file__), '../../resources/audio_samples/test.wav')
 
     def test_performance_init(self):
@@ -34,6 +35,7 @@ class CheetahPerformanceTestCase(unittest.TestCase):
             start = time.perf_counter()
             cheetah = Cheetah(
                 access_key=self.ACCESS_KEY,
+                device=self.DEVICE,
                 library_path=default_library_path('../..'),
                 model_path=default_model_path('../..')
             )
@@ -55,6 +57,7 @@ class CheetahPerformanceTestCase(unittest.TestCase):
 
         cheetah = Cheetah(
             access_key=self.ACCESS_KEY,
+            device=self.DEVICE,
             library_path=default_library_path('../..'),
             model_path=default_model_path('../..')
         )

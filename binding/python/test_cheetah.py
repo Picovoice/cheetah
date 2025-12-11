@@ -15,7 +15,11 @@ import unittest
 
 from parameterized import parameterized
 
-from _cheetah import Cheetah, CheetahError
+from _cheetah import (
+    Cheetah,
+    CheetahError,
+    list_hardware_devices
+)
 from _util import *
 from test_util import *
 
@@ -27,6 +31,7 @@ class CheetahTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls._access_key = sys.argv[1]
+        cls._device = sys.argv[2]
         cls._audio_directory = os.path.join('..', '..', 'resources', 'audio_samples')
 
     @classmethod
@@ -34,6 +39,7 @@ class CheetahTestCase(unittest.TestCase):
         return Cheetah(
             access_key=cls._access_key,
             model_path=get_model_path(model_file=model_file),
+            device=cls._device,
             library_path=default_library_path('../..'),
             enable_automatic_punctuation=enable_automatic_punctuation)
 
@@ -115,6 +121,7 @@ class CheetahTestCase(unittest.TestCase):
         o = Cheetah(
             access_key=self._access_key,
             model_path=default_model_path('../..'),
+            device=self._device,
             library_path=default_library_path('../..'),
             enable_automatic_punctuation=True)
         self.assertIsInstance(o.version, str)
@@ -128,6 +135,7 @@ class CheetahTestCase(unittest.TestCase):
             c = Cheetah(
                 access_key='invalid',
                 library_path=default_library_path(relative),
+                device=self._device,
                 model_path=default_model_path(relative),
                 enable_automatic_punctuation=True)
             self.assertIsNone(c)
@@ -141,6 +149,7 @@ class CheetahTestCase(unittest.TestCase):
             c = Cheetah(
                 access_key='invalid',
                 library_path=default_library_path(relative),
+                device=self._device,
                 model_path=default_model_path(relative),
                 enable_automatic_punctuation=True)
             self.assertIsNone(c)
@@ -154,6 +163,7 @@ class CheetahTestCase(unittest.TestCase):
         c = Cheetah(
             access_key=sys.argv[1],
             library_path=default_library_path(relative),
+            device=self._device,
             model_path=default_model_path(relative),
             enable_automatic_punctuation=True)
         test_pcm = [0] * c._frame_length
@@ -178,9 +188,16 @@ class CheetahTestCase(unittest.TestCase):
         c._handle = address
 
 
+    def test_available_devices(self) -> None:
+        res = list_hardware_devices(library_path=default_library_path("../.."))
+        self.assertGreater(len(res), 0)
+        for x in res:
+            self.assertIsInstance(x, str)
+            self.assertGreater(len(x), 0)
+
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("usage: %s ${ACCESS_KEY}" % sys.argv[0])
+    if len(sys.argv) != 3:
+        print("usage: %s ${ACCESS_KEY} ${DEVICE}" % sys.argv[0])
         exit(1)
 
     unittest.main(argv=sys.argv[:1])

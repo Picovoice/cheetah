@@ -1,5 +1,5 @@
 #
-#    Copyright 2018-2023 Picovoice Inc.
+#    Copyright 2018-2025 Picovoice Inc.
 #
 #    You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 #    file accompanying this source.
@@ -13,6 +13,7 @@ import argparse
 import struct
 import wave
 
+import pvcheetah
 from pvcheetah import CheetahActivationLimitError, create
 
 
@@ -34,14 +35,30 @@ def main():
     parser.add_argument(
         '--wav_paths',
         nargs='+',
-        required=True,
         metavar='PATH',
         help='Absolute paths to `.wav` files to be transcribed')
+    parser.add_argument(
+        '--device',
+        help='Device to run inference on (`best`, `cpu:{num_threads}` or `gpu:{gpu_index}`). '
+             'Default: automatically selects best device')
+    parser.add_argument(
+        '--show_inference_devices',
+        action='store_true',
+        help='Print devices that are available to run Cheetah inference')
+
     args = parser.parse_args()
+
+    if args.show_inference_devices:
+        print('\n'.join(pvcheetah.available_devices(library_path=args.library_path)))
+        return
+
+    if args.access_key is None or args.wav_path is None:
+        raise ValueError("Arguments --access_key and --wav_path are required.")
 
     o = create(
         access_key=args.access_key,
         model_path=args.model_path,
+        device=args.device,
         library_path=args.library_path,
         enable_automatic_punctuation=not args.disable_automatic_punctuation)
 
