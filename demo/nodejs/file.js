@@ -19,16 +19,16 @@ const WaveFile = require("wavefile").WaveFile;
 const { Cheetah, getInt16Frames, checkWaveFile } = require("@picovoice/cheetah-node");
 
 program
-  .requiredOption(
+  .option(
     "-a, --access_key <string>",
     "AccessKey obtain from the Picovoice Console (https://console.picovoice.ai/)"
   )
-  .requiredOption(
+  .option(
     "-i, --input_audio_file_path <string>",
     "input wav file"
   )
   .option(
-    "-d, --device <string>",
+    "-y, --device <string>",
     "Device to run inference on (`best`, `cpu:{num_threads}`, `gpu:{gpu_index}`). Default: selects best device for `pvcheetah`")
   .option(
     "-l, --library_file_path <string>",
@@ -36,6 +36,10 @@ program
   )
   .option("-m, --model_file_path <string>", "absolute path to cheetah model")
   .option("-p, --disable_automatic_punctuation", "disable automatic punctuation")
+  .option(
+    "-z, --show_inference_devices",
+    "Print devices that are available to run Cheetah inference.",
+    false);
 
 if (process.argv.length < 2) {
   program.help();
@@ -49,6 +53,12 @@ function fileDemo() {
   let modelFilePath = program["model_file_path"];
   let device = program["device"];
   let disableAutomaticPunctuation = program["disable_automatic_punctuation"];
+
+  const showInferenceDevices = program["show_inference_devices"];
+  if (showInferenceDevices) {
+    console.log(Cheetah.listAvailableDevices().join('\n'));
+    process.exit();
+  }
 
   if (accessKey === undefined || audioPath === undefined) {
     console.error(

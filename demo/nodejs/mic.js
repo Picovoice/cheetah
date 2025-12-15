@@ -29,7 +29,7 @@ program
   )
   .option("-m, --model_file_path <string>", "absolute path to cheetah model")
   .option(
-    "-d, --device <string>",
+    "-y, --device <string>",
     "Device to run inference on (`best`, `cpu:{num_threads}`, `gpu:{gpu_index}`). Default: selects best device for `pvcheetah`")
   .option(
     "-i, --audio_device_index <number>",
@@ -44,7 +44,11 @@ program
     3
   )
   .option("-s, --show_audio_devices", "show the list of available devices")
-  .option("-p, --disable_automatic_punctuation", "disable automatic punctuation");
+  .option("-p, --disable_automatic_punctuation", "disable automatic punctuation")
+  .option(
+      "-z, --show_inference_devices",
+      "Print devices that are available to run Porcupine inference.",
+      false);;
 
 if (process.argv.length < 1) {
   program.help();
@@ -64,6 +68,12 @@ async function micDemo() {
   let disableAutomaticPunctuation = program["disable_automatic_punctuation"];
 
   let showAudioDevicesDefined = showAudioDevices !== undefined;
+
+  const showInferenceDevices = program["show_inference_devices"];
+  if (showInferenceDevices) {
+    console.log(Porcupine.listAvailableDevices().join('\n'));
+    process.exit();
+  }
 
   if (showAudioDevicesDefined) {
     const devices = PvRecorder.getAvailableDevices();
