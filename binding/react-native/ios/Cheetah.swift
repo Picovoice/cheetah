@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2023 Picovoice Inc.
+// Copyright 2022-2025 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -20,10 +20,28 @@ class PvCheetah: NSObject {
         Cheetah.setSdk(sdk: "react-native")
     }
 
+    @objc(getAvailableDevices:rejecter:)
+    func fromBuiltInKeywords(
+        resolver resolve: RCTPromiseResolveBlock,
+        rejecter reject: RCTPromiseRejectBlock
+    ) {
+        do {
+            var result: [String] = try Cheetah.getAvailableDevices()
+            resolve(result)
+        } catch let error as CheetahError {
+            let (code, message) = errorToCodeAndMessage(error)
+            reject(code, message, nil)
+        } catch {
+            let (code, message) = errorToCodeAndMessage(CheetahError(error.localizedDescription))
+            reject(code, message, nil)
+        }
+    }
+
     @objc(create:modelPath:endpointDuration:enableAutomaticPunctuation:resolver:rejecter:)
     func create(
             accessKey: String,
             modelPath: String,
+            device: String,
             endpointDuration: Float32,
             enableAutomaticPunctuation: Bool,
             resolver resolve: RCTPromiseResolveBlock,
@@ -33,6 +51,7 @@ class PvCheetah: NSObject {
             let cheetah = try Cheetah(
                     accessKey: accessKey,
                     modelPath: modelPath,
+                    device: device.isEmpty ? nil : device,
                     endpointDuration: endpointDuration,
                     enableAutomaticPunctuation: enableAutomaticPunctuation)
 

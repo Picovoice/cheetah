@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2023 Picovoice Inc.
+    Copyright 2022-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -20,6 +20,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
 import java.util.ArrayList;
@@ -53,9 +54,24 @@ public class CheetahModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void getAvailableDevices(Promise promise) {
+        try {
+            String[] devices = Cheetah.getAvailableDevices();
+            WritableArray result = Arguments.createArray();
+            for (int i = 0; i < devices.length; i++) {
+                result.pushString(devices[i]);
+            }
+            promise.resolve(result);
+        } catch (CheetahException e) {
+            promise.reject(e.getClass().getSimpleName(), e.getMessage());
+        }
+    }
+
+    @ReactMethod
     public void create(
             String accessKey,
             String modelPath,
+            String device,
             Float endpointDuration,
             boolean enableAutomaticPunctuation,
             Promise promise
@@ -64,6 +80,7 @@ public class CheetahModule extends ReactContextBaseJavaModule {
             Cheetah cheetah = new Cheetah.Builder()
                     .setAccessKey(accessKey)
                     .setModelPath(modelPath.isEmpty() ? null : modelPath)
+                    .setDevice(device)
                     .setEndpointDuration(endpointDuration)
                     .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
                     .build(reactContext);
