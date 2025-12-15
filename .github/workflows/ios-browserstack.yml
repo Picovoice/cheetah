@@ -45,7 +45,7 @@ jobs:
 
       - name: Inject Device
         run: sed -i '.bak' 's:{TESTING_DEVICE_HERE}:cpu\:1:'
-          CheetahAppTestUITests/BaseTest.swift
+          CheetahAppTestUITests/CheetahAppTestUITests.swift
 
       - name: XCode Build
         run: xcrun xcodebuild build-for-testing
