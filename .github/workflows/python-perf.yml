@@ -117,12 +117,16 @@ jobs:
         include:
           - device: cpu:1
             machine: pv-windows-arm64
+            init_performance_threshold_sec: 3.5
             proc_performance_threshold_sec: 0.8
           - machine: pv-linux
+            init_performance_threshold_sec: 3.5
             proc_performance_threshold_sec: 0.8
           - machine: pv-windows
+            init_performance_threshold_sec: 3.5
             proc_performance_threshold_sec: 0.8
           - machine: pv-ios
+            init_performance_threshold_sec: 3.5
             proc_performance_threshold_sec: 0.8
 
     steps:
