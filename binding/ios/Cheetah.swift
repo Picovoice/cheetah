@@ -1,5 +1,5 @@
 //
-//  Copyright 2022-2024 Picovoice Inc.
+//  Copyright 2022-2025 Picovoice Inc.
 //  You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 //  file accompanying this source.
 //  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
@@ -36,6 +36,12 @@ public class Cheetah {
     /// - Parameters:
     ///   - accessKey: The AccessKey obtained from Picovoice Console (https://console.picovoice.ai).
     ///   - modelPath: Absolute path to file containing model parameters.
+    ///   - device: String representation of the device (e.g., CPU or GPU) to use. If set to `best`, the most
+    ///   suitable device is selected automatically. If set to `gpu`, the engine uses the first available GPU
+    ///   device. To select a specific GPU device, set this argument to `gpu:${GPU_INDEX}`, where `${GPU_INDEX}`
+    ///   is the index of the target GPU. If set to `cpu`, the engine will run on the CPU with the default
+    ///   number of threads. To specify the number of threads, set this argument to `cpu:${NUM_THREADS}`,
+    ///   where `${NUM_THREADS}` is the desired number of threads.
     ///   - endpointDuration: Duration of endpoint in seconds. A speech endpoint is detected when there is a
     ///     chunk of audio (with a duration specified herein) after an utterance without any speech in it.
     ///     Set duration to 0 to disable this. Default is 1 second.
@@ -44,6 +50,7 @@ public class Cheetah {
     public init(
             accessKey: String,
             modelPath: String,
+            device: String? = nil,
             endpointDuration: Float = 1.0,
             enableAutomaticPunctuation: Bool = false) throws {
 
@@ -56,6 +63,11 @@ public class Cheetah {
             modelPathArg = try getResourcePath(modelPathArg)
         }
 
+        var deviceArg = device
+        if device == nil {
+            deviceArg = "best"
+        }
+
         if endpointDuration < 0 {
             throw CheetahInvalidArgumentError("EndpointDuration must be a non-negative number.")
         }
@@ -65,12 +77,13 @@ public class Cheetah {
         let status = pv_cheetah_init(
                 accessKey,
                 modelPathArg,
+                deviceArg,
                 endpointDuration,
                 enableAutomaticPunctuation,
                 &handle)
         if status != PV_STATUS_SUCCESS {
-            let messageStack = try getMessageStack()
-            throw pvStatusToCheetahError(status, "Cheetah init failed", messageStack)
+            let messageStack = try Cheetah.getMessageStack()
+            throw Cheetah.pvStatusToCheetahError(status, "Cheetah init failed", messageStack)
         }
     }
 
@@ -134,8 +147,8 @@ public class Cheetah {
         var endPoint = false
         let status = pv_cheetah_process(self.handle, pcm, &cPartialTranscript, &endPoint)
         if status != PV_STATUS_SUCCESS {
-            let messageStack = try getMessageStack()
-            throw pvStatusToCheetahError(status, "Cheetah process failed", messageStack)
+            let messageStack = try Cheetah.getMessageStack()
+            throw Cheetah.pvStatusToCheetahError(status, "Cheetah process failed", messageStack)
         }
 
         let transcript = String(cString: cPartialTranscript!)
@@ -156,8 +169,8 @@ public class Cheetah {
         var cFinalTranscript: UnsafeMutablePointer<Int8>?
         let status = pv_cheetah_flush(self.handle, &cFinalTranscript)
         if status != PV_STATUS_SUCCESS {
-            let messageStack = try getMessageStack()
-            throw pvStatusToCheetahError(status, "Cheetah flush failed", messageStack)
+            let messageStack = try Cheetah.getMessageStack()
+            throw Cheetah.pvStatusToCheetahError(status, "Cheetah flush failed", messageStack)
         }
 
         let transcript = String(cString: cFinalTranscript!)
@@ -185,7 +198,31 @@ public class Cheetah {
         )
     }
 
-    private func pvStatusToCheetahError(
+    /// Lists all available devices that Cheetah can use for inference.
+    /// Entries in the list can be used as the `device` argument when initializing Cheetah.
+    ///
+    /// - Throws: CheetahError
+    /// - Returns: Array of available devices that Cheetah can be used for inference.
+    public static func getAvailableDevices() throws -> [String] {
+        var cHardwareDevices: UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>?
+        var numHardwareDevices: Int32 = 0
+        let status = pv_cheetah_list_hardware_devices(&cHardwareDevices, &numHardwareDevices)
+        if status != PV_STATUS_SUCCESS {
+            let messageStack = try Cheetah.getMessageStack()
+            throw Cheetah.pvStatusToCheetahError(status, "Cheetah getAvailableDevices failed", messageStack)
+        }
+
+        var hardwareDevices: [String] = []
+        for i in 0..<numHardwareDevices {
+            hardwareDevices.append(String(cString: cHardwareDevices!.advanced(by: Int(i)).pointee!))
+        }
+
+        pv_cheetah_free_hardware_devices(cHardwareDevices, numHardwareDevices)
+
+        return hardwareDevices
+    }
+
+    private static func pvStatusToCheetahError(
         _ status: pv_status_t,
         _ message: String,
         _ messageStack: [String] = []) -> CheetahError {
@@ -218,12 +255,12 @@ public class Cheetah {
         }
     }
 
-    private func getMessageStack() throws -> [String] {
+    private static func getMessageStack() throws -> [String] {
         var messageStackRef: UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>?
         var messageStackDepth: Int32 = 0
         let status = pv_get_error_stack(&messageStackRef, &messageStackDepth)
         if status != PV_STATUS_SUCCESS {
-            throw pvStatusToCheetahError(status, "Unable to get Cheetah error state")
+            throw Rhino.pvStatusToCheetahError(status, "Unable to get Cheetah error state")
         }
 
         var messageStack: [String] = []
