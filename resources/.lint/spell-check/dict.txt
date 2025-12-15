@@ -27,6 +27,7 @@ downsample
 downsampled
 drwav
 dylib
+embedder
 emscripten
 emscripten
 endpointing
