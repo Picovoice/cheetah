@@ -128,6 +128,19 @@ public class FileDemo {
         boolean enableAutomaticPunctuation = !cmd.hasOption("disable_automatic_punctuation");
         String inputAudioPath = cmd.getOptionValue("input_audio_path");
 
+        if (cmd.hasOption("show_inference_devices")) {
+            try {
+                String[] devices = Cheetah.getAvailableDevices();
+                for (int i = 0; i < devices.length; i++) {
+                    System.out.println(devices[i]);
+                }
+                return;
+            } catch (CheetahException e) {
+                System.out.println(e.getMessage());
+                System.exit(1);
+            }
+        }
+
         if (accessKey == null || accessKey.length() == 0) {
             throw new IllegalArgumentException("AccessKey is required for Cheetah.");
         }
@@ -176,7 +189,7 @@ public class FileDemo {
                 .desc("Absolute path to the file containing model parameters.")
                 .build());
 
-        options.addOption(Option.builder("d")
+        options.addOption(Option.builder("y")
                 .longOpt("device")
                 .hasArg(true)
                 .desc("Device to run inference on (`best`, `cpu:{num_threads}` or `gpu:{gpu_index}`). " +
@@ -199,6 +212,11 @@ public class FileDemo {
                 .longOpt("disable_automatic_punctuation")
                 .desc("")
                 .build());
+
+        options.addOption(new Option("sy",
+                "show_inference_devices",
+                false,
+                "Print devices that are available to run Cheetah inference."));
 
         options.addOption(new Option("h", "help", false, ""));
 

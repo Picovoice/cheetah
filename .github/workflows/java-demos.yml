@@ -62,7 +62,7 @@ jobs:
       run: gradle build
 
     - name: Run filedemo
-      run: java -jar build/libs/cheetah-file-demo.jar -a  ${{secrets.PV_VALID_ACCESS_KEY}} -i ../../resources/audio_samples/test.wav -d ${{ matrix.device }}
+      run: java -jar build/libs/cheetah-file-demo.jar -a  ${{secrets.PV_VALID_ACCESS_KEY}} -i ../../resources/audio_samples/test.wav -y ${{ matrix.device }}
 
   build-self-hosted:
     runs-on: ${{ matrix.machine }}
@@ -81,18 +81,6 @@ jobs:
         - device: gpu
           machine: pv-ios
           platform: mac
-        - machine: rpi3-32
-          platform: raspberry-pi
-        - machine: rpi3-64
-          platform: raspberry-pi
-        - machine: rpi4-32
-          platform: raspberry-pi
-        - machine: rpi4-64
-          platform: raspberry-pi
-        - machine: rpi5-64
-          platform: raspberry-pi
-        - machine: pv-windows-arm64
-          platform: windows
 
     steps:
     - uses: actions/checkout@v3
@@ -107,4 +95,4 @@ jobs:
       run: ./gradlew build
 
     - name: Run filedemo
-      run: java -jar build/libs/cheetah-file-demo.jar -a  ${{secrets.PV_VALID_ACCESS_KEY}} -d ${{ matrix.device }} -i ../../resources/audio_samples/test.wav
+      run: java -jar build/libs/cheetah-file-demo.jar -a  ${{secrets.PV_VALID_ACCESS_KEY}} -y ${{ matrix.device }} -i ../../resources/audio_samples/test.wav
