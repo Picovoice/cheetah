@@ -54,7 +54,7 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: Test
-      run: python test_cheetah.py ${{secrets.PV_VALID_ACCESS_KEY}} --device ${{ matrix.device }}
+      run: python test_cheetah.py ${{secrets.PV_VALID_ACCESS_KEY}} ${{ matrix.device }}
 
   build-self-hosted:
     runs-on: ${{ matrix.machine }}
@@ -78,4 +78,4 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: Test
-      run: python3 test_cheetah.py ${{secrets.PV_VALID_ACCESS_KEY}} --device ${{ matrix.device }}
+      run: python3 test_cheetah.py ${{secrets.PV_VALID_ACCESS_KEY}} ${{ matrix.device }}
