@@ -626,7 +626,7 @@ export class Cheetah {
         module.HEAPU8,
       );
 
-      throw pvStatusToException(status, "Initialization failed");
+      throw pvStatusToException(status, "Initialization failed", messageStack);
     }
 
     const objectAddress = module.HEAP32[objectAddressAddress / Int32Array.BYTES_PER_ELEMENT];
