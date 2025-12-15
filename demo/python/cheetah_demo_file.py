@@ -52,8 +52,8 @@ def main():
         print('\n'.join(pvcheetah.available_devices(library_path=args.library_path)))
         return
 
-    if args.access_key is None or args.wav_path is None:
-        raise ValueError("Arguments --access_key and --wav_path are required.")
+    if args.access_key is None or args.wav_paths is None:
+        raise ValueError("Arguments --access_key and --wav_paths are required.")
 
     o = create(
         access_key=args.access_key,
