@@ -187,13 +187,13 @@ class CheetahTestCase(unittest.TestCase):
 
         c._handle = address
 
-
     def test_available_devices(self) -> None:
         res = list_hardware_devices(library_path=default_library_path("../.."))
         self.assertGreater(len(res), 0)
         for x in res:
             self.assertIsInstance(x, str)
             self.assertGreater(len(x), 0)
+
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:

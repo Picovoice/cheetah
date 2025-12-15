@@ -339,6 +339,7 @@ def list_hardware_devices(library_path: str) -> Sequence[str]:
 
     return res
 
+
 __all__ = [
     'Cheetah',
     'CheetahActivationError',

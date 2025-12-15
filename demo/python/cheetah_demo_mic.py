@@ -11,6 +11,7 @@
 
 import argparse
 
+import pvcheetah
 from pvcheetah import CheetahActivationLimitError, create
 from pvrecorder import PvRecorder
 
