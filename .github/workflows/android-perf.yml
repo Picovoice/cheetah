@@ -50,11 +50,20 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+############## REMOVE AFTER RELEASE ##########################
+    - name: Build binding
+      run: ./gradlew assembleRelease --info
+      working-directory: binding/android/Cheetah
+############## REMOVE AFTER RELEASE ##########################
+
     - name: Copy test_resources
       run: ./copy_test_resources.sh
 
     - name: Inject AccessKey
       run: echo pvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}" >> local.properties
+
+    - name: Inject Device
+      run: echo pvTestingDevice="cpu:1" >> local.properties
 
     - name: Inject Number of Iterations
       run: echo numTestIterations="30" >> local.properties

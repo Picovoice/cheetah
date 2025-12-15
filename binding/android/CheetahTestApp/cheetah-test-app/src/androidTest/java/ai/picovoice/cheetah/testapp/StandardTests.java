@@ -35,6 +35,7 @@ public class StandardTests extends BaseTest {
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
                 .setModelPath(defaultModelPath)
+                .setDevice(device)
                 .build(appContext);
 
         String version = cheetah.getVersion();
@@ -48,6 +49,7 @@ public class StandardTests extends BaseTest {
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
                 .setModelPath(defaultModelPath)
+                .setDevice(device)
                 .build(appContext);
 
         int frameLength = cheetah.getFrameLength();
@@ -61,12 +63,38 @@ public class StandardTests extends BaseTest {
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
                 .setModelPath(defaultModelPath)
+                .setDevice(device)
                 .build(appContext);
 
         int sampleRate = cheetah.getSampleRate();
         cheetah.delete();
 
         assertTrue(sampleRate > 0);
+    }
+
+    @Test
+    public void testInvalidDevice() throws CheetahException {
+        boolean didFail = false;
+        try {
+            Cheetah cheetah = new Cheetah.Builder()
+                    .setAccessKey(accessKey)
+                    .setModelPath(defaultModelPath)
+                    .setDevice("invalid_device")
+                    .build(appContext);
+
+        } catch (CheetahException e) {
+            didFail = true;
+        }
+        assertTrue(didFail);
+    }
+
+    @Test
+    public void testGetAvailableDevices() throws CheetahException {
+        String[] availableDevices = Cheetah.getAvailableDevices();
+        assertTrue(availableDevices.length > 0);
+        for (String d : availableDevices) {
+            assertTrue(d != null && d.length() > 0);
+        }
     }
 
     @Test

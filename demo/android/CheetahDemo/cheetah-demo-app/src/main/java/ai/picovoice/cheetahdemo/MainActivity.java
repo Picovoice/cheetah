@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             Cheetah.Builder builder = new Cheetah.Builder()
                     .setAccessKey(ACCESS_KEY)
+                    .setDevice("best")
                     .setEndpointDuration(1f)
                     .setEnableAutomaticPunctuation(true);
 
