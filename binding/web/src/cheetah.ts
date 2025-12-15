@@ -71,7 +71,8 @@ type CheetahModule = EmscriptenModule & {
   _pv_cheetah_frame_length: pv_cheetah_frame_length_type;
   _pv_sample_rate: pv_sample_rate_type;
   _pv_cheetah_version: pv_cheetah_version_type;
-
+  _pv_cheetah_list_hardware_devices: pv_cheetah_list_hardware_devices_type;
+  _pv_cheetah_free_hardware_devices: pv_cheetah_free_hardware_devices_type;
   _pv_set_sdk: pv_set_sdk_type;
   _pv_get_error_stack: pv_get_error_stack_type;
   _pv_free_error_stack: pv_free_error_stack_type;
