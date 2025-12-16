@@ -7,7 +7,7 @@ plugins {
 
 ext {
     PUBLISH_GROUP_ID = 'ai.picovoice'
-    PUBLISH_VERSION = '2.3.0'
+    PUBLISH_VERSION = '3.0.0'
     PUBLISH_ARTIFACT_ID = 'cheetah-java'
 }
 
@@ -52,6 +52,7 @@ task copyMacLib(type: Copy) {
 task copyWindowsLib(type: Copy) {
     from('../../lib/java/windows/')
     include('amd64/libpv_cheetah_jni.dll',
+            'amd64/pv_ypu_impl_cuda.dll',
             'arm64/libpv_cheetah_jni.dll')
     into "${outputDir}/cheetah/lib/java/windows/"
 }
@@ -98,6 +99,7 @@ compileTestJava {
 
 test {
     systemProperty 'pvTestingAccessKey', System.getProperty('pvTestingAccessKey')
+    systemProperty 'pvTestingDevice', System.getProperty('pvTestingDevice')
     systemProperty 'numTestIterations', System.getProperty('numTestIterations')
     systemProperty 'initPerformanceThresholdSec', System.getProperty('initPerformanceThresholdSec')
     systemProperty 'procPerformanceThresholdSec', System.getProperty('procPerformanceThresholdSec')
