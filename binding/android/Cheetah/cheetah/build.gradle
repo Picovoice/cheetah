@@ -12,9 +12,6 @@ publishing {
         release(MavenPublication) {
             groupId = "ai.picovoice"
             artifactId = "cheetah-android"
-            :wa
-
-
             version = "3.0.0"
             artifact("$buildDir/outputs/aar/cheetah-release.aar")
         }
