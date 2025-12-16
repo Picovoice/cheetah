@@ -95,6 +95,16 @@ void print_error_message(char **message_stack, int32_t message_stack_depth) {
     }
 }
 
+void print_usage(const char *program_name) {
+    fprintf(stderr,
+            "Usage : %s -a ACCESS_KEY -l LIBRARY_PATH -m MODEL_PATH [-y DEVICE] [-p] [-d DEVICE_INDEX] [-e ENDPOINT_DURATION] wav_path0 wav_path1 ...\n"
+            "        %s [-i SHOW_INFERENCE_DEVICES]\n"
+            "        %s [-s SHOW_AUDIO_DEVICES]\n",
+            program_name,
+            program_name,
+            program_name);
+}
+
 static void show_audio_devices(void) {
     char **devices = NULL;
     int32_t count = 0;
@@ -257,8 +267,7 @@ int picovoice_main(int argc, char *argv[]) {
     }
 
     if (!(access_key && library_path && model_path)) {
-        fprintf(stderr,
-                "usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-y DEVICE] [-e ENDPOINT_DURATION] [-p] [-d DEVICE_INDEX]\n-s (show audio device indices) -i (show inference devices)\n");
+        print_usage(argv[0]);
         exit(1);
     }
 
@@ -280,7 +289,12 @@ int picovoice_main(int argc, char *argv[]) {
         exit(1);
     }
 
-    pv_status_t (*pv_cheetah_init_func)(const char *, const char *, const char *, float, bool, pv_cheetah_t **) =
+    pv_status_t (*pv_cheetah_init_func)(
+        const char *,
+        const char *,
+        const char *,
+        float, bool,
+        pv_cheetah_t **) =
             load_symbol(dl_handle, "pv_cheetah_init");
     if (!pv_cheetah_init_func) {
         print_dl_error("failed to load `pv_cheetah_init`");
