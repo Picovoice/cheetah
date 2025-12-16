@@ -26,6 +26,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
+        device: [ cpu:1, cpu ]
         python-version: [ '3.9', '3.10', '3.11', '3.12', '3.13', '3.14' ]
 
     steps:
@@ -49,7 +50,11 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: Test
-      run: python cheetah_demo_file.py --access_key ${{secrets.PV_VALID_ACCESS_KEY}} --wav_paths ../../resources/audio_samples/test.wav
+      run: >
+        python cheetah_demo_file.py
+        --access_key ${{secrets.PV_VALID_ACCESS_KEY}}
+        --device ${{ matrix.device }}
+        --wav_paths ../../resources/audio_samples/test.wav
 
   build-self-hosted:
     runs-on: ${{ matrix.machine }}
@@ -57,6 +62,14 @@ jobs:
     strategy:
       matrix:
         machine: [ rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64, pv-windows-arm64 ]
+        device: [ best ]
+        include:
+          - device: gpu
+            machine: pv-linux
+          - device: gpu
+            machine: pv-windows
+          - device: gpu
+            machine: pv-ios
 
     steps:
     - uses: actions/checkout@v3
@@ -71,4 +84,8 @@ jobs:
       run: pip3 install -r requirements.txt
 
     - name: Test
-      run: python3 cheetah_demo_file.py --access_key ${{secrets.PV_VALID_ACCESS_KEY}} --wav_paths ../../resources/audio_samples/test.wav
+      run: >
+        python3 cheetah_demo_file.py
+        --access_key ${{secrets.PV_VALID_ACCESS_KEY}}
+        --device ${{ matrix.device }}
+        --wav_paths ../../resources/audio_samples/test.wav

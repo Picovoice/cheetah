@@ -1,5 +1,5 @@
 #
-# Copyright 2022-2024 Picovoice Inc.
+# Copyright 2022-2025 Picovoice Inc.
 #
 # You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 # file accompanying this source.
@@ -84,4 +84,8 @@ class CheetahPerformanceTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    if len(sys.argv) != 6:
+        print("Usage: python test_cheetah_perf.py <ACCESS_KEY> <NUM_TEST_ITERATIONS> "
+              "<INIT_PERFORMANCE_THRESHOLD_SEC> <PROC_PERFORMANCE_THRESHOLD_SEC> <DEVICE>")
+        exit(1)
     unittest.main(argv=sys.argv[:1])

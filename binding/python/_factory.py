@@ -84,6 +84,6 @@ def available_devices(library_path: Optional[str] = None) -> Sequence[str]:
 
 
 __all__ = [
-    'create',
     'available_devices',
+    'create',
 ]
