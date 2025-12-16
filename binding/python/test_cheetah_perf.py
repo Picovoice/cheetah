@@ -1,5 +1,5 @@
 #
-# Copyright 2022-2024 Picovoice Inc.
+# Copyright 2022-2025 Picovoice Inc.
 #
 # You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 # file accompanying this source.
@@ -25,6 +25,7 @@ class CheetahPerformanceTestCase(unittest.TestCase):
     NUM_TEST_ITERATIONS = int(sys.argv[2])
     INIT_PERFORMANCE_THRESHOLD_SEC = float(sys.argv[3])
     PROC_PERFORMANCE_THRESHOLD_SEC = float(sys.argv[4])
+    DEVICE = sys.argv[5]
     AUDIO_PATH = os.path.join(os.path.dirname(__file__), '../../resources/audio_samples/test.wav')
 
     def test_performance_init(self):
@@ -34,6 +35,7 @@ class CheetahPerformanceTestCase(unittest.TestCase):
             start = time.perf_counter()
             cheetah = Cheetah(
                 access_key=self.ACCESS_KEY,
+                device=self.DEVICE,
                 library_path=default_library_path('../..'),
                 model_path=default_model_path('../..')
             )
@@ -55,6 +57,7 @@ class CheetahPerformanceTestCase(unittest.TestCase):
 
         cheetah = Cheetah(
             access_key=self.ACCESS_KEY,
+            device=self.DEVICE,
             library_path=default_library_path('../..'),
             model_path=default_model_path('../..')
         )
@@ -81,4 +84,8 @@ class CheetahPerformanceTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    if len(sys.argv) != 6:
+        print("Usage: python test_cheetah_perf.py <ACCESS_KEY> <NUM_TEST_ITERATIONS> "
+              "<INIT_PERFORMANCE_THRESHOLD_SEC> <PROC_PERFORMANCE_THRESHOLD_SEC> <DEVICE>")
+        exit(1)
     unittest.main(argv=sys.argv[:1])

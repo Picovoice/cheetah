@@ -1,5 +1,5 @@
 /*
-    Copyright 2022 Picovoice Inc.
+    Copyright 2022-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -25,6 +25,7 @@ class CheetahNative {
     static native long init(
             String accessKey,
             String modelPath,
+            String device,
             float endpointDurationSec,
             boolean enableAutomaticPunctuation) throws CheetahException;
 
@@ -33,5 +34,7 @@ class CheetahNative {
     static native CheetahTranscript process(long object, short[] pcm) throws CheetahException;
 
     static native CheetahTranscript flush(long object) throws CheetahException;
+
+    static native String[] listHardwareDevices() throws CheetahException;
 
 }

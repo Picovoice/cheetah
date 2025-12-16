@@ -17,6 +17,7 @@ cocoapods
 codesign
 Compat
 constraintlayout
+cuda
 cwrap
 cstring
 cwrap

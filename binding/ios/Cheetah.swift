@@ -104,11 +104,13 @@ public class Cheetah {
     public convenience init(
             accessKey: String,
             modelURL: URL,
+            device: String? = nil,
             endpointDuration: Float = 1.0,
             enableAutomaticPunctuation: Bool = false) throws {
         try self.init(
                 accessKey: accessKey,
                 modelPath: modelURL.path,
+                device: device,
                 endpointDuration: endpointDuration,
                 enableAutomaticPunctuation: enableAutomaticPunctuation)
     }
@@ -260,7 +262,7 @@ public class Cheetah {
         var messageStackDepth: Int32 = 0
         let status = pv_get_error_stack(&messageStackRef, &messageStackDepth)
         if status != PV_STATUS_SUCCESS {
-            throw Rhino.pvStatusToCheetahError(status, "Unable to get Cheetah error state")
+            throw Cheetah.pvStatusToCheetahError(status, "Unable to get Cheetah error state")
         }
 
         var messageStack: [String] = []
