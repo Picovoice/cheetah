@@ -106,14 +106,13 @@ jobs:
       working-directory: resources/scripts
       run: bash machine-state.sh
 
-  perf-self-hosted-desktop:
+  perf-windows-arm64:
     runs-on: ${{ matrix.machine }}
 
     strategy:
       fail-fast: false
       matrix:
-        device: [ gpu ]
-        machine: [ pv-linux, pv-windows, pv-ios ]
+        machine: [pv-windows-arm64]
         include:
         - machine: pv-windows-arm64
           init_performance_threshold_sec: 4.0
@@ -122,8 +121,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install dependencies
-      run: pip install -r requirements.txt
-
     - name: Test
-      run: python3 test_cheetah_perf.py ${{secrets.PV_VALID_ACCESS_KEY}} 50 ${{matrix.init_performance_threshold_sec}} ${{matrix.proc_performance_threshold_sec}} ${{ matrix.device }}
+      run: >
+        python3 test_cheetah_perf.py
+        ${{secrets.PV_VALID_ACCESS_KEY}}
+        50
+        ${{matrix.init_performance_threshold_sec}}
+        ${{matrix.proc_performance_threshold_sec}}
+        cpu:1
