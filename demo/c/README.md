@@ -58,7 +58,7 @@ The {PV_RECORDER_PLATFORM} variable will set the compilation flags for the given
 Running the demo without arguments prints the usage:
 
 ```console
-usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-e ENDPOINT_DURATION] [-d DEVICE] [-p] [-i DEVICE_INDEX]
+usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-e ENDPOINT_DURATION] [-y DEVICE] [-p] [-d DEVICE_INDEX]
 -s (show audio device indices)
 ```
 
@@ -81,8 +81,8 @@ Use the `-p` flag to disable automatic punctuation.
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/linux/x86_64/libpv_cheetah.so \
--d ${DEVICE}
--i ${MIC_INDEX}
+-y ${DEVICE}
+-d ${MIC_INDEX}
 ```
 
 ##### macOS (x86_64)
@@ -92,8 +92,8 @@ Use the `-p` flag to disable automatic punctuation.
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/mac/x86_64/libpv_cheetah.dylib \
--d ${DEVICE}
--i ${MIC_INDEX}
+-y ${DEVICE}
+-d ${MIC_INDEX}
 ```
 
 ##### macOS (arm64)
@@ -103,8 +103,8 @@ Use the `-p` flag to disable automatic punctuation.
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/mac/arm64/libpv_cheetah.dylib \
--d ${DEVICE}
--i ${MIC_INDEX}
+-y ${DEVICE}
+-d ${MIC_INDEX}
 ```
 
 ##### Windows
@@ -116,8 +116,8 @@ demo\\c\\build\\cheetah_demo.exe ^
 -a ${ACCESS_KEY} ^
 -m lib\\common\\cheetah_params.pv ^
 -l lib\\windows\\amd64\\libpv_cheetah.dll ^
--d ${DEVICE}
--i ${MIC_INDEX}
+-y ${DEVICE}
+-d ${MIC_INDEX}
 ```
 
 ##### Raspberry Pi 4
@@ -127,8 +127,8 @@ demo\\c\\build\\cheetah_demo.exe ^
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a72/libpv_cheetah.so \
--d ${DEVICE}
--i ${MIC_INDEX}
+-y ${DEVICE}
+-d ${MIC_INDEX}
 ```
 
 ##### Raspberry Pi 4 (64-bit)
@@ -138,8 +138,8 @@ demo\\c\\build\\cheetah_demo.exe ^
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a72-aarch64/libpv_cheetah.so \
--d ${DEVICE}
--i ${MIC_INDEX}
+-y ${DEVICE}
+-d ${MIC_INDEX}
 ```
 
 ##### Raspberry Pi 3
@@ -149,8 +149,8 @@ demo\\c\\build\\cheetah_demo.exe ^
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a53/libpv_cheetah.so \
--d ${DEVICE}
--i ${MIC_INDEX}
+-y ${DEVICE}
+-d ${MIC_INDEX}
 ```
 
 ##### Raspberry Pi 3 (64-bit)
@@ -160,14 +160,14 @@ demo\\c\\build\\cheetah_demo.exe ^
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a53-aarch64/libpv_cheetah.so \
--d ${DEVICE}
--i ${MIC_INDEX}
+-y ${DEVICE}
+-d ${MIC_INDEX}
 ```
 
 #### File Demo
 
 ```console
-usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-d DEVICE] [-p] wav_path0 wav_path1 ...
+usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-y DEVICE] [-p] wav_path0 wav_path1 ...
 ```
 
 Run the command corresponding to your platform from the root of the repository. Replace `${ACCESS_KEY}` with yours
@@ -183,7 +183,7 @@ Use the `-p` flag to disable automatic punctuation.
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/linux/x86_64/libpv_cheetah.so \
--d ${DEVICE}
+-y ${DEVICE}
 ${WAV_PATH}
 ```
 
@@ -194,7 +194,7 @@ ${WAV_PATH}
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/mac/x86_64/libpv_cheetah.dylib \
--d ${DEVICE}
+-y ${DEVICE}
 ${WAV_PATH}
 ```
 
@@ -205,7 +205,7 @@ ${WAV_PATH}
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/mac/arm64/libpv_cheetah.dylib \
--d ${DEVICE}
+-y ${DEVICE}
 ${WAV_PATH}
 ```
 
@@ -218,7 +218,7 @@ demo\\c\\build\\cheetah_demo.exe ^
 -a ${ACCESS_KEY} ^
 -m lib\\common\\cheetah_params.pv ^
 -l lib\\windows\\amd64\\libpv_cheetah.dll ^
--d ${DEVICE}
+-y ${DEVICE}
 ${WAV_PATH}
 ```
 
@@ -229,7 +229,7 @@ ${WAV_PATH}
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a72/libpv_cheetah.so \
--d ${DEVICE}
+-y ${DEVICE}
 ${WAV_PATH}
 ```
 
@@ -240,7 +240,7 @@ ${WAV_PATH}
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a72-aarch64/libpv_cheetah.so \
--d ${DEVICE}
+-y ${DEVICE}
 ${WAV_PATH}
 ```
 
@@ -251,7 +251,7 @@ ${WAV_PATH}
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a53/libpv_cheetah.so \
--d ${DEVICE}
+-y ${DEVICE}
 ${WAV_PATH}
 ```
 
@@ -262,6 +262,6 @@ ${WAV_PATH}
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a53-aarch64/libpv_cheetah.so \
--d ${DEVICE}
+-y ${DEVICE}
 ${WAV_PATH}
 ```
