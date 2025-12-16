@@ -289,7 +289,7 @@ class Cheetah(object):
         message_stack_depth = c_int()
         status = self._get_error_stack_func(byref(message_stack_ref), byref(message_stack_depth))
         if status is not self.PicovoiceStatuses.SUCCESS:
-            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](message='Unable to get Porcupine error state')
+            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](message='Unable to get Cheetah error state')
 
         message_stack = list()
         for i in range(message_stack_depth.value):
