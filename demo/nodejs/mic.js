@@ -30,7 +30,7 @@ program
   .option("-m, --model_file_path <string>", "absolute path to cheetah model")
   .option(
     "-y, --device <string>",
-    "Device to run inference on (`best`, `cpu:{num_threads}`, `gpu:{gpu_index}`). Default: selects best device for `pvcheetah`")
+    "Device to run inference on (`best`, `cpu:{num_threads}`, `gpu:{gpu_index}`). Default: selects best device for inference device")
   .option(
     "-i, --audio_device_index <number>",
     "index of audio device to use to record audio",

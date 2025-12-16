@@ -176,6 +176,12 @@ describe('Defaults', () => {
       new Cheetah(ACCESS_KEY, { device: 'invalid_device' });
     }).toThrow(CheetahErrors.CheetahInvalidArgumentError);
   });
+
+  test('list hardware devices', () => {
+    const hardwareDevices: string[] = Cheetah.listAvailableDevices();
+    expect(Array.isArray(hardwareDevices)).toBeTruthy();
+    expect(hardwareDevices.length).toBeGreaterThan(0);
+  });
 });
 
 describe('manual paths', () => {

@@ -29,7 +29,7 @@ program
   )
   .option(
     "-y, --device <string>",
-    "Device to run inference on (`best`, `cpu:{num_threads}`, `gpu:{gpu_index}`). Default: selects best device for `pvcheetah`")
+    "Device to run inference on (`best`, `cpu:{num_threads}`, `gpu:{gpu_index}`). Default: selects best device for inference device")
   .option(
     "-l, --library_file_path <string>",
     "absolute path to cheetah dynamic library"

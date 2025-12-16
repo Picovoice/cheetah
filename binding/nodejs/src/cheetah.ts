@@ -21,7 +21,7 @@ import {
   pvStatusToException,
 } from './errors';
 
-import { CheetahOptions } from './types';
+import { CheetahOptions, CheetahInputOptions } from './types';
 
 import { getSystemLibraryPath } from './platforms';
 
@@ -174,7 +174,7 @@ export default class Cheetah {
    *
    * @returns List of all available devices that Cheetah can use for inference.
    */
-  static listAvailableDevices(options: CheetahOptions = {}): string[] {
+  static listAvailableDevices(options: CheetahInputOptions = {}): string[] {
     const {
       libraryPath = getSystemLibraryPath(),
     } = options;
