@@ -112,6 +112,83 @@ static void show_audio_devices(void) {
     pv_recorder_free_available_devices(count, devices);
 }
 
+void print_inference_devices(const char *library_path) {
+    void *dl_handle = open_dl(library_path);
+    if (!dl_handle) {
+        fprintf(stderr, "Failed to open library at '%s'.\n", library_path);
+        exit(EXIT_FAILURE);
+    }
+
+    const char *(*pv_status_to_string_func)(pv_status_t) = load_symbol(dl_handle, "pv_status_to_string");
+    if (!pv_status_to_string_func) {
+        print_dl_error("Failed to load 'pv_status_to_string'");
+        exit(EXIT_FAILURE);
+    }
+
+    pv_status_t (*pv_cheetah_list_hardware_devices_func)(char ***, int32_t *) =
+    load_symbol(dl_handle, "pv_cheetah_list_hardware_devices");
+    if (!pv_cheetah_list_hardware_devices_func) {
+        print_dl_error("failed to load `pv_cheetah_list_hardware_devices`");
+        exit(EXIT_FAILURE);
+    }
+
+    pv_status_t (*pv_cheetah_free_hardware_devices_func)(char **, int32_t) =
+        load_symbol(dl_handle, "pv_cheetah_free_hardware_devices");
+    if (!pv_cheetah_free_hardware_devices_func) {
+        print_dl_error("failed to load `pv_cheetah_free_hardware_devices`");
+        exit(EXIT_FAILURE);
+    }
+
+    pv_status_t (*pv_get_error_stack_func)(char ***, int32_t *) =
+        load_symbol(dl_handle, "pv_get_error_stack");
+    if (!pv_get_error_stack_func) {
+        print_dl_error("failed to load 'pv_get_error_stack_func'");
+        exit(EXIT_FAILURE);
+    }
+
+    void (*pv_free_error_stack_func)(char **) =
+        load_symbol(dl_handle, "pv_free_error_stack");
+    if (!pv_free_error_stack_func) {
+        print_dl_error("failed to load 'pv_free_error_stack_func'");
+        exit(EXIT_FAILURE);
+    }
+
+    char **message_stack = NULL;
+    int32_t message_stack_depth = 0;
+    pv_status_t error_status = PV_STATUS_RUNTIME_ERROR;
+
+    char **hardware_devices = NULL;
+    int32_t num_hardware_devices = 0;
+    pv_status_t status = pv_cheetah_list_hardware_devices_func(&hardware_devices, &num_hardware_devices);
+    if (status != PV_STATUS_SUCCESS) {
+        fprintf(
+                stderr,
+                "Failed to list hardware devices with `%s`.\n",
+                pv_status_to_string_func(status));
+        error_status = pv_get_error_stack_func(&message_stack, &message_stack_depth);
+        if (error_status != PV_STATUS_SUCCESS) {
+            fprintf(
+                    stderr,
+                    ".\nUnable to get cheetah error state with '%s'.\n",
+                    pv_status_to_string_func(error_status));
+            exit(EXIT_FAILURE);
+        }
+
+        if (message_stack_depth > 0) {
+            fprintf(stderr, ":\n");
+            print_error_message(message_stack, message_stack_depth);
+            pv_free_error_stack_func(message_stack);
+        }
+        exit(EXIT_FAILURE);
+    }
+
+    for (int32_t i = 0; i < num_hardware_devices; i++) {
+        fprintf(stdout, "%s\n", hardware_devices[i]);
+    }
+    pv_cheetah_free_hardware_devices_func(hardware_devices, num_hardware_devices);
+    close_dl(dl_handle);
+}
+
 int picovoice_main(int argc, char *argv[]) {
     signal(SIGINT, interrupt_handler);
 
@@ -122,9 +199,10 @@ int picovoice_main(int argc, char *argv[]) {
     float endpoint_duration_sec = 0.f;
     bool enable_automatic_punctuation = true;
     int32_t device_index = -1;
+    bool show_inference_devices = false;
 
     int opt;
-    while ((opt = getopt(argc, argv, "a:m:l:e:d:pi:s")) != -1) {
+    while ((opt = getopt(argc, argv, "a:m:l:e:y:pd:s:i")) != -1) {
         switch (opt) {
             case 'a':
                 access_key = optarg;
@@ -135,7 +213,7 @@ int picovoice_main(int argc, char *argv[]) {
             case 'l':
                 library_path = optarg;
                 break;
-            case 'd':
+            case 'y':
                 device = optarg;
                 break;
             case 'e':
@@ -150,7 +228,7 @@ int picovoice_main(int argc, char *argv[]) {
             case 'p':
                 enable_automatic_punctuation = false;
                 break;
-            case 'i':
+            case 'd':
                 device_index = (int32_t) strtol(optarg, NULL, 10);
                 if (device_index < -1) {
                     fprintf(stderr, "device index should be either `-1` (default) or a non-negative valid index\n");
@@ -160,14 +238,27 @@ int picovoice_main(int argc, char *argv[]) {
             case 's':
                 show_audio_devices();
                 exit(0);
+            case 'i':
+                show_inference_devices = true;
+                break;
             default:
                 break;
         }
     }
 
+    if (show_inference_devices) {
+        if (!library_path) {
+            fprintf(stderr, "`library_path` is required to view available inference devices.\n");
+            exit(1);
+        }
+
+        print_inference_devices(library_path);
+        return 0;
+    }
+
     if (!(access_key && library_path && model_path)) {
         fprintf(stderr,
-                "usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-d DEVICE] [-e ENDPOINT_DURATION] [-p] [-i DEVICE_INDEX]\n-s (show audio device indices)\n");
+                "usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-y DEVICE] [-e ENDPOINT_DURATION] [-p] [-d DEVICE_INDEX]\n-s (show audio device indices) -i (show inference devices)\n");
         exit(1);
     }
 
