@@ -18,7 +18,7 @@ target 'CheetahTestApp' do
   config = use_native_modules!
   # pod 'Cheetah-iOS', '~> 3.0.0'
 
-  pod 'Cheetah-iOS', :podspec => 'https://raw.githubusercontent.com/Picovoice/cheetah/v4.0-ios/binding/ios/Cheetah-iOS.podspec'
+  pod 'Cheetah-iOS', :podspec => 'https://raw.githubusercontent.com/Picovoice/cheetah/v3.0/binding/ios/Cheetah-iOS.podspec'
 
   use_react_native!(
     :path => config[:reactNativePath],
