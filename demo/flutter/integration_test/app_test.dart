@@ -13,6 +13,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   final String accessKey = "{TESTING_ACCESS_KEY_HERE}";
+  final String device = "{TESTING_DEVICE_HERE}";
 
   String getModelPath(String modelFile) {
     return "assets/test_resources/model_files/$modelFile";
@@ -106,7 +107,8 @@ void main() {
       Cheetah cheetah;
       try {
         cheetah = await Cheetah.create(accessKey, modelPath,
-            enableAutomaticPunctuation: testPunctuations);
+            enableAutomaticPunctuation: testPunctuations,
+            device: device);
       } on CheetahException catch (ex) {
         expect(ex, equals(null), reason: "Failed to initialize Cheetah: $ex");
         return;
@@ -142,6 +144,10 @@ void main() {
               punctuationsRaw.map((p) => p.toString()).toList();
           double errorRate = languageTests[t]['error_rate'];
           String audioFile = languageTests[t]['audio_file'];
+
+        List<String> devices = await Cheetah.getAvailableDevices();
+        expect(devices.length, greaterThan(0),
+            reason: "No devices returns from getAvailableDevices");
 
           for (int p = 0; p < punctuations.length; p++) {
             transcript = transcript.replaceAll(punctuations[p], "");

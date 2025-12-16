@@ -18,6 +18,8 @@ import 'package:cheetah_flutter/cheetah_error.dart';
 
 enum _NativeFunctions {
   // ignore:constant_identifier_names
+  GET_AVAILABLE_DEVICES,
+  // ignore:constant_identifier_names
   CREATE,
   // ignore:constant_identifier_names
   PROCESS,
@@ -155,6 +157,25 @@ class Cheetah {
       await _channel
           .invokeMethod(_NativeFunctions.DELETE.name, {'handle': _handle});
       _handle = null;
+    }
+  }
+
+  /// Lists all available devices that Cheetah can use for inference.
+  /// Entries in the list can be used as the `device` argument when initializing Cheetah.
+  ///
+  /// Throws a `CheetahException` if unable to get devices
+  ///
+  /// returns a list of devices Cheetah can run inference on
+  static Future<List<String>> getAvailableDevices() async {
+    try {
+      List<String> devices = (await _channel
+          .invokeMethod(_NativeFunctions.GET_AVAILABLE_DEVICES.name, {}))
+          .cast<String>();
+      return devices;
+    } on PlatformException catch (error) {
+      throw cheetahStatusToException(error.code, error.message);
+    } on Exception catch (error) {
+      throw cheetahStatusToException("CheetahException", error.toString());
     }
   }
 

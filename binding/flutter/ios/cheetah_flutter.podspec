@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.author           = { 'Picovoice' => 'hello@picovoice.ai' }
   s.source           = { :git => "https://github.com/Picovoice/cheetah.git" }
   s.source_files = 'Classes/**/*'
-  s.platform = :ios, '13.0'
+  s.platform = :ios, '16.0'
   s.dependency 'Flutter'
   s.dependency 'Cheetah-iOS', '~> 3.0.0'
 
