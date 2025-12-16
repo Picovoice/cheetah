@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2023 Picovoice Inc.
+// Copyright 2022-2025 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -21,7 +21,7 @@ import {
   pvStatusToException,
 } from './errors';
 
-import { CheetahOptions } from './types';
+import { CheetahOptions, CheetahInputOptions } from './types';
 
 import { getSystemLibraryPath } from './platforms';
 
@@ -32,6 +32,11 @@ type TranscriptAndStatus = { transcript: string; status: PvStatus };
 type PartialTranscriptAndStatus = {
   transcript: string;
   is_endpoint: number;
+  status: PvStatus;
+};
+type CheetahHardwareDevicesAndStatus = {
+  hardware_devices: string[];
+  num_hardware_devices: number;
   status: PvStatus;
 };
 
@@ -55,6 +60,12 @@ export default class Cheetah {
    * @param {string} accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
    * @param options Optional configuration arguments.
    * @param {string} options.modelPath the path to the Cheetah model (.pv extension)
+   * @param {string} options.device String representation of the device (e.g., CPU or GPU) to use.
+   *   If set to `best`, the most suitable device is selected automatically.
+   *   If set to `gpu`, the engine uses the first available GPU device.
+   *   To select a specific GPU device, set this argument to `gpu:${GPU_INDEX}`.
+   *   If set to `cpu`, the engine will run on the CPU with the default number of threads.
+   *   To specify the number of threads, set this argument to `cpu:${NUM_THREADS}`.
    * @param {string} options.libraryPath the path to the Cheetah library (.node extension)
    * @param {number} options.endpointDurationSec Duration of endpoint in seconds. A speech endpoint is detected when there is a
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
@@ -73,6 +84,7 @@ export default class Cheetah {
 
     const {
       modelPath = path.resolve(__dirname, DEFAULT_MODEL_PATH),
+      device = "best",
       libraryPath = getSystemLibraryPath(),
       endpointDurationSec = 1.0,
       enableAutomaticPunctuation = false,
@@ -96,6 +108,14 @@ export default class Cheetah {
       );
     }
 
+    if (
+      device === null ||
+      device === undefined ||
+      device.length === 0
+    ) {
+      throw new CheetahInvalidArgumentError(`No device provided to Cheetah`);
+    }
+
     const pvCheetah = require(libraryPath); // eslint-disable-line
     this._pvCheetah = pvCheetah;
 
@@ -106,6 +126,7 @@ export default class Cheetah {
       cheetahHandleAndStatus = pvCheetah.init(
         accessKey,
         modelPath,
+        device,
         endpointDurationSec,
         enableAutomaticPunctuation
       );
@@ -145,6 +166,39 @@ export default class Cheetah {
    */
   get version(): string {
     return this._version;
+  }
+
+  /**
+   * Lists all available devices that Cheetah can use for inference. Each entry in the list can be the `device` argument
+   * of the constructor.
+   *
+   * @returns List of all available devices that Cheetah can use for inference.
+   */
+  static listAvailableDevices(options: CheetahInputOptions = {}): string[] {
+    const {
+      libraryPath = getSystemLibraryPath(),
+    } = options;
+
+    const pvCheetah = require(libraryPath); // eslint-disable-line
+
+    let cheetahHardwareDevicesAndStatus: CheetahHardwareDevicesAndStatus | null = null;
+    try {
+      cheetahHardwareDevicesAndStatus = pvCheetah.list_hardware_devices();
+    } catch (err: any) {
+      pvStatusToException(<PvStatus>err.code, err);
+    }
+
+    const status = cheetahHardwareDevicesAndStatus!.status;
+    if (status !== PvStatus.SUCCESS) {
+      const errorObject = pvCheetah.get_error_stack();
+      if (errorObject.status === PvStatus.SUCCESS) {
+        pvStatusToException(status, 'Cheetah failed to get available devices', errorObject.message_stack);
+      } else {
+        pvStatusToException(status, 'Unable to get Cheetah error state');
+      }
+    }
+
+    return cheetahHardwareDevicesAndStatus!.hardware_devices;
   }
 
   /**

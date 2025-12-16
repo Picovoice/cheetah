@@ -8,12 +8,13 @@
 */
 
 export type CheetahInitOptions = {
+  device?: string;
+  modelPath?: string;
   endpointDurationSec?: number;
   enableAutomaticPunctuation?: boolean;
 };
 
 export type CheetahInputOptions = {
-  modelPath?: string;
   libraryPath?: string;
 };
 

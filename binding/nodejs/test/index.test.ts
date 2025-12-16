@@ -31,6 +31,10 @@ const ACCESS_KEY = process.argv
   .filter(x => x.startsWith('--access_key='))[0]
   .split('--access_key=')[1];
 
+const DEVICE = process.argv
+  .filter(x => x.startsWith('--device='))[0]
+  .split('--device=')[1] ?? 'best';
+
 const levenshteinDistance = (words1: string[], words2: string[]) => {
   const res = Array.from(
     Array(words1.length + 1),
@@ -107,6 +111,7 @@ const testCheetahProcess = (
   let cheetahEngine = new Cheetah(ACCESS_KEY, {
     modelPath,
     enableAutomaticPunctuation,
+    device: DEVICE,
   });
 
   let [transcript] = cheetahProcessWaveFile(cheetahEngine, audioFile);
@@ -165,11 +170,23 @@ describe('Defaults', () => {
       new Cheetah('');
     }).toThrow(CheetahErrors.CheetahInvalidArgumentError);
   });
+
+  test('Invalid Device', () => {
+    expect(() => {
+      new Cheetah(ACCESS_KEY, { device: 'invalid_device' });
+    }).toThrow(CheetahErrors.CheetahInvalidArgumentError);
+  });
+
+  test('list hardware devices', () => {
+    const hardwareDevices: string[] = Cheetah.listAvailableDevices();
+    expect(Array.isArray(hardwareDevices)).toBeTruthy();
+    expect(hardwareDevices.length).toBeGreaterThan(0);
+  });
 });
 
 describe('manual paths', () => {
   test('manual model path', () => {
-    let cheetahEngine = new Cheetah(ACCESS_KEY, { modelPath: getModelPath("cheetah_params.pv") });
+    let cheetahEngine = new Cheetah(ACCESS_KEY, { modelPath: getModelPath("cheetah_params.pv"), device: DEVICE });
 
     let [transcript] = cheetahProcessWaveFile(
       cheetahEngine,
@@ -185,6 +202,7 @@ describe('manual paths', () => {
 
     let cheetahEngine = new Cheetah(ACCESS_KEY, {
       modelPath: getModelPath("cheetah_params.pv"),
+      device: DEVICE,
       libraryPath: libraryPath,
       endpointDurationSec: 0.2,
     });
@@ -203,7 +221,7 @@ describe("error message stack", () => {
   test("message stack cleared after read", () => {
     let error: string[] = [];
     try {
-      new Cheetah('invalid', { modelPath: getModelPath("cheetah_params.pv") });
+      new Cheetah('invalid', { modelPath: getModelPath("cheetah_params.pv"), device: DEVICE });
     } catch (e: any) {
       error = e.messageStack;
     }
@@ -212,7 +230,7 @@ describe("error message stack", () => {
     expect(error.length).toBeLessThanOrEqual(8);
 
     try {
-      new Cheetah('invalid', { modelPath: getModelPath("cheetah_params.pv") });
+      new Cheetah('invalid', { modelPath: getModelPath("cheetah_params.pv"), device: DEVICE });
     } catch (e: any) {
       for (let i = 0; i < error.length; i++) {
         expect(error[i]).toEqual(e.messageStack[i]);
