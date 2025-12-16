@@ -151,7 +151,7 @@ namespace Pv
             return new Cheetah(
                 accessKey,
                 modelPath ?? DEFAULT_MODEL_PATH,
-                device,
+                device ?? "best",
                 endpointDurationSec,
                 enableAutomaticPunctuation);
         }
@@ -181,7 +181,7 @@ namespace Pv
         private Cheetah(
             string accessKey,
             string modelPath,
-            string device = null,
+            string device,
             float endpointDurationSec = 1.0f,
             bool enableAutomaticPunctuation = false)
         {
@@ -199,8 +199,6 @@ namespace Pv
             {
                 throw new CheetahInvalidArgumentException("`endpointDurationSec` must be either `0` or a positive number");
             }
-
-            device = device ?? "best";
 
             IntPtr accessKeyPtr = Utils.GetPtrFromUtf8String(accessKey);
             IntPtr modelPathPtr = Utils.GetPtrFromUtf8String(modelPath);
