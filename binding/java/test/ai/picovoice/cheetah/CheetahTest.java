@@ -154,6 +154,12 @@ public class CheetahTest {
     }
 
     @Test
+    void getAvailableDevices() throws CheetahException {
+        String[] devices = Cheetah.getAvailableDevices();
+        assertTrue(0 < devices.length);
+    }
+
+    @Test
     void getFrameLength() throws CheetahException {
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)

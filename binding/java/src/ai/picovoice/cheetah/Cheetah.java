@@ -223,6 +223,11 @@ public class Cheetah {
             return this;
         }
 
+        /**
+         * Setter for device.
+         *
+         * @param device String representation of the device
+         */
         public Builder setDevice(String device) {
             this.device = device;
             return this;
