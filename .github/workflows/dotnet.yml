@@ -69,6 +69,12 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
 
+    - name: Set up .NET (8)
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.dotnet-version == '6.0.x' }}
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
     - name: Build binding
       run: dotnet build Cheetah/Cheetah.csproj
 
@@ -98,6 +104,13 @@ jobs:
       matrix:
         device: [best]
         machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64, pv-windows-arm64]
+        include:
+          - device: gpu
+            machine: pv-linux
+          - device: gpu
+            machine: pv-windows
+          - device: gpu
+            machine: pv-ios
 
     steps:
     - uses: actions/checkout@v3

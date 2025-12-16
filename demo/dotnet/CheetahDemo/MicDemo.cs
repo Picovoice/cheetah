@@ -130,6 +130,7 @@ namespace CheetahDemo
             int audioDeviceIndex = -1;
             bool showAudioDevices = false;
             bool showHelp = false;
+            bool showInferenceDevices = false;
 
             // parse command line arguments
             int argIndex = 0;
@@ -182,6 +183,11 @@ namespace CheetahDemo
                         argIndex++;
                     }
                 }
+                else if (args[argIndex] == "--show_inference_devices")
+                {
+                    showInferenceDevices = true;
+                    argIndex++;
+                }
                 else if (args[argIndex] == "-h" || args[argIndex] == "--help")
                 {
                     showHelp = true;
@@ -206,6 +212,12 @@ namespace CheetahDemo
             {
                 ShowAudioDevices();
                 Console.Read();
+                return;
+            }
+
+            if (showInferenceDevices)
+            {
+                Console.WriteLine(string.Join(Environment.NewLine, Cheetah.GetAvailableDevices()));
                 return;
             }
 
@@ -235,6 +247,7 @@ namespace CheetahDemo
             " after an utterance without any speech in it. Set duration to 0 to disable this. Default is 3 seconds\n" +
             "\t--disable_automatic_punctuation: Disable automatic punctuation.\n" +
             "\t--audio_device_index: Index of input audio device.\n" +
-            "\t--show_audio_devices: Print available recording devices.\n";
+            "\t--show_audio_devices: Print available recording devices.\n" +
+            "\t--show_inference_devices: Print devices that are available to run Cheetah inference.\n";
     }
 }

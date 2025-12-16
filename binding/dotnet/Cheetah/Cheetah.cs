@@ -148,7 +148,12 @@ namespace Pv
         /// <returns>An instance of Cheetah Speech-to-Text engine.</returns>
         public static Cheetah Create(string accessKey, string modelPath = null, string device = null, float endpointDurationSec = 1.0f, bool enableAutomaticPunctuation = false)
         {
-            return new Cheetah(accessKey, modelPath ?? DEFAULT_MODEL_PATH, device, endpointDurationSec, enableAutomaticPunctuation);
+            return new Cheetah(
+                accessKey,
+                modelPath ?? DEFAULT_MODEL_PATH,
+                device,
+                endpointDurationSec,
+                enableAutomaticPunctuation);
         }
 
         /// <summary>
@@ -410,7 +415,8 @@ namespace Pv
             {
                 throw CheetahStatusToException(
                     status,
-                    "Get available devices failed");
+                    "Get available devices failed",
+                    GetMessageStack());
             }
 
             string[] devices = new string[numDevices];

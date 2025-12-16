@@ -25,7 +25,6 @@ Platforms compatible with .NET Standard 2.0+:
 
 - macOS (x86_64)
 - Windows (x86_64)
-- macOS (x86_64, arm64)
 
 Platforms compatible with .NET 6.0+:
 

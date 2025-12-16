@@ -151,6 +151,7 @@ namespace CheetahDemo
             string device = null;
             bool enableAutomaticPunctuation = true;
             bool showHelp = false;
+            bool showInferenceDevices = false;
 
             // parse command line arguments
             int argIndex = 0;
@@ -189,6 +190,11 @@ namespace CheetahDemo
                     enableAutomaticPunctuation = false;
                     argIndex++;
                 }
+                else if (args[argIndex] == "--show_inference_devices")
+                {
+                    showInferenceDevices = true;
+                    argIndex++;
+                }
                 else if (args[argIndex] == "-h" || args[argIndex] == "--help")
                 {
                     showHelp = true;
@@ -205,6 +211,12 @@ namespace CheetahDemo
             {
                 Console.WriteLine(HELP_STR);
                 Console.Read();
+                return;
+            }
+
+            if (showInferenceDevices)
+            {
+                Console.WriteLine(string.Join(Environment.NewLine, Cheetah.GetAvailableDevices()));
                 return;
             }
 
@@ -238,7 +250,8 @@ namespace CheetahDemo
             "\t--access_key (required): AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)\n" +
             "\t--device: Device to run inference on (`best`, `cpu:{num_threads}` or `gpu:{gpu_index}`). Default: automatically selects best device.\n" +
             "\t--model_path: Absolute path to the file containing model parameters.\n" +
-            "\t--disable_automatic_punctuation: Disable automatic punctuation.\n";
+            "\t--disable_automatic_punctuation: Disable automatic punctuation.\n" +
+            "\t--show_inference_devices: Print devices that are available to run Cheetah inference.\n";
 
     }
 }
