@@ -66,7 +66,6 @@ type pv_cheetah_free_hardware_devices_type = (
 type CheetahModule = EmscriptenModule & {
   _pv_free: (address: number) => void;
 
-  _pv_cheetah_delete: pv_cheetah_delete_type;
   _pv_cheetah_transcript_delete: pv_cheetah_transcript_delete_type;
   _pv_cheetah_frame_length: pv_cheetah_frame_length_type;
   _pv_sample_rate: pv_sample_rate_type;
@@ -88,6 +87,7 @@ type CheetahWasmOutput = {
 
   pv_cheetah_process: pv_cheetah_process_type;
   pv_cheetah_flush: pv_cheetah_flush_type;
+  pv_cheetah_delete: pv_cheetah_delete_type;
 
   frameLength: number;
   sampleRate: number;
@@ -108,6 +108,7 @@ export class Cheetah {
 
   private readonly _pv_cheetah_process: pv_cheetah_process_type;
   private readonly _pv_cheetah_flush: pv_cheetah_flush_type;
+  private readonly _pv_cheetah_delete: pv_cheetah_delete_type;
 
   private readonly _version: string;
   private readonly _sampleRate: number;
@@ -142,6 +143,7 @@ export class Cheetah {
 
     this._pv_cheetah_process = handleWasm.pv_cheetah_process;
     this._pv_cheetah_flush = handleWasm.pv_cheetah_flush;
+    this._pv_cheetah_delete = handleWasm.pv_cheetah_delete;
 
     this._version = handleWasm.version;
     this._sampleRate = handleWasm.sampleRate;
@@ -484,7 +486,7 @@ export class Cheetah {
     if (!this._module) {
       return;
     }
-    this._module._pv_cheetah_delete(this._objectAddress);
+    this._pv_cheetah_delete(this._objectAddress);
     this._module._pv_free(this._messageStackAddressAddressAddress);
     this._module._pv_free(this._messageStackDepthAddress);
     this._module._pv_free(this._inputBufferAddress);
@@ -531,6 +533,10 @@ export class Cheetah {
       module,
       "pv_cheetah_init",
       6);
+    const pv_cheetah_delete: pv_cheetah_delete_type = this.wrapAsyncFunction(
+      module,
+      "pv_cheetah_delete",
+      1);
     const pv_cheetah_process: pv_cheetah_process_type = this.wrapAsyncFunction(
       module,
       "pv_cheetah_process",
@@ -650,6 +656,7 @@ export class Cheetah {
 
       pv_cheetah_process: pv_cheetah_process,
       pv_cheetah_flush: pv_cheetah_flush,
+      pv_cheetah_delete: pv_cheetah_delete,
 
       frameLength: frameLength,
       sampleRate: sampleRate,
