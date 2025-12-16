@@ -25,8 +25,9 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        device: [ cpu:1, cpu ]
+        python-version: [ '3.9', '3.10', '3.11', '3.12', '3.13', '3.14' ]
 
     steps:
     - uses: actions/checkout@v3
@@ -39,24 +40,52 @@ jobs:
     - name: Pre-build dependencies
       run: python -m pip install --upgrade pip
 
+# ************** REMOVE AFTER RELEASE ********************
+    - name: Build binding
+      run: |
+        pip install setuptools && pip install wheel && cd ../../binding/python && python setup.py sdist bdist_wheel && pip install dist/pvcheetah-3.0.0-py3-none-any.whl
+# ********************************************************
+
     - name: Install dependencies
       run: pip install -r requirements.txt
 
     - name: Test
-      run: python cheetah_demo_file.py --access_key ${{secrets.PV_VALID_ACCESS_KEY}} --wav_paths ../../resources/audio_samples/test.wav
+      run: >
+        python cheetah_demo_file.py
+        --access_key ${{secrets.PV_VALID_ACCESS_KEY}}
+        --device ${{ matrix.device }}
+        --wav_paths ../../resources/audio_samples/test.wav
 
   build-self-hosted:
     runs-on: ${{ matrix.machine }}
 
     strategy:
       matrix:
-        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64, pv-windows-arm64]
+        machine: [ rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64, pv-windows-arm64 ]
+        device: [ best ]
+        include:
+          - device: gpu
+            machine: pv-linux
+          - device: gpu
+            machine: pv-windows
+          - device: gpu
+            machine: pv-ios
 
     steps:
     - uses: actions/checkout@v3
+
+# ************** REMOVE AFTER RELEASE ********************
+    - name: Build binding
+      run: |
+        pip install setuptools && pip install wheel && cd ../../binding/python && python3 setup.py sdist bdist_wheel && pip install dist/pvcheetah-3.0.0-py3-none-any.whl
+# ********************************************************
 
     - name: Install dependencies
       run: pip3 install -r requirements.txt
 
     - name: Test
-      run: python3 cheetah_demo_file.py --access_key ${{secrets.PV_VALID_ACCESS_KEY}} --wav_paths ../../resources/audio_samples/test.wav
+      run: >
+        python3 cheetah_demo_file.py
+        --access_key ${{secrets.PV_VALID_ACCESS_KEY}}
+        --device ${{ matrix.device }}
+        --wav_paths ../../resources/audio_samples/test.wav

@@ -34,7 +34,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        device: [ cpu:1 ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
         include:
         - os: ubuntu-latest
           init_performance_threshold_sec: 4.0
@@ -61,7 +62,7 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: Test
-      run: python3 test_cheetah_perf.py ${{secrets.PV_VALID_ACCESS_KEY}} 50 ${{matrix.init_performance_threshold_sec}} ${{matrix.proc_performance_threshold_sec}}
+      run: python3 test_cheetah_perf.py ${{secrets.PV_VALID_ACCESS_KEY}} 50 ${{matrix.init_performance_threshold_sec}} ${{matrix.proc_performance_threshold_sec}} ${{ matrix.device }}
 
   perf-self-hosted:
     runs-on: ${{ matrix.machine }}
@@ -69,7 +70,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64]
+        device: [ cpu:1 ]
+        machine: [ rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64 ]
         include:
         - machine: rpi3-32
           init_performance_threshold_sec: 9.0
@@ -98,7 +100,7 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: Test
-      run: python3 test_cheetah_perf.py ${{secrets.PV_VALID_ACCESS_KEY}} 20 ${{matrix.init_performance_threshold_sec}} ${{matrix.proc_performance_threshold_sec}}
+      run: python3 test_cheetah_perf.py ${{secrets.PV_VALID_ACCESS_KEY}} 20 ${{matrix.init_performance_threshold_sec}} ${{matrix.proc_performance_threshold_sec}} ${{ matrix.device }}
 
     - name: Machine state after
       working-directory: resources/scripts
@@ -119,8 +121,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install dependencies
-      run: pip install -r requirements.txt
-
     - name: Test
-      run: python3 test_cheetah_perf.py ${{secrets.PV_VALID_ACCESS_KEY}} 50 ${{matrix.init_performance_threshold_sec}} ${{matrix.proc_performance_threshold_sec}}
+      run: >
+        python3 test_cheetah_perf.py
+        ${{secrets.PV_VALID_ACCESS_KEY}}
+        50
+        ${{matrix.init_performance_threshold_sec}}
+        ${{matrix.proc_performance_threshold_sec}}
+        cpu:1
