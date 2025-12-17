@@ -8,6 +8,7 @@ const testData = require('./test_data.json');
 const platform = Platform.OS;
 
 const TEST_ACCESS_KEY: string = '{TESTING_ACCESS_KEY_HERE}';
+const DEVICE: string = '{TESTING_DEVICE_HERE}';
 
 export type Result = {
   testName: string;
@@ -120,7 +121,7 @@ async function runInitTestCase(
 
   let isFailed = false;
   try {
-    const cheetah = await Cheetah.create(accessKey, modelPath);
+    const cheetah = await Cheetah.create(accessKey, modelPath, { device: DEVICE });
     if (cheetah.sampleRate !== 16000) {
       result.success = false;
       result.errorString = `Invalid sample rate: '${cheetah.sampleRate}'`;
@@ -169,6 +170,7 @@ async function runProcTestCase(
     const audioPath = getPath(`audio_samples/${audioFile}`);
 
     const cheetah = await Cheetah.create(TEST_ACCESS_KEY, modelPath, {
+      device: DEVICE,
       enableAutomaticPunctuation: enablePunctuation,
     });
 

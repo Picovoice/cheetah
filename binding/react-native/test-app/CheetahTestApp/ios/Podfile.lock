@@ -1,8 +1,8 @@
 PODS:
   - boost (1.84.0)
-  - Cheetah-iOS (2.3.0)
-  - cheetah-react-native (2.3.0):
-    - Cheetah-iOS (~> 2.3.0)
+  - Cheetah-iOS (3.0.0)
+  - cheetah-react-native (3.0.0):
+    - Cheetah-iOS (~> 3.0.0)
     - React
   - DoubleConversion (1.1.6)
   - fast_float (6.1.4)
@@ -1536,7 +1536,7 @@ PODS:
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
-  - Cheetah-iOS (~> 2.3.0)
+  - Cheetah-iOS (from `https://raw.githubusercontent.com/Picovoice/cheetah/v3.0/binding/ios/Cheetah-iOS.podspec`)
   - "cheetah-react-native (from `../node_modules/@picovoice/cheetah-react-native`)"
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
@@ -1609,12 +1609,13 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - Cheetah-iOS
     - SocketRocket
 
 EXTERNAL SOURCES:
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
+  Cheetah-iOS:
+    :podspec: https://raw.githubusercontent.com/Picovoice/cheetah/v3.0/binding/ios/Cheetah-iOS.podspec
   cheetah-react-native:
     :path: "../node_modules/@picovoice/cheetah-react-native"
   DoubleConversion:
@@ -1753,15 +1754,15 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
-  Cheetah-iOS: 9cec7a187cae82897a7cc8f61e52fe8b2a4bacde
-  cheetah-react-native: 46fd87e1532a1d78e5b78634ef918c7f77fae98a
+  Cheetah-iOS: d3348266063f66046b05958551ac510954ed734a
+  cheetah-react-native: 2d69e52a1b610eed7830f5652f9dea9b8b8f6259
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: 6fe148afcef2e3213e484758e3459609d40d57f5
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: eb93e2f488219332457c3c4eafd2738ddc7e80b8
   hermes-engine: b417d2b2aee3b89b58e63e23a51e02be91dc876d
-  RCT-Folly: 36fe2295e44b10d831836cc0d1daec5f8abcf809
+  RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82
   RCTDeprecation: b2eecf2d60216df56bc5e6be5f063826d3c1ee35
   RCTRequired: 78522de7dc73b81f3ed7890d145fa341f5bb32ea
   RCTTypeSafety: c135dd2bf50402d87fd12884cbad5d5e64850edd
@@ -1823,6 +1824,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: afd04ff05ebe0121a00c468a8a3c8080221cb14c
 
-PODFILE CHECKSUM: 650c03bd8ac830b1ca81ed947e2d9b4ba5e2a39a
+PODFILE CHECKSUM: a17604c175d9c4baf850339c5d1606ff74bec4f3
 
 COCOAPODS: 1.16.2

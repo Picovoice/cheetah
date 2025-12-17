@@ -1,5 +1,5 @@
 //
-// Copyright 2020-2021 Picovoice Inc.
+// Copyright 2020-2025 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -13,8 +13,12 @@
 
 @interface RCT_EXTERN_MODULE(PvCheetah, NSObject)
 
+RCT_EXTERN_METHOD(getAvailableDevices: (RCTPromiseResolveBlock)resolve
+                  rejecter: (RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(create: (NSString *)accessKey
                   modelPath: (NSString *)modelPath
+                  device: (NSString *)device
                   endpointDuration: (float)endpointDuration
                   enableAutomaticPunctuation: (BOOL)enableAutomaticPunctuation
                   resolver: (RCTPromiseResolveBlock)resolve
