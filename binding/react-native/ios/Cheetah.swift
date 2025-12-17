@@ -37,7 +37,7 @@ class PvCheetah: NSObject {
         }
     }
 
-    @objc(create:modelPath:endpointDuration:enableAutomaticPunctuation:resolver:rejecter:)
+    @objc(create:modelPath:device:endpointDuration:enableAutomaticPunctuation:resolver:rejecter:)
     func create(
             accessKey: String,
             modelPath: String,
