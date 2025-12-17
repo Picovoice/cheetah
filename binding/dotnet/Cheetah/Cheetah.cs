@@ -146,7 +146,12 @@ namespace Pv
         /// Set to `true` to enable automatic punctuation insertion.
         /// </param>
         /// <returns>An instance of Cheetah Speech-to-Text engine.</returns>
-        public static Cheetah Create(string accessKey, string modelPath = null, string device = null, float endpointDurationSec = 1.0f, bool enableAutomaticPunctuation = false)
+        public static Cheetah Create(
+                string accessKey,
+                string modelPath = null,
+                string device = null,
+                float endpointDurationSec = 1.0f,
+                bool enableAutomaticPunctuation = false)
         {
             return new Cheetah(
                 accessKey,
