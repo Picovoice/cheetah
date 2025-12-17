@@ -28,10 +28,11 @@ class CheetahManager {
   static Future<CheetahManager> create(
       String accessKey,
       String modelPath,
+      String device,
       TranscriptCallback transcriptCallback,
       ProcessErrorCallback processErrorCallback) async {
     Cheetah cheetah = await Cheetah.create(accessKey, modelPath,
-        enableAutomaticPunctuation: true);
+        device: device, enableAutomaticPunctuation: true);
     return CheetahManager._(cheetah, transcriptCallback, processErrorCallback);
   }
 

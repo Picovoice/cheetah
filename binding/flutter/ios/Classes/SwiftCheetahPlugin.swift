@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2024 Picovoice Inc.
+// Copyright 2022-2025 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -14,6 +14,7 @@ import UIKit
 import Cheetah
 
 enum Method: String {
+    case GET_AVAILABLE_DEVICES
     case CREATE
     case PROCESS
     case FLUSH
@@ -40,16 +41,27 @@ public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
         let args = call.arguments as! [String: Any]
 
         switch method {
+        case .GET_AVAILABLE_DEVICES:
+            do {
+                var deviceList: [String] = try Cheetah.getAvailableDevices()
+                result(deviceList)
+            } catch let error as CheetahError {
+                result(errorToFlutterError(error))
+            } catch {
+                result(errorToFlutterError(CheetahError(error.localizedDescription)))
+            }
         case .CREATE:
             do {
                 if let accessKey = args["accessKey"] as? String,
                    let modelPath = args["modelPath"] as? String {
+                    let device = args["device"] as? String
                     let endpointDuration = args["endpointDuration"] as? Float
                     let enableAutomaticPunctuation = args["enableAutomaticPunctuation"] as? Bool
 
                     let cheetah = try Cheetah(
                             accessKey: accessKey,
                             modelPath: modelPath,
+                            device: device,
                             endpointDuration: endpointDuration ?? 1.0,
                             enableAutomaticPunctuation: enableAutomaticPunctuation ?? false
                     )

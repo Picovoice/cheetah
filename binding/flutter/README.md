@@ -17,10 +17,10 @@ Cheetah is an on-device speech-to-text engine. Cheetah is:
 
 ## Compatibility
 
-This binding is for running Cheetah on **Flutter 2.8.1+** on the following platforms:
+This binding is for running Cheetah on **Flutter 3.10+** on the following platforms:
 
 - Android 5.0+ (API 21+)
-- iOS 13.0+
+- iOS 16.0+
 
 ## Installation
 
