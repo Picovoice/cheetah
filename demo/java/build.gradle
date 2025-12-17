@@ -18,8 +18,7 @@ sourceSets {
 }
 
 dependencies {
-    // implementation 'ai.picovoice:cheetah-java:3.0.0'
-    implementation name: 'Cheetah'
+    implementation 'ai.picovoice:cheetah-java:3.0.0'
     implementation 'commons-cli:commons-cli:1.4'
 }
 
