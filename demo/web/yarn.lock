@@ -96,10 +96,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/retry/-/retry-0.4.2.tgz#1860473de7dfa1546767448f333db80cb0ff2161"
   integrity sha512-xeO57FpIu4p1Ri3Jq/EXq4ClRm86dVF2z/+kvFnyqVYRavTZmaFaUBbWCOuuTh0o/g7DSsk6kc2vrS4Vl5oPOQ==
 
-"@picovoice/cheetah-web@2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-2.3.0.tgz#35eee7deb4ae463fe4a350bddc76d76be0e1347a"
-  integrity sha512-uSBekI0eAPK/JDA39w1HK67decp7g5I4majqXjvLKgCeLNdfqR2aqBQGqs2RL06Ye203nugu8JUiMdsm97zTnQ==
+"@picovoice/cheetah-web@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-3.0.0.tgz#c6d143ffaf459b4f262cbf141eae009333f6655b"
+  integrity sha512-7Cazk4hdqB2SnHEbaeAl6uZqjj7THh6jMPxHOLi8l5QSjVrZ7/FdeoN+ZhSiY51a3YHdwOO7HJYPGj7RdHoD4Q==
   dependencies:
     "@picovoice/web-utils" "=1.4.3"
 
@@ -607,6 +607,18 @@ lodash@^4.17.14:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
+
+mime-db@1.52.0:
+  version "1.52.0"
+  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.52.0.tgz#bbabcdc02859f4987301c856e3387ce5ec43bf70"
+  integrity sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==
+
+mime-types@^2.1.35:
+  version "2.1.35"
+  resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.35.tgz#381a871b62a734450660ae3deee44813f70d959a"
+  integrity sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==
+  dependencies:
+    mime-db "1.52.0"
 
 mime@^1.6.0:
   version "1.6.0"
