@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2022-2023 Picovoice Inc.
+    Copyright 2022-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -48,7 +48,7 @@ namespace Pv
         static Cheetah()
         {
 
-#if NETCOREAPP3_0_OR_GREATER
+#if NET6_0_OR_GREATER
 
             NativeLibrary.SetDllImportResolver(typeof(Cheetah).Assembly, ImportResolver);
 
@@ -57,7 +57,7 @@ namespace Pv
             DEFAULT_MODEL_PATH = Utils.PvModelPath();
         }
 
-#if NETCOREAPP3_0_OR_GREATER
+#if NET6_0_OR_GREATER
 
         private static IntPtr ImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
         {
@@ -72,6 +72,7 @@ namespace Pv
         private static extern CheetahStatus pv_cheetah_init(
             IntPtr accessKey,
             IntPtr modelPath,
+            IntPtr device,
             float endpointDurationSec,
             bool enableAutomaticPunctuation,
             out IntPtr handle);
@@ -104,7 +105,6 @@ namespace Pv
         private static extern Int32 pv_cheetah_frame_length();
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
-
         private static extern void pv_set_sdk(string sdk);
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
@@ -112,6 +112,16 @@ namespace Pv
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern void pv_free_error_stack(IntPtr messageStack);
+
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
+        private static extern CheetahStatus pv_cheetah_list_hardware_devices(
+            out IntPtr hardwareDevices,
+            out int numHardwareDevices);
+
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void pv_cheetah_free_hardware_devices(
+            IntPtr hardwareDevices,
+            int numHardwareDevices);
 
         /// <summary>
         /// Factory method for Cheetah Speech-to-Text engine.
@@ -121,6 +131,13 @@ namespace Pv
         /// Absolute path to the file containing model parameters. If not set it will be set to the
         /// default location.
         /// </param>
+        /// <param name="device">
+        /// String representation of the device (e.g., CPU or GPU) to use. If set to `best`, the most
+        /// suitable device is selected automatically. If set to `gpu`, the engine uses the first available GPU device. To select a specific
+        /// GPU device, set this argument to `gpu:${GPU_INDEX}`, where `${GPU_INDEX}` is the index of the target GPU. If set to
+        /// `cpu`, the engine will run on the CPU with the default number of threads. To specify the number of threads, set this
+        /// argument to `cpu:${NUM_THREADS}`, where `${NUM_THREADS}` is the desired number of threads.
+        /// </param>
         /// <param name="endpointDurationSec">
         /// Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio(with a duration specified herein) after
         /// an utterance without any speech in it. Set to `0` to disable
@@ -129,9 +146,19 @@ namespace Pv
         /// Set to `true` to enable automatic punctuation insertion.
         /// </param>
         /// <returns>An instance of Cheetah Speech-to-Text engine.</returns>
-        public static Cheetah Create(string accessKey, string modelPath = null, float endpointDurationSec = 1.0f, bool enableAutomaticPunctuation = false)
+        public static Cheetah Create(
+                string accessKey,
+                string modelPath = null,
+                string device = null,
+                float endpointDurationSec = 1.0f,
+                bool enableAutomaticPunctuation = false)
         {
-            return new Cheetah(accessKey, modelPath ?? DEFAULT_MODEL_PATH, endpointDurationSec, enableAutomaticPunctuation);
+            return new Cheetah(
+                accessKey,
+                modelPath ?? DEFAULT_MODEL_PATH,
+                device ?? "best",
+                endpointDurationSec,
+                enableAutomaticPunctuation);
         }
 
         /// <summary>
@@ -141,6 +168,13 @@ namespace Pv
         /// <param name="modelPath">
         /// Absolute path to the file containing model parameters. If not set it will be set to the
         /// default location.
+        /// </param>
+        /// <param name="device">
+        /// String representation of the device (e.g., CPU or GPU) to use. If set to `best`, the most
+        /// suitable device is selected automatically. If set to `gpu`, the engine uses the first available GPU device. To select a specific
+        /// GPU device, set this argument to `gpu:${GPU_INDEX}`, where `${GPU_INDEX}` is the index of the target GPU. If set to
+        /// `cpu`, the engine will run on the CPU with the default number of threads. To specify the number of threads, set this
+        /// argument to `cpu:${NUM_THREADS}`, where `${NUM_THREADS}` is the desired number of threads.
         /// </param>
         /// <param name="endpointDurationSec">
         /// Duration of endpoint in seconds. A speech endpoint is detected when there is a segment of audio(with a duration specified herein) after
@@ -152,6 +186,7 @@ namespace Pv
         private Cheetah(
             string accessKey,
             string modelPath,
+            string device,
             float endpointDurationSec = 1.0f,
             bool enableAutomaticPunctuation = false)
         {
@@ -172,18 +207,21 @@ namespace Pv
 
             IntPtr accessKeyPtr = Utils.GetPtrFromUtf8String(accessKey);
             IntPtr modelPathPtr = Utils.GetPtrFromUtf8String(modelPath);
+            IntPtr devicePtr = Utils.GetPtrFromUtf8String(device);
 
             pv_set_sdk("dotnet");
 
             CheetahStatus status = pv_cheetah_init(
                 accessKeyPtr,
                 modelPathPtr,
+                devicePtr,
                 endpointDurationSec,
                 enableAutomaticPunctuation,
                 out _libraryPointer);
 
             Marshal.FreeHGlobal(accessKeyPtr);
             Marshal.FreeHGlobal(modelPathPtr);
+            Marshal.FreeHGlobal(devicePtr);
 
             if (status != CheetahStatus.SUCCESS)
             {
@@ -340,7 +378,7 @@ namespace Pv
             Dispose();
         }
 
-        private string[] GetMessageStack()
+        private static string[] GetMessageStack()
         {
             int messageStackDepth;
             IntPtr messageStackRef;
@@ -363,5 +401,37 @@ namespace Pv
 
             return messageStack;
         }
+
+        /// <summary>
+        /// Retrieves a list of hardware devices that can be specified when constructing the model.
+        /// </summary>
+        /// <returns>An array of available hardware devices.</returns>
+        /// <exception cref="CheetahException">Thrown when an error occurs while retrieving the hardware devices.</exception>
+        public static string[] GetAvailableDevices()
+        {
+            IntPtr hardwareDevicesPtr;
+            int numDevices;
+            CheetahStatus status = pv_cheetah_list_hardware_devices(
+                out hardwareDevicesPtr,
+                out numDevices);
+            if (status != CheetahStatus.SUCCESS)
+            {
+                throw CheetahStatusToException(
+                    status,
+                    "Get available devices failed",
+                    GetMessageStack());
+            }
+
+            string[] devices = new string[numDevices];
+            int elementSize = Marshal.SizeOf(typeof(IntPtr));
+            for (int i = 0; i < numDevices; i++)
+            {
+                devices[i] = Utils.GetUtf8StringFromPtr(Marshal.ReadIntPtr(hardwareDevicesPtr, i * elementSize));
+            }
+
+            pv_cheetah_free_hardware_devices(hardwareDevicesPtr, numDevices);
+            return devices;
+        }
+
     }
 }

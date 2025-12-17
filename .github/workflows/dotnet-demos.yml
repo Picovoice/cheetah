@@ -25,6 +25,7 @@ jobs:
 
     strategy:
       matrix:
+        device: [cpu, cpu:1]
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
@@ -38,6 +39,15 @@ jobs:
     - name: Package restore
       run: dotnet restore
 
+    # *********** REMOVE AFTER RELEASE **********************
+    - name: Pack binding for local ref
+      run: dotnet pack -c Release
+      working-directory: binding/dotnet
+
+    - name: Add binding to demo
+      run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Picovoice.Cheetah
+    # ******************************************************
+
     - name: Dotnet build micdemo
       run: dotnet build -c MicDemo.Release
 
@@ -45,14 +55,22 @@ jobs:
       run: dotnet build -c FileDemo.Release
 
     - name: Run Dotnet filedemo
-      run: dotnet run -c FileDemo.Release -- --input_audio_path ../../../resources/audio_samples/test.wav --access_key ${{secrets.PV_VALID_ACCESS_KEY}}
+      run: dotnet run -c FileDemo.Release -- --input_audio_path ../../../resources/audio_samples/test.wav --access_key ${{secrets.PV_VALID_ACCESS_KEY}} --device ${{ matrix.device }} 
 
   build-self-hosted:
     runs-on: ${{ matrix.machine }}
 
     strategy:
       matrix:
+        device: [best]
         machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64, pv-windows-arm64]
+        include:
+          - device: gpu
+            machine: pv-linux
+          - device: gpu
+            machine: pv-windows
+          - device: gpu
+            machine: pv-ios
 
     steps:
     - uses: actions/checkout@v3
@@ -60,6 +78,15 @@ jobs:
     - name: Package restore
       run: dotnet restore
 
+    # *********** REMOVE AFTER RELEASE **********************
+    - name: Pack binding for local ref
+      run: dotnet pack -c Release
+      working-directory: binding/dotnet
+
+    - name: Add binding to demo
+      run: dotnet add package -s ../../../binding/dotnet/Cheetah/bin/Release Picovoice.Cheetah
+    # ******************************************************
+
     - name: Dotnet build micdemo
       run: dotnet build -c MicDemo.Release
 
@@ -67,4 +94,4 @@ jobs:
       run: dotnet build -c FileDemo.Release
 
     - name: Run Dotnet filedemo
-      run: dotnet run -c FileDemo.Release -- --input_audio_path ../../../resources/audio_samples/test.wav --access_key ${{secrets.PV_VALID_ACCESS_KEY}}
+      run: dotnet run -c FileDemo.Release -- --input_audio_path ../../../resources/audio_samples/test.wav --access_key ${{secrets.PV_VALID_ACCESS_KEY}} --device ${{ matrix.device }}
