@@ -1424,7 +1424,7 @@
 
 "@picovoice/cheetah-react-native@../../pkg/picovoice-cheetah-react-native-3.0.0.tgz":
   version "3.0.0"
-  resolved "../../pkg/picovoice-cheetah-react-native-3.0.0.tgz#b3dc929187392b71b3bad9004d3ac7bf73997983"
+  resolved "../../pkg/picovoice-cheetah-react-native-3.0.0.tgz#6767ffada9b6ce2019cd7428f0f45143ae8b8cac"
 
 "@react-native-community/cli-clean@20.0.0":
   version "20.0.0"
