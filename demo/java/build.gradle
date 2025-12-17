@@ -4,9 +4,6 @@ plugins {
 
 repositories {
     mavenCentral()
-    flatDir {
-      dirs '../../binding/java/build/libs'
-    }
 }
 
 sourceSets {
