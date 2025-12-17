@@ -3,7 +3,7 @@
   "description": "Cheetah Speech-to-Text engine for web browsers (via WebAssembly)",
   "author": "Picovoice Inc",
   "license": "Apache-2.0",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "keywords": [
     "cheetah",
     "web",
@@ -31,8 +31,8 @@
     "format": "prettier --write \"**/*.{js,ts,json}\"",
     "copywasm": "node scripts/copy_wasm.js",
     "setup-test": "node scripts/setup_test.js && npx pvbase64 -i ./test/cheetah_params.pv -o ./test/cheetah_params.js",
-    "test": "cypress run --spec test/cheetah.test.ts",
-    "test-perf": "cypress run --spec test/cheetah_perf.test.ts"
+    "test": "cypress run --spec test/cheetah.test.ts --browser chrome",
+    "test-perf": "cypress run --spec test/cheetah_perf.test.ts --browser chrome"
   },
   "dependencies": {
     "@picovoice/web-utils": "=1.4.3"
@@ -48,6 +48,7 @@
     "@rollup/plugin-terser": "^0.4.0",
     "@rollup/pluginutils": "^5.0.2",
     "@types/emscripten": "1.40.0",
+    "@types/node": "^18.13.0",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
     "async-mutex": "^0.4.0",
@@ -65,6 +66,6 @@
     "wasm-feature-detect": "^1.5.0"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   }
 }
