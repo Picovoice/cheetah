@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net8.0;net6.0;netcoreapp3.0;netstandard2.0;</TargetFrameworks>
-        <Version>2.3.0</Version>
+        <TargetFrameworks>net6.0;netstandard2.0</TargetFrameworks>
+        <Version>3.0.0</Version>
         <Authors>Picovoice</Authors>
         <Company />
         <Product>Cheetah Speech-to-Text Engine</Product>
@@ -34,9 +34,7 @@
         </Content>
         <Content Include="Picovoice.Cheetah.targets">
             <PackagePath>
-                buildTransitive/netcoreapp3.0;
                 buildTransitive/net6.0;
-                buildTransitive/net8.0;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
@@ -47,21 +45,18 @@
             <Link>lib\common\cheetah_params.pv</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="..\..\..\lib\windows\amd64\libpv_cheetah.dll">
+        <Content Include="..\..\..\lib\windows\amd64\*">
             <PackagePath>
-                buildTransitive/netstandard2.0/libpv_cheetah.dll;
-                buildTransitive/netcoreapp3.0/lib/windows/amd64/libpv_cheetah.dll;
-                buildTransitive/net6.0/lib/windows/amd64/libpv_cheetah.dll;
-                buildTransitive/net8.0/lib/windows/amd64/libpv_cheetah.dll;
+                buildTransitive/netstandard2.0;
+                buildTransitive/net6.0/lib/windows/amd64;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <Link>lib\windows\amd64\libpv_cheetah.dll</Link>
+            <Link>lib\windows\amd64\%(Filename)%(Extension)</Link>
             <Visible>false</Visible>
         </Content>
         <Content Include="..\..\..\lib\windows\arm64\libpv_cheetah.dll">
             <PackagePath>
                 buildTransitive/net6.0/lib/windows/arm64/libpv_cheetah.dll;
-                buildTransitive/net8.0/lib/windows/arm64/libpv_cheetah.dll;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\windows\arm64\libpv_cheetah.dll</Link>
@@ -70,7 +65,6 @@
         <Content Include="..\..\..\lib\linux\x86_64\libpv_cheetah.so">
             <PackagePath>
                 buildTransitive/net6.0/lib/linux/x86_64/libpv_cheetah.so;
-                buildTransitive/net8.0/lib/linux/x86_64/libpv_cheetah.so;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\linux\x86_64\libpv_cheetah.so</Link>
@@ -79,9 +73,7 @@
         <Content Include="..\..\..\lib\mac\x86_64\libpv_cheetah.dylib">
             <PackagePath>
                 buildTransitive/netstandard2.0/libpv_cheetah.dylib;
-                buildTransitive/netcoreapp3.0/lib/mac/x86_64/libpv_cheetah.dylib;
                 buildTransitive/net6.0/lib/mac/x86_64/libpv_cheetah.dylib;
-                buildTransitive/net8.0/lib/mac/x86_64/libpv_cheetah.dylib;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\mac\x86_64\libpv_cheetah.dylib</Link>
@@ -92,7 +84,6 @@
         <Content Include="..\..\..\lib\raspberry-pi\**\*">
             <PackagePath>
                 buildTransitive/net6.0/lib/raspberry-pi;
-                buildTransitive/net8.0/lib/raspberry-pi;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\raspberry-pi\%(RecursiveDir)%(Filename)%(Extension)</Link>
@@ -103,7 +94,6 @@
         <Content Include="..\..\..\lib\mac\arm64\libpv_cheetah.dylib">
             <PackagePath>
                 buildTransitive/net6.0/lib/mac/arm64/libpv_cheetah.dylib;
-                buildTransitive/net8.0/lib/mac/arm64/libpv_cheetah.dylib;
             </PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>lib\mac\arm64\libpv_cheetah.dylib</Link>

@@ -15,8 +15,10 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ai.picovoice.cheetah.Cheetah;
@@ -60,6 +62,18 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
         }
 
         switch (method) {
+            case GET_AVAILABLE_DEVICES:
+                try {
+                    String[] devices = Cheetah.getAvailableDevices();
+                    List<String> deviceList = Arrays.asList(devices);
+                    result.success(deviceList);
+                } catch (CheetahException e) {
+                    result.error(
+                            e.getClass().getSimpleName(),
+                            e.getMessage(),
+                            null);
+                }
+                break;
             case CREATE:
                 cheetahCreate(call, result);
                 break;
@@ -85,12 +99,14 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
         try {
             String accessKey = call.argument("accessKey");
             String modelPath = call.argument("modelPath");
+            String device = call.argument("device");
             double endpointDuration = call.argument("endpointDuration");
             boolean enableAutomaticPunctuation = call.argument("enableAutomaticPunctuation");
 
             Cheetah.Builder cheetahBuilder = new Cheetah.Builder()
                     .setAccessKey(accessKey)
                     .setModelPath(modelPath)
+                    .setDevice(device)
                     .setEndpointDuration((float) endpointDuration)
                     .setEnableAutomaticPunctuation(enableAutomaticPunctuation);
 
@@ -212,6 +228,7 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
     }
 
     private enum Method {
+        GET_AVAILABLE_DEVICES,
         CREATE,
         PROCESS,
         FLUSH,

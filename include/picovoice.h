@@ -1,5 +1,5 @@
 /*
-    Copyright 2018-2021 Picovoice Inc.
+    Copyright 2018-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -20,7 +20,15 @@ extern "C" {
 
 #endif
 
+#ifdef _MSC_VER
+
+#define PV_API __declspec(dllexport)
+
+#else
+
 #define PV_API __attribute__((visibility("default")))
+
+#endif
 
 /**
  * Audio sample rate accepted by Picovoice.

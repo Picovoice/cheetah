@@ -51,10 +51,10 @@ self.onmessage = async function (
         return;
       }
       try {
-        Cheetah.setWasm(event.data.wasm);
         Cheetah.setWasmSimd(event.data.wasmSimd);
-        Cheetah.setWasmLib(event.data.wasmLib);
         Cheetah.setWasmSimdLib(event.data.wasmSimdLib);
+        Cheetah.setWasmPThread(event.data.wasmPThread);
+        Cheetah.setWasmPThreadLib(event.data.wasmPThreadLib);
         cheetah = await Cheetah._init(
           event.data.accessKey,
           transcriptCallback,

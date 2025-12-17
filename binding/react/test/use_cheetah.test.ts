@@ -9,6 +9,7 @@ import cheetahParams from '@/cheetah_params.js';
 import testData from './test_data.json';
 
 const ACCESS_KEY = Cypress.env('ACCESS_KEY');
+const DEVICE = Cypress.env('DEVICE');
 
 const levenshteinDistance = (words1: string[], words2: string[]) => {
   const res = Array.from(
@@ -69,6 +70,7 @@ const runProcTest = async (
   cy.wrapHook(() =>
     result.current.init(accessKey, model, {
       enableAutomaticPunctuation: enablePunctuation,
+      device: DEVICE,
     })
   ).then(() => {
     expect(
@@ -124,7 +126,8 @@ describe('Cheetah binding', () => {
       result.current.init(ACCESS_KEY, {
         publicPath: '/test/cheetah_params.pv',
         forceWrite: true,
-      })
+      },
+        { device: DEVICE })
     ).then(() => {
       expect(
         result.current.isLoaded,
@@ -147,7 +150,8 @@ describe('Cheetah binding', () => {
       result.current.init(ACCESS_KEY, {
         base64: cheetahParams,
         forceWrite: true,
-      })
+      },
+        { device: DEVICE })
     ).then(() => {
       expect(
         result.current.isLoaded,
@@ -163,7 +167,8 @@ describe('Cheetah binding', () => {
       result.current.init(ACCESS_KEY, {
         publicPath: '/cheetah_params_failed.pv',
         forceWrite: true,
-      })
+      },
+        { device: DEVICE })
     ).then(() => {
       expect(result.current.isLoaded).to.be.false;
       expect(result.current.error?.toString()).to.contain(
@@ -179,7 +184,8 @@ describe('Cheetah binding', () => {
       result.current.init('', {
         publicPath: '/test/cheetah_params.pv',
         forceWrite: true,
-      })
+      },
+        { device: DEVICE })
     ).then(() => {
       expect(result.current.isLoaded).to.be.false;
       expect(result.current.error?.toString()).to.contain('Invalid AccessKey');

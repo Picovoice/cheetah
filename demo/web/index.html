@@ -3,12 +3,12 @@
   <head>
     <script src="node_modules/@picovoice/web-voice-processor/dist/iife/index.js"></script>
     <script src="node_modules/@picovoice/cheetah-web/dist/iife/index.js"></script>
-    <script src="scripts/cheetah.js"></script>
     <script>
       const script = document.createElement('script');
       script.src = 'models/cheetahModel.js?t=' + Date.now();
       document.head.appendChild(script);
     </script>
+    <script src="scripts/cheetah.js"></script>
   </head>
   <body>
     <h1>Cheetah Web Demo</h1>
