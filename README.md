@@ -305,7 +305,7 @@ Create an instance of the engine and transcribe audio in real-time:
 #include "pv_cheetah.h"
 
 pv_cheetah_t *handle = NULL;
-const pv_status_t status = pv_cheetah_init("${ACCESS_KEY}", "${MODEL_PATH}", 0.f, false, &handle);
+const pv_status_t status = pv_cheetah_init("${ACCESS_KEY}", "${MODEL_PATH}", "${DEVICE}", 0.f, false, &handle);
 if (status != PV_STATUS_SUCCESS) {
     // error handling logic
 }
@@ -726,6 +726,14 @@ function App(props) {
 ```
 
 ## Releases
+
+### v3.0.0 - December 17th, 2025
+- Improved engine performance
+- Added support for running on GPU or multiple CPU cores
+- Node.js min version bumped to Node 18
+- iOS min version bumped to iOS 16
+- Flutter min version bumped to 3.10
+- React Native min version bumped to 0.73
 
 ### v2.3.0 - August 29th, 2025
 
