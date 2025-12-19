@@ -42,6 +42,14 @@ public class Cheetah {
      *
      * @param accessKey                  AccessKey obtained from Picovoice Console
      * @param modelPath                  Absolute path to the file containing Cheetah model parameters.
+     * @param device                     String representation of the device (e.g., CPU or GPU) to use. If set to
+     *                                   `best`, the most suitable device is selected automatically. If set to `gpu`,
+     *                                   the engine uses the first available GPU device. To select a specific GPU
+     *                                   device, set this argument to `gpu:${GPU_INDEX}`, where `${GPU_INDEX}` is the
+     *                                   index of the target GPU. If set to `cpu`, the engine will run on the CPU with
+     *                                   the default number of threads. To specify the number of threads, set this
+     *                                   argument to `cpu:${NUM_THREADS}`, where `${NUM_THREADS}` is the desired
+     *                                   number of threads.
      * @param endpointDuration           Duration of endpoint in seconds. A speech endpoint is detected when there is a
      *                                   chunk of audio (with a duration specified herein) after an utterance without
      *                                   any speech in it. Set duration to 0 to disable this.
@@ -52,6 +60,7 @@ public class Cheetah {
     private Cheetah(
             String accessKey,
             String modelPath,
+            String device,
             float endpointDuration,
             boolean enableAutomaticPunctuation) throws CheetahException {
         CheetahNative.setSdk(Cheetah._sdk);
@@ -59,6 +68,7 @@ public class Cheetah {
         handle = CheetahNative.init(
                 accessKey,
                 modelPath,
+                device,
                 endpointDuration,
                 enableAutomaticPunctuation);
     }
@@ -159,12 +169,24 @@ public class Cheetah {
     }
 
     /**
+     * Lists all available devices that Cheetah can use for inference.
+     * Each entry in the list can be used as the `device` argument when initializing Cheetah.
+     *
+     * @return Array of all available devices that Cheetah can be used for inference.
+     * @throws CheetahException if getting available devices fails.
+     */
+    public static String[] getAvailableDevices() throws CheetahException {
+        return CheetahNative.listHardwareDevices();
+    }
+
+    /**
      * Builder for creating an instance of Cheetah with a mixture of default arguments.
      */
     public static class Builder {
 
         private String accessKey = null;
         private String modelPath = null;
+        private String device = "best";
         private float endpointDuration = 1f;
         private boolean enableAutomaticPunctuation = false;
 
@@ -185,6 +207,22 @@ public class Cheetah {
          */
         public Builder setModelPath(String modelPath) {
             this.modelPath = modelPath;
+            return this;
+        }
+
+        /**
+         * Setter for the device to use for inference.
+         *
+         * @param device String representation of the device (e.g., CPU or GPU) to use for inference.
+         *               If set to `best`, the most suitable device is selected automatically. If set to `gpu`,
+         *               the engine uses the first available GPU device. To select a specific GPU device, set this
+         *               argument to `gpu:${GPU_INDEX}`, where `${GPU_INDEX}` is the index of the target GPU. If
+         *               set to `cpu`, the engine will run on the CPU with the default number of threads. To specify
+         *               the number of threads, set this argument to `cpu:${NUM_THREADS}`, where `${NUM_THREADS}`
+         *               is the desired number of threads.
+         */
+        public Builder setDevice(String device) {
+            this.device = device;
             return this;
         }
 
@@ -242,6 +280,7 @@ public class Cheetah {
             return new Cheetah(
                     accessKey,
                     modelPath,
+                    device,
                     endpointDuration,
                     enableAutomaticPunctuation);
         }

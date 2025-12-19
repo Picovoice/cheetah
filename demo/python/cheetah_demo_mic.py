@@ -1,5 +1,5 @@
 #
-#    Copyright 2018-2023 Picovoice Inc.
+#    Copyright 2018-2025 Picovoice Inc.
 #
 #    You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 #    file accompanying this source.
@@ -11,6 +11,7 @@
 
 import argparse
 
+import pvcheetah
 from pvcheetah import CheetahActivationLimitError, create
 from pvrecorder import PvRecorder
 
@@ -27,6 +28,10 @@ def main():
         '--model_path',
         help='Absolute path to Cheetah model. Default: using the model provided by `pvcheetah`')
     parser.add_argument(
+        '--device',
+        help='Device to run inference on (`best`, `cpu:{num_threads}` or `gpu:{gpu_index}`). '
+             'Default: automatically selects best device')
+    parser.add_argument(
         '--endpoint_duration_sec',
         type=float,
         default=1.,
@@ -37,7 +42,16 @@ def main():
         help='Disable insertion of automatic punctuation')
     parser.add_argument('--audio_device_index', type=int, default=-1, help='Index of input audio device')
     parser.add_argument('--show_audio_devices', action='store_true', help='Only list available devices and exit')
+    parser.add_argument(
+        '--show_inference_devices',
+        action='store_true',
+        help='Print devices that are available to run Cheetah inference')
+
     args = parser.parse_args()
+
+    if args.show_inference_devices:
+        print('\n'.join(pvcheetah.available_devices(library_path=args.library_path)))
+        return
 
     if args.show_audio_devices:
         for index, name in enumerate(PvRecorder.get_available_devices()):
@@ -52,6 +66,7 @@ def main():
         access_key=args.access_key,
         library_path=args.library_path,
         model_path=args.model_path,
+        device=args.device,
         endpoint_duration_sec=args.endpoint_duration_sec,
         enable_automatic_punctuation=not args.disable_automatic_punctuation)
 

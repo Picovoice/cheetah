@@ -56,6 +56,9 @@ jobs:
     - name: Inject AccessKey
       run: echo pvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}" >> local.properties
 
+    - name: Inject Device
+      run: echo pvTestingDevice="cpu:1" >> local.properties
+
     - name: Inject Number of Iterations
       run: echo numTestIterations="30" >> local.properties
 

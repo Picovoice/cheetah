@@ -1,6 +1,6 @@
 {
   "name": "cheetah-react-native-demo",
-  "version": "2.3.1",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "lint": "eslint .",
@@ -15,7 +15,7 @@
     "ios-bundle": "node scripts/run_demo.js bundle --dev false --platform ios --entry-file index.js --bundle-output ios/app.jsbundle"
   },
   "dependencies": {
-    "@picovoice/cheetah-react-native": "2.3.0",
+    "@picovoice/cheetah-react-native": "3.0.0",
     "@picovoice/react-native-voice-processor": "1.2.3",
     "@react-native-picker/picker": "^2.11.4",
     "react": "19.1.1",

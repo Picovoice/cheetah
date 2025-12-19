@@ -6,6 +6,9 @@ if (rootProject.file("local.properties").exists()) {
     if (project.hasProperty("pvTestingAccessKey")) {
         properties.put("pvTestingAccessKey", project.getProperty("pvTestingAccessKey"))
     }
+    if (project.hasProperty("pvTestingDevice")) {
+        properties.put("pvTestingDevice", project.getProperty("pvTestingDevice"))
+    }
     if (project.hasProperty("numTestIterations")) {
         properties.put("numTestIterations", project.getProperty("numTestIterations"))
     }
@@ -43,6 +46,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         resValue 'string', 'pvTestingAccessKey', properties.getProperty("pvTestingAccessKey", "")
+        resValue 'string', 'pvTestingDevice', properties.getProperty("pvTestingDevice", "cpu:1")
         resValue 'string', 'numTestIterations', properties.getProperty("numTestIterations", "")
         resValue 'string', 'initPerformanceThresholdSec', properties.getProperty("initPerformanceThresholdSec", "")
         resValue 'string', 'procPerformanceThresholdSec', properties.getProperty("procPerformanceThresholdSec", "")
@@ -147,7 +151,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.code.gson:gson:2.10'
-    implementation 'ai.picovoice:cheetah-android:2.3.0'
+    implementation 'ai.picovoice:cheetah-android:3.0.0'
 
     // Espresso UI Testing
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

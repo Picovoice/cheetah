@@ -1,6 +1,6 @@
 {
   "name": "@picovoice/cheetah-react",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "description": "React hook for Cheetah Web SDK",
   "entry": "src/index.ts",
   "module": "dist/esm/index.js",
@@ -36,7 +36,7 @@
     "test": "cypress run --component"
   },
   "dependencies": {
-    "@picovoice/cheetah-web": "~2.3.0"
+    "@picovoice/cheetah-web": "3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.3",

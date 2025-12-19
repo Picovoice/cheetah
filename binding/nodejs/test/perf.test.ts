@@ -23,6 +23,10 @@ const ACCESS_KEY =
   process.argv
     .filter(x => x.startsWith('--access_key='))[0]
     ?.split('--access_key=')[1] ?? '';
+const DEVICE =
+  process.argv
+    .filter(x => x.startsWith('--device='))[0]
+    .split('--device=')[1] ?? 'best';
 const NUM_TEST_ITERATIONS = Number(
   process.argv
     .filter(x => x.startsWith('--num_test_iterations='))[0]
@@ -44,7 +48,7 @@ describe('Performance', () => {
     let perfResults = [];
     for (let i = 0; i < NUM_TEST_ITERATIONS; i++) {
       const before = performance.now();
-      let cheetahEngine = new Cheetah(ACCESS_KEY);
+      let cheetahEngine = new Cheetah(ACCESS_KEY, { device: DEVICE });
       let initTime = performance.now() - before;
 
       cheetahEngine.release();

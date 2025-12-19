@@ -1,5 +1,5 @@
 //
-//  Copyright 2022 Picovoice Inc.
+//  Copyright 2022-2025 Picovoice Inc.
 //  You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 //  file accompanying this source.
 //  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
@@ -14,6 +14,7 @@ import Cheetah
 
 class PerformanceTest: XCTestCase {
     let accessKey: String = "{TESTING_ACCESS_KEY_HERE}"
+    let device: String = "{TESTING_DEVICE_HERE}"
     let iterationString: String = "{NUM_TEST_ITERATIONS}"
     let initThresholdString: String = "{INIT_PERFORMANCE_THRESHOLD_SEC}"
     let procThresholdString: String = "{PROC_PERFORMANCE_THRESHOLD_SEC}"
@@ -38,7 +39,7 @@ class PerformanceTest: XCTestCase {
             var totalNSec = 0.0
 
             let before = CFAbsoluteTimeGetCurrent()
-            let cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL)
+            let cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL, device: device)
             let after = CFAbsoluteTimeGetCurrent()
             totalNSec += (after - before)
 
@@ -64,7 +65,7 @@ class PerformanceTest: XCTestCase {
         let bundle = Bundle(for: type(of: self))
 
         let modelURL = bundle.url(forResource: "cheetah_params", withExtension: "pv")!
-        let cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL)
+        let cheetah = try? Cheetah(accessKey: accessKey, modelURL: modelURL, device: device)
 
         let fileURL: URL = bundle.url(forResource: "test", withExtension: "wav")!
 

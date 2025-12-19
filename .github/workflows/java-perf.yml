@@ -53,7 +53,7 @@ jobs:
       run: ./gradlew assemble
 
     - name: Test
-      run: ./gradlew test --info --tests CheetahPerformanceTest -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}" -DnumTestIterations="50" -DinitPerformanceThresholdSec="${{matrix.init_performance_threshold_sec}}" -DprocPerformanceThresholdSec="${{matrix.proc_performance_threshold_sec}}"
+      run: ./gradlew test --info --tests CheetahPerformanceTest -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}" -DpvTestingDevice="cpu:1" -DnumTestIterations="50" -DinitPerformanceThresholdSec="${{matrix.init_performance_threshold_sec}}" -DprocPerformanceThresholdSec="${{matrix.proc_performance_threshold_sec}}"
 
   perf-self-hosted:
     runs-on: ${{ matrix.machine }}
@@ -90,7 +90,7 @@ jobs:
       run: bash machine-state.sh
 
     - name: Test
-      run: ./gradlew test --info --tests CheetahPerformanceTest -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}" -DnumTestIterations="20" -DinitPerformanceThresholdSec="${{matrix.init_performance_threshold_sec}}" -DprocPerformanceThresholdSec="${{matrix.proc_performance_threshold_sec}}"
+      run: ./gradlew test --info --tests CheetahPerformanceTest -DpvTestingAccessKey="${{secrets.PV_VALID_ACCESS_KEY}}" -DpvTestingDevice="cpu:1" -DnumTestIterations="20" -DinitPerformanceThresholdSec="${{matrix.init_performance_threshold_sec}}" -DprocPerformanceThresholdSec="${{matrix.proc_performance_threshold_sec}}"
 
     - name: Machine state after
       working-directory: resources/scripts

@@ -17,10 +17,10 @@ Cheetah is an on-device speech-to-text engine. Cheetah is:
 
 ## Compatibility
 
-This binding is for running Cheetah on **React Native 0.62.2+** on the following platforms:
+This binding is for running Cheetah on **React Native 0.73+** on the following platforms:
 
 - Android 7.0+ (SDK 24+)
-- iOS 13.0+
+- iOS 16.0+
 
 ## Installation
 

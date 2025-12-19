@@ -107,6 +107,7 @@ public class LanguageTests extends BaseTest {
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
                 .setModelPath(modelPath)
+                .setDevice(device)
                 .build(appContext);
 
         File audioFile = new File(getAudioFilepath(testAudioFile));
@@ -128,6 +129,7 @@ public class LanguageTests extends BaseTest {
         Cheetah cheetah = new Cheetah.Builder()
                 .setAccessKey(accessKey)
                 .setModelPath(modelPath)
+                .setDevice(device)
                 .setEnableAutomaticPunctuation(true)
                 .build(appContext);
 

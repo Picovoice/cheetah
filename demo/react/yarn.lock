@@ -1572,17 +1572,17 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@picovoice/cheetah-react@~2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-react/-/cheetah-react-2.3.0.tgz#2ddf0c73e75dee92809f9fa608f3bc4806e2f5ac"
-  integrity sha512-iesL2AK86N6oL8wP8gcLb04tqjg6Ee9tOS7JTgmnuUdtpdnUs3m2mz8qHGWtfsLxPxkcCFAbO1IfnYQqkPohLw==
+"@picovoice/cheetah-react@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-react/-/cheetah-react-3.0.0.tgz#a6164829c6661fb9775024d0a95adf51d053cc98"
+  integrity sha512-/TAzIgs9OBjk3/tkG1m/pFtTpRhu2GottLwgScxdjShUJX4qZsthrILLCrtkBcWxmdQVLCw7+AKC6n+JJEepfQ==
   dependencies:
-    "@picovoice/cheetah-web" "~2.3.0"
+    "@picovoice/cheetah-web" "3.0.0"
 
-"@picovoice/cheetah-web@~2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-2.3.0.tgz#35eee7deb4ae463fe4a350bddc76d76be0e1347a"
-  integrity sha512-uSBekI0eAPK/JDA39w1HK67decp7g5I4majqXjvLKgCeLNdfqR2aqBQGqs2RL06Ye203nugu8JUiMdsm97zTnQ==
+"@picovoice/cheetah-web@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-3.0.0.tgz#c6d143ffaf459b4f262cbf141eae009333f6655b"
+  integrity sha512-7Cazk4hdqB2SnHEbaeAl6uZqjj7THh6jMPxHOLi8l5QSjVrZ7/FdeoN+ZhSiY51a3YHdwOO7HJYPGj7RdHoD4Q==
   dependencies:
     "@picovoice/web-utils" "=1.4.3"
 

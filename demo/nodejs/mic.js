@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 //
-// Copyright 2022-2023 Picovoice Inc.
+// Copyright 2022-2025 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -29,6 +29,9 @@ program
   )
   .option("-m, --model_file_path <string>", "absolute path to cheetah model")
   .option(
+    "-y, --device <string>",
+    "Device to run inference on (`best`, `cpu:{num_threads}`, `gpu:{gpu_index}`). Default: selects best device for inference device")
+  .option(
     "-i, --audio_device_index <number>",
     "index of audio device to use to record audio",
     Number,
@@ -41,7 +44,11 @@ program
     3
   )
   .option("-s, --show_audio_devices", "show the list of available devices")
-  .option("-d, --disable_automatic_punctuation", "disable automatic punctuation");
+  .option("-p, --disable_automatic_punctuation", "disable automatic punctuation")
+  .option(
+      "-z, --show_inference_devices",
+      "Print devices that are available to run Porcupine inference.",
+      false);;
 
 if (process.argv.length < 1) {
   program.help();
@@ -54,12 +61,19 @@ async function micDemo() {
   let accessKey = program["access_key"];
   let libraryFilePath = program["library_file_path"];
   let modelFilePath = program["model_file_path"];
+  let device = program["device"];
   let audioDeviceIndex = program["audio_device_index"];
   let endpointDurationSec = program["endpoint_duration_sec"];
   let showAudioDevices = program["show_audio_devices"];
   let disableAutomaticPunctuation = program["disable_automatic_punctuation"];
 
   let showAudioDevicesDefined = showAudioDevices !== undefined;
+
+  const showInferenceDevices = program["show_inference_devices"];
+  if (showInferenceDevices) {
+    console.log(Porcupine.listAvailableDevices().join('\n'));
+    process.exit();
+  }
 
   if (showAudioDevicesDefined) {
     const devices = PvRecorder.getAvailableDevices();
@@ -78,6 +92,7 @@ async function micDemo() {
     accessKey,
     {
       modelPath: modelFilePath,
+      device: device,
       libraryPath: libraryFilePath,
       endpointDurationSec: endpointDurationSec,
       enableAutomaticPunctuation: !disableAutomaticPunctuation

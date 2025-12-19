@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2023 Picovoice Inc.
+    Copyright 2022-2025 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -28,6 +28,7 @@ public class MicDemo {
     public static void runDemo(
             String accessKey,
             String modelPath,
+            String device,
             String libraryPath,
             float endpointDuration,
             boolean enableAutomaticPunctuation,
@@ -59,6 +60,7 @@ public class MicDemo {
                     .setAccessKey(accessKey)
                     .setLibraryPath(libraryPath)
                     .setModelPath(modelPath)
+                    .setDevice(device)
                     .setEndpointDuration(endpointDuration)
                     .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
                     .build();
@@ -210,11 +212,25 @@ public class MicDemo {
 
         String accessKey = cmd.getOptionValue("access_key");
         String modelPath = cmd.getOptionValue("model_path");
+        String device = cmd.getOptionValue("device");
         String libraryPath = cmd.getOptionValue("library_path");
         String endpointDurationStr = cmd.getOptionValue("endpoint_duration_sec");
         boolean enableAutomaticPunctuation = !cmd.hasOption("disable_automatic_punctuation");
         String audioDeviceIndexStr = cmd.getOptionValue("audio_device_index");
         String outputPath = cmd.getOptionValue("output_path");
+
+        if (cmd.hasOption("show_inference_devices")) {
+            try {
+                String[] devices = Cheetah.getAvailableDevices();
+                for (int i = 0; i < devices.length; i++) {
+                    System.out.println(devices[i]);
+                }
+                return;
+            } catch (CheetahException e) {
+                System.out.println(e.getMessage());
+                System.exit(1);
+            }
+        }
 
         if (accessKey == null || accessKey.length() == 0) {
             throw new IllegalArgumentException("AccessKey is required for Cheetah.");
@@ -226,6 +242,10 @@ public class MicDemo {
 
         if (modelPath == null) {
             modelPath = Cheetah.MODEL_PATH;
+        }
+
+        if (device == null) {
+            device = "best";
         }
 
         float endpointDuration = 1f;
@@ -260,6 +280,7 @@ public class MicDemo {
         runDemo(
                 accessKey,
                 modelPath,
+                device,
                 libraryPath,
                 endpointDuration,
                 enableAutomaticPunctuation,
@@ -280,6 +301,13 @@ public class MicDemo {
                 .longOpt("model_path")
                 .hasArg(true)
                 .desc("Absolute path to the file containing model parameters.")
+                .build());
+
+        options.addOption(Option.builder("y")
+                .longOpt("device")
+                .hasArg(true)
+                .desc("Device to run inference on (`best`, `cpu:{num_threads}` or `gpu:{gpu_index}`). " +
+                        "Default: automatically selects best device.")
                 .build());
 
         options.addOption(Option.builder("l")
@@ -314,6 +342,11 @@ public class MicDemo {
                 .build());
 
         options.addOption(new Option("sd", "show_audio_devices", false, "Print available recording devices."));
+
+        options.addOption(new Option("sy",
+                "show_inference_devices",
+                false,
+                "Print devices that are available to run Cheetah inference."));
 
         options.addOption(new Option("h", "help", false, ""));
 

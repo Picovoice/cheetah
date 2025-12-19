@@ -18,6 +18,7 @@
 		1E5B7B332800F75900F8BDDB /* PerformanceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5B7B322800F75900F8BDDB /* PerformanceTest.swift */; };
 		1E5B7B362800F77300F8BDDB /* test.wav in Resources */ = {isa = PBXBuildFile; fileRef = 1E5B7B352800F77300F8BDDB /* test.wav */; };
 		1E5B7B382800F7AA00F8BDDB /* cheetah_params.pv in Resources */ = {isa = PBXBuildFile; fileRef = 1E5B7B372800F7AA00F8BDDB /* cheetah_params.pv */; };
+		5A1C386D2EE8DA7900FEF522 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 5A1C386C2EE8DA7900FEF522 /* Cheetah */; };
 		D23A4B5C0E110877F4A85325 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		E10D9F832E5FE4B800CA78F8 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E10D9F822E5FE4B800CA78F8 /* Cheetah */; };
 		E10D9F852E5FE4CC00CA78F8 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E10D9F842E5FE4CC00CA78F8 /* Cheetah */; };
@@ -81,6 +82,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				076CC4842E15FB93004995F2 /* Cheetah in Frameworks */,
+				5A1C386D2EE8DA7900FEF522 /* Cheetah in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,7 +297,7 @@
 			);
 			mainGroup = 1E00654B27CFF7EB006FF6E9;
 			packageReferences = (
-				E1B3E5A22E61009B00915974 /* XCRemoteSwiftPackageReference "cheetah" */,
+				5A7E79992EF3537B00148C4F /* XCRemoteSwiftPackageReference "cheetah" */,
 			);
 			productRefGroup = 1E00655527CFF7EB006FF6E9 /* Products */;
 			projectDirPath = "";
@@ -450,7 +452,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -504,7 +506,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -719,12 +721,12 @@
 				version = 2.2.0;
 			};
 		};
-		E1B3E5A22E61009B00915974 /* XCRemoteSwiftPackageReference "cheetah" */ = {
+		5A7E79992EF3537B00148C4F /* XCRemoteSwiftPackageReference "cheetah" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Picovoice/cheetah";
 			requirement = {
 				kind = exactVersion;
-				version = 2.3.0;
+				version = 3.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -733,6 +735,10 @@
 		076CC4832E15FB93004995F2 /* Cheetah */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 076CC4822E15FB93004995F2 /* XCRemoteSwiftPackageReference "cheetah" */;
+			productName = Cheetah;
+		};
+		5A1C386C2EE8DA7900FEF522 /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
 			productName = Cheetah;
 		};
 		E10D9F822E5FE4B800CA78F8 /* Cheetah */ = {

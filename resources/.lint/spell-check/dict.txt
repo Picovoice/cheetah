@@ -17,6 +17,7 @@ cocoapods
 codesign
 Compat
 constraintlayout
+cuda
 cwrap
 cstring
 cwrap
@@ -27,6 +28,7 @@ downsample
 downsampled
 drwav
 dylib
+embedder
 emscripten
 emscripten
 endpointing

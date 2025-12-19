@@ -1,5 +1,5 @@
 #
-# Copyright 2018-2024 Picovoice Inc.
+# Copyright 2018-2025 Picovoice Inc.
 #
 # You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 # file accompanying this source.
@@ -121,6 +121,7 @@ class Cheetah(object):
             self,
             access_key: str,
             model_path: str,
+            device: str,
             library_path: str,
             endpoint_duration_sec: Optional[float] = 1.0,
             enable_automatic_punctuation: bool = False):
@@ -129,6 +130,12 @@ class Cheetah(object):
 
         :param access_key: AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
         :param model_path: Absolute path to the file containing model parameters.
+        :param device: String representation of the device (e.g., CPU or GPU) to use. If set to `best`, the most
+        suitable device is selected automatically. If set to `gpu`, the engine uses the first available GPU device.
+        To select a specific GPU device, set this argument to `gpu:${GPU_INDEX}`, where `${GPU_INDEX}` is the index
+        of the target GPU. If set to `cpu`, the engine will run on the CPU with the default number of threads.
+        To specify the number of threads, set this argument to `cpu:${NUM_THREADS}`, where `${NUM_THREADS}`
+        is the desired number of threads.
         :param library_path: Absolute path to Cheetah's dynamic library.
         :param endpoint_duration_sec Duration of endpoint in seconds. A speech endpoint is detected when there is a
         chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `None`
@@ -144,6 +151,9 @@ class Cheetah(object):
 
         if not os.path.exists(model_path):
             raise CheetahIOError("Could not find model file at `%s`." % model_path)
+
+        if not isinstance(device, str) or len(device) == 0:
+            raise CheetahInvalidArgumentError("`device` should be a non-empty string.")
 
         if endpoint_duration_sec is not None and not endpoint_duration_sec > 0.:
             raise CheetahInvalidArgumentError("`endpoint_duration_sec` must be either `None` or a positive number")
@@ -165,7 +175,7 @@ class Cheetah(object):
         self._free_error_stack_func.restype = None
 
         init_func = library.pv_cheetah_init
-        init_func.argtypes = [c_char_p, c_char_p, c_float, c_bool, POINTER(POINTER(self.CCheetah))]
+        init_func.argtypes = [c_char_p, c_char_p, c_char_p, c_float, c_bool, POINTER(POINTER(self.CCheetah))]
         init_func.restype = self.PicovoiceStatuses
 
         self._handle = POINTER(self.CCheetah)()
@@ -173,6 +183,7 @@ class Cheetah(object):
         status = init_func(
             access_key.encode(),
             model_path.encode(),
+            device.encode(),
             float(endpoint_duration_sec) if endpoint_duration_sec is not None else 0.,
             enable_automatic_punctuation,
             byref(self._handle))
@@ -289,7 +300,7 @@ class Cheetah(object):
         message_stack_depth = c_int()
         status = self._get_error_stack_func(byref(message_stack_ref), byref(message_stack_depth))
         if status is not self.PicovoiceStatuses.SUCCESS:
-            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](message='Unable to get Porcupine error state')
+            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](message='Unable to get Cheetah error state')
 
         message_stack = list()
         for i in range(message_stack_depth.value):
@@ -298,6 +309,35 @@ class Cheetah(object):
         self._free_error_stack_func(message_stack_ref)
 
         return message_stack
+
+
+def list_hardware_devices(library_path: str) -> Sequence[str]:
+    dll_dir_obj = None
+    if hasattr(os, "add_dll_directory"):
+        dll_dir_obj = os.add_dll_directory(os.path.dirname(library_path))
+
+    library = cdll.LoadLibrary(library_path)
+
+    if dll_dir_obj is not None:
+        dll_dir_obj.close()
+
+    list_hardware_devices_func = library.pv_cheetah_list_hardware_devices
+    list_hardware_devices_func.argtypes = [POINTER(POINTER(c_char_p)), POINTER(c_int32)]
+    list_hardware_devices_func.restype = Cheetah.PicovoiceStatuses
+    c_hardware_devices = POINTER(c_char_p)()
+    c_num_hardware_devices = c_int32()
+    status = list_hardware_devices_func(byref(c_hardware_devices), byref(c_num_hardware_devices))
+    if status is not Cheetah.PicovoiceStatuses.SUCCESS:
+        raise Cheetah._PICOVOICE_STATUS_TO_EXCEPTION[status](
+            message='`pv_cheetah_list_hardware_devices` failed.')
+    res = [c_hardware_devices[i].decode() for i in range(c_num_hardware_devices.value)]
+
+    free_hardware_devices_func = library.pv_cheetah_free_hardware_devices
+    free_hardware_devices_func.argtypes = [POINTER(c_char_p), c_int32]
+    free_hardware_devices_func.restype = None
+    free_hardware_devices_func(c_hardware_devices, c_num_hardware_devices.value)
+
+    return res
 
 
 __all__ = [
@@ -314,4 +354,5 @@ __all__ = [
     'CheetahMemoryError',
     'CheetahRuntimeError',
     'CheetahStopIterationError',
+    'list_hardware_devices',
 ]

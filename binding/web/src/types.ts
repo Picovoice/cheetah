@@ -34,6 +34,8 @@ export enum PvStatus {
 export type CheetahModel = PvModel;
 
 export type CheetahOptions = {
+  /** @defaultValue 'best' */
+  device?: string;
   /** @defaultValue 1.0 */
   endpointDurationSec?: number;
   /** @defaultValue false */
@@ -53,10 +55,10 @@ export type CheetahWorkerInitRequest = {
   accessKey: string;
   modelPath: string;
   options: CheetahOptions;
-  wasm: string;
-  wasmLib: string;
   wasmSimd: string;
   wasmSimdLib: string;
+  wasmPThread: string;
+  wasmPThreadLib: string;
   sdk: string;
 };
 

@@ -1,7 +1,7 @@
 PODS:
-  - Cheetah-iOS (2.3.0)
-  - cheetah_flutter (2.3.0):
-    - Cheetah-iOS (~> 2.3.0)
+  - Cheetah-iOS (3.0.0)
+  - cheetah_flutter (3.0.0):
+    - Cheetah-iOS (~> 3.0.0)
     - Flutter
   - Flutter (1.0.0)
   - flutter_voice_processor (1.1.2):
@@ -39,14 +39,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
 
 SPEC CHECKSUMS:
-  Cheetah-iOS: 9cec7a187cae82897a7cc8f61e52fe8b2a4bacde
-  cheetah_flutter: dce820b7b3717cbf98a9cc7f1b837cf0909d48f6
+  Cheetah-iOS: d3348266063f66046b05958551ac510954ed734a
+  cheetah_flutter: 66ebd7bdc2f599d197aefac0722dcfc9813bcb96
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  flutter_voice_processor: 9ebe2cae6612db22d20e7e7833937ea19fa3e59c
-  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
+  flutter_voice_processor: f60363f959515eaebc35bcaaf26017596c953fc6
+  integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
   ios-voice-processor: 6b5ca08962f39e434fe39dca0f483d923a3b1b97
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+  path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
 
-PODFILE CHECKSUM: f8c2dcdfb50bb67645580d28a6bf814fca30bdec
+PODFILE CHECKSUM: bd29822c3d5baf6b44b726f00ea3293a19339ef2
 
 COCOAPODS: 1.16.2

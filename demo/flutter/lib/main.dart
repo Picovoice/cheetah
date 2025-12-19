@@ -30,6 +30,7 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
   final String accessKey =
       '{YOUR_ACCESS_KEY_HERE}'; // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
+  final String device = 'cpu';
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -82,6 +83,7 @@ class MyAppState extends State<MyApp> {
       _cheetahManager = await CheetahManager.create(
         accessKey,
         modelPath,
+        device,
         transcriptCallback,
         errorCallback,
       );
