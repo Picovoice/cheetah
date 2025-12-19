@@ -11,6 +11,8 @@ import testData from './test_data.json';
 const ACCESS_KEY = Cypress.env('ACCESS_KEY');
 const DEVICE = Cypress.env('DEVICE');
 
+const CYPRESS_BASE_URI = "/__cypress/src";
+
 const levenshteinDistance = (words1: string[], words2: string[]) => {
   const res = Array.from(
     Array(words1.length + 1),
@@ -61,7 +63,7 @@ const runProcTest = async (
 ) => {
   const {
     accessKey = ACCESS_KEY,
-    model = { publicPath: '/test/cheetah_params.pv', forceWrite: true },
+    model = { publicPath: `${CYPRESS_BASE_URI}/test/cheetah_params.pv`, forceWrite: true },
     enablePunctuation = false,
     useCER = false,
   } = params;
@@ -124,7 +126,7 @@ describe('Cheetah binding', () => {
 
     cy.wrapHook(() =>
       result.current.init(ACCESS_KEY, {
-        publicPath: '/test/cheetah_params.pv',
+        publicPath: `${CYPRESS_BASE_URI}/test/cheetah_params.pv`,
         forceWrite: true,
       },
         { device: DEVICE })
@@ -165,14 +167,14 @@ describe('Cheetah binding', () => {
 
     cy.wrapHook(() =>
       result.current.init(ACCESS_KEY, {
-        publicPath: '/cheetah_params_failed.pv',
+        publicPath: `${CYPRESS_BASE_URI}/cheetah_params_failed.pv`,
         forceWrite: true,
       },
         { device: DEVICE })
     ).then(() => {
       expect(result.current.isLoaded).to.be.false;
       expect(result.current.error?.toString()).to.contain(
-        "Error response returned while fetching model from '/cheetah_params_failed.pv'"
+        `Error response returned while fetching model from '${CYPRESS_BASE_URI}/cheetah_params_failed.pv'`
       );
     });
   });
@@ -182,7 +184,7 @@ describe('Cheetah binding', () => {
 
     cy.wrapHook(() =>
       result.current.init('', {
-        publicPath: '/test/cheetah_params.pv',
+        publicPath: `${CYPRESS_BASE_URI}/test/cheetah_params.pv`,
         forceWrite: true,
       },
         { device: DEVICE })
@@ -203,7 +205,7 @@ describe('Cheetah binding', () => {
             testParam.error_rate,
             {
               model: {
-                publicPath: `/test/${modelFile}`,
+                publicPath: `${CYPRESS_BASE_URI}/test/${modelFile}`,
                 forceWrite: true,
               },
             }
@@ -220,7 +222,7 @@ describe('Cheetah binding', () => {
             testParam.error_rate,
             {
               model: {
-                publicPath: `/test/${modelFile}`,
+                publicPath: `${CYPRESS_BASE_URI}/test/${modelFile}`,
                 forceWrite: true,
               },
               enablePunctuation: true,
