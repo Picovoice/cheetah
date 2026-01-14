@@ -97,5 +97,5 @@ jobs:
 
     - name: Test get devices
       run: >
-        python cheetah_demo_file.py
+        python3 cheetah_demo_file.py
         --show_inference_devices
