@@ -20,9 +20,6 @@ from _cheetah import (
     CheetahError,
     list_hardware_devices
 )
-from _factory import (
-    available_devices
-)
 from _util import *
 from test_util import *
 
@@ -192,11 +189,6 @@ class CheetahTestCase(unittest.TestCase):
 
     def test_available_devices(self) -> None:
         res = list_hardware_devices(library_path=default_library_path("../.."))
-        self.assertGreater(len(res), 0)
-        for x in res:
-            self.assertIsInstance(x, str)
-            self.assertGreater(len(x), 0)
-        res = available_devices()
         self.assertGreater(len(res), 0)
         for x in res:
             self.assertIsInstance(x, str)
