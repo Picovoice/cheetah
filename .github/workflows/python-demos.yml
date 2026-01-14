@@ -50,6 +50,11 @@ jobs:
         --device ${{ matrix.device }}
         --wav_paths ../../resources/audio_samples/test.wav
 
+    - name: Test get devices
+      run: >
+        python cheetah_demo_file.py
+        --show_inference_devices
+
   build-self-hosted:
     runs-on: ${{ matrix.machine }}
 
@@ -77,3 +82,8 @@ jobs:
         --access_key ${{secrets.PV_VALID_ACCESS_KEY}}
         --device ${{ matrix.device }}
         --wav_paths ../../resources/audio_samples/test.wav
+
+    - name: Test get devices
+      run: >
+        python cheetah_demo_file.py
+        --show_inference_devices
