@@ -78,7 +78,7 @@ def available_devices(library_path: Optional[str] = None) -> Sequence[str]:
     """
 
     if library_path is None:
-        library_path = default_library_path()
+        library_path = default_library_path('')
 
     return list_hardware_devices(library_path=library_path)
 
