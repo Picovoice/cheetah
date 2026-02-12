@@ -82,7 +82,7 @@ jobs:
 # ************** REMOVE AFTER RELEASE ********************
     - name: Build binding
       run: |
-        pip install setuptools && pip install wheel && cd ../../binding/python && python setup.py sdist bdist_wheel && pip install dist/pvcheetah-3.0.2-py3-none-any.whl
+        pip3 install setuptools && pip3 install wheel && cd ../../binding/python && python3 setup.py sdist bdist_wheel && pip3 install dist/pvcheetah-3.0.2-py3-none-any.whl
 # ********************************************************
 
     - name: Install dependencies
