@@ -87,7 +87,7 @@ jobs:
 
 # REMOVE AFTER RELEASE
     - name: Build binding
-      run: gradle assemble
+      run: ./gradlew assemble
       working-directory: binding/java
 # REMOVE AFTER RELEASE
 
