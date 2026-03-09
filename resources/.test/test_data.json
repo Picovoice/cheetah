@@ -7,9 +7,21 @@
                     "cheetah_params.pv",
                     "cheetah_params_fast.pv"
                 ],
-                "audio_file": "test.wav",
+                "audio_file": "test_en.wav",
                 "transcript": "Today only platforms one and three are used.",
                 "punctuations": ["."],
+                "normalization": false,
+                "error_rate": 0.025
+            },
+            {
+                "language": "en",
+                "models": [
+                    "cheetah_params.pv"
+                ],
+                "audio_file": "test_en_norm.wav",
+                "transcript": "The expression goes 6 × 10 = 60, not 600000. That gives us a 12% chance.",
+                "punctuations": [".", ","],
+                "normalization": true,
                 "error_rate": 0.025
             },
             {
@@ -21,6 +33,18 @@
                 "audio_file": "test_es.wav",
                 "transcript": "Un homenaje a Cabré era más que necesario.",
                 "punctuations": ["."],
+                "normalization": false,
+                "error_rate": 0.025
+            },
+            {
+                "language": "es",
+                "models": [
+                    "cheetah_params_es.pv"
+                ],
+                "audio_file": "test_es_norm.wav",
+                "transcript": "Mi número favorito de 268.",
+                "punctuations": ["."],
+                "normalization": true,
                 "error_rate": 0.025
             },
             {
@@ -32,6 +56,18 @@
                 "audio_file": "test_de.wav",
                 "transcript": "Die Werbung vermittelt einen falschen Eindruck.",
                 "punctuations": ["."],
+                "normalization": false,
+                "error_rate": 0.025
+            },
+            {
+                "language": "de",
+                "models": [
+                    "cheetah_params_de.pv"
+                ],
+                "audio_file": "test_de_norm.wav",
+                "transcript": "Meine Lieblingszahl ist 268.",
+                "punctuations": ["."],
+                "normalization": true,
                 "error_rate": 0.025
             },
             {
@@ -43,6 +79,18 @@
                 "audio_file": "test_fr.wav",
                 "transcript": "Les deux autres sont situés au bord de la mer jaune.",
                 "punctuations": ["."],
+                "normalization": false,
+                "error_rate": 0.025
+            },
+            {
+                "language": "fr",
+                "models": [
+                    "cheetah_params_fr.pv"
+                ],
+                "audio_file": "test_fr_norm.wav",
+                "transcript": "Mon chiffre préféré 3061.",
+                "punctuations": ["."],
+                "normalization": true,
                 "error_rate": 0.025
             },
             {
@@ -54,6 +102,18 @@
                 "audio_file": "test_it.wav",
                 "transcript": "Dal passo si sale sulla vetta lungo la cresta sud.",
                 "punctuations": ["."],
+                "normalization": false,
+                "error_rate": 0.025
+            },
+            {
+                "language": "it",
+                "models": [
+                    "cheetah_params_it.pv"
+                ],
+                "audio_file": "test_it_norm.wav",
+                "transcript": "Il mio numero preferito è 26.",
+                "punctuations": ["."],
+                "normalization": true,
                 "error_rate": 0.025
             },
             {
@@ -65,6 +125,18 @@
                 "audio_file": "test_pt.wav",
                 "transcript": "Um grupo de crianças está andando em um rio perto da margem do rio.",
                 "punctuations": ["."],
+                "normalization": false,
+                "error_rate": 0.025
+            },
+            {
+                "language": "pt",
+                "models": [
+                    "cheetah_params_pt.pv"
+                ],
+                "audio_file": "test_pt_norm.wav",
+                "transcript": "Que tal 607",
+                "punctuations": ["."],
+                "normalization": true,
                 "error_rate": 0.025
             }
         ]

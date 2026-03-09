@@ -6,3 +6,5 @@ cheetah_demo_realtime
 .build
 Package.resolved
 .swiftpm
+venv
+.venv
