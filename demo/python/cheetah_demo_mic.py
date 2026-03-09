@@ -1,5 +1,5 @@
 #
-#    Copyright 2018-2025 Picovoice Inc.
+#    Copyright 2018-2026 Picovoice Inc.
 #
 #    You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 #    file accompanying this source.
@@ -40,6 +40,10 @@ def main():
         '--disable_automatic_punctuation',
         action='store_true',
         help='Disable insertion of automatic punctuation')
+    parser.add_argument(
+        '--enable_text_normalization',
+        action='store_true',
+        help='Enable text normalization')
     parser.add_argument('--audio_device_index', type=int, default=-1, help='Index of input audio device')
     parser.add_argument('--show_audio_devices', action='store_true', help='Only list available devices and exit')
     parser.add_argument(
@@ -68,7 +72,8 @@ def main():
         model_path=args.model_path,
         device=args.device,
         endpoint_duration_sec=args.endpoint_duration_sec,
-        enable_automatic_punctuation=not args.disable_automatic_punctuation)
+        enable_automatic_punctuation=not args.disable_automatic_punctuation,
+        enable_text_normalization=args.enable_text_normalization)
 
     try:
         print('Cheetah version : %s' % cheetah.version)

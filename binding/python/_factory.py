@@ -1,5 +1,5 @@
 #
-# Copyright 2022-2025 Picovoice Inc.
+# Copyright 2022-2026 Picovoice Inc.
 #
 # You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 # file accompanying this source.
@@ -30,7 +30,8 @@ def create(
         device: Optional[str] = None,
         library_path: Optional[str] = None,
         endpoint_duration_sec: Optional[float] = None,
-        enable_automatic_punctuation: bool = False) -> Cheetah:
+        enable_automatic_punctuation: bool = False,
+        enable_text_normalization: bool = False) -> Cheetah:
     """
     Factory method for Cheetah speech-to-text engine.
 
@@ -48,6 +49,7 @@ def create(
     audio (with a duration specified herein) after an utterance without any speech in it. Set to `None` to disable
     endpoint detection.
     :param enable_automatic_punctuation Set to `True` to enable automatic punctuation insertion.
+    :param enable_text_normalization Set to `true` to enable text normalization.
     :return: An instance of Cheetah speech-to-text engine.
     """
 
@@ -66,7 +68,8 @@ def create(
         device=device,
         library_path=library_path,
         endpoint_duration_sec=endpoint_duration_sec,
-        enable_automatic_punctuation=enable_automatic_punctuation)
+        enable_automatic_punctuation=enable_automatic_punctuation,
+        enable_text_normalization=enable_text_normalization)
 
 
 def available_devices(library_path: Optional[str] = None) -> Sequence[str]:
