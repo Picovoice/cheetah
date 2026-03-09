@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2025 Picovoice Inc.
+    Copyright 2022-2026 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -55,6 +55,7 @@ public class Cheetah {
      *                                   any speech in it. Set duration to 0 to disable this. 
      *                                   Default is 1 second in the Builder.
      * @param enableAutomaticPunctuation Set to `true` to enable automatic punctuation insertion.
+     * @param enableTextNormalization    Set to `true` to enable text normalization.
      * @throws CheetahException if there is an error while initializing Cheetah.
      */
     private Cheetah(
@@ -63,7 +64,8 @@ public class Cheetah {
             String device,
             String libraryPath,
             float endpointDurationSec,
-            boolean enableAutomaticPunctuation) throws CheetahException {
+            boolean enableAutomaticPunctuation,
+            boolean enableTextNormalization) throws CheetahException {
         try {
             ArrayList<String> libraryDependencies = Utils.getLibraryDependencyPaths(libraryPath);
             for (String dependency : libraryDependencies) {
@@ -80,7 +82,8 @@ public class Cheetah {
                 modelPath,
                 device,
                 endpointDurationSec,
-                enableAutomaticPunctuation);
+                enableAutomaticPunctuation,
+                enableTextNormalization);
     }
 
     /**
@@ -202,6 +205,7 @@ public class Cheetah {
         private String modelPath = null;
         private float endpointDuration = 1f;
         private boolean enableAutomaticPunctuation = false;
+        private boolean enableTextNormalization = false;
 
         public Builder setAccessKey(String accessKey) {
             this.accessKey = accessKey;
@@ -252,6 +256,16 @@ public class Cheetah {
          */
         public Builder setEnableAutomaticPunctuation(boolean enableAutomaticPunctuation) {
             this.enableAutomaticPunctuation = enableAutomaticPunctuation;
+            return this;
+        }
+
+        /**
+         * Setter for enabling text normalization.
+         *
+         * @param enableTextNormalization Set to `true` to enable text normalization.
+         */
+        public Builder setEnableTextNormalization(boolean enableTextNormalization) {
+            this.enableTextNormalization = enableTextNormalization;
             return this;
         }
 
@@ -311,7 +325,8 @@ public class Cheetah {
                     device,
                     libraryPath,
                     endpointDuration,
-                    enableAutomaticPunctuation);
+                    enableAutomaticPunctuation,
+                    enableTextNormalization);
         }
     }
 }

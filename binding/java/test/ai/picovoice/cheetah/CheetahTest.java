@@ -91,6 +91,7 @@ public class CheetahTest {
             final String language = testData.get("language").getAsString();
             final String testAudioFile = testData.get("audio_file").getAsString();
             final String transcript = testData.get("transcript").getAsString();
+            final boolean normalization = testData.get("normalization").getAsBoolean();
             final float errorRate = testData.get("error_rate").getAsFloat();
 
             final JsonArray punctuationsJson = testData.getAsJsonArray("punctuations");
@@ -111,6 +112,7 @@ public class CheetahTest {
                     testAudioFile,
                     transcript,
                     punctuations,
+                    normalization,
                     errorRate);
         }
         return processTestData;
@@ -128,6 +130,7 @@ public class CheetahTest {
                         processTestDataItem.transcript,
                         processTestDataItem.punctuations,
                         false,
+                        processTestDataItem.normalization,
                         processTestDataItem.errorRate));
                 testArgs.add(Arguments.of(
                         processTestDataItem.language,
@@ -136,6 +139,7 @@ public class CheetahTest {
                         processTestDataItem.transcript,
                         processTestDataItem.punctuations,
                         true,
+                        processTestDataItem.normalization,
                         processTestDataItem.errorRate));
             }
         }
@@ -206,7 +210,7 @@ public class CheetahTest {
         }
     }
 
-    @ParameterizedTest(name = "test process data for ''{1}'' with punctuation ''{5}''")
+    @ParameterizedTest(name = "test process data for ''{1}'' with punctuation ''{5}'' and normalization ''{6}''")
     @MethodSource("processTestProvider")
     void process(
             String language,
@@ -215,6 +219,7 @@ public class CheetahTest {
             String referenceTranscript,
             String[] punctuations,
             boolean enableAutomaticPunctuation,
+            boolean enableTextNormalization,
             float targetErrorRate) throws Exception {
         String modelPath = Paths.get(System.getProperty("user.dir"))
                 .resolve(String.format("../../lib/common/%s", modelFile))
@@ -225,6 +230,7 @@ public class CheetahTest {
                 .setModelPath(modelPath)
                 .setDevice(device)
                 .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
+                .setEnableTextNormalization(enableTextNormalization)
                 .build();
 
         int frameLen = cheetah.getFrameLength();
@@ -270,6 +276,7 @@ public class CheetahTest {
         public final String audioFile;
         public final String transcript;
         public final String[] punctuations;
+        public final boolean normalization;
         public final float errorRate;
 
         public ProcessTestData(
@@ -278,12 +285,14 @@ public class CheetahTest {
                 String audioFile,
                 String transcript,
                 String[] punctuations,
+                boolean normalization,
                 float errorRate) {
             this.language = language;
             this.models = models;
             this.audioFile = audioFile;
             this.transcript = transcript;
             this.punctuations = punctuations;
+            this.normalization = normalization;
             this.errorRate = errorRate;
         }
     }
