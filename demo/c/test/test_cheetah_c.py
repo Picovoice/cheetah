@@ -1,5 +1,5 @@
 #
-# Copyright 2023-2025 Picovoice Inc.
+# Copyright 2023-2026 Picovoice Inc.
 #
 # You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 # file accompanying this source.
@@ -15,8 +15,11 @@ import sys
 import unittest
 
 from jiwer import wer
+from parameterized import parameterized
 
 from test_util import *
+
+language_tests = load_languages_test_data()
 
 
 class CheetahCTestCase(unittest.TestCase):
@@ -28,9 +31,6 @@ class CheetahCTestCase(unittest.TestCase):
         cls._platform = sys.argv[3]
         cls._arch = "" if len(sys.argv) != 5 else sys.argv[4]
         cls._root_dir = os.path.join(os.path.dirname(__file__), "../../..")
-
-        cls._ground_truth = "Today only platforms one and three are used."
-        cls._error_rate = 0.025
 
     def _get_library_file(self):
         if self._platform == "windows":
@@ -45,26 +45,38 @@ class CheetahCTestCase(unittest.TestCase):
             "libpv_cheetah." + get_lib_ext(self._platform)
         )
 
-    def _get_model_path_by_language(self, language):
-        model_path_subdir = append_language('lib/common/cheetah_params', language)
-        return os.path.join(self._root_dir, '%s.pv' % model_path_subdir)
+    def _get_model_path_by_model_name(self, model_name):
+        return os.path.join(self._root_dir, "lib/common/", model_name)
 
-    def test_leopard(self):
+    @parameterized.expand(language_tests)
+    def test_cheetah(
+            self,
+            language,
+            model_name,
+            audio_file_name,
+            ground_truth,
+            punctuations,
+            normalization,
+            error_rate):
         args = [
             os.path.join(os.path.dirname(__file__), "../build/cheetah_demo_file"),
             "-a", self._access_key,
             "-l", self._get_library_file(),
             "-y", self._device,
-            "-m", self._get_model_path_by_language("en"),
-            os.path.join(self._root_dir, 'resources/', "audio_samples/test.wav"),
+            "-m", self._get_model_path_by_model_name(model_name),
         ]
+        if normalization:
+            args.append("-n")
+        args.append(os.path.join(self._root_dir, 'resources/', "audio_samples/", audio_file_name))
+
         process = subprocess.Popen(args, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
         stdout, stderr = process.communicate()
         self.assertEqual(process.poll(), 0)
         self.assertEqual(stderr.decode('utf-8'), '')
+
         transcript = stdout.decode('utf-8').strip().split('\n')[-2]
-        error = wer(self._ground_truth, transcript)
-        self.assertLessEqual(error, self._error_rate)
+        error = wer(ground_truth, transcript)
+        self.assertLessEqual(error, error_rate)
 
 
 if __name__ == '__main__':
