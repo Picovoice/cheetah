@@ -1,5 +1,5 @@
 #
-# Copyright 2018-2025 Picovoice Inc.
+# Copyright 2018-2026 Picovoice Inc.
 #
 # You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 # file accompanying this source.
@@ -124,7 +124,8 @@ class Cheetah(object):
             device: str,
             library_path: str,
             endpoint_duration_sec: Optional[float] = 1.0,
-            enable_automatic_punctuation: bool = False):
+            enable_automatic_punctuation: bool = False,
+            enable_text_normalization: bool = False):
         """
         Constructor
 
@@ -141,6 +142,7 @@ class Cheetah(object):
         chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `None`
         to disable endpoint detection.
         :param enable_automatic_punctuation Set to `True` to enable automatic punctuation insertion.
+        :param enable_text_normalization Set to `true` to enable text normalization.
         """
 
         if not isinstance(access_key, str) or len(access_key) == 0:
@@ -175,7 +177,7 @@ class Cheetah(object):
         self._free_error_stack_func.restype = None
 
         init_func = library.pv_cheetah_init
-        init_func.argtypes = [c_char_p, c_char_p, c_char_p, c_float, c_bool, POINTER(POINTER(self.CCheetah))]
+        init_func.argtypes = [c_char_p, c_char_p, c_char_p, c_float, c_bool, c_bool, POINTER(POINTER(self.CCheetah))]
         init_func.restype = self.PicovoiceStatuses
 
         self._handle = POINTER(self.CCheetah)()
@@ -186,6 +188,7 @@ class Cheetah(object):
             device.encode(),
             float(endpoint_duration_sec) if endpoint_duration_sec is not None else 0.,
             enable_automatic_punctuation,
+            enable_text_normalization,
             byref(self._handle))
         if status is not self.PicovoiceStatuses.SUCCESS:
             raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](
