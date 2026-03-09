@@ -1,5 +1,5 @@
 /*
-    Copyright 2018-2025 Picovoice Inc.
+    Copyright 2018-2026 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -97,7 +97,7 @@ void print_error_message(char **message_stack, int32_t message_stack_depth) {
 
 void print_usage(const char *program_name) {
     fprintf(stderr,
-            "Usage : %s -a ACCESS_KEY -l LIBRARY_PATH -m MODEL_PATH [-y DEVICE] [-p] [-d DEVICE_INDEX] [-e ENDPOINT_DURATION] wav_path0 wav_path1 ...\n"
+            "Usage : %s -a ACCESS_KEY -l LIBRARY_PATH -m MODEL_PATH [-y DEVICE] [-p] [-n] [-d DEVICE_INDEX] [-e ENDPOINT_DURATION] \n"
             "        %s [-i SHOW_INFERENCE_DEVICES]\n"
             "        %s [-s SHOW_AUDIO_DEVICES]\n",
             program_name,
@@ -208,11 +208,12 @@ int picovoice_main(int argc, char *argv[]) {
     const char *device = "best";
     float endpoint_duration_sec = 0.f;
     bool enable_automatic_punctuation = true;
+    bool enable_text_normalization = false;
     int32_t device_index = -1;
     bool show_inference_devices = false;
 
     int opt;
-    while ((opt = getopt(argc, argv, "a:m:l:e:y:pd:s:i")) != -1) {
+    while ((opt = getopt(argc, argv, "a:m:l:e:y:pnd:s:i")) != -1) {
         switch (opt) {
             case 'a':
                 access_key = optarg;
@@ -237,6 +238,9 @@ int picovoice_main(int argc, char *argv[]) {
                 break;
             case 'p':
                 enable_automatic_punctuation = false;
+                break;
+            case 'n':
+                enable_text_normalization = true;
                 break;
             case 'd':
                 device_index = (int32_t) strtol(optarg, NULL, 10);
@@ -293,7 +297,9 @@ int picovoice_main(int argc, char *argv[]) {
         const char *,
         const char *,
         const char *,
-        float, bool,
+        float,
+        bool,
+        bool,
         pv_cheetah_t **) =
             load_symbol(dl_handle, "pv_cheetah_init");
     if (!pv_cheetah_init_func) {
@@ -362,6 +368,7 @@ int picovoice_main(int argc, char *argv[]) {
         device,
         endpoint_duration_sec,
         enable_automatic_punctuation,
+        enable_text_normalization,
         &cheetah);
     if (status != PV_STATUS_SUCCESS) {
         fprintf(

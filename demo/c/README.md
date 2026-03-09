@@ -58,7 +58,7 @@ The {PV_RECORDER_PLATFORM} variable will set the compilation flags for the given
 Running the demo without arguments prints the usage:
 
 ```console
-usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-e ENDPOINT_DURATION] [-y DEVICE] [-p] [-d DEVICE_INDEX]
+usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-e ENDPOINT_DURATION] [-y DEVICE] [-p] [-n] [-d DEVICE_INDEX]
 -s (show audio device indices)
 ```
 
@@ -73,6 +73,8 @@ obtained from [Picovoice Console](https://console.picovoice.ai/). Either remove 
 `${MIC_INDEX}` with the microphone index you wish to use.
 
 Use the `-p` flag to disable automatic punctuation.
+
+Use the `-n` flag to enable text normalization.
 
 ##### Linux (x86_64)
 
@@ -167,7 +169,7 @@ demo\\c\\build\\cheetah_demo.exe ^
 #### File Demo
 
 ```console
-usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-y DEVICE] [-p] wav_path0 wav_path1 ...
+usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-y DEVICE] [-p] [-n] wav_path0 wav_path1 ...
 ```
 
 Run the command corresponding to your platform from the root of the repository. Replace `${ACCESS_KEY}` with yours
@@ -175,6 +177,8 @@ obtained from [Picovoice Console](https://console.picovoice.ai/) and `${WAV_PATH
 (single-channel, 16 kHz, and 16-bit PCM) WAV file you want to transcribe.
 
 Use the `-p` flag to disable automatic punctuation.
+
+Use the `-n` flag to enable text normalization.
 
 ##### Linux (x86_64)
 

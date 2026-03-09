@@ -1,5 +1,5 @@
 /*
-    Copyright 2018-2025 Picovoice Inc.
+    Copyright 2018-2026 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -94,7 +94,7 @@ void print_error_message(char **message_stack, int32_t message_stack_depth) {
 
 void print_usage(const char *program_name) {
     fprintf(stderr,
-            "Usage : %s -a ACCESS_KEY -l LIBRARY_PATH -m MODEL_PATH [-y DEVICE] [-p] wav_path0 wav_path1 ...\n"
+            "Usage : %s -a ACCESS_KEY -l LIBRARY_PATH -m MODEL_PATH [-y DEVICE] [-p] [-n] wav_path0 wav_path1 ...\n"
             "        %s [-i, --show_inference_devices]\n",
             program_name,
             program_name);
@@ -183,10 +183,11 @@ int picovoice_main(int argc, char **argv) {
     const char *library_path = NULL;
     const char *device = "best";
     bool enable_automatic_punctuation = true;
+    bool enable_text_normalization = false;
     bool show_inference_devices = false;
 
     int opt;
-    while ((opt = getopt(argc, argv, "a:m:l:e:y:p:i")) != -1) {
+    while ((opt = getopt(argc, argv, "a:m:l:e:y:pni")) != -1) {
         switch (opt) {
             case 'a':
                 access_key = optarg;
@@ -202,6 +203,9 @@ int picovoice_main(int argc, char **argv) {
                 break;
             case 'p':
                 enable_automatic_punctuation = false;
+                break;
+            case 'n':
+                enable_text_normalization = true;
                 break;
             case 'i':
                 show_inference_devices = true;
@@ -242,7 +246,9 @@ int picovoice_main(int argc, char **argv) {
         const char *,
         const char *,
         const char *,
-        float, bool,
+        float,
+        bool,
+        bool,
         pv_cheetah_t **) =
             load_symbol(dl_handle, "pv_cheetah_init");
     if (!pv_cheetah_init_func) {
@@ -314,7 +320,14 @@ int picovoice_main(int argc, char **argv) {
     pv_status_t error_status = PV_STATUS_RUNTIME_ERROR;
 
     pv_cheetah_t *cheetah = NULL;
-    pv_status_t status = pv_cheetah_init_func(access_key, model_path, device, 0.f, enable_automatic_punctuation, &cheetah);
+    pv_status_t status = pv_cheetah_init_func(
+        access_key,
+        model_path,
+        device,
+        0.f,
+        enable_automatic_punctuation,
+        enable_text_normalization,
+        &cheetah);
     if (status != PV_STATUS_SUCCESS) {
         fprintf(
             stderr,
