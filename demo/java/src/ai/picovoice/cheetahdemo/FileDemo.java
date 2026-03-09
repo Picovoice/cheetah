@@ -33,6 +33,7 @@ public class FileDemo {
             String device,
             String libraryPath,
             boolean enableAutomaticPunctuation,
+            boolean enableTextNormalization,
             File inputAudioFile) {
 
         AudioInputStream audioInputStream;
@@ -54,6 +55,7 @@ public class FileDemo {
                     .setModelPath(modelPath)
                     .setDevice(device)
                     .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
+                    .setEnableTextNormalization(enableTextNormalization)
                     .build();
 
             AudioFormat audioFormat = audioInputStream.getFormat();
@@ -126,6 +128,7 @@ public class FileDemo {
         String modelPath = cmd.getOptionValue("model_path");
         String device = cmd.getOptionValue("device");
         boolean enableAutomaticPunctuation = !cmd.hasOption("disable_automatic_punctuation");
+        boolean enableTextNormalization = cmd.hasOption("enable_text_normalization");
         String inputAudioPath = cmd.getOptionValue("input_audio_path");
 
         if (cmd.hasOption("show_inference_devices")) {
@@ -171,6 +174,7 @@ public class FileDemo {
                 device,
                 libraryPath,
                 enableAutomaticPunctuation,
+                enableTextNormalization,
                 inputAudioFile);
     }
 
@@ -210,6 +214,11 @@ public class FileDemo {
 
         options.addOption(Option.builder("d")
                 .longOpt("disable_automatic_punctuation")
+                .desc("")
+                .build());
+
+        options.addOption(Option.builder("n")
+                .longOpt("enable_text_normalization")
                 .desc("")
                 .build());
 
