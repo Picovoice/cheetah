@@ -1,5 +1,5 @@
 /*
-  Copyright 2022-2025 Picovoice Inc.
+  Copyright 2022-2026 Picovoice Inc.
 
   You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
   file accompanying this source.
@@ -39,6 +39,7 @@ type pv_cheetah_init_type = (
   device: number,
   endpointDurationSec: number,
   enableAutomaticPunctuation: number,
+  enableTextNormalization: number,
   object: number) => number;
 type pv_cheetah_process_type = (object: number, pcm: number, transcript: number, isEndpoint: number) => number;
 type pv_cheetah_flush_type = (object: number, transcript: number) => number;
@@ -514,7 +515,11 @@ export class Cheetah {
     createModuleFunc: any,
     options: CheetahOptions,
   ): Promise<CheetahWasmOutput> {
-    const { endpointDurationSec = 1.0, enableAutomaticPunctuation = false } = options;
+    const {
+      endpointDurationSec = 1.0,
+      enableAutomaticPunctuation = false,
+      enableTextNormalization = false,
+    } = options;
 
     if (typeof endpointDurationSec !== 'number' || endpointDurationSec < 0) {
       throw new CheetahErrors.CheetahInvalidArgumentError('Cheetah endpointDurationSec must be a non-negative number');
@@ -532,7 +537,7 @@ export class Cheetah {
     const pv_cheetah_init: pv_cheetah_init_type = this.wrapAsyncFunction(
       module,
       "pv_cheetah_init",
-      6);
+      7);
     const pv_cheetah_delete: pv_cheetah_delete_type = this.wrapAsyncFunction(
       module,
       "pv_cheetah_delete",
@@ -617,6 +622,7 @@ export class Cheetah {
       deviceAddress,
       endpointDurationSec,
       (enableAutomaticPunctuation) ? 1 : 0,
+      (enableTextNormalization) ? 1 : 0,
       objectAddressAddress);
     module._pv_free(accessKeyAddress);
     module._pv_free(modelPathAddress);
