@@ -1,5 +1,5 @@
 /*
-  Copyright 2022 Picovoice Inc.
+  Copyright 2022-2026 Picovoice Inc.
   You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
   file accompanying this source.
   Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
@@ -28,5 +28,9 @@ export type CheetahOptions = {
    * endpoint detection.*/
   endpointDuration?: number;
   /** Set to `true` to enable automatic punctuation insertion. */
+  enableAutomaticPunctuation?: boolean;
+  /** Set to `true` to enable text normalization. Enabling this feature
+   * improves the readability and formatting of Cheetah's transcriptions (e.g. converts number words to digits)
+   * at the cost of some additional latency. */
   enableAutomaticPunctuation?: boolean;
 };
