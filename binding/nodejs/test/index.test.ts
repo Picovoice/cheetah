@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2025 Picovoice Inc.
+// Copyright 2022-2026 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -104,6 +104,7 @@ const testCheetahProcess = (
   referenceTranscript: string,
   punctuations: string[],
   enableAutomaticPunctuation: boolean,
+  enableTextNormalization: boolean,
   errorRate: number,
 ) => {
   const modelPath = getModelPath(modelFile);
@@ -111,6 +112,7 @@ const testCheetahProcess = (
   let cheetahEngine = new Cheetah(ACCESS_KEY, {
     modelPath,
     enableAutomaticPunctuation,
+    enableTextNormalization,
     device: DEVICE,
   });
 
@@ -136,6 +138,7 @@ describe('successful processes', () => {
     audioFile,
     transcript,
     punctuations,
+    normalization,
     errorRate
   ] of LANGUAGE_TEST_PARAMETERS) {
     for (const modelFile of models) {
@@ -146,6 +149,7 @@ describe('successful processes', () => {
           transcript,
           punctuations,
           false,
+          normalization,
           errorRate,
         );
       });
@@ -157,6 +161,7 @@ describe('successful processes', () => {
           transcript,
           punctuations,
           true,
+          normalization,
           errorRate,
         );
       });
@@ -190,7 +195,7 @@ describe('manual paths', () => {
 
     let [transcript] = cheetahProcessWaveFile(
       cheetahEngine,
-      "test.wav"
+      "test_en.wav"
     );
 
     expect(transcript.length).toBeGreaterThan(0);
@@ -209,7 +214,7 @@ describe('manual paths', () => {
 
     let [transcript] = cheetahProcessWaveFile(
       cheetahEngine,
-      "test.wav"
+      "test_en.wav"
     );
 
     expect(transcript.length).toBeGreaterThan(0);

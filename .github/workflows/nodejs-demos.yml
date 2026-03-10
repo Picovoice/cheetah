@@ -50,7 +50,7 @@ jobs:
       run: yarn install
 
     - name: Test
-      run: yarn file -a ${{secrets.PV_VALID_ACCESS_KEY}} -y ${{ matrix.device }} -i ../../resources/audio_samples/test.wav
+      run: yarn file -a ${{secrets.PV_VALID_ACCESS_KEY}} -y ${{ matrix.device }} -i ../../resources/audio_samples/test_en.wav
 
   build-self-hosted:
     runs-on: ${{ matrix.machine }}
@@ -83,4 +83,4 @@ jobs:
       run: yarn install
 
     - name: Test
-      run: yarn file -a ${{secrets.PV_VALID_ACCESS_KEY}} -y ${{ matrix.device }} -i ../../resources/audio_samples/test.wav
+      run: yarn file -a ${{secrets.PV_VALID_ACCESS_KEY}} -y ${{ matrix.device }} -i ../../resources/audio_samples/test_en.wav
