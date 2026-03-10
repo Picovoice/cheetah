@@ -52,6 +52,7 @@ const wordErrorRate = (
 const runProcTest = async (
   audioFile: string,
   punctuations: string[],
+  normalization: boolean,
   expectedTranscript: string,
   expectedErrorRate: number,
   params: {
@@ -72,6 +73,7 @@ const runProcTest = async (
   cy.wrapHook(() =>
     result.current.init(accessKey, model, {
       enableAutomaticPunctuation: enablePunctuation,
+      enableTextNormalization: normalization,
       device: DEVICE,
     })
   ).then(() => {
@@ -196,11 +198,12 @@ describe('Cheetah binding', () => {
 
   for (const testParam of testData.tests.language_tests) {
     for (const modelFile of testParam.models) {
-      it(`should be able to process (${testParam.language} ${modelFile})`, () => {
+      it(`should be able to process (${testParam.language} ${modelFile}) (norm ${testParam.normalization})`, () => {
         cy.wrap(null).then(async () => {
           await runProcTest(
             `audio_samples/${testParam.audio_file}`,
             testParam.punctuations,
+            testParam.normalization,
             testParam.transcript,
             testParam.error_rate,
             {
@@ -213,11 +216,12 @@ describe('Cheetah binding', () => {
         });
       });
 
-      it(`should be able to process with punctuation (${testParam.language} ${modelFile})`, () => {
+      it(`should be able to process with punctuation (${testParam.language} ${modelFile}) (norm ${testParam.normalization})`, () => {
         cy.wrap(null).then(async () => {
           await runProcTest(
             `audio_samples/${testParam.audio_file}`,
             testParam.punctuations,
+            testParam.normalization,
             testParam.transcript,
             testParam.error_rate,
             {
