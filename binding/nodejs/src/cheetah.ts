@@ -71,7 +71,9 @@ export default class Cheetah {
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
    * @param {boolean} options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
-   * @param {boolean} options.enableTextNormalization Flag to enable text normalization.
+   * @param {boolean} options.enableTextNormalization Flag to enable text normalization. Enabling this feature
+   * improves the readability and formatting of Cheetah's transcriptions (e.g. converts number words to digits)
+   * at the cost of some additional latency.
    */
   constructor(accessKey: string, options: CheetahOptions = {}) {
     assert(typeof accessKey === 'string');
