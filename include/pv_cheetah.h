@@ -1,5 +1,5 @@
 /*
-    Copyright 2018-2025 Picovoice Inc.
+    Copyright 2018-2026 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -46,7 +46,9 @@ typedef struct pv_cheetah pv_cheetah_t;
  * of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0` to disable
  * endpoint detection.
  * @param enable_automatic_punctuation Set to `true` to enable automatic punctuation insertion.
- * @param enable_text_normalization Set to `true` to enable text normalization.
+ * @param enable_text_normalization Set to `true` to enable text normalization. Enabling this feature
+ * improves the readability and formatting of Cheetah's transcriptions (e.g. converts number words to digits)
+ * at the cost of some additional latency.
  * @param[out] object Constructed instance of Cheetah.
  * @return Status code. Returns `PV_STATUS_INVALID_ARGUMENT`, `PV_STATUS_IO_ERROR`, `PV_STATUS_OUT_OF_MEMORY`,
  * `PV_STATUS_RUNTIME_ERROR`, `PV_STATUS_ACTIVATION_ERROR`, `PV_STATUS_ACTIVATION_LIMIT_REACHED`,
