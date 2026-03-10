@@ -88,6 +88,7 @@ const runProcTest = async (
   instance: typeof Cheetah | typeof CheetahWorker,
   inputPcm: Int16Array,
   punctuations: string[],
+  normalization: boolean,
   expectedTranscript: string,
   expectedErrorRate: number,
   params: {
@@ -128,6 +129,7 @@ const runProcTest = async (
         model,
         {
           enableAutomaticPunctuation: enablePunctuation,
+          enableTextNormalization: normalization,
           processErrorCallback: (error: CheetahError) => {
             isTranscriptFinalized = true;
             reject(error);
@@ -289,12 +291,13 @@ describe("Cheetah Binding", function () {
       for (const modelFile of testParam.models) {
         const modelFileType = modelFile.includes("_fast") ? "fast" : "default";
 
-        it(`should be able to process (${testParam.language}) (${modelFileType} model) (${instanceString})`, () => cy.getFramesFromFile(
+        it(`should be able to process (${testParam.language}) (${modelFileType} model) (norm ${testParam.normalization}) (${instanceString})`, () => cy.getFramesFromFile(
             `audio_samples/${testParam.audio_file}`).then(
             (pcm: Int16Array) => runProcTest(
                 instance,
                 pcm,
                 testParam.punctuations,
+                testParam.normalization,
                 testParam.transcript,
                 testParam.error_rate,
                 {
@@ -306,12 +309,13 @@ describe("Cheetah Binding", function () {
             )
         ));
 
-        it(`should be able to process with punctuation (${testParam.language}) (${modelFileType} model) (${instanceString})`, () => cy.getFramesFromFile(
+        it(`should be able to process with punctuation (${testParam.language}) (${modelFileType} model) (norm ${testParam.normalization}) (${instanceString})`, () => cy.getFramesFromFile(
             `audio_samples/${testParam.audio_file}`).then(
             (pcm: Int16Array) => runProcTest(
                 instance,
                 pcm,
                 testParam.punctuations,
+                testParam.normalization,
                 testParam.transcript,
                 testParam.error_rate,
                 {
