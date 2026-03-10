@@ -26,7 +26,7 @@ class CheetahPerformanceTestCase(unittest.TestCase):
     INIT_PERFORMANCE_THRESHOLD_SEC = float(sys.argv[3])
     PROC_PERFORMANCE_THRESHOLD_SEC = float(sys.argv[4])
     DEVICE = sys.argv[5]
-    AUDIO_PATH = os.path.join(os.path.dirname(__file__), '../../resources/audio_samples/test.wav')
+    AUDIO_PATH = os.path.join(os.path.dirname(__file__), '../../resources/audio_samples/test_en.wav')
 
     def test_performance_init(self):
 

@@ -1,5 +1,5 @@
 #
-# Copyright 2023-2025 Picovoice Inc.
+# Copyright 2023-2026 Picovoice Inc.
 #
 # You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 # file accompanying this source.
@@ -33,6 +33,7 @@ def load_test_data() -> List[Tuple[str, str, str, List[str], float]]:
                     t['audio_file'],
                     t['transcript'],
                     t['punctuations'],
+                    t['normalization'],
                     t['error_rate']
                 )
             )
