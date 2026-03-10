@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2022-2025 Picovoice Inc.
+    Copyright 2022-2026 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -22,7 +22,6 @@ namespace CheetahDemo
     /// </summary>
     public class FileDemo
     {
-
         /// <summary>
         /// Reads through input file and prints the transcription returned by Cheetah.
         /// </summary>
@@ -39,22 +38,26 @@ namespace CheetahDemo
         /// <param name="enableAutomaticPunctuation">
         /// Set to `true` to enable automatic punctuation insertion.
         /// </param>
+        /// <param name="enableTextNormalization">
+        /// Set to `true` to enable text normalization. Enabling this feature improves the readability and formatting
+        /// of Cheetah's transcriptions (e.g. converts number words to digits) at the cost of some additional latency.
         /// </param>
         public static void RunDemo(
             string accessKey,
             string inputAudioPath,
             string modelPath,
             string device,
-            bool enableAutomaticPunctuation)
+            bool enableAutomaticPunctuation,
+            bool enableTextNormalization)
         {
             // init Cheetah speech-to-text engine
             using (Cheetah cheetah = Cheetah.Create(
                 accessKey: accessKey,
                 modelPath: modelPath,
                 device: device,
-                enableAutomaticPunctuation: enableAutomaticPunctuation))
+                enableAutomaticPunctuation: enableAutomaticPunctuation,
+                enableTextNormalization: enableTextNormalization))
             {
-
                 using (BinaryReader reader = new BinaryReader(File.Open(inputAudioPath, FileMode.Open)))
                 {
                     ValidateWavFile(reader, cheetah.SampleRate, 16, out short numChannels);
@@ -150,6 +153,7 @@ namespace CheetahDemo
             string modelPath = null;
             string device = null;
             bool enableAutomaticPunctuation = true;
+            bool enableTextNormalization = false;
             bool showHelp = false;
             bool showInferenceDevices = false;
 
@@ -188,6 +192,11 @@ namespace CheetahDemo
                 else if (args[argIndex] == "--disable_automatic_punctuation")
                 {
                     enableAutomaticPunctuation = false;
+                    argIndex++;
+                }
+                else if (args[argIndex] == "--enable_text_normalization")
+                {
+                    enableTextNormalization = true;
                     argIndex++;
                 }
                 else if (args[argIndex] == "--show_inference_devices")
@@ -235,7 +244,8 @@ namespace CheetahDemo
                 inputAudioPath,
                 modelPath,
                 device,
-                enableAutomaticPunctuation);
+                enableAutomaticPunctuation,
+                enableTextNormalization);
         }
 
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -251,6 +261,7 @@ namespace CheetahDemo
             "\t--device: Device to run inference on (`best`, `cpu:{num_threads}` or `gpu:{gpu_index}`). Default: automatically selects best device.\n" +
             "\t--model_path: Absolute path to the file containing model parameters.\n" +
             "\t--disable_automatic_punctuation: Disable automatic punctuation.\n" +
+            "\t--enable_text_normalization: Enable text normalization.\n" +
             "\t--show_inference_devices: Print devices that are available to run Cheetah inference.\n";
 
     }

@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2025 Picovoice Inc.
+    Copyright 2022-2026 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -62,6 +62,8 @@ namespace CheetahTest
 
             public string[] punctuations { get; set; }
 
+            public bool normalization { get; set; }
+
             public float error_rate { get; set; }
         }
 
@@ -82,6 +84,7 @@ namespace CheetahTest
                         x.audio_file,
                         x.transcript,
                         x.punctuations,
+                        x.normalization,
                         x.error_rate,
                     }));
             }
@@ -192,6 +195,7 @@ namespace CheetahTest
             string testAudioFile,
             string referenceTranscript,
             string[] punctuations,
+            bool normalization,
             float targetErrorRate)
         {
             using (Cheetah cheetah = Cheetah.Create(
@@ -199,7 +203,8 @@ namespace CheetahTest
                 modelPath: GetModelPath(modelFile),
                 device: _device,
                 endpointDurationSec: 0.2f,
-                enableAutomaticPunctuation: false))
+                enableAutomaticPunctuation: false,
+                enableTextNormalization: normalization))
             {
                 string testAudioPath = Path.Combine(ROOT_DIR, "resources/audio_samples", testAudioFile);
                 List<short> pcm = GetPcmFromFile(testAudioPath, cheetah.SampleRate);
@@ -237,6 +242,7 @@ namespace CheetahTest
             string testAudioFile,
             string referenceTranscript,
             string[] _,
+            bool normalization,
             float targetErrorRate)
         {
             using (Cheetah cheetah = Cheetah.Create(
@@ -244,7 +250,8 @@ namespace CheetahTest
                 modelPath: GetModelPath(modelFile),
                 device: _device,
                 endpointDurationSec: 0.2f,
-                enableAutomaticPunctuation: true))
+                enableAutomaticPunctuation: true,
+                enableTextNormalization: normalization))
             {
                 string testAudioPath = Path.Combine(ROOT_DIR, "resources/audio_samples", testAudioFile);
                 List<short> pcm = GetPcmFromFile(testAudioPath, cheetah.SampleRate);
@@ -283,7 +290,8 @@ namespace CheetahTest
                     accessKey: "invalid",
                     modelPath: modelPath,
                     device: _device,
-                    enableAutomaticPunctuation: true);
+                    enableAutomaticPunctuation: true,
+                    enableTextNormalization: false);
                 Assert.IsNull(c);
                 c.Dispose();
             }
@@ -301,7 +309,8 @@ namespace CheetahTest
                     accessKey: "invalid",
                     modelPath: modelPath,
                     device: _device,
-                    enableAutomaticPunctuation: true);
+                    enableAutomaticPunctuation: true,
+                    enableTextNormalization: false);
                 Assert.IsNull(c);
                 c.Dispose();
             }
@@ -323,7 +332,8 @@ namespace CheetahTest
                 accessKey: _accessKey,
                 modelPath: modelPath,
                 device: _device,
-                enableAutomaticPunctuation: false);
+                enableAutomaticPunctuation: false,
+                enableTextNormalization: false);
             short[] testPcm = new short[c.FrameLength];
 
             var obj = typeof(Cheetah).GetField("_libraryPointer", BindingFlags.NonPublic | BindingFlags.Instance);
