@@ -82,7 +82,7 @@ java -jar cheetah-mic-demo.jar -a ${ACCESS_KEY} -di 1
 If the problem persists we suggest storing the recorded audio into a file for inspection. This can be achieved with:
 
 ```console
-java -jar cheetah-mic-demo.jar -a ${ACCESS_KEY} -di 1 -o ./test.wav
+java -jar cheetah-mic-demo.jar -a ${ACCESS_KEY} -di 1 -o ./sample.wav
 ```
 
 If after listening to stored file there is no apparent problem detected, please open an issue.
