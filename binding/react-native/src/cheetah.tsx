@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2025 Picovoice Inc.
+// Copyright 2022-2026 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -41,6 +41,9 @@ class Cheetah {
    *                         chunk of audio (with a duration specified herein) after an utterance without any speech in it.
    *                         Set duration to 0 to disable this. Default is 1 second.
    * @param options.enableAutomaticPunctuation Set to `true` to enable automatic punctuation insertion.
+   * @param options.enableTextNormalization Set to `true` to enable text normalization. Enabling this feature
+   * improves the readability and formatting of Cheetah's transcriptions (e.g. converts number words to digits)
+   * at the cost of some additional latency.
    * @returns An instance of the engine.
    */
   public static async create(
