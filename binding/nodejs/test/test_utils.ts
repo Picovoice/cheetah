@@ -1,5 +1,5 @@
 //
-// Copyright 2024-2025 Picovoice Inc.
+// Copyright 2024-2026 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -54,6 +54,7 @@ export function getLanguageTestParameters(): [
   string,
   string,
   string[],
+  boolean,
   number,
 ][] {
   const cpuPart = getCpuPart();
@@ -68,6 +69,7 @@ export function getLanguageTestParameters(): [
     x.audio_file,
     x.transcript,
     x.punctuations,
+    x.normalization,
     x.error_rate,
   ]);
 }

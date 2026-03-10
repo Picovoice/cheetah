@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2023 Picovoice Inc.
+// Copyright 2022-2026 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -17,7 +17,7 @@ import { performance } from 'perf_hooks';
 
 import { WaveFile } from 'wavefile';
 
-const WAV_PATH = '../../../resources/audio_samples/test.wav';
+const WAV_PATH = '../../../resources/audio_samples/test_en.wav';
 
 const ACCESS_KEY =
   process.argv
