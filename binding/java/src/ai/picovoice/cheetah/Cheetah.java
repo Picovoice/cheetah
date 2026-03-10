@@ -55,7 +55,9 @@ public class Cheetah {
      *                                   any speech in it. Set duration to 0 to disable this. 
      *                                   Default is 1 second in the Builder.
      * @param enableAutomaticPunctuation Set to `true` to enable automatic punctuation insertion.
-     * @param enableTextNormalization    Set to `true` to enable text normalization.
+     * @param enableTextNormalization    Set to `true` to enable text normalization. Enabling this feature
+     *                                   improves the readability and formatting of Cheetah's transcriptions
+     *                                   (e.g. converts number words to digits) at the cost of some additional latency.
      * @throws CheetahException if there is an error while initializing Cheetah.
      */
     private Cheetah(
