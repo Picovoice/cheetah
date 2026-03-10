@@ -156,6 +156,7 @@ async function runProcTestCase(
   audioFile: string,
   expectedTranscript: string,
   punctuations: string[],
+  normalization: boolean,
   errorRate: number,
   params: {
     enablePunctuation?: boolean;
@@ -172,6 +173,7 @@ async function runProcTestCase(
     const cheetah = await Cheetah.create(TEST_ACCESS_KEY, modelPath, {
       device: DEVICE,
       enableAutomaticPunctuation: enablePunctuation,
+      enableTextNormalization: normalization,
     });
 
     const pcm = await getPcmFromFile(audioPath, cheetah.sampleRate);
@@ -242,6 +244,7 @@ async function processTests(): Promise<Result[]> {
         testParam.audio_file,
         testParam.transcript,
         testParam.punctuations,
+        testParam.normalization,
         testParam.error_rate,
       );
       result.testName = `Process test for '${modelFile}'`;
@@ -257,6 +260,7 @@ async function processTests(): Promise<Result[]> {
         testParam.audio_file,
         testParam.transcript,
         testParam.punctuations,
+        testParam.normalization,
         testParam.error_rate,
         {
           enablePunctuation: true,
