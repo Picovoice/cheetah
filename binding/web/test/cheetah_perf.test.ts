@@ -78,7 +78,7 @@ describe('Cheetah binding performance test', () => {
     const instanceString = (instance === CheetahWorker) ? 'worker' : 'main';
 
     it(`should be lower than performance threshold (${instanceString})`, () => {
-      cy.getFramesFromFile('audio_samples/test.wav').then( async inputPcm => {
+      cy.getFramesFromFile('audio_samples/test_en.wav').then( async inputPcm => {
         await testPerformance(instance, inputPcm);
       });
     });
