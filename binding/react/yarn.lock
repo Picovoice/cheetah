@@ -1215,10 +1215,8 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@picovoice/cheetah-web@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-3.0.0.tgz#c6d143ffaf459b4f262cbf141eae009333f6655b"
-  integrity sha512-7Cazk4hdqB2SnHEbaeAl6uZqjj7THh6jMPxHOLi8l5QSjVrZ7/FdeoN+ZhSiY51a3YHdwOO7HJYPGj7RdHoD4Q==
+"@picovoice/cheetah-web@file:../web":
+  version "4.0.0"
   dependencies:
     "@picovoice/web-utils" "=1.4.3"
 
