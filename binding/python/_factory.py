@@ -49,7 +49,9 @@ def create(
     audio (with a duration specified herein) after an utterance without any speech in it. Set to `None` to disable
     endpoint detection.
     :param enable_automatic_punctuation Set to `True` to enable automatic punctuation insertion.
-    :param enable_text_normalization Set to `true` to enable text normalization.
+    :param enable_text_normalization Set to `True` to enable text normalization. Enabling this feature
+    improves the readability and formatting of Cheetah's transcriptions (e.g. converts number words to digits)
+    at the cost of some additional latency.
     :return: An instance of Cheetah speech-to-text engine.
     """
 
