@@ -54,7 +54,7 @@ jobs:
         python cheetah_demo_file.py
         --access_key ${{secrets.PV_VALID_ACCESS_KEY}}
         --device ${{ matrix.device }}
-        --wav_paths ../../resources/audio_samples/test.wav
+        --wav_paths ../../resources/audio_samples/test_en.wav
 
     - name: Test get devices
       run: >
@@ -93,7 +93,7 @@ jobs:
         python3 cheetah_demo_file.py
         --access_key ${{secrets.PV_VALID_ACCESS_KEY}}
         --device ${{ matrix.device }}
-        --wav_paths ../../resources/audio_samples/test.wav
+        --wav_paths ../../resources/audio_samples/test_en.wav
 
     - name: Test get devices
       run: >
