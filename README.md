@@ -305,7 +305,7 @@ Create an instance of the engine and transcribe audio in real-time:
 #include "pv_cheetah.h"
 
 pv_cheetah_t *handle = NULL;
-const pv_status_t status = pv_cheetah_init("${ACCESS_KEY}", "${MODEL_PATH}", "${DEVICE}", 0.f, false, &handle);
+const pv_status_t status = pv_cheetah_init("${ACCESS_KEY}", "${MODEL_PATH}", "${DEVICE}", 0.f, false, false, &handle);
 if (status != PV_STATUS_SUCCESS) {
     // error handling logic
 }
