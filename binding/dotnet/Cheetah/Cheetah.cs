@@ -147,7 +147,8 @@ namespace Pv
         /// Set to `true` to enable automatic punctuation insertion.
         /// </param>
         /// <param name="enableTextNormalization">
-        /// Set to `true` to enable text normalization.
+        /// Set to `true` to enable text normalization. Enabling this feature improves the readability and formatting
+        /// of Cheetah's transcriptions (e.g. converts number words to digits) at the cost of some additional latency.
         /// </param>
         /// <returns>An instance of Cheetah Speech-to-Text engine.</returns>
         public static Cheetah Create(
@@ -190,7 +191,8 @@ namespace Pv
         /// Set to `true` to enable automatic punctuation insertion.
         /// </param>
         /// <param name="enableTextNormalization">
-        /// Set to `true` to enable text normalization.
+        /// Set to `true` to enable text normalization. Enabling this feature improves the readability and formatting
+        /// of Cheetah's transcriptions (e.g. converts number words to digits) at the cost of some additional latency.
         /// </param>
         private Cheetah(
             string accessKey,

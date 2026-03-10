@@ -39,7 +39,8 @@ namespace CheetahDemo
         /// Set to `true` to enable automatic punctuation insertion.
         /// </param>
         /// <param name="enableTextNormalization">
-        /// Set to `true` to enable text normalization.
+        /// Set to `true` to enable text normalization. Enabling this feature improves the readability and formatting
+        /// of Cheetah's transcriptions (e.g. converts number words to digits) at the cost of some additional latency.
         /// </param>
         public static void RunDemo(
             string accessKey,
