@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2025 Picovoice Inc.
+// Copyright 2022-2026 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -71,6 +71,7 @@ export default class Cheetah {
    * chunk of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0`
    * to disable endpoint detection.
    * @param {boolean} options.enableAutomaticPunctuation Flag to enable automatic punctuation insertion.
+   * @param {boolean} options.enableTextNormalization Flag to enable text normalization.
    */
   constructor(accessKey: string, options: CheetahOptions = {}) {
     assert(typeof accessKey === 'string');
@@ -88,6 +89,7 @@ export default class Cheetah {
       libraryPath = getSystemLibraryPath(),
       endpointDurationSec = 1.0,
       enableAutomaticPunctuation = false,
+      enableTextNormalization = false,
     } = options;
 
     if (endpointDurationSec < 0) {
@@ -128,7 +130,8 @@ export default class Cheetah {
         modelPath,
         device,
         endpointDurationSec,
-        enableAutomaticPunctuation
+        enableAutomaticPunctuation,
+        enableTextNormalization
       );
     } catch (err: any) {
       pvStatusToException(PvStatus[err.code as keyof typeof PvStatus], err);
