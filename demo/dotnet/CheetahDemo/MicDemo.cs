@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2022-2025 Picovoice Inc.
+    Copyright 2022-2026 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -20,7 +20,6 @@ namespace CheetahDemo
     /// </summary>
     public class MicDemo
     {
-
         /// <summary>
         /// Creates an input audio stream and instantiates an instance of Cheetah object.
         /// </summary>
@@ -40,22 +39,26 @@ namespace CheetahDemo
         /// <param name="enableAutomaticPunctuation">
         /// Set to `true` to enable automatic punctuation insertion.
         /// </param>
-        /// <param name="audioDeviceIndex">Optional argument. If provided, audio is recorded from this input device. Otherwise, the default audio input device is used.</param>        
+        /// <param name="enableTextNormalization">
+        /// Set to `true` to enable text normalization.
+        /// </param>
+        /// <param name="audioDeviceIndex">Optional argument. If provided, audio is recorded from this input device. Otherwise, the default audio input device is used.</param>
         public static void RunDemo(
             string accessKey,
             string modelPath,
             string device,
             float endpointDurationSec,
             bool enableAutomaticPunctuation,
+            bool enableTextNormalization,
             int audioDeviceIndex)
         {
-
             using (Cheetah cheetah = Cheetah.Create(
                 accessKey: accessKey,
                 modelPath: modelPath,
                 device: device,
                 endpointDurationSec: endpointDurationSec,
-                enableAutomaticPunctuation: enableAutomaticPunctuation))
+                enableAutomaticPunctuation: enableAutomaticPunctuation,
+                enableTextNormalization: enableTextNormalization))
             {
 
                 // create recorder
@@ -68,7 +71,6 @@ namespace CheetahDemo
                         recorder.Stop();
                         Console.WriteLine("Stopping...");
                     };
-
 
                     recorder.Start();
                     Console.WriteLine(">>> Press `CTRL+C` to exit:\n");
@@ -127,6 +129,7 @@ namespace CheetahDemo
             string device = null;
             float endpointDurationSec = 3.0f;
             bool enableAutomaticPunctuation = true;
+            bool enableTextNormalization = false;
             int audioDeviceIndex = -1;
             bool showAudioDevices = false;
             bool showHelp = false;
@@ -168,6 +171,11 @@ namespace CheetahDemo
                 else if (args[argIndex] == "--disable_automatic_punctuation")
                 {
                     enableAutomaticPunctuation = false;
+                    argIndex++;
+                }
+                else if (args[argIndex] == "--enable_text_normalization")
+                {
+                    enableTextNormalization = true;
                     argIndex++;
                 }
                 else if (args[argIndex] == "--show_audio_devices")
@@ -228,6 +236,7 @@ namespace CheetahDemo
                 device,
                 endpointDurationSec,
                 enableAutomaticPunctuation,
+                enableTextNormalization,
                 audioDeviceIndex);
         }
 
@@ -246,6 +255,7 @@ namespace CheetahDemo
             "A speech endpoint is detected when there is a chunk of audio (with a duration specified herein)" +
             " after an utterance without any speech in it. Set duration to 0 to disable this. Default is 3 seconds\n" +
             "\t--disable_automatic_punctuation: Disable automatic punctuation.\n" +
+            "\t--enable_text_normalization: Enable text normalization.\n" +
             "\t--audio_device_index: Index of input audio device.\n" +
             "\t--show_audio_devices: Print available recording devices.\n" +
             "\t--show_inference_devices: Print devices that are available to run Cheetah inference.\n";

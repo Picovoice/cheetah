@@ -1,5 +1,5 @@
 ﻿/*
-    Copyright 2022-2025 Picovoice Inc.
+    Copyright 2022-2026 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
     file accompanying this source.
@@ -75,6 +75,7 @@ namespace Pv
             IntPtr device,
             float endpointDurationSec,
             bool enableAutomaticPunctuation,
+            bool enableTextNormalization,
             out IntPtr handle);
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
@@ -145,20 +146,25 @@ namespace Pv
         /// <param name="enableAutomaticPunctuation">
         /// Set to `true` to enable automatic punctuation insertion.
         /// </param>
+        /// <param name="enableTextNormalization">
+        /// Set to `true` to enable text normalization.
+        /// </param>
         /// <returns>An instance of Cheetah Speech-to-Text engine.</returns>
         public static Cheetah Create(
                 string accessKey,
                 string modelPath = null,
                 string device = null,
                 float endpointDurationSec = 1.0f,
-                bool enableAutomaticPunctuation = false)
+                bool enableAutomaticPunctuation = false,
+                bool enableTextNormalization = false)
         {
             return new Cheetah(
                 accessKey,
                 modelPath ?? DEFAULT_MODEL_PATH,
                 device ?? "best",
                 endpointDurationSec,
-                enableAutomaticPunctuation);
+                enableAutomaticPunctuation,
+                enableTextNormalization);
         }
 
         /// <summary>
@@ -183,12 +189,16 @@ namespace Pv
         /// <param name="enableAutomaticPunctuation">
         /// Set to `true` to enable automatic punctuation insertion.
         /// </param>
+        /// <param name="enableTextNormalization">
+        /// Set to `true` to enable text normalization.
+        /// </param>
         private Cheetah(
             string accessKey,
             string modelPath,
             string device,
             float endpointDurationSec = 1.0f,
-            bool enableAutomaticPunctuation = false)
+            bool enableAutomaticPunctuation = false,
+            bool enableTextNormalization = false)
         {
             if (string.IsNullOrEmpty(accessKey))
             {
@@ -217,6 +227,7 @@ namespace Pv
                 devicePtr,
                 endpointDurationSec,
                 enableAutomaticPunctuation,
+                enableTextNormalization,
                 out _libraryPointer);
 
             Marshal.FreeHGlobal(accessKeyPtr);
