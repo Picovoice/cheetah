@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 //
-// Copyright 2022-2025 Picovoice Inc.
+// Copyright 2022-2026 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -45,6 +45,7 @@ program
   )
   .option("-s, --show_audio_devices", "show the list of available devices")
   .option("-p, --disable_automatic_punctuation", "disable automatic punctuation")
+  .option("-n, --enable_text_normalization", "enable text normalization")
   .option(
       "-z, --show_inference_devices",
       "Print devices that are available to run Porcupine inference.",
@@ -66,6 +67,7 @@ async function micDemo() {
   let endpointDurationSec = program["endpoint_duration_sec"];
   let showAudioDevices = program["show_audio_devices"];
   let disableAutomaticPunctuation = program["disable_automatic_punctuation"];
+  let enableTextNormalization = program["enable_text_normalization"];
 
   let showAudioDevicesDefined = showAudioDevices !== undefined;
 
@@ -95,7 +97,8 @@ async function micDemo() {
       device: device,
       libraryPath: libraryFilePath,
       endpointDurationSec: endpointDurationSec,
-      enableAutomaticPunctuation: !disableAutomaticPunctuation
+      enableAutomaticPunctuation: !disableAutomaticPunctuation,
+      enableTextNormalization: enableTextNormalization
     });
 
   const recorder = new PvRecorder(engineInstance.frameLength, audioDeviceIndex);

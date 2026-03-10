@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 //
-// Copyright 2020-2025 Picovoice Inc.
+// Copyright 2020-2026 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -36,6 +36,7 @@ program
   )
   .option("-m, --model_file_path <string>", "absolute path to cheetah model")
   .option("-p, --disable_automatic_punctuation", "disable automatic punctuation")
+  .option("-n, --enable_text_normalization", "enable text normalization")
   .option(
     "-z, --show_inference_devices",
     "Print devices that are available to run Cheetah inference.",
@@ -53,6 +54,7 @@ function fileDemo() {
   let modelFilePath = program["model_file_path"];
   let device = program["device"];
   let disableAutomaticPunctuation = program["disable_automatic_punctuation"];
+  let enableTextNormalization = program["enable_text_normalization"];
 
   const showInferenceDevices = program["show_inference_devices"];
   if (showInferenceDevices) {
@@ -74,7 +76,8 @@ function fileDemo() {
       device: device,
       libraryPath: libraryFilePath,
       endpointDurationSec: 0.4,
-      enableAutomaticPunctuation: !disableAutomaticPunctuation
+      enableAutomaticPunctuation: !disableAutomaticPunctuation,
+      enableTextNormalization: enableTextNormalization
     });
 
   if (!fs.existsSync(audioPath)) {
