@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2023 Picovoice Inc.
+    Copyright 2022-2026 Picovoice Inc.
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
     Unless required by applicable law or agreed to in writing, software distributed under the
@@ -55,6 +55,9 @@ public class Cheetah {
      *                                   any speech in it. Set duration to 0 to disable this.
      *                                   Default is 1 second in the Builder.
      * @param enableAutomaticPunctuation Set to `true` to enable automatic punctuation insertion.
+     * @param enableTextNormalization    Set to `true` to enable text normalization. Enabling this feature improves the
+     *                                   readability and formatting of Cheetah's transcriptions (e.g. converts number
+     *                                   words to digits) at the cost of some additional latency.
      * @throws CheetahException if there is an error while initializing Cheetah.
      */
     private Cheetah(
@@ -62,7 +65,8 @@ public class Cheetah {
             String modelPath,
             String device,
             float endpointDuration,
-            boolean enableAutomaticPunctuation) throws CheetahException {
+            boolean enableAutomaticPunctuation,
+            boolean enableTextNormalization) throws CheetahException {
         CheetahNative.setSdk(Cheetah._sdk);
 
         handle = CheetahNative.init(
@@ -70,7 +74,8 @@ public class Cheetah {
                 modelPath,
                 device,
                 endpointDuration,
-                enableAutomaticPunctuation);
+                enableAutomaticPunctuation,
+                enableTextNormalization);
     }
 
     private static String extractResource(
@@ -189,6 +194,7 @@ public class Cheetah {
         private String device = "best";
         private float endpointDuration = 1f;
         private boolean enableAutomaticPunctuation = false;
+        private boolean enableTextNormalization = false;
 
         /**
          * Setter the AccessKey.
@@ -247,6 +253,18 @@ public class Cheetah {
         }
 
         /**
+         * Setter for enabling text normalization.
+         *
+         * @param enableTextNormalization Set to `true` to enable text normalization. Enabling this feature improves the
+         *                                readability and formatting of Cheetah's transcriptions (e.g. converts number
+         *                                words to digits) at the cost of some additional latency.
+         */
+        public Builder setEnableTextNormalization(boolean enableTextNormalization) {
+            this.enableTextNormalization = enableTextNormalization;
+            return this;
+        }
+
+        /**
          * Validates properties and creates an instance of the Cheetah speech-to-text engine.
          *
          * @return An instance of Cheetah Engine
@@ -282,7 +300,8 @@ public class Cheetah {
                     modelPath,
                     device,
                     endpointDuration,
-                    enableAutomaticPunctuation);
+                    enableAutomaticPunctuation,
+                    enableTextNormalization);
         }
     }
 }
