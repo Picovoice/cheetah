@@ -46,13 +46,17 @@ public class Cheetah {
     ///     chunk of audio (with a duration specified herein) after an utterance without any speech in it.
     ///     Set duration to 0 to disable this. Default is 1 second.
     ///   - enableAutomaticPunctuation: Set to `true` to enable automatic punctuation insertion.
+    ///   - enableTextNormalization: Set to `true` to enable text normalization. Enabling this feature improves the
+    ///   readability and formatting of Cheetah's transcriptions (e.g. converts number words to digits) at the cost of
+    ///   some additional latency.
     /// - Throws: CheetahError
     public init(
             accessKey: String,
             modelPath: String,
             device: String? = nil,
             endpointDuration: Float = 1.0,
-            enableAutomaticPunctuation: Bool = false) throws {
+            enableAutomaticPunctuation: Bool = false,
+            enableTextNormalization: Bool = false) throws {
 
         if accessKey.count == 0 {
             throw CheetahInvalidArgumentError("AccessKey is required for Cheetah initialization")
@@ -80,6 +84,7 @@ public class Cheetah {
                 deviceArg,
                 endpointDuration,
                 enableAutomaticPunctuation,
+                enableTextNormalization,
                 &handle)
         if status != PV_STATUS_SUCCESS {
             let messageStack = try Cheetah.getMessageStack()
@@ -100,19 +105,24 @@ public class Cheetah {
     ///     chunk of audio (with a duration specified herein) after an utterance without any speech in it.
     ///     Set duration to 0 to disable this. Default is 1 second.
     ///   - enableAutomaticPunctuation: Set to `true` to enable automatic punctuation insertion.
+    ///   - enableTextNormalization: Set to `true` to enable text normalization. Enabling this feature improves the
+    ///   readability and formatting of Cheetah's transcriptions (e.g. converts number words to digits) at the cost of
+    ///   some additional latency.
     /// - Throws: CheetahError
     public convenience init(
             accessKey: String,
             modelURL: URL,
             device: String? = nil,
             endpointDuration: Float = 1.0,
-            enableAutomaticPunctuation: Bool = false) throws {
+            enableAutomaticPunctuation: Bool = false,
+            enableTextNormalization: Bool = false) throws {
         try self.init(
                 accessKey: accessKey,
                 modelPath: modelURL.path,
                 device: device,
                 endpointDuration: endpointDuration,
-                enableAutomaticPunctuation: enableAutomaticPunctuation)
+                enableAutomaticPunctuation: enableAutomaticPunctuation,
+                enableTextNormalization: enableTextNormalization)
     }
 
     /// Releases native resources that were allocated to Cheetah

@@ -72,6 +72,7 @@ struct LanguageTest: Decodable {
     var audio_file: String
     var transcript: String
     var punctuations: [String]
+    var normalization: Bool
     var error_rate: Float
 }
 
@@ -113,7 +114,8 @@ class CheetahDemoUITests: XCTestCase {
             testAudio: String,
             expectedTranscript: String,
             errorRate: Float,
-            enableAutomaticPunctuation: Bool = false
+            enableAutomaticPunctuation: Bool = false,
+            enableTextNormalization: Bool = false,
         ) throws {
         let bundle = Bundle(for: type(of: self))
         let audioFileURL: URL = bundle.url(
@@ -125,7 +127,8 @@ class CheetahDemoUITests: XCTestCase {
                 accessKey: accessKey,
                 modelPath: modelPath,
                 device: device,
-                enableAutomaticPunctuation: enableAutomaticPunctuation)
+                enableAutomaticPunctuation: enableAutomaticPunctuation,
+                enableTextNormalization: enableTextNormalization)
 
         let res: String = try processFile(cheetah: cheetah, fileURL: audioFileURL)
         cheetah.delete()
@@ -162,7 +165,9 @@ class CheetahDemoUITests: XCTestCase {
                             modelPath: modelPath,
                             testAudio: testCase.audio_file,
                             expectedTranscript: expectedTranscript,
-                            errorRate: testCase.error_rate)
+                            errorRate: testCase.error_rate,
+                            enableAutomaticPunctuation: false,
+                            enableTextNormalization: testCase.normalization)
                 }
             }
         }
@@ -196,7 +201,8 @@ class CheetahDemoUITests: XCTestCase {
                             testAudio: testCase.audio_file,
                             expectedTranscript: testCase.transcript,
                             errorRate: testCase.error_rate,
-                            enableAutomaticPunctuation: true)
+                            enableAutomaticPunctuation: true,
+                            enableTextNormalization: testCase.normalization)
                 }
             }
         }
