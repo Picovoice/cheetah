@@ -75,11 +75,19 @@ class Cheetah {
   ///                               any speech in it. Set duration to 0 to disable this. Default is 1 second.
   /// [enableAutomaticPunctuation] (Optional) Set to `true` to enable automatic punctuation insertion.
   ///
+  /// [enableTextNormalization] (Optional) Set to `true` to enable text normalization. Enabling this feature improves
+  ///                                      the readability and formatting of Cheetah's transcriptions (e.g. converts
+  ///                                      number words to digits) at the cost of some additional latency.
+  ///
   /// Throws a `CheetahException` if not initialized correctly
   ///
   /// returns an instance of the Cheetah Speech-to-Text engine
-  static Future<Cheetah> create(String accessKey, String modelPath,
-      {String device = "best", double endpointDuration = 1, enableAutomaticPunctuation = false}) async {
+  static Future<Cheetah> create(String accessKey, String modelPath, {
+      String device = "best",
+      double endpointDuration = 1,
+      enableAutomaticPunctuation = false,
+      enableTextNormalization = false
+  }) async {
     modelPath = await _tryExtractFlutterAsset(modelPath);
 
     try {
@@ -89,7 +97,8 @@ class Cheetah {
         'modelPath': modelPath,
         'device': device,
         'endpointDuration': endpointDuration,
-        'enableAutomaticPunctuation': enableAutomaticPunctuation
+        'enableAutomaticPunctuation': enableAutomaticPunctuation,
+        'enableTextNormalization': enableTextNormalization,
       }));
 
       return Cheetah._(result['handle'], result['frameLength'],
