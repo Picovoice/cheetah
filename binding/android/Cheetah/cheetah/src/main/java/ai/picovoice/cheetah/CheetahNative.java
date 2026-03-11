@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2023 Picovoice Inc.
+    Copyright 2022-2026 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -27,7 +27,8 @@ class CheetahNative {
             String modelPath,
             String device,
             float endpointDurationSec,
-            boolean enableAutomaticPunctuation) throws CheetahException;
+            boolean enableAutomaticPunctuation,
+            boolean enableTextNormalization) throws CheetahException;
 
     static native void delete(long object);
 
