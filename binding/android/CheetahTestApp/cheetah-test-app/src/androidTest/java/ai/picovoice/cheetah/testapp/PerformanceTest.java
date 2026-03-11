@@ -33,7 +33,6 @@ public class PerformanceTest extends BaseTest {
         }
     }
 
-
     @Test
     public void testInitPerformance() throws Exception {
         String initThresholdString = appContext.getString(R.string.initPerformanceThresholdSec);
@@ -75,12 +74,13 @@ public class PerformanceTest extends BaseTest {
 
         double procPerformanceThresholdSec = Double.parseDouble(procThresholdString);
 
-        Cheetah cheetah = new Cheetah.Builder().setAccessKey(accessKey)
+        Cheetah cheetah = new Cheetah.Builder()
+                .setAccessKey(accessKey)
                 .setModelPath(defaultModelPath)
                 .setDevice(device)
                 .build(appContext);
 
-        File testAudio = new File(getAudioFilepath("test.wav"));
+        File testAudio = new File(getAudioFilepath("test_en.wav"));
 
         long totalNSec = 0;
         for (int i = 0; i < numTestIterations + 1; i++) {
