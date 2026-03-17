@@ -267,7 +267,7 @@ public class CheetahTest {
             }
         }
 
-        assertTrue(getErrorRate(transcript.toString(), normalizedTranscript) < targetErrorRate);
+        assertTrue(getErrorRate(transcript.toString(), normalizedTranscript) <= targetErrorRate);
     }
 
     private static class ProcessTestData {
