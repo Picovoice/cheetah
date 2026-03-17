@@ -35,7 +35,11 @@ class CheetahTestCase(unittest.TestCase):
         cls._audio_directory = os.path.join('..', '..', 'resources', 'audio_samples')
 
     @classmethod
-    def _create_cheetah(cls, model_file: str, enable_automatic_punctuation: bool, enable_text_normalization: bool) -> Cheetah:
+    def _create_cheetah(
+            cls,
+            model_file: str,
+            enable_automatic_punctuation: bool,
+            enable_text_normalization: bool) -> Cheetah:
         return Cheetah(
             access_key=cls._access_key,
             model_path=get_model_path(model_file=model_file),
@@ -57,7 +61,10 @@ class CheetahTestCase(unittest.TestCase):
         o = None
 
         try:
-            o = self._create_cheetah(model_file=model_file, enable_automatic_punctuation=False, enable_text_normalization=normalization)
+            o = self._create_cheetah(
+                model_file=model_file,
+                enable_automatic_punctuation=False,
+                enable_text_normalization=normalization)
 
             pcm = read_wav_file(
                 file_name=os.path.join(self._audio_directory, audio_file),
@@ -97,7 +104,10 @@ class CheetahTestCase(unittest.TestCase):
         o = None
 
         try:
-            o = self._create_cheetah(model_file=model_file, enable_automatic_punctuation=True, enable_text_normalization=normalization)
+            o = self._create_cheetah(
+                model_file=model_file,
+                enable_automatic_punctuation=True,
+                enable_text_normalization=normalization)
 
             pcm = read_wav_file(
                 file_name=os.path.join(self._audio_directory, audio_file),
