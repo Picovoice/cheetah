@@ -100,16 +100,16 @@ android {
             delete fileTree("$projectDir/src/main/assets") {
                 exclude '**/.gitkeep'
             }
-            String suffix = (flavor.name != "en") ? "_${flavor.name}" : ""
+            String params_suffix = (flavor.name != "en") ? "_${flavor.name}" : ""
             task("${flavor.name}CopyParams", type: Copy) {
                 from("$projectDir/../../../../lib/common/")
-                include("cheetah_params${suffix}.pv")
+                include("cheetah_params${params_suffix}.pv")
                 into("$projectDir/src/main/assets/models")
             }
             task("${flavor.name}CopyAudio", type: Copy) {
                 description = "Copy ${flavor.name} audio resources"
                 from("$projectDir/../../../../resources/audio_samples/")
-                include("test${suffix}.wav")
+                include("test_${flavor.name}.wav")
                 into("$projectDir/src/main/assets/audio_samples")
             }
         }
