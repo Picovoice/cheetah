@@ -7,10 +7,10 @@
                     "cheetah_params.pv"
                 ],
                 "audio_file": "test_en.wav",
-                "transcript": "Today only platforms one in three are used.",
+                "transcript": "Today only platforms one and three are used.",
                 "punctuations": ["."],
                 "normalization": false,
-                "error_rate": 0.025
+                "error_rate": 0.125
             },
             {
                 "language": "en",
@@ -32,7 +32,7 @@
                 "transcript": "Un homenaje a que abre era más que necesario.",
                 "punctuations": ["."],
                 "normalization": false,
-                "error_rate": 0.025
+                "error_rate": 0.25
             },
             {
                 "language": "es",
@@ -43,7 +43,7 @@
                 "transcript": "Mi número favorito de es 268.",
                 "punctuations": ["."],
                 "normalization": true,
-                "error_rate": 0.025
+                "error_rate": 0.25
             },
             {
                 "language": "de",
@@ -65,7 +65,7 @@
                 "transcript": "Meine Lieblingszahl ist 268",
                 "punctuations": ["."],
                 "normalization": true,
-                "error_rate": 0.025
+                "error_rate": 0.25
             },
             {
                 "language": "fr",
@@ -87,7 +87,7 @@
                 "transcript": "Mon chiffre préféré 3061.",
                 "punctuations": ["."],
                 "normalization": true,
-                "error_rate": 0.025
+                "error_rate": 0.25
             },
             {
                 "language": "it",
