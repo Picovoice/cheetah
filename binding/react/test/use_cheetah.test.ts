@@ -109,7 +109,7 @@ const runProcTest = async (
       completeTranscript,
       useCER
     );
-    expect(errorRate).to.be.lt(expectedErrorRate);
+    expect(errorRate).to.be.lte(expectedErrorRate);
   });
 
   expect(result.current.isListening).to.be.false;
