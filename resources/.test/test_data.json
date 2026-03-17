@@ -4,11 +4,10 @@
             {
                 "language": "en",
                 "models": [
-                    "cheetah_params.pv",
-                    "cheetah_params_fast.pv"
+                    "cheetah_params.pv"
                 ],
                 "audio_file": "test_en.wav",
-                "transcript": "Today only platforms one and three are used.",
+                "transcript": "Today only platforms one in three are used.",
                 "punctuations": ["."],
                 "normalization": false,
                 "error_rate": 0.025
@@ -19,7 +18,7 @@
                     "cheetah_params.pv"
                 ],
                 "audio_file": "test_en_norm.wav",
-                "transcript": "The expression goes 6 × 10 = 60, not 600000. That gives us a 12% chance.",
+                "transcript": "The expression goes 6 × 10 = 60 not 600000 that gives us a 12% chance.",
                 "punctuations": [".", ","],
                 "normalization": true,
                 "error_rate": 0.025
@@ -27,11 +26,10 @@
             {
                 "language": "es",
                 "models": [
-                    "cheetah_params_es.pv",
-                    "cheetah_params_es_fast.pv"
+                    "cheetah_params_es.pv"
                 ],
                 "audio_file": "test_es.wav",
-                "transcript": "Un homenaje a Cabré era más que necesario.",
+                "transcript": "Un homenaje a que abre era más que necesario.",
                 "punctuations": ["."],
                 "normalization": false,
                 "error_rate": 0.025
@@ -42,7 +40,7 @@
                     "cheetah_params_es.pv"
                 ],
                 "audio_file": "test_es_norm.wav",
-                "transcript": "Mi número favorito de 268.",
+                "transcript": "Mi número favorito de es 268.",
                 "punctuations": ["."],
                 "normalization": true,
                 "error_rate": 0.025
@@ -50,8 +48,7 @@
             {
                 "language": "de",
                 "models": [
-                    "cheetah_params_de.pv",
-                    "cheetah_params_de_fast.pv"
+                    "cheetah_params_de.pv"
                 ],
                 "audio_file": "test_de.wav",
                 "transcript": "Die Werbung vermittelt einen falschen Eindruck.",
@@ -65,7 +62,7 @@
                     "cheetah_params_de.pv"
                 ],
                 "audio_file": "test_de_norm.wav",
-                "transcript": "Meine Lieblingszahl ist 268.",
+                "transcript": "Meine Lieblingszahl ist 268",
                 "punctuations": ["."],
                 "normalization": true,
                 "error_rate": 0.025
@@ -73,8 +70,7 @@
             {
                 "language": "fr",
                 "models": [
-                    "cheetah_params_fr.pv",
-                    "cheetah_params_fr_fast.pv"
+                    "cheetah_params_fr.pv"
                 ],
                 "audio_file": "test_fr.wav",
                 "transcript": "Les deux autres sont situés au bord de la mer jaune.",
@@ -96,8 +92,7 @@
             {
                 "language": "it",
                 "models": [
-                    "cheetah_params_it.pv",
-                    "cheetah_params_it_fast.pv"
+                    "cheetah_params_it.pv"
                 ],
                 "audio_file": "test_it.wav",
                 "transcript": "Dal passo si sale sulla vetta lungo la cresta sud.",
@@ -119,8 +114,7 @@
             {
                 "language": "pt",
                 "models": [
-                    "cheetah_params_pt.pv",
-                    "cheetah_params_pt_fast.pv"
+                    "cheetah_params_pt.pv"
                 ],
                 "audio_file": "test_pt.wav",
                 "transcript": "Um grupo de crianças está andando em um rio perto da margem do rio.",

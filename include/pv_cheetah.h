@@ -37,11 +37,11 @@ typedef struct pv_cheetah pv_cheetah_t;
  *
  * @param access_key AccessKey obtained from Picovoice Console (https://picovoice.ai/console/)
  * @param model_path Absolute path to the file containing model parameters.
- * @param device String representation of the device (e.g., CPU or GPU) to use. If set to `best`, the most
- * suitable device is selected automatically. If set to `gpu`, the engine uses the first available GPU device. To select a specific
- * GPU device, set this argument to `gpu:${GPU_INDEX}`, where `${GPU_INDEX}` is the index of the target GPU. If set to
- * `cpu`, the engine will run on the CPU with the default number of threads. To specify the number of threads, set this
- * argument to `cpu:${NUM_THREADS}`, where `${NUM_THREADS}` is the desired number of threads.
+ * @param device String representation of the device (e.g., CPU or GPU) to use for inference. If set to `best`, the most
+ * suitable device is selected automatically. If set to `gpu`, the engine uses the first available GPU device.
+ * To select a specific GPU device, set this argument to `gpu:${GPU_INDEX}`, where `${GPU_INDEX}` is the index of the
+ * target GPU. If set to `cpu`, the engine will run on the CPU with the default number of threads. To specify the
+ * number of threads, set this argument to `cpu:${NUM_THREADS}`, where `${NUM_THREADS}` is the desired number of threads.
  * @param endpoint_duration_sec Duration of endpoint in seconds. A speech endpoint is detected when there is a segment
  * of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0` to disable
  * endpoint detection.
@@ -84,7 +84,7 @@ PV_API void pv_cheetah_delete(pv_cheetah_t *object);
  * `NULL`.
  * @return Status code. Returns `PV_STATUS_INVALID_ARGUMENT` or `PV_STATUS_OUT_OF_MEMORY`,
  * `PV_STATUS_RUNTIME_ERROR`, `PV_STATUS_ACTIVATION_ERROR`, `PV_STATUS_ACTIVATION_LIMIT_REACHED`,
- * `PV_STATUS_ACTIVATION_THROTTLED`, or `PV_STATUS_ACTIVATION_REFUSED` on failure
+ * `PV_STATUS_ACTIVATION_THROTTLED`, or `PV_STATUS_ACTIVATION_REFUSED` on failure.
  */
 PV_API pv_status_t pv_cheetah_process(pv_cheetah_t *object, const int16_t *pcm, char **transcript, bool *is_endpoint);
 
@@ -96,7 +96,7 @@ PV_API pv_status_t pv_cheetah_process(pv_cheetah_t *object, const int16_t *pcm, 
  * @param[out] transcript Any remaining transcribed text. If none is available then an empty string is returned.
  * @return Status code. Returns `PV_STATUS_INVALID_ARGUMENT` or `PV_STATUS_OUT_OF_MEMORY`,
  * `PV_STATUS_RUNTIME_ERROR`, `PV_STATUS_ACTIVATION_ERROR`, `PV_STATUS_ACTIVATION_LIMIT_REACHED`,
- * `PV_STATUS_ACTIVATION_THROTTLED`, or `PV_STATUS_ACTIVATION_REFUSED` on failure
+ * `PV_STATUS_ACTIVATION_THROTTLED`, or `PV_STATUS_ACTIVATION_REFUSED` on failure.
  */
 PV_API pv_status_t pv_cheetah_flush(pv_cheetah_t *object, char **transcript);
 
