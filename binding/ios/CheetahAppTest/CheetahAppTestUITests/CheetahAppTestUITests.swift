@@ -115,7 +115,7 @@ class CheetahDemoUITests: XCTestCase {
             expectedTranscript: String,
             errorRate: Float,
             enableAutomaticPunctuation: Bool = false,
-            enableTextNormalization: Bool = false,
+            enableTextNormalization: Bool = false
         ) throws {
         let bundle = Bundle(for: type(of: self))
         let audioFileURL: URL = bundle.url(
