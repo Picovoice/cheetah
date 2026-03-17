@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2025 Picovoice Inc.
+// Copyright 2022-2026 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -37,13 +37,14 @@ class PvCheetah: NSObject {
         }
     }
 
-    @objc(create:modelPath:device:endpointDuration:enableAutomaticPunctuation:resolver:rejecter:)
+    @objc(create:modelPath:device:endpointDuration:enableAutomaticPunctuation:enableTextNormalization:resolver:rejecter:)
     func create(
             accessKey: String,
             modelPath: String,
             device: String,
             endpointDuration: Float32,
             enableAutomaticPunctuation: Bool,
+            enableTextNormalization: Bool,
             resolver resolve: RCTPromiseResolveBlock,
             rejecter reject: RCTPromiseRejectBlock) {
 
@@ -53,7 +54,8 @@ class PvCheetah: NSObject {
                     modelPath: modelPath,
                     device: device.isEmpty ? nil : device,
                     endpointDuration: endpointDuration,
-                    enableAutomaticPunctuation: enableAutomaticPunctuation)
+                    enableAutomaticPunctuation: enableAutomaticPunctuation,
+                    enableTextNormalization: enableTextNormalization)
 
             let handle: String = String(describing: cheetah)
             cheetahPool[handle] = cheetah

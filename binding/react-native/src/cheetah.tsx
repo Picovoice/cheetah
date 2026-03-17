@@ -51,8 +51,12 @@ class Cheetah {
     modelPath: string,
     options: CheetahOptions = {}
   ) {
-    const { device = 'best', endpointDuration = 1.0, enableAutomaticPunctuation = false } =
-      options;
+    const {
+      device = 'best',
+      endpointDuration = 1.0,
+      enableAutomaticPunctuation = false,
+      enableTextNormalization = false
+    } = options;
 
     try {
       let { handle, frameLength, sampleRate, version } =
@@ -61,7 +65,8 @@ class Cheetah {
           modelPath,
           device,
           endpointDuration,
-          enableAutomaticPunctuation
+          enableAutomaticPunctuation,
+          enableTextNormalization
         );
       return new Cheetah(handle, frameLength, sampleRate, version);
     } catch (err) {

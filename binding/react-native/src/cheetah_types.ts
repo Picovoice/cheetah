@@ -32,5 +32,5 @@ export type CheetahOptions = {
   /** Set to `true` to enable text normalization. Enabling this feature
    * improves the readability and formatting of Cheetah's transcriptions (e.g. converts number words to digits)
    * at the cost of some additional latency. */
-  enableAutomaticPunctuation?: boolean;
+  enableTextNormalization?: boolean;
 };
