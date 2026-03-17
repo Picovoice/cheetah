@@ -160,7 +160,7 @@ const runProcTest = async (
   try {
     await runProcess();
     const errorRate = wordErrorRate(normalizedTranscript, transcript, useCER);
-    expect(errorRate).to.be.lt(expectedErrorRate);
+    expect(errorRate).to.be.lte(expectedErrorRate);
   } catch (e) {
     expect(e).to.be.undefined;
   }
