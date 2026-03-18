@@ -218,7 +218,7 @@ public class MicDemo {
         String libraryPath = cmd.getOptionValue("library_path");
         String endpointDurationStr = cmd.getOptionValue("endpoint_duration_sec");
         boolean enableAutomaticPunctuation = !cmd.hasOption("disable_automatic_punctuation");
-        boolean enableTextNormalization = cmd.hasOption("enable_text_normalization");
+        boolean enableTextNormalization = !cmd.hasOption("disable_text_normalization");
         String audioDeviceIndexStr = cmd.getOptionValue("audio_device_index");
         String outputPath = cmd.getOptionValue("output_path");
 
@@ -334,7 +334,7 @@ public class MicDemo {
                 .build());
 
         options.addOption(Option.builder("n")
-                .longOpt("enable_text_normalization")
+                .longOpt("disable_text_normalization")
                 .desc("")
                 .build());
 
