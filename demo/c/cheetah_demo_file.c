@@ -183,7 +183,7 @@ int picovoice_main(int argc, char **argv) {
     const char *library_path = NULL;
     const char *device = "best";
     bool enable_automatic_punctuation = true;
-    bool enable_text_normalization = false;
+    bool enable_text_normalization = true;
     bool show_inference_devices = false;
 
     int opt;
@@ -205,7 +205,7 @@ int picovoice_main(int argc, char **argv) {
                 enable_automatic_punctuation = false;
                 break;
             case 'n':
-                enable_text_normalization = true;
+                enable_text_normalization = false;
                 break;
             case 'i':
                 show_inference_devices = true;

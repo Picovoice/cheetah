@@ -208,7 +208,7 @@ int picovoice_main(int argc, char *argv[]) {
     const char *device = "best";
     float endpoint_duration_sec = 0.f;
     bool enable_automatic_punctuation = true;
-    bool enable_text_normalization = false;
+    bool enable_text_normalization = true;
     int32_t device_index = -1;
     bool show_inference_devices = false;
 
@@ -240,7 +240,7 @@ int picovoice_main(int argc, char *argv[]) {
                 enable_automatic_punctuation = false;
                 break;
             case 'n':
-                enable_text_normalization = true;
+                enable_text_normalization = false;
                 break;
             case 'd':
                 device_index = (int32_t) strtol(optarg, NULL, 10);

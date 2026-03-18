@@ -65,7 +65,7 @@ class CheetahCTestCase(unittest.TestCase):
             "-y", self._device,
             "-m", self._get_model_path_by_model_name(model_name),
         ]
-        if normalization:
+        if not normalization:
             args.append("-n")
         args.append(os.path.join(self._root_dir, 'resources/', "audio_samples/", audio_file_name))
 

@@ -74,7 +74,7 @@ obtained from [Picovoice Console](https://console.picovoice.ai/). Either remove 
 
 Use the `-p` flag to disable automatic punctuation.
 
-Use the `-n` flag to enable text normalization.
+Use the `-n` flag to disable text normalization.
 
 ##### Linux (x86_64)
 
