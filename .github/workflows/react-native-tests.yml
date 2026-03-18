@@ -93,28 +93,6 @@ jobs:
       with:
         submodules: 'recursive'
 
-# ************** REMOVE AFTER RELEASE ********************
-    - name: Pod cache clean
-      run: pod cache clean --all
-
-    - name: Yarn cache clean
-      run: yarn cache clean
-
-    - name: Install React Native Binding Dependencies
-      run: yarn install
-      working-directory: binding/react-native
-
-    - name: Build Local tarball
-      run: yarn pkg
-      working-directory: binding/react-native
-
-    - name: Remove old package
-      run: yarn remove @picovoice/cheetah-react-native
-
-    - name: Add new local package
-      run: yarn add ../../pkg/picovoice-cheetah-react-native-4.0.0.tgz
-# ************** REMOVE AFTER RELEASE ********************
-
     - name: Pre-build dependencies
       run: |
         yarn install
