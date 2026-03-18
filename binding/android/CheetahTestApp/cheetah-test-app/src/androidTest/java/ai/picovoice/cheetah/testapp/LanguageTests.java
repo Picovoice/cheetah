@@ -1,5 +1,5 @@
 /*
-    Copyright 2024-2025 Picovoice Inc.
+    Copyright 2024-2026 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -53,6 +53,9 @@ public class LanguageTests extends BaseTest {
     public String[] punctuations;
 
     @Parameterized.Parameter(value = 5)
+    public boolean normalization;
+
+    @Parameterized.Parameter(value = 6)
     public float errorRate;
 
     @Parameterized.Parameters(name = "{0}")
@@ -72,6 +75,7 @@ public class LanguageTests extends BaseTest {
             String language = testData.get("language").getAsString();
             String audioFile = testData.get("audio_file").getAsString();
             String transcript = testData.get("transcript").getAsString();
+            boolean normalization = testData.get("normalization").getAsBoolean();
             float errorRate = testData.get("error_rate").getAsFloat();
 
             final JsonArray punctuationsJson = testData.getAsJsonArray("punctuations");
@@ -93,6 +97,7 @@ public class LanguageTests extends BaseTest {
                         audioFile,
                         transcript,
                         punctuations,
+                        normalization,
                         errorRate
                 });
             }
@@ -108,6 +113,7 @@ public class LanguageTests extends BaseTest {
                 .setAccessKey(accessKey)
                 .setModelPath(modelPath)
                 .setDevice(device)
+                .setEnableTextNormalization(normalization)
                 .build(appContext);
 
         File audioFile = new File(getAudioFilepath(testAudioFile));
@@ -131,6 +137,7 @@ public class LanguageTests extends BaseTest {
                 .setModelPath(modelPath)
                 .setDevice(device)
                 .setEnableAutomaticPunctuation(true)
+                .setEnableTextNormalization(normalization)
                 .build(appContext);
 
         File audioFile = new File(getAudioFilepath(testAudioFile));

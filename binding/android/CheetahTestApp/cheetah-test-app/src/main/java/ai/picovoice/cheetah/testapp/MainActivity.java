@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         result = new TestResult();
         result.testName = "Test Process";
         try {
-            String audioPath = "audio_samples/test.wav";
+            String audioPath = "audio_samples/test_en.wav";
 
             String processResult = processTestAudio(cheetah, audioPath);
             if (processResult.length() > 0) {

@@ -100,16 +100,16 @@ android {
             delete fileTree("$projectDir/src/main/assets") {
                 exclude '**/.gitkeep'
             }
-            String suffix = (flavor.name != "en") ? "_${flavor.name}" : ""
+            String params_suffix = (flavor.name != "en") ? "_${flavor.name}" : ""
             task("${flavor.name}CopyParams", type: Copy) {
                 from("$projectDir/../../../../lib/common/")
-                include("cheetah_params${suffix}.pv")
+                include("cheetah_params${params_suffix}.pv")
                 into("$projectDir/src/main/assets/models")
             }
             task("${flavor.name}CopyAudio", type: Copy) {
                 description = "Copy ${flavor.name} audio resources"
                 from("$projectDir/../../../../resources/audio_samples/")
-                include("test${suffix}.wav")
+                include("test_${flavor.name}.wav")
                 into("$projectDir/src/main/assets/audio_samples")
             }
         }
@@ -151,7 +151,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.code.gson:gson:2.10'
-    implementation 'ai.picovoice:cheetah-android:3.0.0'
+    implementation files("../../Cheetah/cheetah/build/outputs/aar/cheetah-release.aar")
 
     // Espresso UI Testing
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
