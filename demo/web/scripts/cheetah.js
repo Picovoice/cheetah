@@ -23,7 +23,10 @@ async function startCheetah(accessKey) {
       accessKey,
       cheetahTranscriptionCallback,
       cheetahModel,
-      { enableAutomaticPunctuation: true },
+      {
+        enableAutomaticPunctuation: true,
+        enableTextNormalization: true
+      },
     );
 
     writeMessage("Cheetah worker ready!");
