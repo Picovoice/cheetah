@@ -36,7 +36,7 @@ program
   )
   .option("-m, --model_file_path <string>", "absolute path to cheetah model")
   .option("-p, --disable_automatic_punctuation", "disable automatic punctuation")
-  .option("-n, --enable_text_normalization", "enable text normalization")
+  .option("-n, --disable_text_normalization", "disable text normalization")
   .option(
     "-z, --show_inference_devices",
     "Print devices that are available to run Cheetah inference.",
@@ -54,7 +54,7 @@ function fileDemo() {
   let modelFilePath = program["model_file_path"];
   let device = program["device"];
   let disableAutomaticPunctuation = program["disable_automatic_punctuation"];
-  let enableTextNormalization = program["enable_text_normalization"];
+  let disableTextNormalization = program["disable_text_normalization"];
 
   const showInferenceDevices = program["show_inference_devices"];
   if (showInferenceDevices) {
@@ -77,7 +77,7 @@ function fileDemo() {
       libraryPath: libraryFilePath,
       endpointDurationSec: 0.4,
       enableAutomaticPunctuation: !disableAutomaticPunctuation,
-      enableTextNormalization: enableTextNormalization
+      enableTextNormalization: !disableTextNormalization
     });
 
   if (!fs.existsSync(audioPath)) {
