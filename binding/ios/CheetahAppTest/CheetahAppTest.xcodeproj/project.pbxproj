@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,8 +16,9 @@
 		1E00656427CFF7EC006FF6E9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E00656227CFF7EC006FF6E9 /* LaunchScreen.storyboard */; };
 		1E00657927CFF7EC006FF6E9 /* CheetahAppTestUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E00657827CFF7EC006FF6E9 /* CheetahAppTestUITests.swift */; };
 		1E5B7B332800F75900F8BDDB /* PerformanceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5B7B322800F75900F8BDDB /* PerformanceTest.swift */; };
-		1E5B7B362800F77300F8BDDB /* test.wav in Resources */ = {isa = PBXBuildFile; fileRef = 1E5B7B352800F77300F8BDDB /* test.wav */; };
+		1E5B7B362800F77300F8BDDB /* test_en.wav in Resources */ = {isa = PBXBuildFile; fileRef = 1E5B7B352800F77300F8BDDB /* test_en.wav */; };
 		1E5B7B382800F7AA00F8BDDB /* cheetah_params.pv in Resources */ = {isa = PBXBuildFile; fileRef = 1E5B7B372800F7AA00F8BDDB /* cheetah_params.pv */; };
+		5A0637312F6230890037D526 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 5A0637302F6230890037D526 /* Cheetah */; };
 		5A1C386D2EE8DA7900FEF522 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 5A1C386C2EE8DA7900FEF522 /* Cheetah */; };
 		D23A4B5C0E110877F4A85325 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		E10D9F832E5FE4B800CA78F8 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E10D9F822E5FE4B800CA78F8 /* Cheetah */; };
@@ -45,7 +46,7 @@
 
 /* Begin PBXFileReference section */
 		072F6D482D02533000E29DF3 /* test_resources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = test_resources; path = CheetahAppTestUITests/test_resources; sourceTree = "<group>"; };
-		07E777C32D02632A005A41E7 /* test.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = test.wav; sourceTree = "<group>"; };
+		07E777C32D02632A005A41E7 /* test_en.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = test_en.wav; sourceTree = "<group>"; };
 		07E777C42D02632A005A41E7 /* test_de.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = test_de.wav; sourceTree = "<group>"; };
 		07E777C52D02632A005A41E7 /* test_es.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = test_es.wav; sourceTree = "<group>"; };
 		07E777C62D02632A005A41E7 /* test_fr.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = test_fr.wav; sourceTree = "<group>"; };
@@ -72,7 +73,7 @@
 		1E5B7B302800F6FE00F8BDDB /* PerformanceTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PerformanceTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E5B7B322800F75900F8BDDB /* PerformanceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceTest.swift; sourceTree = "<group>"; };
 		1E5B7B342800F76700F8BDDB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1E5B7B352800F77300F8BDDB /* test.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = test.wav; path = ../../../../resources/audio_samples/test.wav; sourceTree = "<group>"; };
+		1E5B7B352800F77300F8BDDB /* test_en.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = test_en.wav; path = ../../../../resources/audio_samples/test_en.wav; sourceTree = "<group>"; };
 		1E5B7B372800F7AA00F8BDDB /* cheetah_params.pv */ = {isa = PBXFileReference; lastKnownFileType = file; name = cheetah_params.pv; path = ../../../../lib/common/cheetah_params.pv; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -93,6 +94,7 @@
 				E10D9F832E5FE4B800CA78F8 /* Cheetah in Frameworks */,
 				E10D9F852E5FE4CC00CA78F8 /* Cheetah in Frameworks */,
 				D23A4B5C0E110877F4A85325 /* (null) in Frameworks */,
+				5A0637312F6230890037D526 /* Cheetah in Frameworks */,
 				E1E0C8032CF120B7001D6D84 /* Cheetah in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -111,7 +113,7 @@
 		07E777C92D02632A005A41E7 /* audio_samples */ = {
 			isa = PBXGroup;
 			children = (
-				07E777C32D02632A005A41E7 /* test.wav */,
+				07E777C32D02632A005A41E7 /* test_en.wav */,
 				07E777C42D02632A005A41E7 /* test_de.wav */,
 				07E777C52D02632A005A41E7 /* test_es.wav */,
 				07E777C62D02632A005A41E7 /* test_fr.wav */,
@@ -195,7 +197,7 @@
 			children = (
 				1E5B7B322800F75900F8BDDB /* PerformanceTest.swift */,
 				1E5B7B342800F76700F8BDDB /* Info.plist */,
-				1E5B7B352800F77300F8BDDB /* test.wav */,
+				1E5B7B352800F77300F8BDDB /* test_en.wav */,
 				1E5B7B372800F7AA00F8BDDB /* cheetah_params.pv */,
 			);
 			path = PerformanceTest;
@@ -297,7 +299,7 @@
 			);
 			mainGroup = 1E00654B27CFF7EB006FF6E9;
 			packageReferences = (
-				5A7E79992EF3537B00148C4F /* XCRemoteSwiftPackageReference "cheetah" */,
+				5A06372F2F6230890037D526 /* XCLocalSwiftPackageReference "../../../../cheetah" */,
 			);
 			productRefGroup = 1E00655527CFF7EB006FF6E9 /* Products */;
 			projectDirPath = "";
@@ -334,7 +336,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E5B7B382800F7AA00F8BDDB /* cheetah_params.pv in Resources */,
-				1E5B7B362800F77300F8BDDB /* test.wav in Resources */,
+				1E5B7B362800F77300F8BDDB /* test_en.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -706,6 +708,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		5A06372F2F6230890037D526 /* XCLocalSwiftPackageReference "../../../../cheetah" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../../../cheetah;
+		};
 		E1E0C7FE2CF11FD9001D6D84 /* XCLocalSwiftPackageReference "../../../../cheetah" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../../../cheetah;
@@ -721,20 +727,16 @@
 				version = 2.2.0;
 			};
 		};
-		5A7E79992EF3537B00148C4F /* XCRemoteSwiftPackageReference "cheetah" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Picovoice/cheetah";
-			requirement = {
-				kind = exactVersion;
-				version = 3.0.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		076CC4832E15FB93004995F2 /* Cheetah */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 076CC4822E15FB93004995F2 /* XCRemoteSwiftPackageReference "cheetah" */;
+			productName = Cheetah;
+		};
+		5A0637302F6230890037D526 /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
 			productName = Cheetah;
 		};
 		5A1C386C2EE8DA7900FEF522 /* Cheetah */ = {

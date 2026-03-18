@@ -44,7 +44,8 @@ class ViewModel: ObservableObject {
             try cheetah = Cheetah(
                     accessKey: ACCESS_KEY,
                     modelPath: "cheetah_params\(model).pv",
-                    enableAutomaticPunctuation: true)
+                    enableAutomaticPunctuation: true,
+                    enableTextNormalization: true)
 
             VoiceProcessor.instance.addFrameListener(VoiceProcessorFrameListener(audioCallback))
             VoiceProcessor.instance.addErrorListener(VoiceProcessorErrorListener(errorCallback))
