@@ -37,6 +37,7 @@ class PvCheetah: NSObject {
         }
     }
 
+    // swiftlint:disable:next line_length
     @objc(create:modelPath:device:endpointDuration:enableAutomaticPunctuation:enableTextNormalization:resolver:rejecter:)
     func create(
             accessKey: String,
