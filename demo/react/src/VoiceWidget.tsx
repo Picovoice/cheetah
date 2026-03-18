@@ -34,6 +34,7 @@ export default function VoiceWidget() {
     setIsBusy(true);
     await init(accessKeyRef.current, cheetahModel, {
       enableAutomaticPunctuation: true,
+      enableTextNormalization: true,
     });
     setIsBusy(false);
   }, [init]);
