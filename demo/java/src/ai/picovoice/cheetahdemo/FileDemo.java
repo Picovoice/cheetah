@@ -128,7 +128,7 @@ public class FileDemo {
         String modelPath = cmd.getOptionValue("model_path");
         String device = cmd.getOptionValue("device");
         boolean enableAutomaticPunctuation = !cmd.hasOption("disable_automatic_punctuation");
-        boolean enableTextNormalization = cmd.hasOption("enable_text_normalization");
+        boolean enableTextNormalization = !cmd.hasOption("disable_text_normalization");
         String inputAudioPath = cmd.getOptionValue("input_audio_path");
 
         if (cmd.hasOption("show_inference_devices")) {
@@ -218,7 +218,7 @@ public class FileDemo {
                 .build());
 
         options.addOption(Option.builder("n")
-                .longOpt("enable_text_normalization")
+                .longOpt("disable_text_normalization")
                 .desc("")
                 .build());
 
