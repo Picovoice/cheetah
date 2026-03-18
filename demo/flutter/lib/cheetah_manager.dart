@@ -31,8 +31,12 @@ class CheetahManager {
       String device,
       TranscriptCallback transcriptCallback,
       ProcessErrorCallback processErrorCallback) async {
-    Cheetah cheetah = await Cheetah.create(accessKey, modelPath,
-        device: device, enableAutomaticPunctuation: true);
+    Cheetah cheetah = await Cheetah.create(
+        accessKey,
+        modelPath,
+        device: device,
+        enableAutomaticPunctuation: true,
+        enableTextNormalization: true);
     return CheetahManager._(cheetah, transcriptCallback, processErrorCallback);
   }
 
