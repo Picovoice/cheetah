@@ -76,7 +76,7 @@ public class CheetahPerformanceTest {
 
         int frameLen = cheetah.getFrameLength();
         String audioFilePath = Paths.get(System.getProperty("user.dir"))
-                .resolve("../../resources/audio_samples/test.wav")
+                .resolve("../../resources/audio_samples/test_en.wav")
                 .toString();
         File testAudioPath = new File(audioFilePath);
 

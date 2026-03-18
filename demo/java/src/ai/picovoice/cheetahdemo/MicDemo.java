@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2025 Picovoice Inc.
+    Copyright 2022-2026 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -32,6 +32,7 @@ public class MicDemo {
             String libraryPath,
             float endpointDuration,
             boolean enableAutomaticPunctuation,
+            boolean enableTextNormalization,
             int audioDeviceIndex,
             String outputPath) {
 
@@ -63,6 +64,7 @@ public class MicDemo {
                     .setDevice(device)
                     .setEndpointDuration(endpointDuration)
                     .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
+                    .setEnableTextNormalization(enableTextNormalization)
                     .build();
 
             if (outputPath != null) {
@@ -216,6 +218,7 @@ public class MicDemo {
         String libraryPath = cmd.getOptionValue("library_path");
         String endpointDurationStr = cmd.getOptionValue("endpoint_duration_sec");
         boolean enableAutomaticPunctuation = !cmd.hasOption("disable_automatic_punctuation");
+        boolean enableTextNormalization = cmd.hasOption("enable_text_normalization");
         String audioDeviceIndexStr = cmd.getOptionValue("audio_device_index");
         String outputPath = cmd.getOptionValue("output_path");
 
@@ -284,6 +287,7 @@ public class MicDemo {
                 libraryPath,
                 endpointDuration,
                 enableAutomaticPunctuation,
+                enableTextNormalization,
                 audioDeviceIndex,
                 outputPath);
     }
@@ -326,6 +330,11 @@ public class MicDemo {
 
         options.addOption(Option.builder("d")
                 .longOpt("disable_automatic_punctuation")
+                .desc("")
+                .build());
+
+        options.addOption(Option.builder("n")
+                .longOpt("enable_text_normalization")
                 .desc("")
                 .build());
 
