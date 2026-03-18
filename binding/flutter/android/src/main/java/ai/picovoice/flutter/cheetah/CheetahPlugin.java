@@ -102,13 +102,15 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
             String device = call.argument("device");
             double endpointDuration = call.argument("endpointDuration");
             boolean enableAutomaticPunctuation = call.argument("enableAutomaticPunctuation");
+            boolean enableTextNormalization = call.argument("enableTextNormalization");
 
             Cheetah.Builder cheetahBuilder = new Cheetah.Builder()
                     .setAccessKey(accessKey)
                     .setModelPath(modelPath)
                     .setDevice(device)
                     .setEndpointDuration((float) endpointDuration)
-                    .setEnableAutomaticPunctuation(enableAutomaticPunctuation);
+                    .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
+                    .setEnableTextNormalization(enableTextNormalization);
 
             Cheetah cheetah = cheetahBuilder.build(flutterContext);
             cheetahPool.put(String.valueOf(System.identityHashCode(cheetah)), cheetah);

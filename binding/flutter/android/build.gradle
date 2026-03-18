@@ -1,8 +1,9 @@
 group 'ai.picovoice.flutter.cheetah'
-version '3.0.0'
+version '4.0.0'
 
 buildscript {
     repositories {
+        mavenLocal() // TODO: REMOVE
         google()
         mavenCentral()
     }
@@ -14,6 +15,7 @@ buildscript {
 
 rootProject.allprojects {
     repositories {
+        mavenLocal() // TODO: REMOVE
         google()
         mavenCentral()
     }
@@ -44,5 +46,5 @@ android {
 }
 
 dependencies {
-    implementation 'ai.picovoice:cheetah-android:3.0.0'
+    implementation 'ai.picovoice:cheetah-android:4.0.0'
 }

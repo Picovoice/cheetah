@@ -93,6 +93,7 @@ void main() {
         String transcript,
         List<String> punctuations,
         bool testPunctuations,
+        bool normalization,
         double errorRate,
         String audioFile) async {
       String modelPath = getModelPath(modelFile);
@@ -108,6 +109,7 @@ void main() {
       try {
         cheetah = await Cheetah.create(accessKey, modelPath,
             enableAutomaticPunctuation: testPunctuations,
+            enableTextNormalization: normalization,
             device: device);
       } on CheetahException catch (ex) {
         expect(ex, equals(null), reason: "Failed to initialize Cheetah: $ex");
@@ -142,6 +144,7 @@ void main() {
           List<dynamic> punctuationsRaw = languageTests[t]['punctuations'];
           List<String> punctuations =
               punctuationsRaw.map((p) => p.toString()).toList();
+          bool normalization = languageTests[t]['normalization'];
           double errorRate = languageTests[t]['error_rate'];
           String audioFile = languageTests[t]['audio_file'];
 
@@ -154,7 +157,7 @@ void main() {
           }
 
           await runCheetahProcess(
-              modelFile, transcript, punctuations, false, errorRate, audioFile);
+              modelFile, transcript, punctuations, false, normalization, errorRate, audioFile);
         }
       }
     });
@@ -168,11 +171,12 @@ void main() {
           List<dynamic> punctuationsRaw = languageTests[t]['punctuations'];
           List<String> punctuations =
               punctuationsRaw.map((p) => p.toString()).toList();
+          bool normalization = languageTests[t]['normalization'];
           double errorRate = languageTests[t]['error_rate'];
           String audioFile = languageTests[t]['audio_file'];
 
           await runCheetahProcess(
-              modelFile, transcript, punctuations, true, errorRate, audioFile);
+              modelFile, transcript, punctuations, true, normalization, errorRate, audioFile);
         }
       }
     });

@@ -6,6 +6,7 @@ ext {
     PUBLISH_ARTIFACT_ID = 'cheetah-android'
 }
 
+// ************** REMOVE AFTER RELEASE ********************
 apply plugin: 'maven-publish'
 publishing {
     publications {
@@ -20,6 +21,7 @@ publishing {
         mavenLocal()
     }
 }
+// ************** REMOVE AFTER RELEASE ********************
 
 android {
     compileSdkVersion defaultTargetSdkVersion
