@@ -96,10 +96,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/retry/-/retry-0.4.2.tgz#1860473de7dfa1546767448f333db80cb0ff2161"
   integrity sha512-xeO57FpIu4p1Ri3Jq/EXq4ClRm86dVF2z/+kvFnyqVYRavTZmaFaUBbWCOuuTh0o/g7DSsk6kc2vrS4Vl5oPOQ==
 
-"@picovoice/cheetah-web@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-3.0.0.tgz#c6d143ffaf459b4f262cbf141eae009333f6655b"
-  integrity sha512-7Cazk4hdqB2SnHEbaeAl6uZqjj7THh6jMPxHOLi8l5QSjVrZ7/FdeoN+ZhSiY51a3YHdwOO7HJYPGj7RdHoD4Q==
+"@picovoice/cheetah-web@4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-4.0.0.tgz#9758f259bd2d6014ad90353e2771d7694fa9bb69"
+  integrity sha512-mzvBH1yasHB+NhQN9Craol+WhOuMUSygrIGrbypklTIGA3DNQ+r8di0V4pH1nizVsvxJzmweer9mbUwpafypIg==
   dependencies:
     "@picovoice/web-utils" "=1.4.3"
 
