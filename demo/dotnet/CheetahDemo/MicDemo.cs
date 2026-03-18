@@ -130,7 +130,7 @@ namespace CheetahDemo
             string device = null;
             float endpointDurationSec = 3.0f;
             bool enableAutomaticPunctuation = true;
-            bool enableTextNormalization = false;
+            bool enableTextNormalization = true;
             int audioDeviceIndex = -1;
             bool showAudioDevices = false;
             bool showHelp = false;
@@ -174,9 +174,9 @@ namespace CheetahDemo
                     enableAutomaticPunctuation = false;
                     argIndex++;
                 }
-                else if (args[argIndex] == "--enable_text_normalization")
+                else if (args[argIndex] == "--disable_text_normalization")
                 {
-                    enableTextNormalization = true;
+                    enableTextNormalization = false;
                     argIndex++;
                 }
                 else if (args[argIndex] == "--show_audio_devices")
@@ -256,7 +256,7 @@ namespace CheetahDemo
             "A speech endpoint is detected when there is a chunk of audio (with a duration specified herein)" +
             " after an utterance without any speech in it. Set duration to 0 to disable this. Default is 3 seconds\n" +
             "\t--disable_automatic_punctuation: Disable automatic punctuation.\n" +
-            "\t--enable_text_normalization: Enable text normalization.\n" +
+            "\t--disable_text_normalization: Disable text normalization.\n" +
             "\t--audio_device_index: Index of input audio device.\n" +
             "\t--show_audio_devices: Print available recording devices.\n" +
             "\t--show_inference_devices: Print devices that are available to run Cheetah inference.\n";

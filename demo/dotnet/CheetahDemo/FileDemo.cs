@@ -153,7 +153,7 @@ namespace CheetahDemo
             string modelPath = null;
             string device = null;
             bool enableAutomaticPunctuation = true;
-            bool enableTextNormalization = false;
+            bool enableTextNormalization = true;
             bool showHelp = false;
             bool showInferenceDevices = false;
 
@@ -194,9 +194,9 @@ namespace CheetahDemo
                     enableAutomaticPunctuation = false;
                     argIndex++;
                 }
-                else if (args[argIndex] == "--enable_text_normalization")
+                else if (args[argIndex] == "--disable_text_normalization")
                 {
-                    enableTextNormalization = true;
+                    enableTextNormalization = false;
                     argIndex++;
                 }
                 else if (args[argIndex] == "--show_inference_devices")
@@ -261,7 +261,7 @@ namespace CheetahDemo
             "\t--device: Device to run inference on (`best`, `cpu:{num_threads}` or `gpu:{gpu_index}`). Default: automatically selects best device.\n" +
             "\t--model_path: Absolute path to the file containing model parameters.\n" +
             "\t--disable_automatic_punctuation: Disable automatic punctuation.\n" +
-            "\t--enable_text_normalization: Enable text normalization.\n" +
+            "\t--disable_text_normalization: Disable text normalization.\n" +
             "\t--show_inference_devices: Print devices that are available to run Cheetah inference.\n";
 
     }
