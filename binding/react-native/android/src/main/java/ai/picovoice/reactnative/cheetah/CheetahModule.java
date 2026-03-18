@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2025 Picovoice Inc.
+    Copyright 2022-2026 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -74,6 +74,7 @@ public class CheetahModule extends ReactContextBaseJavaModule {
             String device,
             Float endpointDuration,
             boolean enableAutomaticPunctuation,
+            boolean enableTextNormalization,
             Promise promise
     ) {
         try {
@@ -83,6 +84,7 @@ public class CheetahModule extends ReactContextBaseJavaModule {
                     .setDevice(device)
                     .setEndpointDuration(endpointDuration)
                     .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
+                    .setEnableTextNormalization(enableTextNormalization)
                     .build(reactContext);
             cheetahPool.put(String.valueOf(System.identityHashCode(cheetah)), cheetah);
 
