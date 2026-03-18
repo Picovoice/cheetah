@@ -1,5 +1,5 @@
 #
-# Copyright 2023 Picovoice Inc.
+# Copyright 2023-2026 Picovoice Inc.
 #
 # You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 # file accompanying this source.
@@ -26,3 +26,27 @@ def append_language(s, language):
     if language == 'en':
         return s
     return "%s_%s" % (s, language)
+
+
+def load_languages_test_data():
+    data_file_path = os.path.join(os.path.dirname(__file__), "../../../resources/.test/test_data.json")
+    with open(data_file_path, encoding="utf8") as data_file:
+        json_test_data = data_file.read()
+    test_data = json.loads(json_test_data)['tests']
+
+    language_tests = list()
+    for t in test_data['language_tests']:
+        for model_file in t['models']:
+            language_tests.append(
+                (
+                    t['language'],
+                    model_file,
+                    t['audio_file'],
+                    t['transcript'],
+                    t['punctuations'],
+                    t['normalization'],
+                    t['error_rate']
+                )
+            )
+
+    return language_tests
