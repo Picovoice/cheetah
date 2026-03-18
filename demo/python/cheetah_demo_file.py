@@ -33,6 +33,10 @@ def main():
         action='store_true',
         help='Disable insertion of automatic punctuation')
     parser.add_argument(
+        '--disable_text_normalization',
+        action='store_true',
+        help='Disable text normalization')
+    parser.add_argument(
         '--wav_paths',
         nargs='+',
         metavar='PATH',
@@ -60,7 +64,8 @@ def main():
         model_path=args.model_path,
         device=args.device,
         library_path=args.library_path,
-        enable_automatic_punctuation=not args.disable_automatic_punctuation)
+        enable_automatic_punctuation=not args.disable_automatic_punctuation,
+        enable_text_normalization=not args.disable_text_normalization)
 
     try:
         for wav_path in args.wav_paths:
