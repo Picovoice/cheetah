@@ -59,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
                     .setAccessKey(ACCESS_KEY)
                     .setDevice("best")
                     .setEndpointDuration(1f)
-                    .setEnableAutomaticPunctuation(true);
+                    .setEnableAutomaticPunctuation(true)
+                    .setEnableTextNormalization(true);
 
             String model = "cheetah_params";
             String language = flavor.substring(0, 2);
