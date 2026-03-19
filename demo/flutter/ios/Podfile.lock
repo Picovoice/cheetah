@@ -15,7 +15,6 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
-  - Cheetah-iOS (from `../../../binding/ios/Cheetah-iOS.podspec`)
   - cheetah_flutter (from `.symlinks/plugins/cheetah_flutter/ios`)
   - Flutter (from `Flutter`)
   - flutter_voice_processor (from `.symlinks/plugins/flutter_voice_processor/ios`)
@@ -24,11 +23,10 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Cheetah-iOS
     - ios-voice-processor
 
 EXTERNAL SOURCES:
-  Cheetah-iOS:
-    :podspec: "../../../binding/ios/Cheetah-iOS.podspec"
   cheetah_flutter:
     :path: ".symlinks/plugins/cheetah_flutter/ios"
   Flutter:
@@ -40,13 +38,8 @@ EXTERNAL SOURCES:
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
 
-CHECKOUT OPTIONS:
-  Cheetah-iOS:
-    :commit: 32e861e5fce302df6b5c9224b40684e208135e09
-    :git: https://github.com/Picovoice/cheetah.git
-
 SPEC CHECKSUMS:
-  Cheetah-iOS: 9030b003525e3bea53d830253f29ad48d7787b36
+  Cheetah-iOS: 4fbacc1087abcd1c551739026eb27599437072b3
   cheetah_flutter: 646212174b1f65b2827ff55a7ad6ed2e610fa113
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_voice_processor: f60363f959515eaebc35bcaaf26017596c953fc6
@@ -54,6 +47,6 @@ SPEC CHECKSUMS:
   ios-voice-processor: 6b5ca08962f39e434fe39dca0f483d923a3b1b97
   path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
 
-PODFILE CHECKSUM: 362fc64d08dd33ea965263fd7c887f966540a4d1
+PODFILE CHECKSUM: bd29822c3d5baf6b44b726f00ea3293a19339ef2
 
 COCOAPODS: 1.16.2
