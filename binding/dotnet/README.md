@@ -15,10 +15,6 @@ Cheetah is an on-device streaming speech-to-text engine. Cheetah is:
   - Chrome, Safari, Firefox, and Edge
   - Raspberry Pi (3, 4, 5)
 
-## Requirements
-
-- .NET 8.0
-
 ## Compatibility
 
 Platforms compatible with .NET Standard 2.0+:
