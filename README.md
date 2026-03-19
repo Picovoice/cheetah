@@ -727,6 +727,10 @@ function App(props) {
 
 ## Releases
 
+### v4.0.0 - March 19th, 2026
+- Improved engine performance and latency
+- Added text normalization feature
+
 ### v3.0.0 - December 17th, 2025
 - Improved engine performance
 - Added support for running on GPU or multiple CPU cores
