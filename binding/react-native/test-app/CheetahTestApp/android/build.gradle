@@ -20,6 +20,7 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenLocal()
         maven {
             url("$rootDir/../node_modules/detox/Detox-android")
         }

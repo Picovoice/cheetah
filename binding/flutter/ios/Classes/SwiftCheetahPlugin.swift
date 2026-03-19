@@ -57,13 +57,15 @@ public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
                     let device = args["device"] as? String
                     let endpointDuration = args["endpointDuration"] as? Float
                     let enableAutomaticPunctuation = args["enableAutomaticPunctuation"] as? Bool
+                    let enableTextNormalization = args["enableTextNormalization"] as? Bool
 
                     let cheetah = try Cheetah(
                             accessKey: accessKey,
                             modelPath: modelPath,
                             device: device,
                             endpointDuration: endpointDuration ?? 1.0,
-                            enableAutomaticPunctuation: enableAutomaticPunctuation ?? false
+                            enableAutomaticPunctuation: enableAutomaticPunctuation ?? false,
+                            enableTextNormalization: enableTextNormalization ?? false
                     )
 
                     let handle: String = String(describing: cheetah)

@@ -82,7 +82,8 @@ export default class App extends Component<Props, State> {
         this._accessKey,
         `models/cheetah_params${suffix}.pv`,
         {
-          enableAutomaticPunctuation: true
+          enableAutomaticPunctuation: true,
+          enableTextNormalization: true
         },
       );
     } catch (err: any) {
