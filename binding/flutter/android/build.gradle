@@ -3,7 +3,6 @@ version '4.0.0'
 
 buildscript {
     repositories {
-        mavenLocal() // TODO: REMOVE
         google()
         mavenCentral()
     }
@@ -15,7 +14,6 @@ buildscript {
 
 rootProject.allprojects {
     repositories {
-        mavenLocal() // TODO: REMOVE
         google()
         mavenCentral()
     }
