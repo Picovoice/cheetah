@@ -71,9 +71,7 @@ using Picovoice needs to have a valid AccessKey. You must keep your AccessKey se
 connectivity to validate your AccessKey with Picovoice license servers even though the voice recognition is running 100%
 offline.
 
-AccessKey also verifies that your usage is within the limits of your account. Everyone who signs up for
-[Picovoice Console](https://console.picovoice.ai/) receives the `Free Tier` usage rights described
-[here](https://picovoice.ai/pricing/). If you wish to increase your limits, you can purchase a subscription plan.
+AccessKey also verifies that your usage is within the limits of your account. You can see your usage limits and real-time usage on your [Picovoice Console Profile](https://console.picovoice.ai/profile). To continue using Picovoice after your trial or renew and adjust your usage limits, please reach out to our [Enterprise Sales Team](https://picovoice.ai/contact) or your existing Picovoice contact.
 
 ## Language Support
 
