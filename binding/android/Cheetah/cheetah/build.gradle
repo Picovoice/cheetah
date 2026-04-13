@@ -6,23 +6,6 @@ ext {
     PUBLISH_ARTIFACT_ID = 'cheetah-android'
 }
 
-// ************** REMOVE AFTER RELEASE ********************
-apply plugin: 'maven-publish'
-publishing {
-    publications {
-        release(MavenPublication) {
-            groupId = "ai.picovoice"
-            artifactId = "cheetah-android"
-            version = "4.0.1"
-            artifact("$buildDir/outputs/aar/cheetah-release.aar")
-        }
-    }
-    repositories {
-        mavenLocal()
-    }
-}
-// ************** REMOVE AFTER RELEASE ********************
-
 android {
     compileSdkVersion defaultTargetSdkVersion
 
