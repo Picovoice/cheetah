@@ -97,10 +97,13 @@ jobs:
       run: bash machine-state.sh
 
     - name: Activate virtualenv
-      run: >
+      run: |
         python3 -m venv .venv
-        source .venv/bin/activate
-        echo PATH=${GITHUB_WORKSPACE}/.venv/bin:$PATH >> $GITHUB_ENV
+        . .venv/bin/activate
+        echo PATH=$PATH >> $GITHUB_ENV
+
+    - name: Pre-build dependencies
+      run: python3 -m pip install --upgrade pip
 
     - name: Install dependencies
       run: python3 -m pip install -r requirements.txt
@@ -126,6 +129,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Activate virtualenv
+      run: |
+        python3 -m venv .venv --symlinks
+        .venv\Scripts\activate
+        echo PATH=$PATH >> $GITHUB_ENV
+
+    - name: Pre-build dependencies
+      run: python3 -m pip install --upgrade pip
 
     - name: Test
       run: >
