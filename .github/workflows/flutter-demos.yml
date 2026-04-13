@@ -64,6 +64,9 @@ jobs:
         flutter-version: ${{ matrix.flutter-version }}
         architecture: x64
 
+    - name: Update CocoaPods repo
+      run: pod repo update
+
     - name: Install dependencies
       run: flutter pub get
 

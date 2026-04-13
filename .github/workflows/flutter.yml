@@ -77,6 +77,9 @@ jobs:
         fvm install 3.35.0
         fvm use 3.35.0
 
+    - name: Update CocoaPods repo
+      run: pod repo update
+
     - name: Install dependencies
       run: fvm flutter pub get
 
