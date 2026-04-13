@@ -36,3 +36,6 @@
 ## [2.3.0] - 2025-08-28
 * Added support for low latency Cheetah Fast models
 * Improved engine accuracy
+
+## [4.0.1] - 2025-08-28
+* text normalization improvements
