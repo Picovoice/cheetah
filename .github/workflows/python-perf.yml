@@ -96,8 +96,14 @@ jobs:
       working-directory: resources/scripts
       run: bash machine-state.sh
 
+    - name: Activate virtualenv
+      run: >
+        python3 -m venv .venv
+        source .venv/bin/activate
+        echo PATH=${GITHUB_WORKSPACE}/.venv/bin:$PATH >> $GITHUB_ENV
+
     - name: Install dependencies
-      run: pip install -r requirements.txt
+      run: python3 -m pip install -r requirements.txt
 
     - name: Test
       run: python3 test_cheetah_perf.py ${{secrets.PV_VALID_ACCESS_KEY}} 20 ${{matrix.init_performance_threshold_sec}} ${{matrix.proc_performance_threshold_sec}} ${{ matrix.device }}
