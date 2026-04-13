@@ -12,7 +12,7 @@ on:
       - 'resources/audio_samples/**'
       - '.github/workflows/react.yml'
   pull_request:
-    branches: [ master, 'v[0-9]+.[0-9]+' ]
+    branches: [ master, 'v[0-9]+.[0-9]+', 'v[0-9]+.[0-9]+-.+', 'v[0-9]+.[0-9]+.[0-9]+', 'v[0-9]+.[0-9]+.[0-9]+-.+' ]
     paths:
       - 'binding/react/**'
       - '!binding/react/README.md'
