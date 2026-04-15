@@ -16,7 +16,7 @@ on:
       - 'lib/windows/**'
       - 'resources/audio_samples/**'
   pull_request:
-    branches: [ master, 'v[0-9]+.[0-9]+' ]
+    branches: [ master, 'v[0-9]+.[0-9]+', 'v[0-9]+.[0-9]+-.+', 'v[0-9]+.[0-9]+.[0-9]+', 'v[0-9]+.[0-9]+.[0-9]+-.+' ]
     paths:
       - '!demo/c/README.md'
       - '.github/workflows/c-demos.yml'
@@ -201,6 +201,20 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Setup Python virtualenv (*nix)
+        if: ${{ matrix.machine != 'pv-windows' && matrix.machine != 'pv-windows-igpu' && matrix.machine != 'pv-windows-arm64' }}
+        run: |
+          python3 -m venv .venv
+          . .venv/bin/activate
+          echo PATH=$PATH >> $GITHUB_ENV
+
+      - name: Setup Python virtualenv (windows)
+        if: ${{ matrix.machine == 'pv-windows' || matrix.machine == 'pv-windows-igpu' || matrix.machine == 'pv-windows-arm64' }}
+        run: |
+          python3 -m venv .venv --symlinks
+          .venv\Scripts\activate
+          echo PATH=$PATH >> $GITHUB_ENV
+
       - name: Create build directory
         run: cmake -G "${{ matrix.make_file }}" -B ./build -DPV_RECORDER_PLATFORM="${{ matrix.pv_recorder_platform }}"
 
@@ -208,7 +222,7 @@ jobs:
         run: cmake --build ./build --target cheetah_demo_file
 
       - name: Install dependencies
-        run: pip install -r test/requirements.txt
+        run: python3 -m pip install -r test/requirements.txt
 
       - name: Test
         run: python3 test/test_cheetah_c.py ${{secrets.PV_VALID_ACCESS_KEY}} ${{ matrix.device }} ${{ matrix.platform }} ${{ matrix.arch }}

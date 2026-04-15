@@ -9,7 +9,7 @@ on:
       - '.github/workflows/android-browserstack.yml'
       - 'script/automation/browserstack.py'
   pull_request:
-    branches: [ master, 'v[0-9]+.[0-9]+' ]
+    branches: [ master, 'v[0-9]+.[0-9]+', 'v[0-9]+.[0-9]+-.+', 'v[0-9]+.[0-9]+.[0-9]+', 'v[0-9]+.[0-9]+.[0-9]+-.+' ]
     paths:
       - 'binding/android/CheetahTestApp/**'
       - '.github/workflows/android-browserstack.yml'

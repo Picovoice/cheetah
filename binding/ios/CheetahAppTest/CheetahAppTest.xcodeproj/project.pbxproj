@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		072F6D492D02533000E29DF3 /* test_resources in Resources */ = {isa = PBXBuildFile; fileRef = 072F6D482D02533000E29DF3 /* test_resources */; };
 		076CC4842E15FB93004995F2 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 076CC4832E15FB93004995F2 /* Cheetah */; };
+		07BB210F2F8D8F41009A69FF /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 07BB210E2F8D8F41009A69FF /* Cheetah */; };
+		07EE131C2F8D5E1B00840D52 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 07EE131B2F8D5E1B00840D52 /* Cheetah */; };
 		1E00655827CFF7EB006FF6E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E00655727CFF7EB006FF6E9 /* AppDelegate.swift */; };
 		1E00655C27CFF7EB006FF6E9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E00655B27CFF7EB006FF6E9 /* ViewController.swift */; };
 		1E00655F27CFF7EB006FF6E9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E00655D27CFF7EB006FF6E9 /* Main.storyboard */; };
@@ -82,6 +84,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07EE131C2F8D5E1B00840D52 /* Cheetah in Frameworks */,
+				07BB210F2F8D8F41009A69FF /* Cheetah in Frameworks */,
 				076CC4842E15FB93004995F2 /* Cheetah in Frameworks */,
 				5A1C386D2EE8DA7900FEF522 /* Cheetah in Frameworks */,
 			);
@@ -299,7 +303,7 @@
 			);
 			mainGroup = 1E00654B27CFF7EB006FF6E9;
 			packageReferences = (
-				5AEC741B2F6B7314004AD1C0 /* XCRemoteSwiftPackageReference "cheetah" */,
+				07BB210D2F8D8F40009A69FF /* XCRemoteSwiftPackageReference "cheetah" */,
 			);
 			productRefGroup = 1E00655527CFF7EB006FF6E9 /* Products */;
 			projectDirPath = "";
@@ -723,12 +727,12 @@
 				version = 2.2.0;
 			};
 		};
-		5AEC741B2F6B7314004AD1C0 /* XCRemoteSwiftPackageReference "cheetah" */ = {
+		07BB210D2F8D8F40009A69FF /* XCRemoteSwiftPackageReference "cheetah" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Picovoice/cheetah";
 			requirement = {
 				kind = exactVersion;
-				version = 4.0.0;
+				version = 4.0.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -737,6 +741,15 @@
 		076CC4832E15FB93004995F2 /* Cheetah */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 076CC4822E15FB93004995F2 /* XCRemoteSwiftPackageReference "cheetah" */;
+			productName = Cheetah;
+		};
+		07BB210E2F8D8F41009A69FF /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 07BB210D2F8D8F40009A69FF /* XCRemoteSwiftPackageReference "cheetah" */;
+			productName = Cheetah;
+		};
+		07EE131B2F8D5E1B00840D52 /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
 			productName = Cheetah;
 		};
 		5A0637302F6230890037D526 /* Cheetah */ = {

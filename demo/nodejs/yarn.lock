@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@picovoice/cheetah-node@4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-node/-/cheetah-node-4.0.0.tgz#574318be87decac6c181b62948de27c940f3a4bf"
-  integrity sha512-HOVKwPkGCTUfdAhIEtq+Bya9yD4zNUC5Qr1lLt6ueCkuePJZbh99V8SMS3B1WItswyKDeKWUwriJGNw63TGBiA==
+"@picovoice/cheetah-node@4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-node/-/cheetah-node-4.0.1.tgz#a436bc0b1daab5d47b3640e0641d73d1a1713a21"
+  integrity sha512-ClDXxzSDokEMRjTDrmvHRXnJRNHXE8SNI1j9UhuXHawRE5ayOfLlQToDv1Zfu40B27C5a9lTgaQPaT1lWHWItA==
 
 "@picovoice/pvrecorder-node@^1.2.6":
   version "1.2.6"
