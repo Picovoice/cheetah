@@ -22,7 +22,7 @@ export type CheetahOptions = {
    * default number of threads. To specify the number of threads, set this argument to `cpu:${NUM_THREADS}`,
    * where `${NUM_THREADS}` is the desired number of threads.
    */
-  device?: string,
+  device?: string;
   /** Duration of endpoint in seconds. A speech endpoint is detected when there is a segment
    * of audio (with a duration specified herein) after an utterance without any speech in it. Set to `0` to disable
    * endpoint detection.*/

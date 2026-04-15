@@ -55,7 +55,7 @@ class Cheetah {
       device = 'best',
       endpointDuration = 1.0,
       enableAutomaticPunctuation = false,
-      enableTextNormalization = false
+      enableTextNormalization = false,
     } = options;
 
     try {
