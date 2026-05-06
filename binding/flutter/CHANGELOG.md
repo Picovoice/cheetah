@@ -39,3 +39,6 @@
 
 ## [4.0.1] - 2025-08-28
 * text normalization improvements
+
+## [4.0.2] - 2026-05-06
+* Thread processing improvements
