@@ -15,7 +15,7 @@ on:
 
 jobs:
   validate-ios-demo:
-    runs-on: macos-14
+    runs-on: macos-latest
 
     defaults:
       run:
