@@ -10,7 +10,6 @@
 		072F6D492D02533000E29DF3 /* test_resources in Resources */ = {isa = PBXBuildFile; fileRef = 072F6D482D02533000E29DF3 /* test_resources */; };
 		076CC4842E15FB93004995F2 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 076CC4832E15FB93004995F2 /* Cheetah */; };
 		07BB210F2F8D8F41009A69FF /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 07BB210E2F8D8F41009A69FF /* Cheetah */; };
-		07EE131C2F8D5E1B00840D52 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 07EE131B2F8D5E1B00840D52 /* Cheetah */; };
 		1E00655827CFF7EB006FF6E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E00655727CFF7EB006FF6E9 /* AppDelegate.swift */; };
 		1E00655C27CFF7EB006FF6E9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E00655B27CFF7EB006FF6E9 /* ViewController.swift */; };
 		1E00655F27CFF7EB006FF6E9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E00655D27CFF7EB006FF6E9 /* Main.storyboard */; };
@@ -20,10 +19,10 @@
 		1E5B7B332800F75900F8BDDB /* PerformanceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5B7B322800F75900F8BDDB /* PerformanceTest.swift */; };
 		1E5B7B362800F77300F8BDDB /* test_en.wav in Resources */ = {isa = PBXBuildFile; fileRef = 1E5B7B352800F77300F8BDDB /* test_en.wav */; };
 		1E5B7B382800F7AA00F8BDDB /* cheetah_params.pv in Resources */ = {isa = PBXBuildFile; fileRef = 1E5B7B372800F7AA00F8BDDB /* cheetah_params.pv */; };
+		1E73C2012FABE54600504D6C /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 1E73C2002FABE54600504D6C /* Cheetah */; };
 		5A0637312F6230890037D526 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 5A0637302F6230890037D526 /* Cheetah */; };
 		5A1C386D2EE8DA7900FEF522 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 5A1C386C2EE8DA7900FEF522 /* Cheetah */; };
 		D23A4B5C0E110877F4A85325 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
-		E10D9F832E5FE4B800CA78F8 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E10D9F822E5FE4B800CA78F8 /* Cheetah */; };
 		E10D9F852E5FE4CC00CA78F8 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E10D9F842E5FE4CC00CA78F8 /* Cheetah */; };
 		E1E0C8032CF120B7001D6D84 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E1E0C8022CF120B7001D6D84 /* Cheetah */; };
 		E1E0C8052CF120BE001D6D84 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E1E0C8042CF120BE001D6D84 /* Cheetah */; };
@@ -84,9 +83,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07EE131C2F8D5E1B00840D52 /* Cheetah in Frameworks */,
 				07BB210F2F8D8F41009A69FF /* Cheetah in Frameworks */,
 				076CC4842E15FB93004995F2 /* Cheetah in Frameworks */,
+				1E73C2012FABE54600504D6C /* Cheetah in Frameworks */,
 				5A1C386D2EE8DA7900FEF522 /* Cheetah in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -95,7 +94,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E10D9F832E5FE4B800CA78F8 /* Cheetah in Frameworks */,
 				E10D9F852E5FE4CC00CA78F8 /* Cheetah in Frameworks */,
 				D23A4B5C0E110877F4A85325 /* (null) in Frameworks */,
 				5A0637312F6230890037D526 /* Cheetah in Frameworks */,
@@ -732,7 +730,7 @@
 			repositoryURL = "https://github.com/Picovoice/cheetah";
 			requirement = {
 				kind = exactVersion;
-				version = 4.0.1;
+				version = 4.0.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -748,8 +746,9 @@
 			package = 07BB210D2F8D8F40009A69FF /* XCRemoteSwiftPackageReference "cheetah" */;
 			productName = Cheetah;
 		};
-		07EE131B2F8D5E1B00840D52 /* Cheetah */ = {
+		1E73C2002FABE54600504D6C /* Cheetah */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 07BB210D2F8D8F40009A69FF /* XCRemoteSwiftPackageReference "cheetah" */;
 			productName = Cheetah;
 		};
 		5A0637302F6230890037D526 /* Cheetah */ = {
@@ -757,10 +756,6 @@
 			productName = Cheetah;
 		};
 		5A1C386C2EE8DA7900FEF522 /* Cheetah */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Cheetah;
-		};
-		E10D9F822E5FE4B800CA78F8 /* Cheetah */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Cheetah;
 		};
