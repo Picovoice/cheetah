@@ -87,12 +87,6 @@ jobs:
         .venv\Scripts\activate
         echo PATH=$PATH >> $GITHUB_ENV
 
-# ************** REMOVE AFTER RELEASE ********************
-    - name: Build binding
-      run: |
-        python3 -m pip install setuptools wheel && cd ../../binding/python && python3 setup.py sdist bdist_wheel && python3 -m pip install --force-reinstall dist/pvcheetah-4.0.2-py3-none-any.whl
-# ********************************************************
-
     - name: Pre-build dependencies
       run: python3 -m pip install --upgrade pip
 
