@@ -7,7 +7,7 @@ on:
       - '.github/workflows/ios-validate.yml'
       - 'demo/ios/CheetahDemo/**'
   pull_request:
-    branches: [ master, 'v[0-9]+.[0-9]+', 'v[0-9]+.[0-9]+-.+', 'v[0-9]+.[0-9]+.[0-9]+', 'v[0-9]+.[0-9]+.[0-9]+-.+' ]
+    branches: [ master, 'v[0-9]+.[0-9]+*' ]
     paths:
       - '.github/workflows/ios-validate.yml'
       - 'demo/ios/CheetahDemo/**'
@@ -15,7 +15,7 @@ on:
 
 jobs:
   validate-ios-demo:
-    runs-on: macos-14
+    runs-on: macos-latest
 
     defaults:
       run:
@@ -27,7 +27,7 @@ jobs:
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '16'
+          xcode-version: '26'
 
       - name: Install the Apple certificate and provisioning profile
         env:

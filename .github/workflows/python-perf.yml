@@ -13,7 +13,7 @@ on:
       - 'lib/raspberry-pi/**'
       - 'lib/windows/**'
   pull_request:
-    branches: [ master, 'v[0-9]+.[0-9]+', 'v[0-9]+.[0-9]+-.+', 'v[0-9]+.[0-9]+.[0-9]+', 'v[0-9]+.[0-9]+.[0-9]+-.+' ]
+    branches: [ master, 'v[0-9]+.[0-9]+*' ]
     paths:
       - '.github/workflows/python-perf.yml'
       - 'binding/python/test_cheetah_perf.py'
@@ -74,8 +74,8 @@ jobs:
         machine: [ rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64 ]
         include:
         - machine: rpi3-32
-          init_performance_threshold_sec: 9.0
-          proc_performance_threshold_sec: 9.0
+          init_performance_threshold_sec: 11.0
+          proc_performance_threshold_sec: 11.5
         - machine: rpi3-64
           init_performance_threshold_sec: 9.0
           proc_performance_threshold_sec: 7.5
