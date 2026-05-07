@@ -10,7 +10,7 @@ on:
       - '.github/workflows/android-perf.yml'
       - 'binding/android/CheetahTestApp/**'
   pull_request:
-    branches: [ master, 'v[0-9]+.[0-9]+', 'v[0-9]+.[0-9]+-.+', 'v[0-9]+.[0-9]+.[0-9]+', 'v[0-9]+.[0-9]+.[0-9]+-.+' ]
+    branches: [ master, 'v[0-9]+.[0-9]+*' ]
     paths:
       - 'lib/android/**'
       - 'lib/common/**'
