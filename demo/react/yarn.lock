@@ -1656,17 +1656,17 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@picovoice/cheetah-react@4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-react/-/cheetah-react-4.0.2.tgz#fac03c6a5f732e1db9bb8e9c2b4bfa17bf2bce5c"
-  integrity sha512-cICg2qgdGGJYzv6G5DSlALq1s9WxoAS8kfvCao/0u3+rwSC7mPta7ZT1rhRAFIfANHXr+KeJX3zyE0yDDgbGEQ==
+"@picovoice/cheetah-react@4.0.3":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-react/-/cheetah-react-4.0.3.tgz#10e5834bc04d8a96af40242de83b9f73d4d2d559"
+  integrity sha512-QujjoaG1fjUkkkepbDAzU6MZBPgAD4NJ5kq+f9mGYynAmsN11t9u6CPT1XFA2aRD3wWTvfky/yF2whaQkv03ww==
   dependencies:
-    "@picovoice/cheetah-web" "4.0.2"
+    "@picovoice/cheetah-web" "4.0.3"
 
-"@picovoice/cheetah-web@4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-4.0.2.tgz#98442c4310e4a42686768bdbdcbccbd6e1136f76"
-  integrity sha512-nefWORF9t50DqgWGuJgEi61LvpYBKCEIqgsupv6DNN+NwNEK4T0r11Nc+TribpiqmpwZVQgHknxiea+wOLN0wQ==
+"@picovoice/cheetah-web@4.0.3":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-4.0.3.tgz#87ccd24776c063bec3299831eba36a892a783b41"
+  integrity sha512-RB3x5vbbJ+hw8IQD/HZp+PE77ghR2krW77GjmsITdDBzRx3dVIH1g9LEBXaskswopg1mwoeZn9e6x1vxe7BVEQ==
   dependencies:
     "@picovoice/web-utils" "=1.4.3"
 
@@ -1684,10 +1684,10 @@
   dependencies:
     commander "^10.0.1"
 
-"@picovoice/web-voice-processor@~4.0.8":
-  version "4.0.9"
-  resolved "https://registry.yarnpkg.com/@picovoice/web-voice-processor/-/web-voice-processor-4.0.9.tgz#23aabbc85a0290546df5b8cdb0ca3b44707106ac"
-  integrity sha512-20pdkFjtuiojAdLIkNHXt4YgpRnlUePFW+gfkeCb+J+2XTRDGOI50+aJzL95p6QjDzGXsO7PZhlz7yDofOvZtg==
+"@picovoice/web-voice-processor@~4.0.10":
+  version "4.0.10"
+  resolved "https://registry.yarnpkg.com/@picovoice/web-voice-processor/-/web-voice-processor-4.0.10.tgz#372907dba10755ca29d9ad5a3a769b1397bdbfab"
+  integrity sha512-8ZSf0/NoNTxLrampYWKvwMLr7Uwr1dHYEqDcwaMby1vq4za/mgbKMQmv0mZSrBkkWK67lZHYb4mxJg0MQFlD4w==
   dependencies:
     "@picovoice/web-utils" "=1.3.1"
 
