@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name = 'Cheetah-iOS'
   s.module_name = 'Cheetah'
-  s.version = '4.0.2'
+  s.version = '4.0.3'
   s.license = {:type => 'Apache 2.0'}
   s.summary = 'iOS SDK for Picovoice\'s Cheetah speech-to-text engine.'
   s.description =
