@@ -42,3 +42,6 @@
 
 ## [4.0.2] - 2026-05-06
 * Thread processing improvements
+
+## [4.0.3] - 2026-05-12
+* Bug fixes

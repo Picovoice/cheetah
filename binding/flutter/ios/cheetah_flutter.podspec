@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.source_files = 'Classes/**/*'
   s.platform = :ios, '16.0'
   s.dependency 'Flutter'
-  s.dependency 'Cheetah-iOS', '~> 4.0.2'
+  s.dependency 'Cheetah-iOS', '~> 4.0.3'
 
   s.swift_version = '5.0'
 end
