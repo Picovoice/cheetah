@@ -4,6 +4,9 @@ plugins {
 
 repositories {
     mavenCentral()
+    flatDir {
+      dirs '../../binding/java/build/libs'
+    }
 }
 
 sourceSets {
@@ -15,7 +18,8 @@ sourceSets {
 }
 
 dependencies {
-    implementation 'ai.picovoice:cheetah-java:4.0.2'
+    // implementation 'ai.picovoice:cheetah-java:4.0.3'
+    implementation name: 'Cheetah'
     implementation 'commons-cli:commons-cli:1.4'
 }
 
