@@ -129,5 +129,5 @@ repositories {
 dependencies {
   // noinspection GradleDynamicVersion
   api 'com.facebook.react:react-native:+'
-  implementation 'ai.picovoice:cheetah-android:4.0.2'
+  implementation 'ai.picovoice:cheetah-android:4.0.3'
 }
