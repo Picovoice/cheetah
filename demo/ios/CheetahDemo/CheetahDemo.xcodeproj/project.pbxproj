@@ -3,12 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		0723AB732FBF7A86009E1523 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 0723AB722FBF7A86009E1523 /* Cheetah */; };
 		076CC4872E15FEAA004995F2 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 076CC4862E15FEAA004995F2 /* Cheetah */; };
+		079B98C42FBFA8CF00B44EC7 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 079B98C32FBFA8CF00B44EC7 /* Cheetah */; };
 		07B4E8492FB392E4005F31B0 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 07B4E8482FB392E4005F31B0 /* Cheetah */; };
 		07B4E84C2FB39E42005F31B0 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 07B4E84B2FB39E42005F31B0 /* Cheetah */; };
 		07BB210C2F8D8E92009A69FF /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 07BB210B2F8D8E92009A69FF /* Cheetah */; };
@@ -65,6 +66,7 @@
 				076CC4872E15FEAA004995F2 /* Cheetah in Frameworks */,
 				E1E0C80B2CF12778001D6D84 /* ios_voice_processor in Frameworks */,
 				07B4E84C2FB39E42005F31B0 /* Cheetah in Frameworks */,
+				079B98C42FBFA8CF00B44EC7 /* Cheetah in Frameworks */,
 				E1B3E5A12E61000900915974 /* Cheetah in Frameworks */,
 				5A06372E2F62191D0037D526 /* Cheetah in Frameworks */,
 				E1B954872E5E8E4600D188FD /* Cheetah in Frameworks */,
@@ -159,7 +161,7 @@
 			mainGroup = 327692BCE8C735F3534C318E;
 			packageReferences = (
 				E1E0C8092CF12777001D6D84 /* XCRemoteSwiftPackageReference "ios-voice-processor" */,
-				0723AB712FBF7A86009E1523 /* XCLocalSwiftPackageReference "../../../../cheetah" */,
+				079B98C22FBFA8CF00B44EC7 /* XCRemoteSwiftPackageReference "cheetah" */,
 			);
 			productRefGroup = 32769B87809678D96B1C6C55 /* Products */;
 			projectDirPath = "";
@@ -411,13 +413,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		0723AB712FBF7A86009E1523 /* XCLocalSwiftPackageReference "../../../../cheetah" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../../../cheetah;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
 		076CC4852E15FEAA004995F2 /* XCRemoteSwiftPackageReference "cheetah" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -425,6 +420,14 @@
 			requirement = {
 				kind = exactVersion;
 				version = 2.2.0;
+			};
+		};
+		079B98C22FBFA8CF00B44EC7 /* XCRemoteSwiftPackageReference "cheetah" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Picovoice/cheetah";
+			requirement = {
+				kind = exactVersion;
+				version = 4.0.4;
 			};
 		};
 		07B4E84A2FB39E42005F31B0 /* XCRemoteSwiftPackageReference "cheetah" */ = {
@@ -493,6 +496,11 @@
 		076CC4862E15FEAA004995F2 /* Cheetah */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 076CC4852E15FEAA004995F2 /* XCRemoteSwiftPackageReference "cheetah" */;
+			productName = Cheetah;
+		};
+		079B98C32FBFA8CF00B44EC7 /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 079B98C22FBFA8CF00B44EC7 /* XCRemoteSwiftPackageReference "cheetah" */;
 			productName = Cheetah;
 		};
 		07B4E8482FB392E4005F31B0 /* Cheetah */ = {
