@@ -29,10 +29,10 @@ packages:
     dependency: "direct main"
     description:
       name: cheetah_flutter
-      sha256: ff6e680ec5f30835638e654dca566bb96461c347482beed7b697019762435d99
+      sha256: e9188b87a7f416b4d4b9b8a2e7c4ca7c33237464fc39fa87513593982f984b70
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.3"
+    version: "4.0.4"
   clock:
     dependency: transitive
     description:
