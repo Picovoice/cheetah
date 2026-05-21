@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0723AB732FBF7A86009E1523 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 0723AB722FBF7A86009E1523 /* Cheetah */; };
 		076CC4872E15FEAA004995F2 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 076CC4862E15FEAA004995F2 /* Cheetah */; };
 		07B4E8492FB392E4005F31B0 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 07B4E8482FB392E4005F31B0 /* Cheetah */; };
 		07B4E84C2FB39E42005F31B0 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 07B4E84B2FB39E42005F31B0 /* Cheetah */; };
@@ -58,6 +59,7 @@
 				5A62A1812EF1ED5C00D483BE /* Cheetah in Frameworks */,
 				5A7E79982EF352B800148C4F /* Cheetah in Frameworks */,
 				07B4E8492FB392E4005F31B0 /* Cheetah in Frameworks */,
+				0723AB732FBF7A86009E1523 /* Cheetah in Frameworks */,
 				E15A377F2CF7B8ED00A96F85 /* Cheetah in Frameworks */,
 				5AEC741E2F6B745B004AD1C0 /* Cheetah in Frameworks */,
 				076CC4872E15FEAA004995F2 /* Cheetah in Frameworks */,
@@ -157,7 +159,7 @@
 			mainGroup = 327692BCE8C735F3534C318E;
 			packageReferences = (
 				E1E0C8092CF12777001D6D84 /* XCRemoteSwiftPackageReference "ios-voice-processor" */,
-				07B4E84A2FB39E42005F31B0 /* XCRemoteSwiftPackageReference "cheetah" */,
+				0723AB712FBF7A86009E1523 /* XCLocalSwiftPackageReference "../../../../cheetah" */,
 			);
 			productRefGroup = 32769B87809678D96B1C6C55 /* Products */;
 			projectDirPath = "";
@@ -409,6 +411,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		0723AB712FBF7A86009E1523 /* XCLocalSwiftPackageReference "../../../../cheetah" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../../../cheetah;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		076CC4852E15FEAA004995F2 /* XCRemoteSwiftPackageReference "cheetah" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -477,6 +486,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0723AB722FBF7A86009E1523 /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Cheetah;
+		};
 		076CC4862E15FEAA004995F2 /* Cheetah */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 076CC4852E15FEAA004995F2 /* XCRemoteSwiftPackageReference "cheetah" */;
