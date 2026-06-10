@@ -25,6 +25,46 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Cheetah Web + React Hook Demo</title>
+    <style>
+      .word:hover {
+        background-color: #eef;
+      }
+
+      .has-tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+        cursor: pointer;
+      }
+      .tooltip-text {
+        visibility: hidden;
+        width: 100px;
+        color: #ffffff;
+        background-color: #222222bb;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        line-height: 1.2;
+        z-index: 1;
+        bottom: 150%;
+        left: 50%;
+        margin-left: -60px;
+      }
+      .tooltip-text::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #222222bb transparent transparent transparent;
+      }
+      .has-tooltip:hover .tooltip-text {
+        visibility: visible;
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

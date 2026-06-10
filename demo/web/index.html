@@ -9,8 +9,51 @@
       document.head.appendChild(script);
     </script>
     <script src="scripts/cheetah.js"></script>
+    <style>
+      .word {
+
+      }
+      .word:hover {
+        background-color: #eef;
+      }
+
+      .has-tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black; /* Add dots under the hoverable text */
+        cursor: pointer;
+      }
+      .tooltip-text {
+        visibility: hidden;
+        width: 100px;
+        color: #ffffff;
+        background-color: #222222bb;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        line-height: 1.2;
+        z-index: 1;
+        bottom: 150%;
+        left: 50%;
+        margin-left: -60px;
+      }
+      .tooltip-text::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #222222bb transparent transparent transparent;
+      }
+      .has-tooltip:hover .tooltip-text {
+        visibility: visible;
+      }
+    </style>
   </head>
-  <body>
+  <body style="margin: auto; max-width: 1080px; padding: 8px;">
     <h1>Cheetah Web Demo</h1>
     <p>This demo uses Cheetah for Web and the WebVoiceProcessor to:</p>
     <ol>
@@ -28,8 +71,14 @@
         Listen for real time transcription results from the Cheetah engines and
         output them to the page.
       </li>
+      <li>
+        Display per-word transcription confidence when hovering over each word.
+      </li>
     </ol>
     After entering the AccessKey, click the "Start Cheetah" button.
+    <br>
+    <br>
+
     <hr />
     <label for="accessKey"
       >AccessKey obtained from
@@ -43,6 +92,7 @@
       onclick="startCheetah(document.getElementById('accessKey').value)"
     />
     <hr />
+
     <div id="status" style="white-space: pre"></div>
     <br />
     <div id="result"></div>

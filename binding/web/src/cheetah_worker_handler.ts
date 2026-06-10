@@ -100,7 +100,7 @@ self.onmessage = async function (
         self.postMessage({
           command: 'error',
           status: PvStatus.INVALID_STATE,
-          shortMEssage: 'Cheetah not initialized',
+          shortMessage: 'Cheetah not initialized',
         });
         return;
       }

@@ -17,12 +17,14 @@ import {
   CheetahModel,
   CheetahOptions,
   CheetahTranscript,
+  CheetahWord,
   CheetahWorker,
 } from '@picovoice/cheetah-web';
 
 export const useCheetah = (): {
   result: {
     transcript: string;
+    words: CheetahWord[];
     isComplete?: boolean;
   } | null;
   isLoaded: boolean;
@@ -41,10 +43,12 @@ export const useCheetah = (): {
 
   const [result, setResult] = useState<{
     transcript: string;
+    words: CheetahWord[];
     isComplete: boolean | undefined;
   } | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isListening, setIsListening] = useState<boolean>(false);
+  const flushResolveRef = useRef<((value: (void | PromiseLike<void>)) => void) | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
   const errorCallback = useCallback((cheetahError: Error) => {
@@ -59,8 +63,14 @@ export const useCheetah = (): {
 
       setResult({
         transcript: cheetahTranscript.transcript,
+        words: cheetahTranscript.words,
         isComplete: cheetahTranscript.isFlushed,
       });
+
+      if ((flushResolveRef.current !== null) && cheetahTranscript.isFlushed) {
+        flushResolveRef.current();
+        flushResolveRef.current = null;
+      }
     },
     []
   );
@@ -112,6 +122,7 @@ export const useCheetah = (): {
       await WebVoiceProcessor.subscribe(cheetahRef.current);
       setError(null);
       setIsListening(true);
+
     } catch (e: any) {
       setError(e);
       setIsListening(false);
@@ -124,20 +135,29 @@ export const useCheetah = (): {
         setError(
           new Error('Cheetah has not been initialized or has been released')
         );
-        return;
+        return Promise.resolve();
       }
 
       if (!isListening) {
-        return;
+        return Promise.resolve();
       }
 
       await WebVoiceProcessor.unsubscribe(cheetahRef.current);
-      cheetahRef.current?.flush();
-      setError(null);
+      const returnPromise: Promise<void> = new Promise((resolve) => {
+        if (flushResolveRef.current !== null) {
+          flushResolveRef.current();
+        }
+        cheetahRef.current?.flush();
+        flushResolveRef.current = resolve;
+      });
       setIsListening(false);
+      setError(null);
+
+      return returnPromise;
     } catch (e: any) {
       setError(e);
       setIsListening(false);
+      return Promise.resolve();
     }
   }, [isListening]);
 

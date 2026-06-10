@@ -46,8 +46,16 @@ export type CheetahOptions = {
   processErrorCallback?: (error: CheetahError) => void;
 };
 
+export type CheetahWord = {
+  word: string;
+  startSeconds: number;
+  endSeconds: number;
+  confidence: number;
+};
+
 export type CheetahTranscript = {
   transcript: string;
+  words: CheetahWord[];
   isEndpoint?: boolean;
   isFlushed?: boolean;
 };

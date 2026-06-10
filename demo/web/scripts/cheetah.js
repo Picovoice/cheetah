@@ -10,7 +10,26 @@ function cheetahErrorCallback(error) {
 }
 
 function cheetahTranscriptionCallback(cheetahTranscript) {
-  document.getElementById("result").innerHTML += cheetahTranscript.transcript;
+  let inputTranscript = cheetahTranscript.transcript;
+  let outputTranscriptHTML = "";
+
+  let startingIndex = 0;
+  for (const word of cheetahTranscript.words) {
+    let strIndex = inputTranscript.slice(startingIndex).indexOf(word.word);
+    outputTranscriptHTML += inputTranscript.slice(startingIndex, startingIndex + strIndex);
+    startingIndex += strIndex + word.word.length;
+
+    if (word.startSeconds !== -1) {
+      outputTranscriptHTML += `<span class="word has-tooltip">${word.word}`;
+      outputTranscriptHTML += `<span class="tooltip-text">${(word.confidence * 100).toFixed(1)}% confidence</span>`;
+      outputTranscriptHTML += "</span>";
+    } else {
+      outputTranscriptHTML += word.word;
+    }
+  }
+
+  document.getElementById("result").innerHTML += outputTranscriptHTML;
+
   if (cheetahTranscript.isEndpoint) {
     document.getElementById("result").innerHTML += "<br>";
   }

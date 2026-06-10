@@ -7,7 +7,7 @@ export default function VoiceWidget() {
   const accessKeyRef = useRef<string>("");
 
   const [isBusy, setIsBusy] = useState<boolean>(false);
-  const [transcript, setTranscript] = useState<string>("");
+  const [transcript, setTranscript] = useState<React.ReactNode[]>([]);
 
   const { result, isLoaded, isListening, error, init, start, stop, release } =
     useCheetah();
@@ -15,10 +15,32 @@ export default function VoiceWidget() {
   useEffect(() => {
     if (result !== null) {
       setTranscript((prev) => {
-        let newTranscript = prev + result.transcript;
+        let inputTranscript = result.transcript;
+        let outputTranscriptHTML: React.ReactNode[] = []
+
+        let startingIndex = 0;
+        for (const word of result.words) {
+          let strIndex = inputTranscript.slice(startingIndex).indexOf(word.word);
+          outputTranscriptHTML.push(inputTranscript.slice(startingIndex, startingIndex + strIndex));
+          startingIndex += strIndex + word.word.length;
+
+          if (word.startSeconds !== -1) {
+            outputTranscriptHTML.push(
+              <span className="word has-tooltip">
+                {word.word}
+                <span className="tooltip-text">{(word.confidence * 100).toFixed(1)}% confidence</span>
+              </span>
+            );
+          } else {
+            outputTranscriptHTML.push(word.word);
+          }
+        }
+
+        let newTranscript = prev;
+        newTranscript.push(...outputTranscriptHTML);
 
         if (result.isComplete) {
-          newTranscript += "\n";
+          newTranscript.push(<br />);
         }
 
         return newTranscript;
@@ -44,7 +66,7 @@ export default function VoiceWidget() {
     if (isListening) {
       await stop();
     } else {
-      setTranscript("");
+      setTranscript([]);
       await start();
     }
     setIsBusy(false);
@@ -97,7 +119,11 @@ export default function VoiceWidget() {
         {isListening ? "Stop Recording" : "Start Recording"}
       </button>
       <h3>Transcript:</h3>
-      <p className="transcript">{transcript}</p>
+      <p className="transcript">{
+        transcript.map((item, i) => (
+          <React.Fragment key={i}>{item}</React.Fragment>
+        ))
+      }</p>
     </div>
   );
 }

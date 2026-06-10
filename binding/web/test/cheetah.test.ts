@@ -5,6 +5,7 @@ import testData from './test_data.json';
 // @ts-ignore
 import cheetahParams from "./cheetah_params";
 import { PvModel } from '@picovoice/web-utils';
+import {CheetahWord} from "../src/types";
 
 const ACCESS_KEY: string = Cypress.env('ACCESS_KEY');
 
@@ -90,6 +91,7 @@ const runProcTest = async (
   punctuations: string[],
   normalization: boolean,
   expectedTranscript: string,
+  expectedWords: CheetahWord[],
   expectedErrorRate: number,
   params: {
     accessKey?: string,
@@ -106,13 +108,16 @@ const runProcTest = async (
   } = params;
 
   let normalizedTranscript = expectedTranscript;
+  let normalizedWords = expectedWords;
   if (!enablePunctuation) {
     for (const punctuation of punctuations) {
       normalizedTranscript = normalizedTranscript.replaceAll(punctuation, '');
+      normalizedWords = normalizedWords.filter(word => { word.word !== punctuation });
     }
   }
 
   let transcript = "";
+  let words: CheetahWord[] = [];
   let isTranscriptFinalized = false;
 
   const runProcess = () =>
@@ -121,6 +126,7 @@ const runProcTest = async (
         accessKey,
         cheetahTranscript => {
           transcript += cheetahTranscript.transcript;
+          words.push(...cheetahTranscript.words);
           if (cheetahTranscript.isFlushed) {
             isTranscriptFinalized = true;
             resolve();
@@ -161,6 +167,26 @@ const runProcTest = async (
     await runProcess();
     const errorRate = wordErrorRate(normalizedTranscript, transcript, useCER);
     expect(errorRate).to.be.lte(expectedErrorRate);
+
+    let str = "";
+    for (let i = 0; i < normalizedWords.length; i++) {
+      const normalizedWord = normalizedWords[i];
+      const word = words[i];
+      expect(word.word).to.be.equal(normalizedWord.word);
+      expect(Math.abs(word.confidence - normalizedWord.confidence) < 0.1).to.be.true;
+      expect(Math.abs(word.startSeconds - normalizedWord.startSeconds) < 0.1).to.be.true;
+      expect(Math.abs(word.endSeconds - normalizedWord.endSeconds) < 0.1).to.be.true;
+    }
+
+    expect(words.length).to.be.gt(0);
+    let averageConfidence = 0.0;
+    for (const word of words) {
+      expect(word.word.length).to.be.gt(0);
+      averageConfidence += word.confidence;
+    }
+    averageConfidence /= words.length;
+    expect(averageConfidence).to.be.gt(0.0);
+    expect(averageConfidence).to.be.lt(1.0);
   } catch (e) {
     expect(e).to.be.undefined;
   }
@@ -293,30 +319,35 @@ describe("Cheetah Binding", function () {
 
         it(`should be able to process (${testParam.language}) (${modelFileType} model) (norm ${testParam.normalization}) (${instanceString})`, () => cy.getFramesFromFile(
             `audio_samples/${testParam.audio_file}`).then(
-            (pcm: Int16Array) => runProcTest(
-                instance,
-                pcm,
-                testParam.punctuations,
-                testParam.normalization,
-                testParam.transcript,
-                testParam.error_rate,
-                {
-                  model: {
-                    publicPath: `/test/${modelFile}`,
-                    forceWrite: true,
-                  },
-                }
-            )
+            async (pcm: Int16Array) => {
+                await runProcTest(
+                    instance,
+                    pcm,
+                    testParam.punctuations,
+                    testParam.normalization,
+                    testParam.transcript,
+                    testParam.words,
+                    testParam.error_rate,
+                    {
+                      model: {
+                        publicPath: `/test/${modelFile}`,
+                        forceWrite: true,
+                      },
+                      enablePunctuation: false,
+                    }
+                )
+            }
         ));
 
         it(`should be able to process with punctuation (${testParam.language}) (${modelFileType} model) (norm ${testParam.normalization}) (${instanceString})`, () => cy.getFramesFromFile(
             `audio_samples/${testParam.audio_file}`).then(
-            (pcm: Int16Array) => runProcTest(
+            async (pcm: Int16Array) => await runProcTest(
                 instance,
                 pcm,
                 testParam.punctuations,
                 testParam.normalization,
                 testParam.transcript,
+                testParam.words,
                 testParam.error_rate,
                 {
                   model: {
