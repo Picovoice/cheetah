@@ -14,6 +14,7 @@ import {
   Cheetah,
   CheetahErrors,
 } from '../src';
+import { CheetahWord } from '../src/types';
 import * as fs from 'fs';
 import { WaveFile } from 'wavefile';
 
@@ -81,20 +82,31 @@ const loadPcm = (audioFile: string): Int16Array => {
 const cheetahProcessWaveFile = (
   engineInstance: Cheetah,
   audioFile: string
-): [string, boolean] => {
+): [string, CheetahWord[], boolean] => {
   const pcm = loadPcm(audioFile);
 
   let transcript = '';
+  let words: CheetahWord[] = [];
   let isEndpoint = false;
-  for (let i = 0; i < pcm.length - engineInstance.frameLength; i += engineInstance.frameLength) {
-    const [partialTranscript, partialIsEndpoint] = engineInstance.process(pcm.slice(i, i + engineInstance.frameLength));
+  for (
+    let i = 0;
+    i < pcm.length - engineInstance.frameLength;
+    i += engineInstance.frameLength
+  ) {
+    const {
+      transcript: partialTranscript,
+      words: partialWords,
+      isEndpoint: partialIsEndpoint,
+    } = engineInstance.process(pcm.slice(i, i + engineInstance.frameLength));
     transcript += partialTranscript;
+    words.push(...partialWords);
     isEndpoint = partialIsEndpoint;
   }
-  const partialTranscript = engineInstance.flush();
+  const { transcript: partialTranscript, words: partialWords } = engineInstance.flush();
+  words.push(...partialWords);
   transcript += partialTranscript;
 
-  return [transcript, isEndpoint];
+  return [transcript, words, isEndpoint];
 };
 
 
@@ -102,6 +114,7 @@ const testCheetahProcess = (
   modelFile: string,
   audioFile: string,
   referenceTranscript: string,
+  referenceWords: CheetahWord[],
   punctuations: string[],
   enableAutomaticPunctuation: boolean,
   enableTextNormalization: boolean,
@@ -116,18 +129,37 @@ const testCheetahProcess = (
     device: DEVICE,
   });
 
-  let [transcript] = cheetahProcessWaveFile(cheetahEngine, audioFile);
+  let [transcript, words] = cheetahProcessWaveFile(cheetahEngine, audioFile);
 
   let normalizedTranscript = referenceTranscript;
+  let normalizedWords = referenceWords;
   if (!enableAutomaticPunctuation) {
     for (const punctuation of punctuations) {
       normalizedTranscript = normalizedTranscript.replace(punctuation, "");
+      normalizedWords = normalizedWords.filter(word => word.word !== punctuation);
     }
   }
 
   expect(
     characterErrorRate(transcript, normalizedTranscript) < errorRate
   ).toBeTruthy();
+
+  let wordErrorRate = 0.0;
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    const normalizedWord = normalizedWords[i];
+
+    if (word.word !== normalizedWord.word) {
+      wordErrorRate += 1;
+    }
+
+    expect(Math.abs(word.startSeconds - normalizedWord.startSeconds)).toBeLessThan(0.1);
+    expect(Math.abs(word.endSeconds - normalizedWord.endSeconds)).toBeLessThan(0.1);
+    expect(Math.abs(word.confidence - normalizedWord.confidence)).toBeLessThan(0.1);
+  }
+
+  wordErrorRate /= words.length;
+  expect(wordErrorRate).toBeLessThan(errorRate);
 
   cheetahEngine.release();
 };
@@ -137,6 +169,7 @@ describe('successful processes', () => {
     models,
     audioFile,
     transcript,
+    words,
     punctuations,
     normalization,
     errorRate
@@ -147,6 +180,7 @@ describe('successful processes', () => {
           modelFile,
           audioFile,
           transcript,
+          words,
           punctuations,
           false,
           normalization,
@@ -159,6 +193,7 @@ describe('successful processes', () => {
           modelFile,
           audioFile,
           transcript,
+          words,
           punctuations,
           true,
           normalization,

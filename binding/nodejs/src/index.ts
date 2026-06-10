@@ -18,6 +18,8 @@ import {
   CheetahInitOptions,
   CheetahInputOptions,
   CheetahOptions,
+  CheetahTranscript,
+  CheetahWord,
 } from './types';
 
 import * as CheetahErrors from './errors';
@@ -28,6 +30,8 @@ export {
   CheetahInitOptions,
   CheetahInputOptions,
   CheetahOptions,
+  CheetahTranscript,
+  CheetahWord,
   checkWaveFile,
   getInt16Frames,
 };

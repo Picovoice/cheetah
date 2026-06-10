@@ -21,16 +21,27 @@ import {
   pvStatusToException,
 } from './errors';
 
-import { CheetahOptions, CheetahInputOptions } from './types';
+import { CheetahOptions, CheetahInputOptions, CheetahWord, CheetahTranscript } from './types';
 
 import { getSystemLibraryPath } from './platforms';
 
 const DEFAULT_MODEL_PATH = '../lib/common/cheetah_params.pv';
 
 type CheetahHandleAndStatus = { handle: any; status: PvStatus };
-type TranscriptAndStatus = { transcript: string; status: PvStatus };
+type CheetahInternalWord = {
+  word: string;
+  start_sec: number;
+  end_sec: number;
+  confidence: number;
+};
+type TranscriptAndStatus = {
+  transcript: string;
+  words: CheetahInternalWord[];
+  status: PvStatus;
+};
 type PartialTranscriptAndStatus = {
   transcript: string;
+  words: CheetahInternalWord[];
   is_endpoint: number;
   status: PvStatus;
 };
@@ -39,6 +50,15 @@ type CheetahHardwareDevicesAndStatus = {
   num_hardware_devices: number;
   status: PvStatus;
 };
+
+function fromInternalWord(word: CheetahInternalWord): CheetahWord {
+  return {
+    word: word.word,
+    startSeconds: word.start_sec,
+    endSeconds: word.end_sec,
+    confidence: word.confidence
+  };
+}
 
 /**
  * Node.js binding for Cheetah streaming speech-to-text engine
@@ -87,7 +107,7 @@ export default class Cheetah {
 
     const {
       modelPath = path.resolve(__dirname, DEFAULT_MODEL_PATH),
-      device = "best",
+      device = 'best',
       libraryPath = getSystemLibraryPath(),
       endpointDurationSec = 1.0,
       enableAutomaticPunctuation = false,
@@ -112,11 +132,7 @@ export default class Cheetah {
       );
     }
 
-    if (
-      device === null ||
-      device === undefined ||
-      device.length === 0
-    ) {
+    if (device === null || device === undefined || device.length === 0) {
       throw new CheetahInvalidArgumentError(`No device provided to Cheetah`);
     }
 
@@ -180,9 +196,7 @@ export default class Cheetah {
    * @returns List of all available devices that Cheetah can use for inference.
    */
   static listAvailableDevices(options: CheetahInputOptions = {}): string[] {
-    const {
-      libraryPath = getSystemLibraryPath(),
-    } = options;
+    const { libraryPath = getSystemLibraryPath() } = options;
 
     const pvCheetah = require(libraryPath); // eslint-disable-line
 
@@ -212,9 +226,10 @@ export default class Cheetah {
    *
    * @param {Int16Array} pcm Audio data. The audio needs to have a sample rate equal to `Cheetah.sampleRate` and be 16-bit linearly-encoded.
    * The specific array length can be attained by calling `Cheetah.frameLength`. This function operates on single-channel audio.
-   * @returns {string, boolean} Inferred transcription, and a flag indicating if an endpoint has been detected.
+   * @returns {CheetahTranscript} object which contains the inferred transcription, a sequence of CheetahWord objects containing word
+   * confidences, and a flag indicating if an endpoint has been detected.
    */
-  process(pcm: Int16Array): [string, boolean] {
+  process(pcm: Int16Array): CheetahTranscript {
     assert(pcm instanceof Int16Array);
 
     if (
@@ -247,18 +262,20 @@ export default class Cheetah {
       this.handlePvStatus(status, 'Cheetah failed to process the audio frame');
     }
 
-    return [
-      partialTranscriptAndStatus!.transcript,
-      partialTranscriptAndStatus!.is_endpoint !== 0,
-    ];
+    return {
+      transcript: partialTranscriptAndStatus!.transcript,
+      words: partialTranscriptAndStatus!.words.map(word => fromInternalWord(word)),
+      isEndpoint: partialTranscriptAndStatus!.is_endpoint !== 0,
+    };
   }
 
   /**
    * Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcript.
    *
-   * @returns {string} Inferred transcription.
+   * @returns {CheetahTranscript} object which contains the inferred transcription and a sequence of CheetahWord objects
+   * containing word confidences. isEndpoint will always be true.
    */
-  flush(): string {
+  flush(): CheetahTranscript {
     if (
       this._handle === 0 ||
       this._handle === null ||
@@ -279,7 +296,11 @@ export default class Cheetah {
       this.handlePvStatus(status, 'Cheetah failed to flush');
     }
 
-    return transcriptAndStatus!.transcript;
+    return {
+      transcript: transcriptAndStatus!.transcript,
+      words: transcriptAndStatus!.words.map(word => fromInternalWord(word)),
+      isEndpoint: true,
+    };
   }
 
   /**
