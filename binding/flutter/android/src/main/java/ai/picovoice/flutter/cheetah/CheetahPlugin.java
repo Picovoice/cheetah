@@ -163,6 +163,7 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
 
             Map<String, Object> resultMap = new HashMap<>();
             resultMap.put("transcript", transcriptObj.getTranscript());
+            resultMap.put("words", transcriptObj.getWords());
             resultMap.put("isEndpoint", transcriptObj.getIsEndpoint());
 
             result.success(resultMap);
@@ -199,6 +200,7 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
 
             Map<String, Object> param = new HashMap<>();
             param.put("transcript", transcriptObj.getTranscript());
+            param.put("words", transcriptObj.getWords());
 
             result.success(param);
         } catch (CheetahException e) {

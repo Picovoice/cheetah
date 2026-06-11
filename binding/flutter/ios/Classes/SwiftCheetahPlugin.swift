@@ -92,10 +92,10 @@ public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
                 if let handle = args["handle"] as? String,
                    let frame = args["frame"] as? [Int16] {
                     if let cheetah = cheetahPool[handle] {
-
-                        let (transcript, isEndpoint) = try cheetah.process(frame)
+                        let (transcript, words, isEndpoint) = try cheetah.process(frame)
                         let results: [String: Any] = [
                             "transcript": transcript,
+                            "words": words,
                             "isEndpoint": isEndpoint
                         ]
                         result(results)
@@ -116,9 +116,10 @@ public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
             do {
                 if let handle = args["handle"] as? String {
                     if let cheetah = cheetahPool[handle] {
-                        let transcript = try cheetah.flush()
+                        let (transcript, words) = try cheetah.flush()
                         let results: [String: Any] = [
-                            "transcript": transcript
+                            "transcript": transcript,
+                            "words": words
                         ]
                         result(results)
                     } else {

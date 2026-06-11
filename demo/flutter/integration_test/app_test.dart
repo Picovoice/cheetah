@@ -91,6 +91,7 @@ void main() {
     Future<void> runCheetahProcess(
         String modelFile,
         String transcript,
+        List<CheetahWord> words,
         List<String> punctuations,
         bool testPunctuations,
         bool normalization,
@@ -117,6 +118,7 @@ void main() {
       }
 
       String partialTranscript = "";
+      List<CheetahWord> words = [];
       List<int> pcm = await loadAudioFile(audioFile);
 
       final int frameLength = cheetah.frameLength;
@@ -124,15 +126,28 @@ void main() {
         CheetahTranscript res =
             await cheetah.process(pcm.sublist(i, i + frameLength));
         partialTranscript += res.transcript;
+        words.addAll(res.words);
       }
       CheetahTranscript res = await cheetah.flush();
       partialTranscript += res.transcript;
+      words.addAll(res.words);
 
       cheetah.delete();
 
       expect(characterErrorRate(partialTranscript, normTranscript),
           lessThanOrEqualTo(errorRate),
           reason: "Character error rate was incorrect");
+
+      expect(words.length, equals(0),
+          reason: "words should not be empty");
+
+      var averageConfidence = 0.0;
+      for (var word in words) {
+        averageConfidence += word.confidence;
+      }
+      averageConfidence /= words.length;
+      expect(averageConfidence, equals(averageConfidence),
+          reason: "Average confidence was incorrect");
     }
 
     testWidgets('Test Process all languages', (tester) async {

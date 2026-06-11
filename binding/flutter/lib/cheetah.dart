@@ -29,13 +29,23 @@ enum _NativeFunctions {
   DELETE
 }
 
+class CheetahWord {
+  final String word;
+  final float startSeconds;
+  final float endSeconds;
+  final float confidence;
+}
+
 class CheetahTranscript {
   final String? _transcript;
+  final List<CheetahWord>? _words;
   final bool? _isEndpoint;
 
-  CheetahTranscript(this._transcript, this._isEndpoint);
+  CheetahTranscript(this._transcript, this._words, this._isEndpoint);
 
   String get transcript => _transcript ?? "";
+
+  List<CheetahWord> get words => _words ?? [];
 
   bool get isEndpoint => _isEndpoint ?? false;
 }
@@ -122,16 +132,15 @@ class Cheetah {
   Future<CheetahTranscript> process(List<int>? frame) async {
     try {
       Map<String, dynamic> transcript = Map<String, dynamic>.from(await _channel
-          .invokeMethod(_NativeFunctions.PROCESS.name,
-              {'handle': _handle, 'frame': frame}));
+          .invokeMethod(_NativeFunctions.PROCESS.name, {'handle': _handle, 'frame': frame}));
 
       if (transcript['transcript'] == null) {
-        throw CheetahInvalidStateException(
-            "field 'transcript' must be always present");
+        throw CheetahInvalidStateException("field 'transcript' must be always present");
+      } else if (transcript['words'] == null) {
+        throw CheetahInvalidStateException("field 'words' must be always present");
       }
 
-      return CheetahTranscript(
-          transcript['transcript'], transcript['isEndpoint']);
+      return CheetahTranscript(transcript['transcript'], transcript['words'], transcript['isEndpoint']);
     } on PlatformException catch (error) {
       throw cheetahStatusToException(error.code, error.message);
     } on Exception catch (error) {
@@ -148,11 +157,12 @@ class Cheetah {
           .invokeMethod(_NativeFunctions.FLUSH.name, {'handle': _handle}));
 
       if (transcript['transcript'] == null) {
-        throw CheetahInvalidStateException(
-            "field 'transcript' must be always present");
+        throw CheetahInvalidStateException("field 'transcript' must be always present");
+      } else if (transcript['words'] == null) {
+        throw CheetahInvalidStateException("field 'words' must be always present");
       }
 
-      return CheetahTranscript(transcript['transcript'], null);
+      return CheetahTranscript(transcript['transcript'], transcript['words'], null);
     } on PlatformException catch (error) {
       throw cheetahStatusToException(error.code, error.message);
     } on Exception catch (error) {
