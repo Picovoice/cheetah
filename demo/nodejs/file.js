@@ -37,6 +37,7 @@ program
   .option("-m, --model_file_path <string>", "absolute path to cheetah model")
   .option("-p, --disable_automatic_punctuation", "disable automatic punctuation")
   .option("-n, --disable_text_normalization", "disable text normalization")
+  .option("-c, --word_confidence", "display word confidences inline")
   .option(
     "-z, --show_inference_devices",
     "Print devices that are available to run Cheetah inference.",
@@ -47,6 +48,18 @@ if (process.argv.length < 2) {
 }
 program.parse(process.argv);
 
+function amendTranscript(transcript, words) {
+  let i = 0;
+  let outputTranscript = "";
+  for (const word of words) {
+    let foundIndex = transcript.slice(i).indexOf(word.word);
+    outputTranscript += transcript.slice(i, i+foundIndex);
+    outputTranscript += `${word.word} (${(word.confidence * 100).toFixed(0)}%)`;
+    i += foundIndex + word.word.length;
+  }
+  return outputTranscript;
+}
+
 function fileDemo() {
   let audioPath = program["input_audio_file_path"];
   let accessKey = program["access_key"]
@@ -55,6 +68,7 @@ function fileDemo() {
   let device = program["device"];
   let disableAutomaticPunctuation = program["disable_automatic_punctuation"];
   let disableTextNormalization = program["disable_text_normalization"];
+  let wordConfidence = program["word_confidence"];
 
   const showInferenceDevices = program["show_inference_devices"];
   if (showInferenceDevices) {
@@ -103,14 +117,22 @@ function fileDemo() {
 
   let frames = getInt16Frames(inputWaveFile, engineInstance.frameLength);
 
-  let transcript = '';
-  for (let frame of frames) {
-    const [partialTranscript, _] = engineInstance.process(frame);
-    transcript += partialTranscript
+  let transcript= '';
+  for (const frame of frames) {
+    const {
+      transcript: partialTranscript,
+      words: partialWords
+    } = engineInstance.process(frame);
+    transcript += wordConfidence ? amendTranscript(partialTranscript, partialWords) : partialTranscript;
   }
 
-  transcript += engineInstance.flush();
+  const {
+    transcript: extraTranscript,
+    words: extraWords
+  } = engineInstance.flush();
+  transcript += wordConfidence ? amendTranscript(extraTranscript, extraWords) : extraTranscript;
   console.log(transcript);
+
   engineInstance.release();
 }
 
