@@ -20,7 +20,8 @@ from ._cheetah import (
 )
 from ._util import (
     default_library_path,
-    default_model_path
+    default_model_path,
+    pv_train_model,
 )
 
 
@@ -88,7 +89,30 @@ def available_devices(library_path: Optional[str] = None) -> Sequence[str]:
     return list_hardware_devices(library_path=library_path)
 
 
+def train_with_yaml(
+        access_key: str,
+        output_path: str,
+        language: str,
+        yaml_path: str):
+    """
+    TODO
+    """
+
+    if not os.path.exists(yaml_path):
+        raise IOError("Couldn't find yaml file at '%s'." % yaml_path)
+
+    with open(yaml_path) as f:
+        yaml_content = f.read()
+
+    pv_train_model(
+        access_key=access_key,
+        output_path=output_path,
+        language=language,
+        yaml_content=yaml_content)
+
+
 __all__ = [
     'available_devices',
     'create',
+    'train_with_yaml',
 ]
