@@ -9,9 +9,12 @@
 # specific language governing permissions and limitations under the License.
 #
 
+import os
+from io import StringIO
 from typing import (
     Optional,
-    Sequence
+    Sequence,
+    Dict
 )
 
 from ._cheetah import (
@@ -89,13 +92,20 @@ def available_devices(library_path: Optional[str] = None) -> Sequence[str]:
     return list_hardware_devices(library_path=library_path)
 
 
-def train_with_yaml(
+def train_model_from_yaml(
         access_key: str,
         output_path: str,
         language: str,
         yaml_path: str):
     """
-    TODO
+    Trains a model using a Cat content (.yml) file.
+
+    :param access_key: AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+    :param output_path: Absolute path to file where the trained model will be saved.
+    :param language: Two character language code for the model (i.e 'en', 'fr').
+    Check https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
+    :param context_path: Absolute path to file containing context model (file with `.rhn` extension).
+    :param yaml_path: Absolute path to the YAML configuration file.
     """
 
     if not os.path.exists(yaml_path):
@@ -111,8 +121,49 @@ def train_with_yaml(
         yaml_content=yaml_content)
 
 
+def train_model_from_words(
+        access_key: str,
+        output_path: str,
+        language: str,
+        new_words: Dict[str, Sequence[str]],
+        boost_words: Sequence[str]):
+    """
+    Trains a model using the specified `new_words` and `boost_words` arguments.
+
+    :param access_key: AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+    :param output_path: Absolute path to file where the trained model will be saved.
+    :param language: Two character language code for the model (i.e 'en', 'fr').
+    Check https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
+    :param context_path: Absolute path to file containing context model (file with `.rhn` extension).
+    :param new_words: A dictionary of words to pronunciations to add to the new model. Keys should be
+    the word string. Values are a Sequence of pronunciations for the given word, each pronunciation
+    is a string of space separated IPA phonemes. An empty Sequence will result in the training
+    generating a default pronunciation.
+    :param boost_words: A list of words to "boost".
+    """
+
+    yaml = YAML()
+    stream = StringIO()
+
+    content = {
+        'new_words': new_words,
+        'boost': boost_words
+    }
+    yaml.dump(content, stream)
+
+    yaml_content = stream.getvalue()
+    stream.close()
+
+    pv_train_model(
+        access_key=access_key,
+        output_path=output_path,
+        language=language,
+        yaml_content=yaml_content)
+
+
 __all__ = [
     'available_devices',
     'create',
-    'train_with_yaml',
+    'train_model_from_yaml',
+    'train_model_from_words',
 ]

@@ -13,6 +13,8 @@ import os
 import platform
 import subprocess
 
+import requests
+
 
 def _is_64bit():
     return '64bit' in platform.architecture()[0]
