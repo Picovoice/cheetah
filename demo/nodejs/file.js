@@ -37,7 +37,7 @@ program
   .option("-m, --model_file_path <string>", "absolute path to cheetah model")
   .option("-p, --disable_automatic_punctuation", "disable automatic punctuation")
   .option("-n, --disable_text_normalization", "disable text normalization")
-  .option("-c, --word_confidence", "display word confidences inline")
+  .option("-v, --verbose", "verbose mode, prints metadata")
   .option(
     "-z, --show_inference_devices",
     "Print devices that are available to run Cheetah inference.",
@@ -48,18 +48,6 @@ if (process.argv.length < 2) {
 }
 program.parse(process.argv);
 
-function amendTranscript(transcript, words) {
-  let i = 0;
-  let outputTranscript = "";
-  for (const word of words) {
-    let foundIndex = transcript.slice(i).indexOf(word.word);
-    outputTranscript += transcript.slice(i, i+foundIndex);
-    outputTranscript += `${word.word} (${(word.confidence * 100).toFixed(0)}%)`;
-    i += foundIndex + word.word.length;
-  }
-  return outputTranscript;
-}
-
 function fileDemo() {
   let audioPath = program["input_audio_file_path"];
   let accessKey = program["access_key"]
@@ -68,7 +56,7 @@ function fileDemo() {
   let device = program["device"];
   let disableAutomaticPunctuation = program["disable_automatic_punctuation"];
   let disableTextNormalization = program["disable_text_normalization"];
-  let wordConfidence = program["word_confidence"];
+  let verbose = program["verbose"];
 
   const showInferenceDevices = program["show_inference_devices"];
   if (showInferenceDevices) {
@@ -117,21 +105,59 @@ function fileDemo() {
 
   let frames = getInt16Frames(inputWaveFile, engineInstance.frameLength);
 
-  let transcript= '';
-  for (const frame of frames) {
-    const {
-      transcript: partialTranscript,
-      words: partialWords
-    } = engineInstance.process(frame);
-    transcript += wordConfidence ? amendTranscript(partialTranscript, partialWords) : partialTranscript;
-  }
+  if (verbose) {
+    const COLUMN_A = 22;
+    const COLUMN_B = "startSeconds".length + 2;
+    const COLUMN_C = "endSeconds".length + 2;
+    const COLUMN_D = "confidence".length + 2;
+    const logRow = (a, b, c, d) => {
+      process.stdout.write(a.slice(0, COLUMN_A));
+      process.stdout.write(" ".repeat(COLUMN_A - a.length));
+      process.stdout.write(b.slice(0, COLUMN_B));
+      process.stdout.write(" ".repeat(COLUMN_B - b.length));
+      process.stdout.write(c.slice(0, COLUMN_C));
+      process.stdout.write(" ".repeat(COLUMN_C - c.length));
+      process.stdout.write(d.slice(0, COLUMN_D));
+      process.stdout.write(" ".repeat(COLUMN_D - d.length));
+      process.stdout.write("\n");
+    };
 
-  const {
-    transcript: extraTranscript,
-    words: extraWords
-  } = engineInstance.flush();
-  transcript += wordConfidence ? amendTranscript(extraTranscript, extraWords) : extraTranscript;
-  console.log(transcript);
+    logRow("word", "startSeconds", "endSeconds", "confidence");
+    process.stdout.write("-".repeat(COLUMN_A + COLUMN_B + COLUMN_C + COLUMN_D));
+    process.stdout.write("\n");
+
+    for (const frame of frames) {
+      const { words: words } = engineInstance.processAnnotated(frame);
+      for (const word of words) {
+        logRow(
+          word.word,
+          `${word.startSeconds.toFixed(4)}`,
+          `${word.endSeconds.toFixed(4)}`,
+          `${(100 * word.confidence).toFixed(1)}%`
+        );
+      }
+    }
+
+    const { words: words } = engineInstance.flushAnnotated();
+    for (const word of words) {
+      logRow(
+        word.word,
+        `${word.startSeconds.toFixed(4)}`,
+        `${word.endSeconds.toFixed(4)}`,
+        `${(100 * word.confidence).toFixed(1)}%`
+      );
+    }
+  } else {
+    let transcript= '';
+    for (const frame of frames) {
+      const [ partialTranscript ] = engineInstance.process(frame);
+      transcript += partialTranscript;
+    }
+
+    const extraTranscript = engineInstance.flush();
+    transcript += extraTranscript;
+    console.log(transcript);
+  }
 
   engineInstance.release();
 }

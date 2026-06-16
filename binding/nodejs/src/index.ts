@@ -18,7 +18,7 @@ import {
   CheetahInitOptions,
   CheetahInputOptions,
   CheetahOptions,
-  CheetahTranscript,
+  CheetahTranscriptAnnotated,
   CheetahWord,
 } from './types';
 
@@ -30,7 +30,7 @@ export {
   CheetahInitOptions,
   CheetahInputOptions,
   CheetahOptions,
-  CheetahTranscript,
+  CheetahTranscriptAnnotated,
   CheetahWord,
   checkWaveFile,
   getInt16Frames,

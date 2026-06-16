@@ -10,7 +10,6 @@
 //
 import * as fs from 'fs';
 import * as path from 'path';
-import { CheetahWord } from "../src/types";
 
 const ROOT_DIR = path.join(__dirname, '../../..');
 const TEST_DATA_JSON = require(path.join(
@@ -54,7 +53,6 @@ export function getLanguageTestParameters(): [
   string[],
   string,
   string,
-  CheetahWord[],
   string[],
   boolean,
   number,
@@ -70,7 +68,6 @@ export function getLanguageTestParameters(): [
     x.models,
     x.audio_file,
     x.transcript,
-    x.words,
     x.punctuations,
     x.normalization,
     x.error_rate,

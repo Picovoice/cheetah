@@ -28,7 +28,7 @@ export type CheetahWord = {
   confidence: number;
 };
 
-export type CheetahTranscript = {
+export type CheetahTranscriptAnnotated = {
   transcript: string;
   words: CheetahWord[];
   isEndpoint: boolean;

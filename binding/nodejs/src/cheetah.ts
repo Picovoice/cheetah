@@ -21,25 +21,34 @@ import {
   pvStatusToException,
 } from './errors';
 
-import { CheetahOptions, CheetahInputOptions, CheetahWord, CheetahTranscript } from './types';
+import { CheetahOptions, CheetahInputOptions, CheetahWord, CheetahTranscriptAnnotated } from './types';
 
 import { getSystemLibraryPath } from './platforms';
 
 const DEFAULT_MODEL_PATH = '../lib/common/cheetah_params.pv';
 
 type CheetahHandleAndStatus = { handle: any; status: PvStatus };
+type TranscriptAndStatus = {
+  transcript: string;
+  status: PvStatus;
+};
+type PartialTranscriptAndStatus = {
+  transcript: string;
+  is_endpoint: number;
+  status: PvStatus;
+};
 type CheetahInternalWord = {
   word: string;
   start_sec: number;
   end_sec: number;
   confidence: number;
 };
-type TranscriptAndStatus = {
+type TranscriptAndStatusAnnotated = {
   transcript: string;
   words: CheetahInternalWord[];
   status: PvStatus;
 };
-type PartialTranscriptAndStatus = {
+type PartialTranscriptAndStatusAnnotated = {
   transcript: string;
   words: CheetahInternalWord[];
   is_endpoint: number;
@@ -132,7 +141,11 @@ export default class Cheetah {
       );
     }
 
-    if (device === null || device === undefined || device.length === 0) {
+    if (
+      device === null ||
+      device === undefined ||
+      device.length === 0
+    ) {
       throw new CheetahInvalidArgumentError(`No device provided to Cheetah`);
     }
 
@@ -196,7 +209,9 @@ export default class Cheetah {
    * @returns List of all available devices that Cheetah can use for inference.
    */
   static listAvailableDevices(options: CheetahInputOptions = {}): string[] {
-    const { libraryPath = getSystemLibraryPath() } = options;
+    const {
+      libraryPath = getSystemLibraryPath()
+    } = options;
 
     const pvCheetah = require(libraryPath); // eslint-disable-line
 
@@ -226,10 +241,9 @@ export default class Cheetah {
    *
    * @param {Int16Array} pcm Audio data. The audio needs to have a sample rate equal to `Cheetah.sampleRate` and be 16-bit linearly-encoded.
    * The specific array length can be attained by calling `Cheetah.frameLength`. This function operates on single-channel audio.
-   * @returns {CheetahTranscript} object which contains the inferred transcription, a sequence of CheetahWord objects containing word
-   * confidences, and a flag indicating if an endpoint has been detected.
+   * @returns {string, boolean} Inferred transcription, and a flag indicating if an endpoint has been detected.
    */
-  process(pcm: Int16Array): CheetahTranscript {
+  process(pcm: Int16Array): [string, boolean] {
     assert(pcm instanceof Int16Array);
 
     if (
@@ -262,6 +276,54 @@ export default class Cheetah {
       this.handlePvStatus(status, 'Cheetah failed to process the audio frame');
     }
 
+    return [
+      partialTranscriptAndStatus!.transcript,
+      partialTranscriptAndStatus!.is_endpoint !== 0
+    ];
+  }
+
+  /**
+   * Processes a frame of audio and returns newly-transcribed text and a flag indicating if an endpoint has been detected.
+   * Upon detection of an endpoint, the client may invoke `Cheetah.flush()` to retrieve any remaining transcription.
+   *
+   * @param {Int16Array} pcm Audio data. The audio needs to have a sample rate equal to `Cheetah.sampleRate` and be 16-bit linearly-encoded.
+   * The specific array length can be attained by calling `Cheetah.frameLength`. This function operates on single-channel audio.
+   * @returns {CheetahTranscriptAnnotated} object which contains the inferred transcription, a sequence of CheetahWord objects containing word
+   * confidences, and a flag indicating if an endpoint has been detected.
+   */
+  processAnnotated(pcm: Int16Array): CheetahTranscriptAnnotated {
+    assert(pcm instanceof Int16Array);
+
+    if (
+      this._handle === 0 ||
+      this._handle === null ||
+      this._handle === undefined
+    ) {
+      throw new CheetahInvalidStateError('Cheetah is not initialized');
+    }
+
+    if (pcm === undefined || pcm === null) {
+      throw new CheetahInvalidArgumentError(
+        `PCM array provided to 'Cheetah.process()' is undefined or null`
+      );
+    } else if (pcm.length !== this.frameLength) {
+      throw new CheetahInvalidArgumentError(
+        `Size of frame array provided to 'Cheetah.process()' (${pcm.length}) does not match the engine 'Cheetah.frameLength' (${this.frameLength})`
+      );
+    }
+
+    let partialTranscriptAndStatus: PartialTranscriptAndStatusAnnotated | null = null;
+    try {
+      partialTranscriptAndStatus = this._pvCheetah.process(this._handle, pcm);
+    } catch (err: any) {
+      pvStatusToException(PvStatus[err.code as keyof typeof PvStatus], err);
+    }
+
+    const status = partialTranscriptAndStatus!.status;
+    if (status !== PvStatus.SUCCESS) {
+      this.handlePvStatus(status, 'Cheetah failed to process the audio frame');
+    }
+
     return {
       transcript: partialTranscriptAndStatus!.transcript,
       words: partialTranscriptAndStatus!.words.map(word => fromInternalWord(word)),
@@ -272,10 +334,9 @@ export default class Cheetah {
   /**
    * Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcript.
    *
-   * @returns {CheetahTranscript} object which contains the inferred transcription and a sequence of CheetahWord objects
-   * containing word confidences. isEndpoint will always be true.
+   * @returns {string} Inferred transcription.
    */
-  flush(): CheetahTranscript {
+  flush(): string {
     if (
       this._handle === 0 ||
       this._handle === null ||
@@ -285,6 +346,36 @@ export default class Cheetah {
     }
 
     let transcriptAndStatus: TranscriptAndStatus | null = null;
+    try {
+      transcriptAndStatus = this._pvCheetah.flush(this._handle);
+    } catch (err: any) {
+      pvStatusToException(PvStatus[err.code as keyof typeof PvStatus], err);
+    }
+
+    const status = transcriptAndStatus!.status;
+    if (status !== PvStatus.SUCCESS) {
+      this.handlePvStatus(status, 'Cheetah failed to flush');
+    }
+
+    return transcriptAndStatus!.transcript;
+  }
+
+  /**
+   * Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcript.
+   *
+   * @returns {CheetahTranscriptAnnotated} object which contains the inferred transcription and a sequence of CheetahWord objects
+   * containing word confidences. isEndpoint will always be true.
+   */
+  flushAnnotated(): CheetahTranscriptAnnotated {
+    if (
+      this._handle === 0 ||
+      this._handle === null ||
+      this._handle === undefined
+    ) {
+      throw new CheetahInvalidStateError('Cheetah is not initialized');
+    }
+
+    let transcriptAndStatus: TranscriptAndStatusAnnotated | null = null;
     try {
       transcriptAndStatus = this._pvCheetah.flush(this._handle);
     } catch (err: any) {
