@@ -31,7 +31,7 @@ class CheetahTrainTestCase(unittest.TestCase):
             access_key=self.ACCESS_KEY,
             output_path=output_path,
             language="en",
-            new_words={'picovoice': [], 'testertest': []},
+            new_words={'picovoice': []},
             boost_words=['computer'])
 
         self.assertTrue(os.path.exists(output_path))
