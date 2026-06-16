@@ -47,8 +47,6 @@ class CheetahTrainTestCase(unittest.TestCase):
             os.remove(output_path)
 
     def test_train_model_invalid_words(self):
-        relative_path = '../..'
-
         output_path = f'{str(uuid.uuid4())}.pv'
         with self.assertRaises(ValueError):
             train_model_from_words(
