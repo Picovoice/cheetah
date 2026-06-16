@@ -13,7 +13,12 @@ import os
 import platform
 import subprocess
 
+from typing import Sequence
+
 import requests
+
+from ruamel.yaml import YAML
+from ruamel.yaml.error import YAMLError
 
 
 def _is_64bit():
@@ -97,7 +102,34 @@ def pv_train_model(
     if language not in VALID_LANGUAGES:
         raise ValueError("Invalid language ('%s')" % language)
 
-    # TODO: Mild YAML validation before sending to API
+    try:
+        yaml = YAML()
+        content = yaml.load(yaml_content)
+    except YAMLError as e:
+        if hasattr(e, "problem_mark"):
+            raise ValueError(f"YAML error at line {e.problem_mark.line + 1}: {e.problem}") from e
+        else:
+            raise ValueError("Failed to parse yaml content") from e
+
+    if 'new' not in content:
+        raise ValueError("YAML must contain `new` field")
+    if 'boost' not in content:
+        raise ValueError("YAML must contain `boost` field")
+
+    if not isinstance(content['boost'], Sequence):
+        raise ValueError("`boost` field should be of type `Sequence`")
+    if not all([isinstance(b, str) for b in content['boost']]):
+        raise ValueError("`boost` words should be of type `str`")
+
+    for n in content['new']:
+        if not isinstance(n, str):
+            raise ValueError("`new` words should be of type `str`")
+        pronunciations = content['new'][n]
+        if not isinstance(pronunciations, Sequence):
+            raise ValueError("`new` words pronunciations should be of type `Sequence`")
+        for p in pronunciations:
+            if not isinstance(p, str):
+                raise ValueError("Each `pronunciation` should be of type `str`")
 
     payload = {
         "engine": "cheetah",

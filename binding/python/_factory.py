@@ -17,6 +17,9 @@ from typing import (
     Dict
 )
 
+from ruamel.yaml import YAML
+from ruamel.yaml.error import YAMLError
+
 from ._cheetah import (
     Cheetah,
     list_hardware_devices
@@ -139,17 +142,24 @@ def train_model_from_words(
     the word string. Values are a Sequence of pronunciations for the given word, each pronunciation
     is a string of space separated IPA phonemes. An empty Sequence will result in the training
     generating a default pronunciation.
-    :param boost_words: A list of words to "boost".
+    :param boost_words: A list of words to "boost". When the engine has a situation with competing
+    homophones the engine will be more likely to select the boosted words.
     """
 
     yaml = YAML()
     stream = StringIO()
 
     content = {
-        'new_words': new_words,
+        'new': new_words,
         'boost': boost_words
     }
-    yaml.dump(content, stream)
+    try:
+        yaml.dump(content, stream)
+    except YAMLError as e:
+        if hasattr(e, "problem_mark"):
+            raise ValueError(f"YAML error at line {e.problem_mark.line + 1}: {e.problem}") from e
+        else:
+            raise ValueError("Failed to parse yaml content") from e
 
     yaml_content = stream.getvalue()
     stream.close()
