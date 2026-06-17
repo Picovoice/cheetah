@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -309,7 +309,7 @@
 			);
 			mainGroup = 1E00654B27CFF7EB006FF6E9;
 			packageReferences = (
-				079B98C52FBFA92300B44EC7 /* XCRemoteSwiftPackageReference "cheetah" */,
+				3457B9B22FE079AD00CEF436 /* XCLocalSwiftPackageReference "../../../../cheetah" */,
 			);
 			productRefGroup = 1E00655527CFF7EB006FF6E9 /* Products */;
 			projectDirPath = "";
@@ -718,6 +718,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		3457B9B22FE079AD00CEF436 /* XCLocalSwiftPackageReference "../../../../cheetah" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../../../cheetah;
+		};
 		E1E0C7FE2CF11FD9001D6D84 /* XCLocalSwiftPackageReference "../../../../cheetah" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../../../cheetah;

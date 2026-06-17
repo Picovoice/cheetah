@@ -1,5 +1,5 @@
 //
-//  Copyright 2022-2025 Picovoice Inc.
+//  Copyright 2022-2026 Picovoice Inc.
 //  You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 //  file accompanying this source.
 //  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
@@ -156,8 +156,16 @@ public class Cheetah {
         }
 
         var cPartialTranscript: UnsafeMutablePointer<Int8>?
-        var endPoint = false
-        let status = pv_cheetah_process(self.handle, pcm, &cPartialTranscript, &endPoint)
+        var endPoint: Bool = false
+        var cNumWords: Int32 = 0
+        var cWords: UnsafeMutablePointer<pv_word_t>?
+        let status = pv_cheetah_process(
+                self.handle,
+                pcm,
+                &cPartialTranscript,
+                &cNumWords,
+                &cWords,
+                &endPoint)
         if status != PV_STATUS_SUCCESS {
             let messageStack = try Cheetah.getMessageStack()
             throw Cheetah.pvStatusToCheetahError(status, "Cheetah process failed", messageStack)
@@ -165,6 +173,9 @@ public class Cheetah {
 
         let transcript = String(cString: cPartialTranscript!)
         pv_cheetah_transcript_delete(cPartialTranscript!)
+        if cWords != nil {
+            pv_cheetah_words_delete(cNumWords, cWords!)
+        }
 
         return (transcript, endPoint)
     }
@@ -179,7 +190,96 @@ public class Cheetah {
         }
 
         var cFinalTranscript: UnsafeMutablePointer<Int8>?
-        let status = pv_cheetah_flush(self.handle, &cFinalTranscript)
+        var cNumWords: Int32 = 0
+        var cWords: UnsafeMutablePointer<pv_word_t>?
+        let status = pv_cheetah_flush(self.handle, &cFinalTranscript, &cNumWords, &cWords)
+        if status != PV_STATUS_SUCCESS {
+            let messageStack = try Cheetah.getMessageStack()
+            throw Cheetah.pvStatusToCheetahError(status, "Cheetah flush failed", messageStack)
+        }
+
+        let transcript = String(cString: cFinalTranscript!)
+        pv_cheetah_transcript_delete(cFinalTranscript!)
+        if cWords != nil {
+            pv_cheetah_words_delete(cNumWords, cWords!)
+        }
+
+        return transcript
+    }
+
+    /// Processes a frame of audio and returns newly-transcribed text and a flag indicating if an endpoint has been
+    /// detected. Upon detection of an endpoint, the client may invoke `.flush()` to retrieve any remaining
+    /// transcription.
+    ///
+    /// - Parameters:
+    ///   - pcm: A frame of audio samples. The number of samples per frame can be attained by calling
+    ///     `Cheetah.frame_length`. The incoming audio needs to have a sample rate equal to `Cheetah.sample_rate`
+    ///      and be 16-bit linearly-encoded. Furthermore, Cheetah operates on single-channel audio.
+    /// - Throws: CheetahError
+    /// - Returns: A CheetahTranscriptAnnotated object containing any newly-transcribed speech, a flag indicating if an
+    ///   endpoint has been detected, and a list of transcribed words.
+    public func processAnnotated(_ pcm: [Int16]) throws -> CheetahTranscriptAnnotated {
+        if handle == nil {
+            throw CheetahInvalidStateError("Cheetah must be initialized before processing")
+        }
+
+        if pcm.count != Cheetah.frameLength {
+            throw CheetahInvalidArgumentError(
+                "Frame of audio data must contain \(Cheetah.frameLength) samples" +
+                " - given frame contained \(pcm.count)")
+        }
+
+        var cPartialTranscript: UnsafeMutablePointer<Int8>?
+        var endPoint: Bool = false
+        var cNumWords: Int32 = 0
+        var cWords: UnsafeMutablePointer<pv_word_t>?
+        let status = pv_cheetah_process(
+                self.handle,
+                pcm,
+                &cPartialTranscript,
+                &cNumWords,
+                &cWords,
+                &endPoint)
+        if status != PV_STATUS_SUCCESS {
+            let messageStack = try Cheetah.getMessageStack()
+            throw Cheetah.pvStatusToCheetahError(status, "Cheetah process failed", messageStack)
+        }
+
+        let transcript = String(cString: cPartialTranscript!)
+        pv_cheetah_transcript_delete(cPartialTranscript!)
+
+        var words: [CheetahWord] = []
+        if cWords != nil {
+            for i in 0..<Int(cNumWords) {
+                words.append(CheetahWord(
+                    word: String(cString: cWords![i].word),
+                    startSec: cWords![i].start_sec,
+                    endSec: cWords![i].end_sec,
+                    confidence: cWords![i].confidence))
+            }
+            pv_cheetah_words_delete(cNumWords, cWords!)
+        }
+
+        return CheetahTranscriptAnnotated(
+            transcript: transcript,
+            isEndpoint: endPoint,
+            words: words)
+    }
+
+    /// Marks the end of the audio stream, flushes internal state of the object, and returns
+    /// any remaining transcribed text.
+    ///
+    /// - Returns: Returns: A CheetahTranscriptAnnotated object containing any newly-transcribed speech, and a list of
+    ///   transcribed words.
+    public func flushAnnotated() throws -> CheetahTranscriptAnnotated {
+        if handle == nil {
+            throw CheetahInvalidStateError("Cheetah must be initialized before flushing")
+        }
+
+        var cFinalTranscript: UnsafeMutablePointer<Int8>?
+        var cNumWords: Int32 = 0
+        var cWords: UnsafeMutablePointer<pv_word_t>?
+        let status = pv_cheetah_flush(self.handle, &cFinalTranscript, &cNumWords, &cWords)
         if status != PV_STATUS_SUCCESS {
             let messageStack = try Cheetah.getMessageStack()
             throw Cheetah.pvStatusToCheetahError(status, "Cheetah flush failed", messageStack)
@@ -188,7 +288,22 @@ public class Cheetah {
         let transcript = String(cString: cFinalTranscript!)
         pv_cheetah_transcript_delete(cFinalTranscript!)
 
-        return transcript
+        var words: [CheetahWord] = []
+        if cWords != nil {
+            for i in 0..<Int(cNumWords) {
+                words.append(CheetahWord(
+                    word: String(cString: cWords![i].word),
+                    startSec: cWords![i].start_sec,
+                    endSec: cWords![i].end_sec,
+                    confidence: cWords![i].confidence))
+            }
+            pv_cheetah_words_delete(cNumWords, cWords!)
+        }
+        
+        return CheetahTranscriptAnnotated(
+            transcript: transcript,
+            isEndpoint: false,
+            words: words)
     }
 
     /// Given a path, return the full path to the resource.

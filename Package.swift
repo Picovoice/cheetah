@@ -28,7 +28,8 @@ let package = Package(
             ],
             sources: [
                 "binding/ios/Cheetah.swift",
-                "binding/ios/CheetahErrors.swift"
+                "binding/ios/CheetahErrors.swift",
+                "binding/ios/CheetahTranscriptAnnotated.swift"
             ]
         )
     ]
