@@ -10,7 +10,9 @@
 #
 
 import os
+from collections import namedtuple
 from ctypes import *
+from dataclasses import dataclass
 from enum import Enum
 from typing import *
 
@@ -117,6 +119,31 @@ class Cheetah(object):
     class CCheetah(Structure):
         pass
 
+    class CWord(Structure):
+        _fields_ = [
+            ("word", c_char_p),
+            ("start_sec", c_float),
+            ("end_sec", c_float),
+            ("confidence", c_float),
+        ]
+
+    Word = namedtuple('Word', ['word', 'start_sec', 'end_sec', 'confidence'])
+    """
+    Word-level transcription metadata.
+
+    Fields:
+        word: Transcribed word.
+        start_sec: Start time of the word in seconds.
+        end_sec: End time of the word in seconds.
+        confidence: Confidence score for the word.
+    """
+
+    @dataclass
+    class CheetahTranscriptAnnotated:
+        transcript: str
+        words: Sequence["Cheetah.Word"]
+        is_endpoint: bool
+
     def __init__(
             self,
             access_key: str,
@@ -202,17 +229,35 @@ class Cheetah(object):
         self._delete_func.restype = None
 
         self._process_func = library.pv_cheetah_process
-        self._process_func.argtypes = \
-            [POINTER(self.CCheetah), POINTER(c_short), POINTER(c_char_p), POINTER(c_bool)]
+        self._process_func.argtypes = [
+            POINTER(self.CCheetah),
+            POINTER(c_short),
+            POINTER(c_char_p),
+            POINTER(c_int32),
+            POINTER(POINTER(self.CWord)),
+            POINTER(c_bool),
+        ]
         self._process_func.restype = self.PicovoiceStatuses
 
         self._flush_func = library.pv_cheetah_flush
-        self._flush_func.argtypes = [POINTER(self.CCheetah), POINTER(c_char_p)]
+        self._flush_func.argtypes = [
+            POINTER(self.CCheetah),
+            POINTER(c_char_p),
+            POINTER(c_int32),
+            POINTER(POINTER(self.CWord)),
+        ]
         self._flush_func.restype = self.PicovoiceStatuses
 
         self._transcript_delete_func = library.pv_cheetah_transcript_delete
         self._transcript_delete_func.argtypes = [c_char_p]
         self._transcript_delete_func.restype = None
+
+        self._words_delete_func = library.pv_cheetah_words_delete
+        self._words_delete_func.argtypes = [
+            c_int32,
+            POINTER(self.CWord),
+        ]
+        self._words_delete_func.restype = None
 
         version_func = library.pv_cheetah_version
         version_func.argtypes = []
@@ -241,11 +286,15 @@ class Cheetah(object):
             raise CheetahInvalidArgumentError()
 
         c_partial_transcript = c_char_p()
+        c_partial_num_words = c_int32()
+        c_partial_words = POINTER(self.CWord)()
         is_endpoint = c_bool()
         status = self._process_func(
             self._handle,
             (c_short * len(pcm))(*pcm),
             byref(c_partial_transcript),
+            byref(c_partial_num_words),
+            byref(c_partial_words),
             byref(is_endpoint))
         if status is not self.PicovoiceStatuses.SUCCESS:
             raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](
@@ -254,6 +303,7 @@ class Cheetah(object):
 
         partial_transcript = c_partial_transcript.value.decode('utf-8')
         self._transcript_delete_func(c_partial_transcript)
+        self._words_delete_func(c_partial_num_words.value, c_partial_words)
 
         return partial_transcript, is_endpoint.value
 
@@ -266,7 +316,102 @@ class Cheetah(object):
         """
 
         c_final_transcript = c_char_p()
-        status = self._flush_func(self._handle, byref(c_final_transcript))
+        c_final_num_words = c_int32()
+        c_final_words = POINTER(self.CWord)()
+        status = self._flush_func(
+            self._handle,
+            byref(c_final_transcript),
+            byref(c_final_num_words),
+            byref(c_final_words))
+        if status is not self.PicovoiceStatuses.SUCCESS:
+            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](
+                message='Flush failed',
+                message_stack=self._get_error_stack())
+
+        final_transcript = c_final_transcript.value.decode('utf-8')
+        self._transcript_delete_func(c_final_transcript)
+        self._words_delete_func(c_final_num_words.value, c_final_words)
+
+        return final_transcript
+
+    def process_annotated(self, pcm: Sequence[int]) -> CheetahTranscriptAnnotated:
+        """
+        Processes a frame of audio and returns newly transcribed text, word-level metadata, and an endpoint flag.
+
+        When an endpoint is detected, the client may call `.`flush_annotated()` to retrieve any remaining transcription
+        and word metadata.
+
+        :param pcm: A frame of audio samples. The number of samples per frame can be attained by calling
+        `.frame_length`. The incoming audio needs to have a sample rate equal to `.sample_rate` and be 16-bit
+        linearly-encoded. Furthermore, Cheetah operates on single-channel audio.
+
+        :return: A `CheetahTranscriptAnnotated` instance with the following fields:
+
+            - `transcript`: Newly transcribed text. If no new transcript is available, this will be an empty string.
+            - `words`: Sequence of transcribed words and their associated metadata.
+            - `is_endpoint`: Indicates whether an endpoint has been detected.
+
+        """
+
+        if len(pcm) != self.frame_length:
+            raise CheetahInvalidArgumentError()
+
+        c_partial_transcript = c_char_p()
+        c_partial_num_words = c_int32()
+        c_partial_words = POINTER(self.CWord)()
+        is_endpoint = c_bool()
+        status = self._process_func(
+            self._handle,
+            (c_short * len(pcm))(*pcm),
+            byref(c_partial_transcript),
+            byref(c_partial_num_words),
+            byref(c_partial_words),
+            byref(is_endpoint))
+        if status is not self.PicovoiceStatuses.SUCCESS:
+            raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](
+                message='Process failed',
+                message_stack=self._get_error_stack())
+
+        partial_transcript = c_partial_transcript.value.decode('utf-8')
+        self._transcript_delete_func(c_partial_transcript)
+
+        partial_words = list()
+        for i in range(c_partial_num_words.value):
+            word = self.Word(
+                word=c_partial_words[i].word.decode('utf-8'),
+                start_sec=c_partial_words[i].start_sec,
+                end_sec=c_partial_words[i].end_sec,
+                confidence=c_partial_words[i].confidence)
+            partial_words.append(word)
+
+        self._words_delete_func(c_partial_num_words.value, c_partial_words)
+
+        return self.CheetahTranscriptAnnotated(
+            transcript=partial_transcript,
+            words=partial_words,
+            is_endpoint=is_endpoint.value
+        )
+
+    def flush_annotated(self) -> CheetahTranscriptAnnotated:
+        """
+        Marks the end of the audio stream, flushes the object's internal state, and returns any remaining transcription
+        and word-level metadata.
+
+        :return: A `CheetahTranscriptAnnotated` instance with the following fields:
+
+            - `transcript`: Any remaining transcribed text. If no transcript is available, this will be an empty string.
+            - `words`: Sequence of `Word` instances containing transcribed words and their metadata.
+
+        """
+
+        c_final_transcript = c_char_p()
+        c_final_num_words = c_int32()
+        c_final_words = POINTER(self.CWord)()
+        status = self._flush_func(
+            self._handle,
+            byref(c_final_transcript),
+            byref(c_final_num_words),
+            byref(c_final_words))
         if status is not self.PicovoiceStatuses.SUCCESS:
             raise self._PICOVOICE_STATUS_TO_EXCEPTION[status](
                 message='Flush failed',
@@ -275,7 +420,22 @@ class Cheetah(object):
         final_transcript = c_final_transcript.value.decode('utf-8')
         self._transcript_delete_func(c_final_transcript)
 
-        return final_transcript
+        final_words = list()
+        for i in range(c_final_num_words.value):
+            word = self.Word(
+                word=c_final_words[i].word.decode('utf-8'),
+                start_sec=c_final_words[i].start_sec,
+                end_sec=c_final_words[i].end_sec,
+                confidence=c_final_words[i].confidence)
+            final_words.append(word)
+
+        self._words_delete_func(c_final_num_words.value, c_final_words)
+
+        return self.CheetahTranscriptAnnotated(
+            transcript=final_transcript,
+            words=final_words,
+            is_endpoint=False
+        )
 
     def delete(self) -> None:
         """Releases resources acquired by Cheetah."""

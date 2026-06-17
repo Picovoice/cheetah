@@ -13,11 +13,10 @@ import json
 import os
 import struct
 import wave
-
 from typing import *
 
 
-def load_test_data() -> List[Tuple[str, str, str, List[str], float]]:
+def load_test_data() -> List[Tuple[str, str, str, str, List[str], List[str], bool, float, int]]:
     data_file_path = os.path.join(os.path.dirname(__file__), "../../resources/.test/test_data.json")
     with open(data_file_path, encoding="utf8") as data_file:
         json_test_data = data_file.read()
@@ -32,9 +31,11 @@ def load_test_data() -> List[Tuple[str, str, str, List[str], float]]:
                     model_file,
                     t['audio_file'],
                     t['transcript'],
+                    t['words'],
                     t['punctuations'],
                     t['normalization'],
-                    t['error_rate']
+                    t['error_rate'],
+                    t['mismatch_count_threshold']
                 )
             )
 
@@ -70,6 +71,10 @@ def get_word_error_rate(transcript: str, expected_transcript: str, use_cer: bool
     transcript_split = list(transcript) if use_cer else transcript.split()
     expected_split = list(expected_transcript) if use_cer else expected_transcript.split()
     return _levenshtein_distance(transcript_split, expected_split) / len(transcript_split)
+
+
+def get_mismatch_count(transcript_words: Sequence[str], expected_words: Sequence[str]) -> int:
+    return _levenshtein_distance(transcript_words, expected_words)
 
 
 def _levenshtein_distance(words1: Sequence[str], words2: Sequence[str]) -> int:

@@ -23,7 +23,6 @@ from _cheetah import (
 from _util import *
 from test_util import *
 
-
 language_tests = load_test_data()
 
 
@@ -55,9 +54,11 @@ class CheetahTestCase(unittest.TestCase):
             model_file: str,
             audio_file: str,
             expected_transcript: str,
+            expected_words: Sequence[str],
             punctuations: List[str],
             normalization: bool,
-            error_rate: float):
+            error_rate: float,
+            mismatch_count_threshold: int):
         o = None
 
         try:
@@ -71,22 +72,38 @@ class CheetahTestCase(unittest.TestCase):
                 sample_rate=o.sample_rate)
 
             transcript = ''
+            words = list()
             num_frames = len(pcm) // o.frame_length
             for i in range(num_frames):
                 frame = pcm[i * o.frame_length:(i + 1) * o.frame_length]
-                partial_transcript, _ = o.process(frame)
-                transcript += partial_transcript
+                partial_output = o.process_annotated(frame)
+                transcript += partial_output.transcript
+                words.extend(partial_output.words)
 
-            final_transcript = o.flush()
-            transcript += final_transcript
+            final_output = o.flush_annotated()
+            transcript += final_output.transcript
+            words.extend(final_output.words)
 
             normalized_transcript = expected_transcript
+            normalized_words = [item for item in expected_words if not (item in punctuations)]
             for punctuation in punctuations:
                 normalized_transcript = normalized_transcript.replace(punctuation, "")
 
             self.assertLessEqual(
                 get_word_error_rate(transcript, normalized_transcript),
                 error_rate)
+            self.assertLessEqual(
+                get_mismatch_count(
+                    transcript_words=[word.word for word in words],
+                    expected_words=normalized_words),
+                mismatch_count_threshold
+            )
+            for word in words:
+                self.assertLessEqual(word.start_sec, word.end_sec)
+                self.assertGreater(word.start_sec, 0.0)
+                self.assertGreaterEqual(word.confidence, 0.0)
+                self.assertLessEqual(word.confidence, 1.0)
+
         finally:
             if o is not None:
                 o.delete()
@@ -98,9 +115,11 @@ class CheetahTestCase(unittest.TestCase):
             model_file: str,
             audio_file: str,
             expected_transcript: str,
+            expected_words: Sequence[str],
             punctuations: List[str],
             normalization: bool,
-            error_rate: float):
+            error_rate: float,
+            mismatch_count_threshold: int):
         o = None
 
         try:
@@ -114,18 +133,32 @@ class CheetahTestCase(unittest.TestCase):
                 sample_rate=o.sample_rate)
 
             transcript = ''
+            words = list()
             num_frames = len(pcm) // o.frame_length
             for i in range(num_frames):
                 frame = pcm[i * o.frame_length:(i + 1) * o.frame_length]
-                partial_transcript, _ = o.process(frame)
-                transcript += partial_transcript
+                partial_output = o.process_annotated(frame)
+                transcript += partial_output.transcript
+                words.extend(partial_output.words)
 
-            final_transcript = o.flush()
-            transcript += final_transcript
+            final_output = o.flush_annotated()
+            transcript += final_output.transcript
+            words.extend(final_output.words)
 
             self.assertLessEqual(
                 get_word_error_rate(transcript, expected_transcript),
                 error_rate)
+            self.assertLessEqual(
+                get_mismatch_count(
+                    transcript_words=[word.word for word in words],
+                    expected_words=expected_words),
+                mismatch_count_threshold
+            )
+            for word in words:
+                self.assertLessEqual(word.start_sec, word.end_sec)
+                self.assertGreater(word.start_sec, 0.0)
+                self.assertGreaterEqual(word.confidence, 0.0)
+                self.assertLessEqual(word.confidence, 1.0)
         finally:
             if o is not None:
                 o.delete()
