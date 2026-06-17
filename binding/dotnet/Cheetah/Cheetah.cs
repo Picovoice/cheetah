@@ -89,15 +89,22 @@ namespace Pv
             IntPtr handle,
             Int16[] pcm,
             out IntPtr transcriptPtr,
+            out int numWords,
+            out IntPtr wordsPtr,
             out bool isEndpoint);
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern CheetahStatus pv_cheetah_flush(
             IntPtr handle,
-            out IntPtr transcriptPtr);
+            out IntPtr transcriptPtr,
+            out int numWords,
+            out IntPtr wordsPtr);
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern void pv_cheetah_transcript_delete(IntPtr transcriptPtr);
+
+        [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void pv_cheetah_words_delete(int numWords, IntPtr wordsPtr);
 
         [DllImport(LIBRARY, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr pv_cheetah_version();
@@ -123,6 +130,18 @@ namespace Pv
         private static extern void pv_cheetah_free_hardware_devices(
             IntPtr hardwareDevices,
             int numHardwareDevices);
+
+        /// <summary>
+        /// C Struct for storing word metadata
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        private struct CCheetahWord
+        {
+            public readonly IntPtr wordPtr;
+            public readonly float startSec;
+            public readonly float endSec;
+            public readonly float confidence;
+        }
 
         /// <summary>
         /// Factory method for Cheetah Speech-to-Text engine.
@@ -271,8 +290,16 @@ namespace Pv
             }
 
             IntPtr transcriptPtr = IntPtr.Zero;
+            int numWords = 0;
+            IntPtr wordsPtr = IntPtr.Zero;
             bool isEndpoint = false;
-            CheetahStatus status = pv_cheetah_process(_libraryPointer, pcm, out transcriptPtr, out isEndpoint);
+            CheetahStatus status = pv_cheetah_process(
+                    _libraryPointer,
+                    pcm,
+                    out transcriptPtr,
+                    out numWords,
+                    out wordsPtr,
+                    out isEndpoint);
             if (status != CheetahStatus.SUCCESS)
             {
                 string[] messageStack = GetMessageStack();
@@ -281,6 +308,9 @@ namespace Pv
 
             string transcript = Utils.GetUtf8StringFromPtr(transcriptPtr);
             pv_cheetah_transcript_delete(transcriptPtr);
+            if (wordsPtr != IntPtr.Zero) {
+                pv_cheetah_words_delete(numWords, wordsPtr);
+            }
 
             return new CheetahTranscript(transcript, isEndpoint);
         }
@@ -294,7 +324,106 @@ namespace Pv
         public CheetahTranscript Flush()
         {
             IntPtr transcriptPtr = IntPtr.Zero;
-            CheetahStatus status = pv_cheetah_flush(_libraryPointer, out transcriptPtr);
+            int numWords = 0;
+            IntPtr wordsPtr = IntPtr.Zero;
+            CheetahStatus status = pv_cheetah_flush(
+                    _libraryPointer,
+                    out transcriptPtr,
+                    out numWords,
+                    out wordsPtr);
+            if (status != CheetahStatus.SUCCESS)
+            {
+                string[] messageStack = GetMessageStack();
+                throw CheetahStatusToException(status, "Cheetah failed to flush.", messageStack);
+            }
+
+            string transcript = Utils.GetUtf8StringFromPtr(transcriptPtr);
+            pv_cheetah_transcript_delete(transcriptPtr);
+            if (wordsPtr != IntPtr.Zero) {
+                pv_cheetah_words_delete(numWords, wordsPtr);
+            }
+
+            return new CheetahTranscript(transcript, false);
+        }
+
+        /// <summary>
+        /// Processes a given audio data and returns its transcription.
+        /// </summary>
+        /// <param name="pcm">
+        /// Audio data. A frame of audio samples. The number of samples per frame can be attained by calling `pv_cheetah_frame_length()`.
+        /// The incoming audio needs to have a sample rate equal to `pv_sample_rate()` and be 16-bit linearly-encoded.Cheetah operates on single-channel audio.
+        /// </param>
+        /// <returns>
+        /// Inferred transcription.
+        /// </returns>
+        public CheetahTranscriptAnnotated ProcessAnnotated(Int16[] pcm)
+        {
+            if (pcm.Length == 0 | pcm == null)
+            {
+                throw new CheetahInvalidArgumentException("Input audio frame is empty");
+            }
+
+            if (pcm.Length != FrameLength)
+            {
+                throw new CheetahInvalidArgumentException($"Input audio frame size ({pcm.Length}) was not the size specified by Cheetah engine ({FrameLength}). " +
+                    $"Use cheetah.FrameLength to get the correct size.");
+            }
+
+            IntPtr transcriptPtr = IntPtr.Zero;
+            int numWords = 0;
+            IntPtr wordsPtr = IntPtr.Zero;
+            bool isEndpoint = false;
+            CheetahStatus status = pv_cheetah_process(
+                    _libraryPointer,
+                    pcm,
+                    out transcriptPtr,
+                    out numWords,
+                    out wordsPtr,
+                    out isEndpoint);
+            if (status != CheetahStatus.SUCCESS)
+            {
+                string[] messageStack = GetMessageStack();
+                throw CheetahStatusToException(status, "Cheetah failed to process the audio frame.", messageStack);
+            }
+
+            string transcript = Utils.GetUtf8StringFromPtr(transcriptPtr);
+            pv_cheetah_transcript_delete(transcriptPtr);
+
+            CheetahWord[] words = new CheetahWord[numWords];
+            if (wordsPtr != IntPtr.Zero) {
+                for (int i = 0; i < numWords; i++) {
+                    CCheetahWord word = (CCheetahWord) Marshal.PtrToStructure(
+                        IntPtr.Add(wordsPtr, i * Marshal.SizeOf(typeof(CCheetahWord))),
+                        typeof(CCheetahWord));
+
+                    words[i] = new CheetahWord(
+                            Utils.GetUtf8StringFromPtr(word.wordPtr),
+                            word.startSec,
+                            word.endSec,
+                            word.confidence);
+                }
+                pv_cheetah_words_delete(numWords, wordsPtr);
+            }
+
+            return new CheetahTranscriptAnnotated(transcript, isEndpoint, words);
+        }
+
+        /// <summary>
+        ///  Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcript.
+        /// </summary>
+        /// <returns>
+        /// Inferred transcription.
+        /// </returns>
+        public CheetahTranscriptAnnotated FlushAnnotated()
+        {
+            IntPtr transcriptPtr = IntPtr.Zero;
+            int numWords = 0;
+            IntPtr wordsPtr = IntPtr.Zero;
+            CheetahStatus status = pv_cheetah_flush(
+                    _libraryPointer,
+                    out transcriptPtr,
+                    out numWords,
+                    out wordsPtr);
             if (status != CheetahStatus.SUCCESS)
             {
                 string[] messageStack = GetMessageStack();
@@ -304,7 +433,23 @@ namespace Pv
             string transcript = Utils.GetUtf8StringFromPtr(transcriptPtr);
             pv_cheetah_transcript_delete(transcriptPtr);
 
-            return new CheetahTranscript(transcript, false);
+            CheetahWord[] words = new CheetahWord[numWords];
+            if (wordsPtr != IntPtr.Zero) {
+                for (int i = 0; i < numWords; i++) {
+                    CCheetahWord word = (CCheetahWord) Marshal.PtrToStructure(
+                        IntPtr.Add(wordsPtr, i * Marshal.SizeOf(typeof(CCheetahWord))),
+                        typeof(CCheetahWord));
+
+                    words[i] = new CheetahWord(
+                            Utils.GetUtf8StringFromPtr(word.wordPtr),
+                            word.startSec,
+                            word.endSec,
+                            word.confidence);
+                }
+                pv_cheetah_words_delete(numWords, wordsPtr);
+            }
+
+            return new CheetahTranscriptAnnotated(transcript, false, words);
         }
 
         /// <summary>

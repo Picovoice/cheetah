@@ -51,7 +51,8 @@ namespace CheetahDemo
             float endpointDurationSec,
             bool enableAutomaticPunctuation,
             bool enableTextNormalization,
-            int audioDeviceIndex)
+            int audioDeviceIndex,
+            bool verbose)
         {
             using (Cheetah cheetah = Cheetah.Create(
                 accessKey: accessKey,
@@ -76,21 +77,48 @@ namespace CheetahDemo
                     recorder.Start();
                     Console.WriteLine(">>> Press `CTRL+C` to exit:\n");
 
+                    if (verbose)
+                    {
+                        Console.WriteLine($"{"word",-15} {"start_sec",10} {"end_sec",10} {"confidence",12}");
+                        Console.WriteLine($"{new string('-', 15)} {new string('-', 10)} {new string('-', 10)} {new string('-', 12)}");
+                    }
+
                     try
                     {
                         while (recorder.IsRecording)
                         {
                             short[] frame = recorder.Read();
 
-                            CheetahTranscript result = cheetah.Process(frame);
-                            if (!string.IsNullOrEmpty(result.Transcript))
+                            CheetahTranscriptAnnotated result = cheetah.ProcessAnnotated(frame);
+                            if (verbose)
                             {
-                                Console.Write(result.Transcript);
+                                foreach (CheetahWord word in result.Words) {
+                                    Console.WriteLine($"{word.Word,-15} {word.StartSec,10} {word.EndSec,10} {word.Confidence,12}");
+                                }
+                            }
+                            else
+                            {
+                                if (!string.IsNullOrEmpty(result.Transcript))
+                                {
+                                    Console.Write(result.Transcript);
+                                }
                             }
                             if (result.IsEndpoint)
                             {
-                                CheetahTranscript finalTranscriptObj = cheetah.Flush();
-                                Console.WriteLine(finalTranscriptObj.Transcript);
+                                CheetahTranscriptAnnotated finalTranscriptObj = cheetah.FlushAnnotated();
+                                if (verbose)
+                                {
+                                    foreach (CheetahWord word in finalTranscriptObj.Words) {
+                                        Console.WriteLine($"{word.Word,-15} {word.StartSec,10} {word.EndSec,10} {word.Confidence,12}");
+                                    }
+                                }
+                                else
+                                {
+                                    if (!string.IsNullOrEmpty(finalTranscriptObj.Transcript))
+                                    {
+                                        Console.Write(finalTranscriptObj.Transcript);
+                                    }
+                                }
                             }
 
                         }
@@ -135,6 +163,7 @@ namespace CheetahDemo
             bool showAudioDevices = false;
             bool showHelp = false;
             bool showInferenceDevices = false;
+            bool verbose = false;
 
             // parse command line arguments
             int argIndex = 0;
@@ -197,6 +226,11 @@ namespace CheetahDemo
                     showInferenceDevices = true;
                     argIndex++;
                 }
+                else if (args[argIndex] == "--verbose")
+                {
+                    verbose = true;
+                    argIndex++;
+                }
                 else if (args[argIndex] == "-h" || args[argIndex] == "--help")
                 {
                     showHelp = true;
@@ -238,7 +272,8 @@ namespace CheetahDemo
                 endpointDurationSec,
                 enableAutomaticPunctuation,
                 enableTextNormalization,
-                audioDeviceIndex);
+                audioDeviceIndex,
+                verbose);
         }
 
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -259,6 +294,7 @@ namespace CheetahDemo
             "\t--disable_text_normalization: Disable text normalization.\n" +
             "\t--audio_device_index: Index of input audio device.\n" +
             "\t--show_audio_devices: Print available recording devices.\n" +
-            "\t--show_inference_devices: Print devices that are available to run Cheetah inference.\n";
+            "\t--show_inference_devices: Print devices that are available to run Cheetah inference.\n" +
+            "\t--verbose: Print word-level metadata of the transcription\n";
     }
 }
