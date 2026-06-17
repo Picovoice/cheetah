@@ -94,7 +94,7 @@ void print_error_message(char **message_stack, int32_t message_stack_depth) {
 
 void print_usage(const char *program_name) {
     fprintf(stderr,
-            "Usage : %s -a ACCESS_KEY -l LIBRARY_PATH -m MODEL_PATH [-y DEVICE] [-p] [-n] wav_path0 wav_path1 ...\n"
+            "Usage : %s -a ACCESS_KEY -l LIBRARY_PATH -m MODEL_PATH [-y DEVICE] [-p] [-n] [-v] wav_path0 wav_path1 ...\n"
             "        %s [-i, --show_inference_devices]\n",
             program_name,
             program_name);
@@ -185,9 +185,11 @@ int picovoice_main(int argc, char **argv) {
     bool enable_automatic_punctuation = true;
     bool enable_text_normalization = true;
     bool show_inference_devices = false;
+    bool verbose = false;
+    bool showed_headers = false;
 
     int opt;
-    while ((opt = getopt(argc, argv, "a:m:l:e:y:pni")) != -1) {
+    while ((opt = getopt(argc, argv, "a:m:l:e:y:pniv")) != -1) {
         switch (opt) {
             case 'a':
                 access_key = optarg;
@@ -209,6 +211,9 @@ int picovoice_main(int argc, char **argv) {
                 break;
             case 'i':
                 show_inference_devices = true;
+                break;
+            case 'v':
+                verbose = true;
                 break;
             default:
                 break;
@@ -262,14 +267,14 @@ int picovoice_main(int argc, char **argv) {
         exit(1);
     }
 
-    pv_status_t (*pv_cheetah_process_func)(pv_cheetah_t *, const int16_t *, char **, bool *) =
+    pv_status_t (*pv_cheetah_process_func)(pv_cheetah_t *, const int16_t *, char **, int32_t *, pv_word_t **, bool *) =
             load_symbol(dl_handle, "pv_cheetah_process");
     if (!pv_cheetah_process_func) {
         print_dl_error("failed to load `pv_cheetah_process`");
         exit(1);
     }
 
-    pv_status_t (*pv_cheetah_flush_func)(pv_cheetah_t *, char **) = load_symbol(dl_handle, "pv_cheetah_flush");
+    pv_status_t (*pv_cheetah_flush_func)(pv_cheetah_t *, char **, int32_t *, pv_word_t **) = load_symbol(dl_handle, "pv_cheetah_flush");
     if (!pv_cheetah_flush_func) {
         print_dl_error("failed to load `pv_cheetah_flush`");
         exit(1);
@@ -297,6 +302,12 @@ int picovoice_main(int argc, char **argv) {
             load_symbol(dl_handle, "pv_cheetah_transcript_delete");
     if (!pv_cheetah_transcript_delete_func) {
         print_dl_error("failed to load `pv_cheetah_transcript_delete`");
+        exit(1);
+    }
+
+    pv_status_t (*pv_cheetah_words_delete_func)(int32_t , pv_word_t *) = load_symbol(dl_handle, "pv_cheetah_words_delete");
+    if (!pv_cheetah_words_delete_func) {
+        print_dl_error("failed to load `pv_cheetah_words_delete`");
         exit(1);
     }
 
@@ -399,8 +410,10 @@ int picovoice_main(int argc, char **argv) {
             gettimeofday(&before, NULL);
 
             char *partial_transcript = NULL;
+            int32_t partial_num_words = 0;
+            pv_word_t *partial_words = NULL;
             bool _ = false;
-            status = pv_cheetah_process_func(cheetah, pcm, &partial_transcript, &_);
+            status = pv_cheetah_process_func(cheetah, pcm, &partial_transcript, &partial_num_words, &partial_words, &_);
             if (status != PV_STATUS_SUCCESS) {
                 fprintf(
                     stderr,
@@ -432,15 +445,37 @@ int picovoice_main(int argc, char **argv) {
                     ((double) (after.tv_sec - before.tv_sec)) + (((double) (after.tv_usec - before.tv_usec)) * 1e-6);
             audio_sec += (double) frame_length / (double) pv_sample_rate_func();
 
-            fprintf(stdout, "%s", partial_transcript);
-            fflush(stdout);
+            if (verbose) {
+                if (!showed_headers) {
+                    fprintf(stdout, "%-15s %10s %10s %12s\n", "word", "start_sec", "end_sec", "confidence");
+                    fprintf(stdout, "%-15s %10s %10s %12s\n",
+                            "---------------", "----------", "----------", "------------");
+                    fflush(stdout);
+                    showed_headers = true;
+                }
+                for (int i = 0; i < partial_num_words; i++) {
+                    fprintf(stdout, "%-15s %10.2f %10.2f %12.2f\n",
+                        (partial_words)[i].word,
+                        (partial_words)[i].start_sec,
+                        (partial_words)[i].end_sec,
+                        (partial_words)[i].confidence);
+                    fflush(stdout);
+                }
+            }
+            else {
+                fprintf(stdout, "%s", partial_transcript);
+                fflush(stdout);
+            }
             pv_cheetah_transcript_delete_func(partial_transcript);
+            pv_cheetah_words_delete_func(partial_num_words, partial_words);
         }
 
         gettimeofday(&before, NULL);
 
         char *final_transcript = NULL;
-        status = pv_cheetah_flush_func(cheetah, &final_transcript);
+        int32_t final_num_words = 0;
+        pv_word_t *final_words = NULL;
+        status = pv_cheetah_flush_func(cheetah, &final_transcript, &final_num_words, &final_words);
         if (status != PV_STATUS_SUCCESS) {
             fprintf(
                 stderr,
@@ -470,13 +505,33 @@ int picovoice_main(int argc, char **argv) {
 
         proc_sec += ((double) (after.tv_sec - before.tv_sec)) + (((double) (after.tv_usec - before.tv_usec)) * 1e-6);
 
-        fprintf(stdout, "%s\n", final_transcript);
+        if (verbose) {
+            if (!showed_headers) {
+                fprintf(stdout, "%-15s %10s %10s %12s\n", "word", "start_sec", "end_sec", "confidence");
+                fprintf(stdout, "%-15s %10s %10s %12s\n",
+                        "---------------", "----------", "----------", "------------");
+                fflush(stdout);
+                showed_headers = true;
+            }
+            for (int i = 0; i < final_num_words; i++) {
+                fprintf(stdout, "%-15s %10.2f %10.2f %12.2f\n",
+                    (final_words)[i].word,
+                    (final_words)[i].start_sec,
+                    (final_words)[i].end_sec,
+                    (final_words)[i].confidence);
+            }
+        }
+        else {
+            fprintf(stdout, "%s", final_transcript);
+            fflush(stdout);
+        }
         pv_cheetah_transcript_delete_func(final_transcript);
+        pv_cheetah_words_delete_func(final_num_words, final_words);
 
         drwav_uninit(&f);
     }
 
-    fprintf(stdout, "RTF: %.3f\n", proc_sec / audio_sec);
+    fprintf(stdout, "\nRTF: %.3f\n", proc_sec / audio_sec);
 
     free(pcm);
     pv_cheetah_delete_func(cheetah);
