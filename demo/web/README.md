@@ -26,13 +26,6 @@ npm install
 npm run start ${LANGUAGE}
 ```
 
-// TODO: remove refs to the fast models?
-To use the `fast` model for a language, run `start` with an additional argument "fast".
-
-```console
-... start ${LANGUAGE} fast
-```
-
 Open `localhost:5000` in your web browser, as hinted at in the output:
 
 ```console

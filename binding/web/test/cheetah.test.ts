@@ -302,9 +302,7 @@ describe("Cheetah Binding", function () {
 
     for (const testParam of testData.tests.language_tests) {
       for (const modelFile of testParam.models) {
-        const modelFileType = modelFile.includes("_fast") ? "fast" : "default";
-
-        it(`should be able to process (${testParam.language}) (${modelFileType} model) (norm ${testParam.normalization}) (${instanceString})`, () => cy.getFramesFromFile(
+        it(`should be able to process (${testParam.language}) (default model) (norm ${testParam.normalization}) (${instanceString})`, () => cy.getFramesFromFile(
             `audio_samples/${testParam.audio_file}`
         ).then(
           async (pcm: Int16Array) => {
@@ -326,7 +324,7 @@ describe("Cheetah Binding", function () {
           }
         ));
 
-        it(`should be able to process with punctuation (${testParam.language}) (${modelFileType} model) (norm ${testParam.normalization}) (${instanceString})`, () => cy.getFramesFromFile(
+        it(`should be able to process with punctuation (${testParam.language}) (default model) (norm ${testParam.normalization}) (${instanceString})`, () => cy.getFramesFromFile(
             `audio_samples/${testParam.audio_file}`
         ).then(
           async (pcm: Int16Array) => await runProcTest(
