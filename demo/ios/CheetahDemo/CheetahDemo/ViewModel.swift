@@ -147,7 +147,7 @@ class ViewModel: ObservableObject {
                 transcript += "\(final.transcript) "
                 words.append(contentsOf: final.words)
             }
-            if transcript.count > 0 || words.count > 0{
+            if transcript.count > 0 || words.count > 0 {
                 DispatchQueue.main.async {
                     self.result += transcript
                     self.words.append(contentsOf: words)

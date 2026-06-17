@@ -299,7 +299,7 @@ public class Cheetah {
             }
             pv_cheetah_words_delete(cNumWords, cWords!)
         }
-        
+
         return CheetahTranscriptAnnotated(
             transcript: transcript,
             isEndpoint: false,

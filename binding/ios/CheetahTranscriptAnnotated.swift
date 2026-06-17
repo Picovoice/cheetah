@@ -12,13 +12,6 @@ public struct CheetahWord {
     public let startSec: Float
     public let endSec: Float
     public let confidence: Float
-
-    init(word: String, startSec: Float, endSec: Float, confidence: Float) {
-        self.word = word
-        self.startSec = startSec
-        self.endSec = endSec
-        self.confidence = confidence
-    }
 }
 
 public struct CheetahTranscriptAnnotated {
