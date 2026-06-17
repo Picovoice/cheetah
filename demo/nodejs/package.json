@@ -1,6 +1,6 @@
 {
   "name": "@picovoice/cheetah-node-demo",
-  "version": "4.0.4",
+  "version": "4.1.0",
   "description": "Picovoice Cheetah Node.js file-based and microphone demos",
   "scripts": {
     "file": "node file.js",
