@@ -308,7 +308,8 @@ namespace Pv
 
             string transcript = Utils.GetUtf8StringFromPtr(transcriptPtr);
             pv_cheetah_transcript_delete(transcriptPtr);
-            if (wordsPtr != IntPtr.Zero) {
+            if (wordsPtr != IntPtr.Zero)
+            {
                 pv_cheetah_words_delete(numWords, wordsPtr);
             }
 
@@ -339,7 +340,8 @@ namespace Pv
 
             string transcript = Utils.GetUtf8StringFromPtr(transcriptPtr);
             pv_cheetah_transcript_delete(transcriptPtr);
-            if (wordsPtr != IntPtr.Zero) {
+            if (wordsPtr != IntPtr.Zero)
+            {
                 pv_cheetah_words_delete(numWords, wordsPtr);
             }
 
@@ -390,9 +392,11 @@ namespace Pv
             pv_cheetah_transcript_delete(transcriptPtr);
 
             CheetahWord[] words = new CheetahWord[numWords];
-            if (wordsPtr != IntPtr.Zero) {
-                for (int i = 0; i < numWords; i++) {
-                    CCheetahWord word = (CCheetahWord) Marshal.PtrToStructure(
+            if (wordsPtr != IntPtr.Zero)
+            {
+                for (int i = 0; i < numWords; i++)
+                {
+                    CCheetahWord word = (CCheetahWord)Marshal.PtrToStructure(
                         IntPtr.Add(wordsPtr, i * Marshal.SizeOf(typeof(CCheetahWord))),
                         typeof(CCheetahWord));
 
@@ -434,9 +438,11 @@ namespace Pv
             pv_cheetah_transcript_delete(transcriptPtr);
 
             CheetahWord[] words = new CheetahWord[numWords];
-            if (wordsPtr != IntPtr.Zero) {
-                for (int i = 0; i < numWords; i++) {
-                    CCheetahWord word = (CCheetahWord) Marshal.PtrToStructure(
+            if (wordsPtr != IntPtr.Zero)
+            {
+                for (int i = 0; i < numWords; i++)
+                {
+                    CCheetahWord word = (CCheetahWord)Marshal.PtrToStructure(
                         IntPtr.Add(wordsPtr, i * Marshal.SizeOf(typeof(CCheetahWord))),
                         typeof(CCheetahWord));
 

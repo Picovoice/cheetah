@@ -11,7 +11,8 @@
 
 namespace Pv
 {
-    public class CheetahWord {
+    public class CheetahWord
+    {
         private string _word;
         private float _startSec;
         private float _endSec;
@@ -33,7 +34,8 @@ namespace Pv
         /// confidence Transcription confidence. It is a number in the range [0, 1].
         /// </param>
 
-        public CheetahWord(string word, float startSec, float endSec, float confidence) {
+        public CheetahWord(string word, float startSec, float endSec, float confidence)
+        {
             _word = word;
             _startSec = startSec;
             _endSec = endSec;

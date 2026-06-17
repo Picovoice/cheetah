@@ -269,13 +269,15 @@ namespace CheetahTest
                     CheetahTranscriptAnnotated transcriptObj = cheetah.ProcessAnnotated(frame.ToArray());
                     transcript += transcriptObj.Transcript;
                     isEndpoint = transcriptObj.IsEndpoint;
-                    foreach (CheetahWord word in transcriptObj.Words) {
+                    foreach (CheetahWord word in transcriptObj.Words)
+                    {
                         words.Add(word);
                     }
                 }
                 CheetahTranscriptAnnotated finalTranscriptObj = cheetah.FlushAnnotated();
                 transcript += finalTranscriptObj.Transcript;
-                foreach (CheetahWord word in finalTranscriptObj.Words) {
+                foreach (CheetahWord word in finalTranscriptObj.Words)
+                {
                     words.Add(word);
                 }
 
@@ -289,7 +291,8 @@ namespace CheetahTest
                 Assert.IsTrue(words.Count > 0);
 
                 float currentTime = 0.0f;
-                foreach (CheetahWord word in words) {
+                foreach (CheetahWord word in words)
+                {
                     Assert.IsTrue(word.StartSec >= currentTime);
                     Assert.IsTrue(word.EndSec >= word.StartSec);
                     Assert.IsTrue(word.Confidence >= 0.0f);

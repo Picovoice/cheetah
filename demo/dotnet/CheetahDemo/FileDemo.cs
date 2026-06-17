@@ -83,7 +83,8 @@ namespace CheetahDemo
                                 CheetahTranscriptAnnotated transcriptObj = cheetah.ProcessAnnotated(cheetahFrame);
                                 if (verbose)
                                 {
-                                    foreach (CheetahWord word in transcriptObj.Words) {
+                                    foreach (CheetahWord word in transcriptObj.Words)
+                                    {
                                         Console.WriteLine($"{word.Word,-15} {word.StartSec,10} {word.EndSec,10} {word.Confidence,12}");
                                     }
                                 }
@@ -113,7 +114,8 @@ namespace CheetahDemo
                     CheetahTranscriptAnnotated finalTranscriptObj = cheetah.FlushAnnotated();
                     if (verbose)
                     {
-                        foreach (CheetahWord word in finalTranscriptObj.Words) {
+                        foreach (CheetahWord word in finalTranscriptObj.Words)
+                        {
                             Console.WriteLine($"{word.Word,-15} {word.StartSec,10} {word.EndSec,10} {word.Confidence,12}");
                         }
                     }
