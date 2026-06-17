@@ -11,7 +11,7 @@
 
 import { NativeModules } from 'react-native';
 import * as CheetahErrors from './cheetah_errors';
-import type { CheetahOptions, CheetahTranscript } from './cheetah_types';
+import type { CheetahOptions, CheetahTranscript, CheetahTranscriptAnnotated } from './cheetah_types';
 
 const RCTCheetah = NativeModules.PvCheetah;
 
@@ -153,6 +153,57 @@ class Cheetah {
   async flush(): Promise<CheetahTranscript> {
     try {
       return RCTCheetah.flush(this._handle);
+    } catch (err) {
+      const nativeError = err as NativeError;
+      throw Cheetah.codeToError(nativeError.code, nativeError.message);
+    }
+  }
+
+  /**
+   * Process a frame of audio with the speech-to-text engine.
+   * @param frame An array of 16-bit pcm samples. The number of samples per frame can be attained by calling
+   *              `Cheetah.frameLength`. The incoming audio needs to have a sample rate equal to `Cheetah.sampleRate`
+   *              and be 16-bit linearly-encoded. Furthermore, Cheetah operates on single-channel audio.
+   * @returns {Promise<CheetahTranscriptAnnotated>} transcript of any newly-transcribed speech (if none is available
+   *                                                then an empty string is returned), a flag indicating if an endpoint
+   *                                                has been detected and word-level metadata.
+   */
+  async processAnnotated(frame: number[]): Promise<CheetahTranscriptAnnotated> {
+    if (frame === undefined || frame === null) {
+      throw new CheetahErrors.CheetahInvalidArgumentError(
+        `Frame array provided to process() is undefined or null`
+      );
+    } else if (frame.length !== this._frameLength) {
+      throw new CheetahErrors.CheetahInvalidArgumentError(
+        `Size of frame array provided to 'process' (${frame.length}) does not match the engine 'frameLength' (${this._frameLength})`
+      );
+    }
+
+    // sample the first frame to check for non-integer values
+    if (!Number.isInteger(frame[0])) {
+      throw new CheetahErrors.CheetahInvalidArgumentError(
+        `Non-integer frame values provided to process(): ${frame[0]}. Cheetah requires 16-bit integers`
+      );
+    }
+
+    try {
+      return await RCTCheetah.processAnnotated(this._handle, frame);
+    } catch (err) {
+      const nativeError = err as NativeError;
+      throw Cheetah.codeToError(nativeError.code, nativeError.message);
+    }
+  }
+
+  /**
+   * Marks the end of the audio stream, flushes internal state of the object, and returns
+   * any remaining transcribed text.
+   *
+   * @returns {Promise<CheetahTranscriptAnnotated>} Any remaining transcribed text and word-level metadata. If none is
+   * available then an empty string is returned.
+   */
+  async flushAnnotated(): Promise<CheetahTranscriptAnnotated> {
+    try {
+      return RCTCheetah.flushAnnotated(this._handle);
     } catch (err) {
       const nativeError = err as NativeError;
       throw Cheetah.codeToError(nativeError.code, nativeError.message);

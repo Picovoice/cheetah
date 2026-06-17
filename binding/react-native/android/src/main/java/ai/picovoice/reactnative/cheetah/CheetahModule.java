@@ -169,4 +169,88 @@ public class CheetahModule extends ReactContextBaseJavaModule {
             promise.reject(e.getClass().getSimpleName(), e.getMessage());
         }
     }
+
+    @ReactMethod
+    public void processAnnotated(String handle, ReadableArray pcmArray, Promise promise) {
+
+        if (!cheetahPool.containsKey(handle)) {
+            promise.reject(CheetahInvalidStateException.class.getSimpleName(),
+                    "Invalid Cheetah handle provided to native module.");
+            return;
+        }
+
+        ArrayList<Object> pcmArrayList = pcmArray.toArrayList();
+        short[] buffer = new short[pcmArray.size()];
+        for (int i = 0; i < pcmArray.size(); i++) {
+            buffer[i] = ((Number) pcmArrayList.get(i)).shortValue();
+        }
+
+        Cheetah cheetah = cheetahPool.get(handle);
+        if (cheetah == null) {
+            promise.reject(CheetahInvalidStateException.class.getSimpleName(),
+                    "Instance of Cheetah no longer exists.");
+            return;
+        }
+
+        try {
+            CheetahTranscript result = cheetah.processAnnotated(buffer);
+
+            WritableMap resultMap = Arguments.createMap();
+            resultMap.putString("transcript", result.getTranscript());
+            resultMap.putBoolean("isEndpoint", result.getIsEndpoint());
+
+            WritableArray wordsArray = Arguments.createArray();
+            for (CheetahWord word : result.getWords()) {
+                WritableMap wordMap = Arguments.createMap();
+                wordMap.putString("word", word.getWord());
+                wordMap.putFloat("startSec", word.getStartSec());
+                wordMap.putFloat("endSec", word.getEndSec());
+                wordMap.putFloat("confidence", word.getConfidence());
+                wordsArray.pushMap(wordMap);
+            }
+            resultMap.putArray("words", wordsArray);
+
+            promise.resolve(resultMap);
+        } catch (CheetahException e) {
+            promise.reject(e.getClass().getSimpleName(), e.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void flushAnnotated(String handle, Promise promise) {
+
+        if (!cheetahPool.containsKey(handle)) {
+            promise.reject(CheetahInvalidStateException.class.getSimpleName(),
+                    "Invalid Cheetah handle provided to native module.");
+            return;
+        }
+
+        Cheetah cheetah = cheetahPool.get(handle);
+        if (cheetah == null) {
+            promise.reject(CheetahInvalidStateException.class.getSimpleName(),
+                    "Instance of Cheetah no longer exists.");
+            return;
+        }
+
+        try {
+            CheetahTranscript result = cheetah.flushAnnotated();
+            WritableMap resultMap = Arguments.createMap();
+            resultMap.putString("transcript", result.getTranscript());
+
+            WritableArray wordsArray = Arguments.createArray();
+            for (CheetahWord word : result.getWords()) {
+                WritableMap wordMap = Arguments.createMap();
+                wordMap.putString("word", word.getWord());
+                wordMap.putFloat("startSec", word.getStartSec());
+                wordMap.putFloat("endSec", word.getEndSec());
+                wordMap.putFloat("confidence", word.getConfidence());
+                wordsArray.pushMap(wordMap);
+            }
+            resultMap.putArray("words", wordsArray);
+
+            promise.resolve(resultMap);
+        } catch (CheetahException e) {
+            promise.reject(e.getClass().getSimpleName(), e.getMessage());
+        }
+    }
 }

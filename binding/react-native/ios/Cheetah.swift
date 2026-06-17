@@ -139,6 +139,82 @@ class PvCheetah: NSObject {
         }
     }
 
+    @objc(process:pcm:resolver:rejecter:)
+    func processAnnotated(
+            handle: String,
+            pcm: [Int16],
+            resolver resolve: RCTPromiseResolveBlock,
+            rejecter reject: RCTPromiseRejectBlock) {
+        do {
+            if let cheetah = cheetahPool[handle] {
+                let transcript = try cheetah.processAnnotated(pcm)
+
+                var words: [[String: Any]] = []
+                for word in transcript.words {
+                    words.append([
+                        "word": word.word,
+                        "startSec": word.startSec,
+                        "endSec": word.endSec,
+                        "confidence": word.confidence
+                    ])
+                }
+                var param: [String: Any] = [
+                    "transcript": transcript.transcript,
+                    "isEndpoint": transcript.isEndpoint,
+                    "words": words
+                ]
+                resolve(param)
+            } else {
+                let (code, message) = errorToCodeAndMessage(
+                    CheetahRuntimeError("Invalid handle provided to Cheetah 'process'"))
+                reject(code, message, nil)
+            }
+        } catch let error as CheetahError {
+            let (code, message) = errorToCodeAndMessage(error)
+            reject(code, message, nil)
+        } catch {
+            let (code, message) = errorToCodeAndMessage(CheetahError(error.localizedDescription))
+            reject(code, message, nil)
+        }
+    }
+
+    @objc(flush:resolver:rejecter:)
+    func flushAnnotated(
+            handle: String,
+            resolver resolve: RCTPromiseResolveBlock,
+            rejecter reject: RCTPromiseRejectBlock) {
+        do {
+            if let cheetah = cheetahPool[handle] {
+                let transcript = try cheetah.flushAnnotated()
+
+                var words: [[String: Any]] = []
+                for word in transcript.words {
+                    words.append([
+                        "word": word.word,
+                        "startSec": word.startSec,
+                        "endSec": word.endSec,
+                        "confidence": word.confidence
+                    ])
+                }
+                var result: [String: Any] = [
+                    "transcript": transcript.transcript,
+                    "words": words
+                ]
+                resolve(result)
+            } else {
+                let (code, message) = errorToCodeAndMessage(
+                    CheetahRuntimeError("Invalid handle provided to Cheetah 'process'"))
+                reject(code, message, nil)
+            }
+        } catch let error as CheetahError {
+            let (code, message) = errorToCodeAndMessage(error)
+            reject(code, message, nil)
+        } catch {
+            let (code, message) = errorToCodeAndMessage(CheetahError(error.localizedDescription))
+            reject(code, message, nil)
+        }
+    }
+
     private func errorToCodeAndMessage(_ error: CheetahError) -> (String, String) {
         return (error.name.replacingOccurrences(of: "Error", with: "Exception"), error.localizedDescription)
     }
