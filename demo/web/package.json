@@ -1,6 +1,6 @@
 {
   "name": "cheetah-web-demo",
-  "version": "4.0.4",
+  "version": "4.1.0",
   "description": "A basic demo to show how to use Cheetah for web browsers, using the IIFE version of the library",
   "main": "index.js",
   "private": true,
