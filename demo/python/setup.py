@@ -31,7 +31,7 @@ with open(os.path.join(os.path.dirname(__file__), "requirements.txt"), "r") as f
 
 setuptools.setup(
     name="pvcheetahdemo",
-    version="4.0.4",
+    version="4.1.0",
     author="Picovoice",
     author_email="hello@picovoice.ai",
     description="Cheetah speech-to-text engine demos",

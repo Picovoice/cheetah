@@ -34,6 +34,8 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 
 ## Usage
 
+### Only Transcription 
+
 Create an instance of the engine and transcribe audio:
 
 ```python
@@ -48,6 +50,33 @@ while True:
     partial_transcript, is_endpoint = handle.process(get_next_audio_frame())
     if is_endpoint:
         final_transcript = handle.flush()
+```
+
+Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/). When done be sure
+to explicitly release the resources using `handle.delete()`.
+
+### Annotated Transcription
+
+Create an instance of the engine and get the audio transcription and word-level metadata:
+
+```python
+import pvcheetah
+
+handle = pvcheetah.create(access_key='${ACCESS_KEY}')
+
+def get_next_audio_frame():
+    pass
+
+while True:
+    partial_output = handle.process_annotated(get_next_audio_frame())
+    partial_transcript = partial_output.transcript
+    partial_words = partial_output.words
+    is_endpoint = partial_output.is_endpoint
+
+    if is_endpoint:
+        final_output = handle.flush_annotated()
+        final_transcript = final_output.transcript
+        final_words = final_output.words
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/). When done be sure

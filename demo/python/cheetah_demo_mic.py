@@ -12,7 +12,10 @@
 import argparse
 
 import pvcheetah
-from pvcheetah import CheetahActivationLimitError, create
+from pvcheetah import (
+    CheetahActivationLimitError,
+    create
+)
 from pvrecorder import PvRecorder
 
 
@@ -27,6 +30,10 @@ def main():
     parser.add_argument(
         '--model_path',
         help='Absolute path to Cheetah model. Default: using the model provided by `pvcheetah`')
+    parser.add_argument(
+        '--verbose',
+        action='store_true',
+        help='Print word-level metadata of the transcription')
     parser.add_argument(
         '--device',
         help='Device to run inference on (`best`, `cpu:{num_threads}` or `gpu:{gpu_index}`). '
@@ -82,14 +89,46 @@ def main():
         recorder.start()
         print('Listening... (press Ctrl+C to stop)')
 
+        show = True
+
         try:
             while True:
-                partial_transcript, is_endpoint = cheetah.process(recorder.read())
-                print(partial_transcript, end='', flush=True)
-                if is_endpoint:
-                    print(cheetah.flush())
+                partial_output = cheetah.process_annotated(recorder.read())
+                if args.verbose:
+                    for word in partial_output.words:
+                        if args.verbose and show:
+                            print(f"{'word':<15} {'start_sec':>10} {'end_sec':>10} {'confidence':>12}", flush=True)
+                            print(f"{'-' * 15} {'-' * 10} {'-' * 10} {'-' * 12}", flush=True)
+                            show = False
+                        print(
+                            f"{word.word:<15} "
+                            f"{word.start_sec:>10.2f} "
+                            f"{word.end_sec:>10.2f} "
+                            f"{word.confidence:>12.2f}",
+                            flush=True,
+                        )
+                else:
+                    print(partial_output.transcript, end='', flush=True)
+
+                if partial_output.is_endpoint:
+                    final_output = cheetah.flush_annotated()
+                    if args.verbose:
+                        for word in final_output.words:
+                            if args.verbose and show:
+                                print(f"{'word':<15} {'start_sec':>10} {'end_sec':>10} {'confidence':>12}", flush=True)
+                                print(f"{'-' * 15} {'-' * 10} {'-' * 10} {'-' * 12}", flush=True)
+                                show = False
+                            print(
+                                f"{word.word:<15} "
+                                f"{word.start_sec:>10.2f} "
+                                f"{word.end_sec:>10.2f} "
+                                f"{word.confidence:>12.2f}",
+                                flush=True,
+                            )
+                    else:
+                        print(final_output.transcript, end='', flush=True)
+
         finally:
-            print()
             recorder.stop()
 
     except KeyboardInterrupt:
