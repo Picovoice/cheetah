@@ -91,7 +91,6 @@ void main() {
     Future<void> runCheetahProcess(
         String modelFile,
         String transcript,
-        List<CheetahWord> words,
         List<String> punctuations,
         bool testPunctuations,
         bool normalization,
@@ -138,16 +137,15 @@ void main() {
           lessThanOrEqualTo(errorRate),
           reason: "Character error rate was incorrect");
 
-      expect(words.length, equals(0),
-          reason: "words should not be empty");
+      expect(words.length, isNot(equals(0)), reason: "words should not be empty");
 
-      var averageConfidence = 0.0;
+      var currentTime = 0.0;
       for (var word in words) {
-        averageConfidence += word.confidence;
+        expect(word.word.length, isNot(equals(0)), reason: "word should not have length zero");
+        expect(word.startSeconds, greaterThanOrEqualTo(currentTime));
+        expect(word.endSeconds, greaterThanOrEqualTo(word.startSeconds));
+        currentTime = word.endSeconds;
       }
-      averageConfidence /= words.length;
-      expect(averageConfidence, equals(averageConfidence),
-          reason: "Average confidence was incorrect");
     }
 
     testWidgets('Test Process all languages', (tester) async {

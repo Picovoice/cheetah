@@ -48,3 +48,7 @@
 
 ## [4.0.4] - 2026-05-21
 * Bug fixes
+
+## [4.1.0] - 2026-06-17
+* Bug fixes
+* Include per-word metadata

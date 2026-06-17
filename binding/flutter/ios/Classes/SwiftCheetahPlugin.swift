@@ -43,7 +43,7 @@ public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
         switch method {
         case .GET_AVAILABLE_DEVICES:
             do {
-                var deviceList: [String] = try Cheetah.getAvailableDevices()
+                let deviceList: [String] = try Cheetah.getAvailableDevices()
                 result(deviceList)
             } catch let error as CheetahError {
                 result(errorToFlutterError(error))
@@ -53,7 +53,7 @@ public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
         case .CREATE:
             do {
                 if let accessKey = args["accessKey"] as? String,
-                   let modelPath = args["modelPath"] as? String {
+                    let modelPath = args["modelPath"] as? String {
                     let device = args["device"] as? String
                     let endpointDuration = args["endpointDuration"] as? Float
                     let enableAutomaticPunctuation = args["enableAutomaticPunctuation"] as? Bool
@@ -90,13 +90,18 @@ public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
         case .PROCESS:
             do {
                 if let handle = args["handle"] as? String,
-                   let frame = args["frame"] as? [Int16] {
+                    let frame = args["frame"] as? [Int16] {
                     if let cheetah = cheetahPool[handle] {
-                        let (transcript, words, isEndpoint) = try cheetah.process(frame)
+                        let transcript = try cheetah.processAnnotated(frame)
                         let results: [String: Any] = [
-                            "transcript": transcript,
-                            "words": words,
-                            "isEndpoint": isEndpoint
+                            "transcript": transcript.transcript,
+                            "words": transcript.words.map { [
+                                "word": $0.word,
+                                "startSeconds": $0.startSec,
+                                "endSeconds": $0.endSec,
+                                "confidence": $0.confidence
+                            ] },
+                            "isEndpoint": transcript.isEndpoint
                         ]
                         result(results)
                     } else {
@@ -116,10 +121,15 @@ public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
             do {
                 if let handle = args["handle"] as? String {
                     if let cheetah = cheetahPool[handle] {
-                        let (transcript, words) = try cheetah.flush()
+                        let transcript = try cheetah.flushAnnotated()
                         let results: [String: Any] = [
-                            "transcript": transcript,
-                            "words": words
+                            "transcript": transcript.transcript,
+                            "words": transcript.words.map { [
+                                "word": $0.word,
+                                "startSeconds": $0.startSec,
+                                "endSeconds": $0.endSec,
+                                "confidence": $0.confidence
+                            ] }
                         ]
                         result(results)
                     } else {

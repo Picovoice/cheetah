@@ -31,9 +31,11 @@ enum _NativeFunctions {
 
 class CheetahWord {
   final String word;
-  final float startSeconds;
-  final float endSeconds;
-  final float confidence;
+  final double startSeconds;
+  final double endSeconds;
+  final double confidence;
+
+  CheetahWord(this.word, this.startSeconds, this.endSeconds, this.confidence);
 }
 
 class CheetahTranscript {
@@ -140,7 +142,13 @@ class Cheetah {
         throw CheetahInvalidStateException("field 'words' must be always present");
       }
 
-      return CheetahTranscript(transcript['transcript'], transcript['words'], transcript['isEndpoint']);
+      List<CheetahWord> words = (transcript['words'] as List).map(
+        (obj) {
+          Map<String, dynamic> word = Map<String, dynamic>.from(obj as Map);
+          return CheetahWord(word["word"], word["startSeconds"], word["endSeconds"], word["confidence"]);
+        }
+      ).toList();
+      return CheetahTranscript(transcript['transcript'], words, transcript['isEndpoint']);
     } on PlatformException catch (error) {
       throw cheetahStatusToException(error.code, error.message);
     } on Exception catch (error) {
@@ -162,7 +170,13 @@ class Cheetah {
         throw CheetahInvalidStateException("field 'words' must be always present");
       }
 
-      return CheetahTranscript(transcript['transcript'], transcript['words'], null);
+      List<CheetahWord> words = (transcript['words'] as List).map(
+        (obj) {
+          Map<String, dynamic> word = Map<String, dynamic>.from(obj as Map);
+          return CheetahWord(word["word"], word["startSeconds"], word["endSeconds"], word["confidence"]);
+        }
+      ).toList();
+      return CheetahTranscript(transcript['transcript'], words, null);
     } on PlatformException catch (error) {
       throw cheetahStatusToException(error.code, error.message);
     } on Exception catch (error) {
