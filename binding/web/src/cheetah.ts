@@ -146,7 +146,7 @@ export class Cheetah {
   private static _wasmSimdLib: string;
   private static _wasmPThread: string;
   private static _wasmPThreadLib: string;
-  private static _sdk: string = 'web';
+  private static _sdk: string = "web";
 
   private static _cheetahMutex = new Mutex();
 
@@ -287,7 +287,12 @@ export class Cheetah {
     const customWritePath = model.customWritePath ? model.customWritePath : 'cheetah_model';
     const modelPath = await loadModel({ ...model, customWritePath });
 
-    return Cheetah._init(accessKey, transcriptCallback, modelPath, options);
+    return Cheetah._init(
+      accessKey,
+      transcriptCallback,
+      modelPath,
+      options
+    );
   }
 
   public static async _init(
@@ -297,7 +302,7 @@ export class Cheetah {
     options: CheetahOptions = {}
   ): Promise<Cheetah> {
     const { processErrorCallback } = options;
-    let { device = 'best' } = options;
+    let { device = "best" } = options;
 
     if (!isAccessKeyValid(accessKey)) {
       throw new CheetahErrors.CheetahInvalidArgumentError('Invalid AccessKey');
@@ -321,7 +326,7 @@ export class Cheetah {
     }
 
     const sabDefined =
-      typeof SharedArrayBuffer !== 'undefined' && device !== 'cpu:1';
+      typeof SharedArrayBuffer !== 'undefined' && device !== "cpu:1";
 
     return new Promise<Cheetah>((resolve, reject) => {
       Cheetah._cheetahMutex
@@ -335,11 +340,7 @@ export class Cheetah {
             sabDefined ? createModulePThread : createModuleSimd,
             options
           );
-          return new Cheetah(
-            wasmOutput,
-            transcriptCallback,
-            processErrorCallback
-          );
+          return new Cheetah(wasmOutput, transcriptCallback, processErrorCallback);
         })
         .then((result: Cheetah) => {
           resolve(result);
@@ -386,9 +387,7 @@ export class Cheetah {
    */
   public async process(pcm: Int16Array): Promise<void> {
     if (!(pcm instanceof Int16Array)) {
-      const error = new CheetahErrors.CheetahInvalidArgumentError(
-        "The argument 'pcm' must be provided as an Int16Array"
-      );
+      const error = new CheetahErrors.CheetahInvalidArgumentError('The argument \'pcm\' must be provided as an Int16Array');
       if (this._processErrorCallback) {
         this._processErrorCallback(error);
       } else {
@@ -400,9 +399,7 @@ export class Cheetah {
     this._processMutex
       .runExclusive(async () => {
         if (this._module === undefined) {
-          throw new CheetahErrors.CheetahInvalidStateError(
-            'Attempted to call Cheetah process after release.'
-          );
+          throw new CheetahErrors.CheetahInvalidStateError('Attempted to call Cheetah process after release.');
         }
 
         this._module.HEAP16.set(
@@ -429,7 +426,7 @@ export class Cheetah {
             this._module.HEAPU8
           );
 
-          const error = pvStatusToException(status, 'Processing failed', messageStack);
+          const error = pvStatusToException(status, "Processing failed", messageStack);
           if (this._processErrorCallback) {
             this._processErrorCallback(error);
           } else {
@@ -500,9 +497,7 @@ export class Cheetah {
 
   private async cheetahFlush(): Promise<[string, CheetahWord[]]> {
     if (this._module === undefined) {
-      throw new CheetahErrors.CheetahInvalidStateError(
-        'Attempted to call Cheetah flush after release.'
-      );
+      throw new CheetahErrors.CheetahInvalidStateError('Attempted to call Cheetah flush after release.');
     }
 
     const status = await this._pv_cheetah_flush(
@@ -522,7 +517,7 @@ export class Cheetah {
         this._module.HEAPU8
       );
 
-      throw pvStatusToException(status, 'Flush failed', messageStack);
+      throw pvStatusToException(status, "Flush failed", messageStack);
     }
 
     const transcriptAddress = this._module.HEAP32[this._transcriptAddressAddress / Int32Array.BYTES_PER_ELEMENT];
@@ -582,14 +577,13 @@ export class Cheetah {
     } = options;
 
     if (typeof endpointDurationSec !== 'number' || endpointDurationSec < 0) {
-      throw new CheetahErrors.CheetahInvalidArgumentError(
-        'Cheetah endpointDurationSec must be a non-negative number'
-      );
+      throw new CheetahErrors.CheetahInvalidArgumentError('Cheetah endpointDurationSec must be a non-negative number');
     }
 
-    const blob = new Blob([base64ToUint8Array(wasmLibBase64)], {
-      type: 'application/javascript',
-    });
+    const blob = new Blob(
+      [base64ToUint8Array(wasmLibBase64)],
+      { type: 'application/javascript' }
+    );
     const module: CheetahModule = await createModuleFunc({
       mainScriptUrlOrBlob: blob,
       wasmBinary: base64ToUint8Array(wasmBase64),
@@ -597,69 +591,53 @@ export class Cheetah {
 
     const pv_cheetah_init: pv_cheetah_init_type = this.wrapAsyncFunction(
       module,
-      'pv_cheetah_init',
+      "pv_cheetah_init",
       7
     );
     const pv_cheetah_delete: pv_cheetah_delete_type = this.wrapAsyncFunction(
       module,
-      'pv_cheetah_delete',
+      "pv_cheetah_delete",
       1
     );
     const pv_cheetah_process: pv_cheetah_process_type = this.wrapAsyncFunction(
       module,
-      'pv_cheetah_process',
+      "pv_cheetah_process",
       4
     );
     const pv_cheetah_flush: pv_cheetah_flush_type = this.wrapAsyncFunction(
       module,
-      'pv_cheetah_flush',
+      "pv_cheetah_flush",
       2
     );
 
-    const transcriptAddressAddress = module._malloc(
-      Int32Array.BYTES_PER_ELEMENT
-    );
+    const transcriptAddressAddress = module._malloc(Int32Array.BYTES_PER_ELEMENT);
     if (transcriptAddressAddress === 0) {
-      throw new CheetahErrors.CheetahOutOfMemoryError(
-        'malloc failed: Cannot allocate memory'
-      );
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
     const isEndpointAddress = module._malloc(Uint8Array.BYTES_PER_ELEMENT);
     if (isEndpointAddress === 0) {
-      throw new CheetahErrors.CheetahOutOfMemoryError(
-        'malloc failed: Cannot allocate memory'
-      );
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
     const numWordsAddress = module._malloc(Int32Array.BYTES_PER_ELEMENT);
     if (numWordsAddress === 0) {
-      throw new CheetahErrors.CheetahOutOfMemoryError(
-        'malloc failed: Cannot allocate memory'
-      )
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
     const wordsAddressAddress = module._malloc(Int32Array.BYTES_PER_ELEMENT);
     if (wordsAddressAddress === 0) {
-      throw new CheetahErrors.CheetahOutOfMemoryError(
-        'malloc failed: Cannot allocate memory'
-      );
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
     const objectAddressAddress = module._malloc(Int32Array.BYTES_PER_ELEMENT);
     if (objectAddressAddress === 0) {
-      throw new CheetahErrors.CheetahOutOfMemoryError(
-        'malloc failed: Cannot allocate memory'
-      );
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
-    const accessKeyAddress = module._malloc(
-      (accessKey.length + 1) * Uint8Array.BYTES_PER_ELEMENT
-    );
+    const accessKeyAddress = module._malloc((accessKey.length + 1) * Uint8Array.BYTES_PER_ELEMENT);
     if (accessKeyAddress === 0) {
-      throw new CheetahErrors.CheetahOutOfMemoryError(
-        'malloc failed: Cannot allocate memory'
-      );
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
     for (let i = 0; i < accessKey.length; i++) {
@@ -668,61 +646,41 @@ export class Cheetah {
     module.HEAPU8[accessKeyAddress + accessKey.length] = 0;
 
     const modelPathEncoded = new TextEncoder().encode(modelPath);
-    const modelPathAddress = module._malloc(
-      (modelPathEncoded.length + 1) * Uint8Array.BYTES_PER_ELEMENT
-    );
+    const modelPathAddress = module._malloc((modelPathEncoded.length + 1) * Uint8Array.BYTES_PER_ELEMENT);
 
     if (modelPathAddress === 0) {
-      throw new CheetahErrors.CheetahOutOfMemoryError(
-        'malloc failed: Cannot allocate memory'
-      );
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
     module.HEAPU8.set(modelPathEncoded, modelPathAddress);
     module.HEAPU8[modelPathAddress + modelPathEncoded.length] = 0;
 
     const deviceEncoded = new TextEncoder().encode(device);
-    const deviceAddress = module._malloc(
-      (device.length + 1) * Uint8Array.BYTES_PER_ELEMENT
-    );
+    const deviceAddress = module._malloc((device.length + 1) * Uint8Array.BYTES_PER_ELEMENT);
     if (deviceAddress === 0) {
-      throw new CheetahErrors.CheetahOutOfMemoryError(
-        'malloc failed: Cannot allocate memory'
-      );
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
     module.HEAP8.set(deviceEncoded, deviceAddress);
     module.HEAPU8[deviceAddress + deviceEncoded.length] = 0;
 
     const sdkEncoded = new TextEncoder().encode(this._sdk);
-    const sdkAddress = module._malloc(
-      (sdkEncoded.length + 1) * Uint8Array.BYTES_PER_ELEMENT
-    );
+    const sdkAddress = module._malloc((sdkEncoded.length + 1) * Uint8Array.BYTES_PER_ELEMENT);
     if (!sdkAddress) {
-      throw new CheetahErrors.CheetahOutOfMemoryError(
-        'malloc failed: Cannot allocate memory'
-      );
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
     module.HEAPU8.set(sdkEncoded, sdkAddress);
     module.HEAPU8[sdkAddress + sdkEncoded.length] = 0;
     module._pv_set_sdk(sdkAddress);
     module._pv_free(sdkAddress);
 
-    const messageStackDepthAddress = module._malloc(
-      Int32Array.BYTES_PER_ELEMENT
-    );
+    const messageStackDepthAddress = module._malloc(Int32Array.BYTES_PER_ELEMENT);
     if (!messageStackDepthAddress) {
-      throw new CheetahErrors.CheetahOutOfMemoryError(
-        'malloc failed: Cannot allocate memory'
-      );
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
-    const messageStackAddressAddressAddress = module._malloc(
-      Int32Array.BYTES_PER_ELEMENT
-    );
+    const messageStackAddressAddressAddress = module._malloc(Int32Array.BYTES_PER_ELEMENT);
     if (!messageStackAddressAddressAddress) {
-      throw new CheetahErrors.CheetahOutOfMemoryError(
-        'malloc failed: Cannot allocate memory'
-      );
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
     const status = await pv_cheetah_init(
@@ -748,7 +706,7 @@ export class Cheetah {
         module.HEAPU8
       );
 
-      throw pvStatusToException(status, 'Initialization failed', messageStack);
+      throw pvStatusToException(status, "Initialization failed", messageStack);
     }
 
     const objectAddress =
@@ -760,13 +718,9 @@ export class Cheetah {
     const versionAddress = module._pv_cheetah_version();
     const version = arrayBufferToStringAtIndex(module.HEAPU8, versionAddress);
 
-    const inputBufferAddress = module._malloc(
-      frameLength * Int16Array.BYTES_PER_ELEMENT
-    );
+    const inputBufferAddress = module._malloc(frameLength * Int16Array.BYTES_PER_ELEMENT);
     if (inputBufferAddress === 0) {
-      throw new CheetahErrors.CheetahOutOfMemoryError(
-        'malloc failed: Cannot allocate memory'
-      );
+      throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory');
     }
 
     return {
@@ -806,30 +760,23 @@ export class Cheetah {
             throw new CheetahErrors.CheetahRuntimeError('Unsupported Browser');
           }
 
-          const blob = new Blob([base64ToUint8Array(this._wasmSimdLib)], {
-            type: 'application/javascript',
-          });
+          const blob = new Blob(
+            [base64ToUint8Array(this._wasmSimdLib)],
+            { type: 'application/javascript' }
+          );
           const module: CheetahModule = await createModuleSimd({
             mainScriptUrlOrBlob: blob,
             wasmBinary: base64ToUint8Array(this._wasmSimd),
           });
 
-          const hardwareDevicesAddressAddress = module._malloc(
-            Int32Array.BYTES_PER_ELEMENT
-          );
+          const hardwareDevicesAddressAddress = module._malloc(Int32Array.BYTES_PER_ELEMENT);
           if (hardwareDevicesAddressAddress === 0) {
-            throw new CheetahErrors.CheetahOutOfMemoryError(
-              'malloc failed: Cannot allocate memory for hardwareDevices'
-            );
+            throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory for hardwareDevices');
           }
 
-          const numHardwareDevicesAddress = module._malloc(
-            Int32Array.BYTES_PER_ELEMENT
-          );
+          const numHardwareDevicesAddress = module._malloc(Int32Array.BYTES_PER_ELEMENT);
           if (numHardwareDevicesAddress === 0) {
-            throw new CheetahErrors.CheetahOutOfMemoryError(
-              'malloc failed: Cannot allocate memory for numHardwareDevices'
-            );
+            throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory for numHardwareDevices');
           }
 
           const status: PvStatus = module._pv_cheetah_list_hardware_devices(
@@ -837,22 +784,14 @@ export class Cheetah {
             numHardwareDevicesAddress
           );
 
-          const messageStackDepthAddress = module._malloc(
-            Int32Array.BYTES_PER_ELEMENT
-          );
+          const messageStackDepthAddress = module._malloc(Int32Array.BYTES_PER_ELEMENT);
           if (!messageStackDepthAddress) {
-            throw new CheetahErrors.CheetahOutOfMemoryError(
-              'malloc failed: Cannot allocate memory for messageStackDepth'
-            );
+            throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory for messageStackDepth');
           }
 
-          const messageStackAddressAddressAddress = module._malloc(
-            Int32Array.BYTES_PER_ELEMENT
-          );
+          const messageStackAddressAddressAddress = module._malloc(Int32Array.BYTES_PER_ELEMENT);
           if (!messageStackAddressAddressAddress) {
-            throw new CheetahErrors.CheetahOutOfMemoryError(
-              'malloc failed: Cannot allocate memory messageStack'
-            );
+            throw new CheetahErrors.CheetahOutOfMemoryError('malloc failed: Cannot allocate memory messageStack');
           }
 
           if (status !== PvStatus.SUCCESS) {
@@ -884,9 +823,7 @@ export class Cheetah {
           const hardwareDevices: string[] = [];
           for (let i = 0; i < numHardwareDevices; i++) {
             const deviceAddress = module.HEAP32[hardwareDevicesAddress / Int32Array.BYTES_PER_ELEMENT + i];
-            hardwareDevices.push(
-              arrayBufferToStringAtIndex(module.HEAPU8, deviceAddress)
-            );
+            hardwareDevices.push(arrayBufferToStringAtIndex(module.HEAPU8, deviceAddress));
           }
           module._pv_cheetah_free_hardware_devices(
             hardwareDevicesAddress,
@@ -913,10 +850,7 @@ export class Cheetah {
     memoryBufferInt32: Int32Array,
     memoryBufferUint8: Uint8Array
   ): string[] {
-    const status = pv_get_error_stack(
-      messageStackAddressAddressAddress,
-      messageStackDepthAddress
-    );
+    const status = pv_get_error_stack(messageStackAddressAddressAddress, messageStackDepthAddress);
     if (status !== PvStatus.SUCCESS) {
       throw new Error(`Unable to get error state: ${status}`);
     }
@@ -927,10 +861,7 @@ export class Cheetah {
     const messageStack: string[] = [];
     for (let i = 0; i < messageStackDepth; i++) {
       const messageStackAddress = memoryBufferInt32[messageStackAddressAddress / Int32Array.BYTES_PER_ELEMENT + i];
-      const message = arrayBufferToStringAtIndex(
-        memoryBufferUint8,
-        messageStackAddress
-      );
+      const message = arrayBufferToStringAtIndex(memoryBufferUint8, messageStackAddress);
       messageStack.push(message);
     }
 
@@ -945,8 +876,11 @@ export class Cheetah {
     numArgs: number
   ): (...args: any[]) => any {
     // @ts-ignore
-    return module.cwrap(functionName, 'number', Array(numArgs).fill('number'), {
-      async: true,
-    });
+    return module.cwrap(
+      functionName,
+      "number",
+      Array(numArgs).fill("number"),
+      { async: true }
+    );
   }
 }

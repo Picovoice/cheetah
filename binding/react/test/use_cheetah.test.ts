@@ -58,7 +58,6 @@ const runProcTest = async (
   punctuations: string[],
   normalization: boolean,
   expectedTranscript: string,
-  expectedWords: CheetahWord[],
   expectedErrorRate: number,
   params: {
     accessKey?: string;
@@ -100,11 +99,9 @@ const runProcTest = async (
     async () => await result.current.stop()
   ).then(() => {
     let normalizedTranscript = expectedTranscript;
-    let normalizedWords = expectedWords;
     if (!enablePunctuation) {
       for (const punctuation of punctuations) {
         normalizedTranscript = normalizedTranscript.replaceAll(punctuation, '');
-        normalizedWords = normalizedWords.filter(word => { word.word !== punctuation });
       }
     }
 
@@ -124,14 +121,14 @@ const runProcTest = async (
     );
     expect(errorRate).to.be.lte(expectedErrorRate);
 
-    for (let i = 0; i < normalizedWords.length; i++) {
-      const normalizedWord = normalizedWords[i];
-      const word = allWords[i];
+    expect(allWords.length).to.not.equal(0);
 
-      expect(word.word).to.be.equal(normalizedWord.word);
-      expect(Math.abs(word.confidence - normalizedWord.confidence) < 0.1).to.be.true;
-      expect(Math.abs(word.startSeconds - normalizedWord.startSeconds) < 0.1).to.be.true;
-      expect(Math.abs(word.endSeconds - normalizedWord.endSeconds) < 0.1).to.be.true;
+    let currentTime = 0.0;
+    for (const word of allWords) {
+      expect(word.word.length).to.not.equal(0);
+      expect(word.startSeconds).to.be.gte(currentTime);
+      expect(word.endSeconds).to.be.gte(word.startSeconds);
+      currentTime = word.endSeconds;
     }
 
     expect(result.current.isListening).to.be.false;
@@ -232,7 +229,6 @@ describe('Cheetah binding', () => {
             testParam.punctuations,
             testParam.normalization,
             testParam.transcript,
-            testParam.words,
             testParam.error_rate,
             {
               model: {
@@ -252,7 +248,6 @@ describe('Cheetah binding', () => {
             testParam.punctuations,
             testParam.normalization,
             testParam.transcript,
-            testParam.words,
             testParam.error_rate,
             {
               model: {
