@@ -102,7 +102,7 @@ cheetah = pvcheetah.create(
 You can train models over API without going to the console:
 
 ```python
-train_context_from_dynamic_slots(
+train_model_from_words(
         "${ACCESS_KEY}",                                              # AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
         "${OUTPUT_PATH}",                                             # Path to save the newly trained model
         "${LANGUAGE}",                                                # Two-character language code
@@ -113,7 +113,7 @@ train_context_from_dynamic_slots(
 (or)
 
 ```python
-train_context_from_yaml(
+train_model_from_yaml(
         "${ACCESS_KEY}",                             # AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
         "${OUTPUT_PATH}",                            # Path to save the newly trained model
         "${LANGUAGE}",                               # Two-character language code
