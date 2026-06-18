@@ -79,13 +79,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-
-# ************** REMOVE AFTER RELEASE ********************
-    - name: Build binding
-      run: |
-        pip3 install setuptools && pip3 install wheel && cd ../../binding/python && python3 setup.py sdist bdist_wheel && pip3 install --force-reinstall dist/pvcheetah-4.1.0-py3-none-any.whl
-# ********************************************************
-
     - name: Setup Python virtualenv (*nix)
       if: ${{ matrix.machine != 'pv-windows' && matrix.machine != 'pv-windows-igpu' && matrix.machine != 'pv-windows-arm64' }}
       run: |
@@ -99,6 +92,12 @@ jobs:
         python3 -m venv .venv --symlinks
         .venv\Scripts\activate
         echo PATH=$PATH >> $GITHUB_ENV
+
+# ************** REMOVE AFTER RELEASE ********************
+    - name: Build binding
+      run: |
+        pip install setuptools && pip install wheel && cd ../../binding/python && python setup.py sdist bdist_wheel && pip install --force-reinstall dist/pvcheetah-4.1.0-py3-none-any.whl
+# ********************************************************
 
     - name: Pre-build dependencies
       run: python3 -m pip install --upgrade pip
