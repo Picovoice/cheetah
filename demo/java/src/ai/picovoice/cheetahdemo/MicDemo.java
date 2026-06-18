@@ -34,7 +34,8 @@ public class MicDemo {
             boolean enableAutomaticPunctuation,
             boolean enableTextNormalization,
             int audioDeviceIndex,
-            String outputPath) {
+            String outputPath,
+            boolean verbose) {
 
         // for file output
         File outputFile = null;
@@ -83,6 +84,11 @@ public class MicDemo {
             captureBuffer.order(ByteOrder.LITTLE_ENDIAN);
             short[] cheetahBuffer = new short[frameLength];
 
+            if (verbose) {
+                System.out.printf("%-15s %10s %10s %12s\n", "word", "start_sec", "end_sec", "confidence");
+                System.out.printf("%-15s %10s %10s %12s\n", "---------------", "----------", "----------", "------------");
+            }
+
             int numBytesRead;
             while (System.in.available() == 0) {
 
@@ -105,10 +111,32 @@ public class MicDemo {
 
                 // process with cheetah
                 CheetahTranscript transcriptObj = cheetah.process(cheetahBuffer);
-                System.out.print(transcriptObj.getTranscript());
+                if (verbose) {
+                    for (CheetahTranscript.Word word : transcriptObj.getWordArray()) {
+                        System.out.printf("%-15s %10.2f %10.2f %12.2f\n",
+                                word.getWord(),
+                                word.getStartSec(),
+                                word.getEndSec(),
+                                word.getConfidence());
+                    }
+                } else {
+                    System.out.print(transcriptObj.getTranscript());
+                    System.out.flush();
+                }
+
                 if (transcriptObj.getIsEndpoint()) {
                     CheetahTranscript endpointTranscriptObj = cheetah.flush();
-                    System.out.println(endpointTranscriptObj.getTranscript());
+                    if (verbose) {
+                        for (CheetahTranscript.Word word : endpointTranscriptObj.getWordArray()) {
+                            System.out.printf("%-15s %10.2f %10.2f %12.2f\n",
+                                    word.getWord(),
+                                    word.getStartSec(),
+                                    word.getEndSec(),
+                                    word.getConfidence());
+                        }
+                    } else {
+                        System.out.println(endpointTranscriptObj.getTranscript());
+                    }
                 }
                 System.out.flush();
             }
@@ -219,6 +247,7 @@ public class MicDemo {
         String endpointDurationStr = cmd.getOptionValue("endpoint_duration_sec");
         boolean enableAutomaticPunctuation = !cmd.hasOption("disable_automatic_punctuation");
         boolean enableTextNormalization = !cmd.hasOption("disable_text_normalization");
+        boolean verbose = cmd.hasOption("verbose");
         String audioDeviceIndexStr = cmd.getOptionValue("audio_device_index");
         String outputPath = cmd.getOptionValue("output_path");
 
@@ -289,7 +318,8 @@ public class MicDemo {
                 enableAutomaticPunctuation,
                 enableTextNormalization,
                 audioDeviceIndex,
-                outputPath);
+                outputPath,
+                verbose);
     }
 
     private static Options buildCommandLineOptions() {
@@ -335,6 +365,11 @@ public class MicDemo {
 
         options.addOption(Option.builder("n")
                 .longOpt("disable_text_normalization")
+                .desc("")
+                .build());
+
+        options.addOption(Option.builder("v")
+                .longOpt("verbose")
                 .desc("")
                 .build());
 

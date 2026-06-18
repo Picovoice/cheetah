@@ -34,7 +34,8 @@ public class FileDemo {
             String libraryPath,
             boolean enableAutomaticPunctuation,
             boolean enableTextNormalization,
-            File inputAudioFile) {
+            File inputAudioFile,
+            boolean verbose) {
 
         AudioInputStream audioInputStream;
         try {
@@ -73,6 +74,11 @@ public class FileDemo {
             int frameIndex = 0;
             short[] cheetahFrame = new short[cheetah.getFrameLength()];
 
+            if (verbose) {
+                System.out.printf("%-15s %10s %10s %12s\n", "word", "start_sec", "end_sec", "confidence");
+                System.out.printf("%-15s %10s %10s %12s\n", "---------------", "----------", "----------", "------------");
+            }
+
             ByteBuffer sampleBuffer = ByteBuffer.allocate(audioFormat.getFrameSize());
             sampleBuffer.order(ByteOrder.LITTLE_ENDIAN);
             while (audioInputStream.available() != 0) {
@@ -84,16 +90,36 @@ public class FileDemo {
                 cheetahFrame[frameIndex++] = sampleBuffer.getShort(0);
 
                 if (frameIndex == cheetahFrame.length) {
-                    CheetahTranscript transcriptObj = cheetah.process(cheetahFrame);
-                    System.out.print(transcriptObj.getTranscript());
-                    System.out.flush();
+                    CheetahTranscriptAnnotated transcriptObj = cheetah.processAnnotated(cheetahFrame);
+                    if (verbose) {
+                        for (CheetahTranscript.Word word : transcriptObj.getWordArray()) {
+                            System.out.printf("%-15s %10.2f %10.2f %12.2f\n",
+                                    word.getWord(),
+                                    word.getStartSec(),
+                                    word.getEndSec(),
+                                    word.getConfidence());
+                        }
+                    } else {
+                        System.out.print(transcriptObj.getTranscript());
+                        System.out.flush();
+                    }
 
                     frameIndex = 0;
                 }
             }
 
-            CheetahTranscript endpointTranscriptObj = cheetah.flush();
-            System.out.println(endpointTranscriptObj.getTranscript());
+            CheetahTranscriptAnnotated endpointTranscriptObj = cheetah.flushAnnotated();
+            if (verbose) {
+                for (CheetahTranscript.Word word : endpointTranscriptObj.getWordArray()) {
+                    System.out.printf("%-15s %10.2f %10.2f %12.2f\n",
+                            word.getWord(),
+                            word.getStartSec(),
+                            word.getEndSec(),
+                            word.getConfidence());
+                }
+            } else {
+                System.out.println(endpointTranscriptObj.getTranscript());
+            }
         } catch (Exception e) {
             System.out.println(e.toString());
         } finally {
@@ -129,6 +155,7 @@ public class FileDemo {
         String device = cmd.getOptionValue("device");
         boolean enableAutomaticPunctuation = !cmd.hasOption("disable_automatic_punctuation");
         boolean enableTextNormalization = !cmd.hasOption("disable_text_normalization");
+        boolean verbose = cmd.hasOption("verbose");
         String inputAudioPath = cmd.getOptionValue("input_audio_path");
 
         if (cmd.hasOption("show_inference_devices")) {
@@ -175,7 +202,8 @@ public class FileDemo {
                 libraryPath,
                 enableAutomaticPunctuation,
                 enableTextNormalization,
-                inputAudioFile);
+                inputAudioFile,
+                verbose);
     }
 
     private static Options buildCommandLineOptions() {
@@ -219,6 +247,11 @@ public class FileDemo {
 
         options.addOption(Option.builder("n")
                 .longOpt("disable_text_normalization")
+                .desc("")
+                .build());
+
+        options.addOption(Option.builder("v")
+                .longOpt("verbose")
                 .desc("")
                 .build());
 
