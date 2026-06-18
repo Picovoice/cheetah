@@ -107,7 +107,6 @@ def train_model_from_yaml(
     :param output_path: Absolute path to file where the trained model will be saved.
     :param language: Two character language code for the model (i.e 'en', 'fr').
     Check https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
-    :param context_path: Absolute path to file containing context model (file with `.rhn` extension).
     :param yaml_path: Absolute path to the YAML configuration file.
     """
 
@@ -137,7 +136,6 @@ def train_model_from_words(
     :param output_path: Absolute path to file where the trained model will be saved.
     :param language: Two character language code for the model (i.e 'en', 'fr').
     Check https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
-    :param context_path: Absolute path to file containing context model (file with `.rhn` extension).
     :param new_words: A dictionary of words to pronunciations to add to the new model. Keys should be
     the word string. Values are a Sequence of pronunciations for the given word, each pronunciation
     is a string of space separated IPA phonemes. An empty Sequence will result in the training
