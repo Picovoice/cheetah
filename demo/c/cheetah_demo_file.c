@@ -189,7 +189,7 @@ int picovoice_main(int argc, char **argv) {
     bool showed_headers = false;
 
     int opt;
-    while ((opt = getopt(argc, argv, "a:m:l:e:y:pniv")) != -1) {
+    while ((opt = getopt(argc, argv, "a:m:l:e:vy:pni")) != -1) {
         switch (opt) {
             case 'a':
                 access_key = optarg;
