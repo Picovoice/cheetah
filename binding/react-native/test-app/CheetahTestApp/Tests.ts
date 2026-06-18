@@ -161,6 +161,7 @@ async function runProcTestCase(
   params: {
     enablePunctuation?: boolean;
   } = {},
+  annotated: boolean,
 ): Promise<Result> {
   const {enablePunctuation = false} = params;
 
@@ -180,14 +181,29 @@ async function runProcTestCase(
     const numFrames = Math.floor(pcm.length / cheetah.frameLength);
 
     let transcript = '';
+    let words = [];
     for (let i = 0; i < numFrames; i++) {
-      transcript += (
-        await cheetah.process(
+      if (annotated) {
+        let res = await cheetah.processAnnotated(
           pcm.slice(i * cheetah.frameLength, (i + 1) * cheetah.frameLength),
-        )
-      ).transcript;
+        );
+        transcript += res.transcript;
+        words.push(...res.words);
+      } else{
+        let res = await cheetah.process(
+          pcm.slice(i * cheetah.frameLength, (i + 1) * cheetah.frameLength),
+        );
+        transcript += res.transcript;
+      }
     }
-    transcript += (await cheetah.flush()).transcript;
+    if (annotated) {
+      let res = await cheetah.flushAnnotated();
+      transcript += res.transcript;
+      words.push(...res.words);
+    } else{
+      let res = await cheetah.flush();
+      transcript += res.transcript;
+    }
 
     await cheetah.delete();
 
@@ -202,6 +218,38 @@ async function runProcTestCase(
     if (wer > errorRate) {
       result.errorString = `Expected WER '${wer}' to be less than '${errorRate}'`;
       return result;
+    }
+
+    if (annotated) {
+      if (words.length < 1) {
+        result.errorString = 'Epected at least 1 word';
+        return result;
+      }
+
+      let currentTime = 0.0;
+      for (let word of words) {
+        if (word.word.length < 1) {
+          result.errorString = 'Expected word to not be empty';
+          return result;
+        }
+
+        if (word.startSec < currentTime) {
+          result.errorString = 'Expected word.startSec >= 0.0';
+          return result;
+        }
+
+        if (word.endSec < word.startSec) {
+          result.errorString = 'Expected word.endSec >= word.endSec';
+          return result;
+        }
+
+        if (word.confidence < 0.0 || word.confidence > 1.0) {
+          result.errorString = 'Expected 0.0 <= word.confidence <= 1.0';
+          return result;
+        }
+
+        currentTime = word.startSec;
+      }
     }
 
     result.success = true;
@@ -234,7 +282,7 @@ async function initTests(): Promise<Result[]> {
   return results;
 }
 
-async function processTests(): Promise<Result[]> {
+async function processTests(annotated: boolean): Promise<Result[]> {
   const results: Result[] = [];
 
   for (const testParam of testData.tests.language_tests) {
@@ -246,6 +294,8 @@ async function processTests(): Promise<Result[]> {
         testParam.punctuations,
         testParam.normalization,
         testParam.error_rate,
+        {},
+        annotated
       );
       result.testName = `Process test for '${modelFile}'`;
       logResult(result);
@@ -265,6 +315,7 @@ async function processTests(): Promise<Result[]> {
         {
           enablePunctuation: true,
         },
+        annotated
       );
       result.testName = `Process test with punctuation for '${modelFile}'`;
       logResult(result);
@@ -277,6 +328,7 @@ async function processTests(): Promise<Result[]> {
 
 export async function runCheetahTests(): Promise<Result[]> {
   const initResults = await initTests();
-  const processResults = await processTests();
-  return [...initResults, ...processResults];
+  const processResults = await processTests(false);
+  const processAnnotatedResults = await processTests(true);
+  return [...initResults, ...processResults, ...processAnnotatedResults];
 }
