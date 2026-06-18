@@ -123,13 +123,13 @@ def pv_train_model(
 
     for n in content['new']:
         if not isinstance(n, str):
-            raise ValueError("`new` words should be of type `str`")
+            raise ValueError(f"`{n}` words should be of type `str`")
         pronunciations = content['new'][n]
         if not isinstance(pronunciations, Sequence):
-            raise ValueError("`new` words pronunciations should be of type `Sequence`")
+            raise ValueError(f"`{n}` pronunciations should be of type `Sequence`")
         for p in pronunciations:
             if not isinstance(p, str):
-                raise ValueError("Each `pronunciation` should be of type `str`")
+                raise ValueError(f"Each of `{n}` pronunciations should be of type `str`")
 
     payload = {
         "engine": "cheetah",
@@ -138,7 +138,6 @@ def pv_train_model(
     }
 
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
         "x-api-key": access_key
     }
 
