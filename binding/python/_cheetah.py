@@ -95,9 +95,9 @@ class CheetahWord:
         end_sec: End time of the word in seconds.
         confidence: Confidence score for the word.
     """
-    word : str
+    word: str
     start_sec: float
-    end_sec : float
+    end_sec: float
     confidence: float
 
 
