@@ -89,7 +89,7 @@ def default_model_path(relative):
     return os.path.join(os.path.dirname(__file__), relative, 'lib/common/cheetah_params.pv')
 
 
-VALID_LANGUAGES = ('de', 'en', 'es', 'fr', 'it', 'pt')  # 'ja', 'ko',
+VALID_LANGUAGES = ('de', 'en', 'es', 'fr', 'it', 'pt')
 PV_API_URL = "https://rest.picovoice.ai/"
 
 
