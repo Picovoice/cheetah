@@ -335,33 +335,25 @@ extern const int16_t *get_next_audio_frame(void);
 
 while (true) {
     char *partial_transcript = NULL;
-    int32_t partial_num_words = 0;
-    pv_word_t *partial_words = NULL;
     bool is_endpoint = false;
     const pv_status_t status = pv_cheetah_process(
             handle,
             get_next_audio_frame(),
             &partial_transcript,
-            &partial_num_words,
-            &partial_words,
             &is_endpoint);
     if (status != PV_STATUS_SUCCESS) {
         // error handling logic
     }
     // do something with transcript
-    pv_cheetah_transcript_delete(partial_transcript);
-    pv_cheetah_words_delete(partial_num_words, partial_words);
+    free(partial_transcript);
     if (is_endpoint) {
         char *final_transcript = NULL;
-        int32_t final_num_words = 0;
-        pv_word_t *final_words = NULL;
-        const pv_status_t status = pv_cheetah_flush(handle, &final_transcript, &final_num_words, &final_words);
+        const pv_status_t status = pv_cheetah_flush(handle, &final_transcript);
         if (status != PV_STATUS_SUCCESS) {
             // error handling logic
         }
         // do something with transcript
-        pv_cheetah_transcript_delete(final_transcript);
-        pv_cheetah_words_delete(final_num_words, final_words);
+        free(final_transcript);
     }
 }
 ```

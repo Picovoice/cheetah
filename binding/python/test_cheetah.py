@@ -72,6 +72,52 @@ class CheetahTestCase(unittest.TestCase):
                 sample_rate=o.sample_rate)
 
             transcript = ''
+            num_frames = len(pcm) // o.frame_length
+            for i in range(num_frames):
+                frame = pcm[i * o.frame_length:(i + 1) * o.frame_length]
+                partial_transcript, _ = o.process(frame)
+                transcript += partial_transcript
+
+            final_transcript = o.flush()
+            transcript += final_transcript
+
+            normalized_transcript = expected_transcript
+            for punctuation in punctuations:
+                normalized_transcript = normalized_transcript.replace(punctuation, "")
+
+            self.assertLessEqual(
+                get_word_error_rate(transcript, normalized_transcript),
+                error_rate)
+
+        finally:
+            if o is not None:
+                o.delete()
+
+    @parameterized.expand(language_tests)
+    def test_process_annotated(
+            self,
+            language: str,
+            model_file: str,
+            audio_file: str,
+            expected_transcript: str,
+            expected_words: Sequence[str],
+            punctuations: List[str],
+            normalization: bool,
+            error_rate: float,
+            mismatch_count_threshold: int):
+        o = None
+
+        try:
+            o = self._create_cheetah(
+                model_file=model_file,
+                enable_automatic_punctuation=False,
+                enable_text_normalization=normalization)
+
+            pcm = read_wav_file(
+                file_name=os.path.join(self._audio_directory, audio_file),
+                sample_rate=o.sample_rate)
+
+            transcript = ''
             words = list()
             num_frames = len(pcm) // o.frame_length
             for i in range(num_frames):
@@ -110,6 +156,47 @@ class CheetahTestCase(unittest.TestCase):
 
     @parameterized.expand(language_tests)
     def test_process_with_punctuation(
+            self,
+            language: str,
+            model_file: str,
+            audio_file: str,
+            expected_transcript: str,
+            expected_words: Sequence[str],
+            punctuations: List[str],
+            normalization: bool,
+            error_rate: float,
+            mismatch_count_threshold: int):
+        o = None
+
+        try:
+            o = self._create_cheetah(
+                model_file=model_file,
+                enable_automatic_punctuation=True,
+                enable_text_normalization=normalization)
+
+            pcm = read_wav_file(
+                file_name=os.path.join(self._audio_directory, audio_file),
+                sample_rate=o.sample_rate)
+
+            transcript = ''
+            num_frames = len(pcm) // o.frame_length
+            for i in range(num_frames):
+                frame = pcm[i * o.frame_length:(i + 1) * o.frame_length]
+                partial_transcript, _ = o.process(frame)
+                transcript += partial_transcript
+
+            final_transcript = o.flush()
+            transcript += final_transcript
+
+            self.assertLessEqual(
+                get_word_error_rate(transcript, expected_transcript),
+                error_rate)
+        finally:
+            if o is not None:
+                o.delete()
+
+    @parameterized.expand(language_tests)
+    def test_process_with_punctuation_annotated(
             self,
             language: str,
             model_file: str,

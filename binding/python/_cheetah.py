@@ -10,7 +10,6 @@
 #
 
 import os
-from collections import namedtuple
 from ctypes import *
 from dataclasses import dataclass
 from enum import Enum
@@ -85,6 +84,30 @@ class CheetahActivationRefusedError(CheetahError):
     pass
 
 
+@dataclass
+class CheetahWord:
+    """
+    Word-level transcription metadata.
+
+    Fields:
+        word: Transcribed word.
+        start_sec: Start time of the word in seconds.
+        end_sec: End time of the word in seconds.
+        confidence: Confidence score for the word.
+    """
+    word : str
+    start_sec: float
+    end_sec : float
+    confidence: float
+
+
+@dataclass
+class CheetahTranscriptAnnotated:
+    transcript: str
+    words: Sequence[CheetahWord]
+    is_endpoint: bool
+
+
 class Cheetah(object):
     """Python binding for Cheetah streaming speech-to-text engine."""
 
@@ -126,23 +149,6 @@ class Cheetah(object):
             ("end_sec", c_float),
             ("confidence", c_float),
         ]
-
-    Word = namedtuple('Word', ['word', 'start_sec', 'end_sec', 'confidence'])
-    """
-    Word-level transcription metadata.
-
-    Fields:
-        word: Transcribed word.
-        start_sec: Start time of the word in seconds.
-        end_sec: End time of the word in seconds.
-        confidence: Confidence score for the word.
-    """
-
-    @dataclass
-    class CheetahTranscriptAnnotated:
-        transcript: str
-        words: Sequence["Cheetah.Word"]
-        is_endpoint: bool
 
     def __init__(
             self,
@@ -336,7 +342,8 @@ class Cheetah(object):
 
     def process_annotated(self, pcm: Sequence[int]) -> CheetahTranscriptAnnotated:
         """
-        Processes a frame of audio and returns newly transcribed text, word-level metadata, and an endpoint flag.
+        Processes a frame of audio and returns a `CheetahTranscriptAnnotated` object containing the newly-transcribed
+        text, word-level metadata, and a flag indicating if an endpoint has been detected.
 
         When an endpoint is detected, the client may call `.`flush_annotated()` to retrieve any remaining transcription
         and word metadata.
@@ -348,8 +355,8 @@ class Cheetah(object):
         :return: A `CheetahTranscriptAnnotated` instance with the following fields:
 
             - `transcript`: Newly transcribed text. If no new transcript is available, this will be an empty string.
-            - `words`: Sequence of transcribed words and their associated metadata.
-            - `is_endpoint`: Indicates whether an endpoint has been detected.
+            - `words`: Sequence of `CheetahWord` instances containing transcribed words and their metadata.
+            - `is_endpoint`: A flag indicating if an endpoint has been detected.
 
         """
 
@@ -377,7 +384,7 @@ class Cheetah(object):
 
         partial_words = list()
         for i in range(c_partial_num_words.value):
-            word = self.Word(
+            word = CheetahWord(
                 word=c_partial_words[i].word.decode('utf-8'),
                 start_sec=c_partial_words[i].start_sec,
                 end_sec=c_partial_words[i].end_sec,
@@ -386,7 +393,7 @@ class Cheetah(object):
 
         self._words_delete_func(c_partial_num_words.value, c_partial_words)
 
-        return self.CheetahTranscriptAnnotated(
+        return CheetahTranscriptAnnotated(
             transcript=partial_transcript,
             words=partial_words,
             is_endpoint=is_endpoint.value
@@ -400,7 +407,7 @@ class Cheetah(object):
         :return: A `CheetahTranscriptAnnotated` instance with the following fields:
 
             - `transcript`: Any remaining transcribed text. If no transcript is available, this will be an empty string.
-            - `words`: Sequence of `Word` instances containing transcribed words and their metadata.
+            - `words`: Sequence of `CheetahWord` instances containing transcribed words and their metadata.
 
         """
 
@@ -422,7 +429,7 @@ class Cheetah(object):
 
         final_words = list()
         for i in range(c_final_num_words.value):
-            word = self.Word(
+            word = CheetahWord(
                 word=c_final_words[i].word.decode('utf-8'),
                 start_sec=c_final_words[i].start_sec,
                 end_sec=c_final_words[i].end_sec,
@@ -431,7 +438,7 @@ class Cheetah(object):
 
         self._words_delete_func(c_final_num_words.value, c_final_words)
 
-        return self.CheetahTranscriptAnnotated(
+        return CheetahTranscriptAnnotated(
             transcript=final_transcript,
             words=final_words,
             is_endpoint=False
@@ -507,6 +514,8 @@ def list_hardware_devices(library_path: str) -> Sequence[str]:
 
 __all__ = [
     'Cheetah',
+    'CheetahWord',
+    'CheetahTranscriptAnnotated',
     'CheetahActivationError',
     'CheetahActivationLimitError',
     'CheetahActivationRefusedError',

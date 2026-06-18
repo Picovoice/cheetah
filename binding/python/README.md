@@ -34,7 +34,7 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 
 ## Usage
 
-### Only Transcription 
+### Basic Transcription 
 
 Create an instance of the engine and transcribe audio:
 
