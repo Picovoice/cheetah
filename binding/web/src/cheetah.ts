@@ -276,11 +276,11 @@ export class Cheetah {
     newWords: Record<string, string[]>[],
     boostWords: string[],
   ): Promise<CheetahModel> {
-    let content: any = {
+    const content: any = {
       new: newWords,
       boost: boostWords
     };
-    let yamlContent = stringify(content);
+    const yamlContent = stringify(content);
 
     return await this.trainModelFromYaml(
       accessKey,
@@ -321,10 +321,10 @@ export class Cheetah {
     }
 
     if (content.new === undefined || content.new === null) {
-      throw new Error("YAML must contain `new` field")
+      throw new Error("YAML must contain `new` field");
     }
     if (content.boost === undefined || content.boost === null) {
-      throw new Error("YAML must contain `boost` field")
+      throw new Error("YAML must contain `boost` field");
     }
 
     const payload = {
