@@ -62,6 +62,9 @@ public class CheetahTranscript {
         return isEndpoint;
     }
 
+    /**
+     * Cheetah Speech-to-Text engine Word Object.
+     */
     public static class Word {
         private final String word;
         private final float confidence;

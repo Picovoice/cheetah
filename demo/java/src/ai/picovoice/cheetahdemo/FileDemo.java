@@ -76,7 +76,12 @@ public class FileDemo {
 
             if (verbose) {
                 System.out.printf("%-15s %10s %10s %12s\n", "word", "start_sec", "end_sec", "confidence");
-                System.out.printf("%-15s %10s %10s %12s\n", "---------------", "----------", "----------", "------------");
+                System.out.printf(
+                        "%-15s %10s %10s %12s\n",
+                        "---------------",
+                        "----------",
+                        "----------",
+                        "------------");
             }
 
             ByteBuffer sampleBuffer = ByteBuffer.allocate(audioFormat.getFrameSize());

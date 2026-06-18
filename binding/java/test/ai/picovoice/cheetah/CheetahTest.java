@@ -270,7 +270,7 @@ public class CheetahTest {
         assertTrue(getErrorRate(transcript.toString(), normalizedTranscript) <= targetErrorRate);
     }
 
-    @ParameterizedTest(name = "test process annotated data for ''{1}'' with punctuation ''{5}'' and normalization ''{6}''")
+    @ParameterizedTest(name = "test process data for ''{1}'' with punctuation ''{5}'' and normalization ''{6}''")
     @MethodSource("processTestProvider")
     void processAnnotated(
             String language,
