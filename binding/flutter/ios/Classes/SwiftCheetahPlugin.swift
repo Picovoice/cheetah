@@ -17,7 +17,9 @@ enum Method: String {
     case GET_AVAILABLE_DEVICES
     case CREATE
     case PROCESS
+    case PROCESS_ANNOTATED
     case FLUSH
+    case FLUSH_ANNOTATED
     case DELETE
 }
 
@@ -92,16 +94,10 @@ public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
                 if let handle = args["handle"] as? String,
                     let frame = args["frame"] as? [Int16] {
                     if let cheetah = cheetahPool[handle] {
-                        let transcript = try cheetah.processAnnotated(frame)
+                        let (transcript, isEndpoint) = try cheetah.process(frame)
                         let results: [String: Any] = [
-                            "transcript": transcript.transcript,
-                            "words": transcript.words.map { [
-                                "word": $0.word,
-                                "startSeconds": $0.startSec,
-                                "endSeconds": $0.endSec,
-                                "confidence": $0.confidence
-                            ] },
-                            "isEndpoint": transcript.isEndpoint
+                            "transcript": transcript,
+                            "isEndpoint": isEndpoint
                         ]
                         result(results)
                     } else {
@@ -117,7 +113,58 @@ public class SwiftCheetahPlugin: NSObject, FlutterPlugin {
             } catch {
                 result(errorToFlutterError(CheetahError(error.localizedDescription)))
             }
+        case .PROCESS_ANNOTATED:
+            do {
+                if let handle = args["handle"] as? String,
+                    let frame = args["frame"] as? [Int16] {
+                    if let cheetah = cheetahPool[handle] {
+                        let transcript = try cheetah.processAnnotated(frame)
+                        let results: [String: Any] = [
+                            "transcript": transcript.transcript,
+                            "words": transcript.words.map { [
+                                "word": $0.word,
+                                "startSeconds": $0.startSec,
+                                "endSeconds": $0.endSec,
+                                "confidence": $0.confidence
+                            ] },
+                            "isEndpoint": transcript.isEndpoint
+                        ]
+                        result(results)
+                    } else {
+                        result(errorToFlutterError(
+                            CheetahInvalidStateError("Invalid handle provided to Cheetah 'processAnnotated'")))
+                    }
+                } else {
+                    result(errorToFlutterError(
+                        CheetahInvalidArgumentError("missing required arguments 'handle' and 'frame'")))
+                }
+            } catch let error as CheetahError {
+                result(errorToFlutterError(error))
+            } catch {
+                result(errorToFlutterError(CheetahError(error.localizedDescription)))
+            }
         case .FLUSH:
+            do {
+                if let handle = args["handle"] as? String {
+                    if let cheetah = cheetahPool[handle] {
+                        let transcript = try cheetah.flush()
+                        let results: [String: Any] = [
+                            "transcript": transcript
+                        ]
+                        result(results)
+                    } else {
+                        result(errorToFlutterError(
+                            CheetahInvalidStateError("Invalid handle provided to Cheetah 'process'")))
+                    }
+                } else {
+                    result(errorToFlutterError(CheetahInvalidArgumentError("missing required arguments 'handle'")))
+                }
+            } catch let error as CheetahError {
+                result(errorToFlutterError(error))
+            } catch {
+                result(errorToFlutterError(CheetahError(error.localizedDescription)))
+            }
+        case .FLUSH_ANNOTATED:
             do {
                 if let handle = args["handle"] as? String {
                     if let cheetah = cheetahPool[handle] {

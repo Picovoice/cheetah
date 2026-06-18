@@ -54,10 +54,11 @@ class CheetahManager {
       }
 
       try {
-        CheetahTranscript partialResult = await _cheetah!.process(frame);
+        CheetahTranscript partialResult = await _cheetah!.processAnnotated(frame);
 
+        // TODO: figure out how to display underlines
         if (partialResult.isEndpoint) {
-          CheetahTranscript remainingResult = await _cheetah!.flush();
+          CheetahTranscript remainingResult = await _cheetah!.flushAnnotated();
           String finalTranscript =
               partialResult.transcript + remainingResult.transcript;
           if (remainingResult.transcript.isNotEmpty) {

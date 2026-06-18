@@ -80,8 +80,14 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
             case PROCESS:
                 cheetahProcess(call, result);
                 break;
+            case PROCESS_ANNOTATED:
+                cheetahProcessAnnotated(call, result);
+                break;
             case FLUSH:
                 cheetahFlush(call, result);
+                break;
+            case FLUSH_ANNOTATED:
+                cheetahFlushAnnotated(call, result);
                 break;
             case DELETE:
                 cheetahDelete(call, result);
@@ -163,6 +169,51 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
 
             Map<String, Object> resultMap = new HashMap<>();
             resultMap.put("transcript", transcriptObj.getTranscript());
+            resultMap.put("isEndpoint", transcriptObj.getIsEndpoint());
+
+            result.success(resultMap);
+        } catch (CheetahException e) {
+            result.error(
+                    e.getClass().getSimpleName(),
+                    e.getMessage(),
+                    null);
+        }
+    }
+
+    private void cheetahProcessAnnotated(@NonNull MethodCall call, @NonNull Result result) {
+        String handle = call.argument("handle");
+        ArrayList<Integer> pcmList = call.argument("frame");
+
+        if (!cheetahPool.containsKey(handle)) {
+            result.error(
+                    CheetahInvalidStateException.class.getSimpleName(),
+                    "Invalid cheetah handle provided to native module",
+                    null);
+            return;
+        }
+
+        Cheetah cheetah = cheetahPool.get(handle);
+        if (cheetah == null) {
+            result.error(
+                    CheetahInvalidStateException.class.getSimpleName(),
+                    "Instance of Cheetah no longer exists.",
+                    null);
+            return;
+        }
+
+        short[] pcm = null;
+        if (pcmList != null) {
+            pcm = new short[pcmList.size()];
+            for (int i = 0; i < pcmList.size(); i++) {
+                pcm[i] = pcmList.get(i).shortValue();
+            }
+        }
+
+        try {
+            CheetahTranscriptAnnotated transcriptObj = cheetah.processAnnotated(pcm);
+
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("transcript", transcriptObj.getTranscript());
             resultMap.put("words", transcriptObj.getWords());
             resultMap.put("isEndpoint", transcriptObj.getIsEndpoint());
 
@@ -197,6 +248,41 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
 
         try {
             CheetahTranscript transcriptObj = cheetah.flush();
+
+            Map<String, Object> param = new HashMap<>();
+            param.put("transcript", transcriptObj.getTranscript());
+
+            result.success(param);
+        } catch (CheetahException e) {
+            result.error(
+                    e.getClass().getSimpleName(),
+                    e.getMessage(),
+                    null);
+        }
+    }
+
+    private void cheetahFlushAnnotated(@NonNull MethodCall call, @NonNull Result result) {
+        String handle = call.argument("handle");
+
+        if (!cheetahPool.containsKey(handle)) {
+            result.error(
+                    CheetahInvalidStateException.class.getSimpleName(),
+                    "Invalid cheetah handle provided to native module",
+                    null);
+            return;
+        }
+
+        Cheetah cheetah = cheetahPool.get(handle);
+        if (cheetah == null) {
+            result.error(
+                    CheetahInvalidStateException.class.getSimpleName(),
+                    "Instance of Cheetah no longer exists.",
+                    null);
+            return;
+        }
+
+        try {
+            CheetahTranscriptAnnotated transcriptObj = cheetah.flushAnnotated();
 
             Map<String, Object> param = new HashMap<>();
             param.put("transcript", transcriptObj.getTranscript());
@@ -235,7 +321,9 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
         GET_AVAILABLE_DEVICES,
         CREATE,
         PROCESS,
+        PROCESS_ANNOTATED,
         FLUSH,
+        FLUSH_ANNOTATED,
         DELETE
     }
 }
