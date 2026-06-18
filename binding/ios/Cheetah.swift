@@ -208,7 +208,7 @@ public class Cheetah {
     }
 
     /// Processes a frame of audio and returns newly-transcribed text and a flag indicating if an endpoint has been
-    /// detected. Upon detection of an endpoint, the client may invoke `.flush()` to retrieve any remaining
+    /// detected. Upon detection of an endpoint, the client may invoke `.flushAnnotated()` to retrieve any remaining
     /// transcription.
     ///
     /// - Parameters:
