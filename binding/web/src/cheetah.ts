@@ -313,6 +313,20 @@ export class Cheetah {
       );
     }
 
+    let content: any;
+    try {
+      content = parse(yamlContent);
+    } catch (e: any) {
+      throw new Error('Failed to parse yaml content');
+    }
+
+    if (content.new === undefined || content.new === null) {
+      throw new Error("YAML must contain `new` field")
+    }
+    if (content.boost === undefined || content.boost === null) {
+      throw new Error("YAML must contain `boost` field")
+    }
+
     const payload = {
       engine: 'cheetah',
       model_type: 'default',

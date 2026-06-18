@@ -215,6 +215,32 @@ Default models for supported languages can be found in [lib/common](../../lib/co
 Create custom language models using the [Picovoice Console](https://console.picovoice.ai/). Here you can train
 language models with custom vocabulary and boost words in the existing vocabulary.
 
+
+## Train Models over API
+
+You can train models over API without going to the console:
+
+```javascript
+Cheetah.trainModelFromWords(
+        "${ACCESS_KEY}",                                              # AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
+        "${WRITE_PATH}",                                              # Custom path/key used to store the trained model in IndexedDB
+        "${LANGUAGE}",                                                # Two-character language code
+        {"${NEW_WORD}": ["${PRONUNCIATION1}", "${PRONUNCIATION2}"]},  # New words with optional custom pronunciation to add to the model.
+        ["${BOOST_WORD1}", "${BOOST_WORD2}"]                          # Boost words.
+```
+
+(or)
+
+```javascript
+Cheetah.trainModelFromYaml(
+        "${ACCESS_KEY}",                            # AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
+        "${WRITE_PATH}",                            # Custom path/key used to store the trained model in IndexedDB
+        "${LANGUAGE}",                              # Two-character language code
+        "${YAML_CONTENT}",                          # YAML configuration in string
+```
+
+Check [Cheetah Model API](https://picovoice.ai/docs/model-api/cheetah/) docs for a list of supported languages.
+
 ## Demo
 
 For example usage refer to our [Web demo application](https://github.com/Picovoice/cheetah/tree/master/demo/web).

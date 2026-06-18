@@ -7,6 +7,7 @@ export default defineConfig({
     "PROC_PERFORMANCE_THRESHOLD_SEC": 0.45
   },
   e2e: {
+    chromeWebSecurity: false,
     supportFile: "cypress/support/index.ts",
     specPattern: "test/*.test.{js,jsx,ts,tsx}",
     video: false,
