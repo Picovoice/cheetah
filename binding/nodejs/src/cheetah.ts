@@ -283,13 +283,15 @@ export default class Cheetah {
   }
 
   /**
-   * Processes a frame of audio and returns newly-transcribed text and a flag indicating if an endpoint has been detected.
-   * Upon detection of an endpoint, the client may invoke `Cheetah.flush()` to retrieve any remaining transcription.
+   * Processes a frame of audio and returns an annotated transcript of newly-transcribed text, including per-word
+   * metadata and a flag indicating if an endpoint has been detected. Upon detection of an endpoint, the client may
+   * invoke `Cheetah.flushAnnotated()` to retrieve any remaining transcription.
    *
-   * @param {Int16Array} pcm Audio data. The audio needs to have a sample rate equal to `Cheetah.sampleRate` and be 16-bit linearly-encoded.
-   * The specific array length can be attained by calling `Cheetah.frameLength`. This function operates on single-channel audio.
-   * @returns {CheetahTranscriptAnnotated} object which contains the inferred transcription, a sequence of CheetahWord objects containing word
-   * confidences, and a flag indicating if an endpoint has been detected.
+   * @param {Int16Array} pcm Audio data. The audio needs to have a sample rate equal to `Cheetah.sampleRate` and be
+   * 16-bit linearly-encoded. The specific array length can be attained by calling `Cheetah.frameLength`. This function
+   * operates on single-channel audio.
+   * @returns {CheetahTranscriptAnnotated} object which contains the inferred transcription, a sequence of CheetahWord
+   * objects containing word metadata, and a flag indicating if an endpoint has been detected.
    */
   processAnnotated(pcm: Int16Array): CheetahTranscriptAnnotated {
     assert(pcm instanceof Int16Array);
@@ -304,11 +306,11 @@ export default class Cheetah {
 
     if (pcm === undefined || pcm === null) {
       throw new CheetahInvalidArgumentError(
-        `PCM array provided to 'Cheetah.process()' is undefined or null`
+        `PCM array provided to 'Cheetah.processAnnotated()' is undefined or null`
       );
     } else if (pcm.length !== this.frameLength) {
       throw new CheetahInvalidArgumentError(
-        `Size of frame array provided to 'Cheetah.process()' (${pcm.length}) does not match the engine 'Cheetah.frameLength' (${this.frameLength})`
+        `Size of frame array provided to 'Cheetah.processAnnotated()' (${pcm.length}) does not match the engine 'Cheetah.frameLength' (${this.frameLength})`
       );
     }
 
@@ -361,7 +363,8 @@ export default class Cheetah {
   }
 
   /**
-   * Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcript.
+   * Marks the end of the audio stream, flushes internal state of the object, and returns any remaining annotated
+   * transcript.
    *
    * @returns {CheetahTranscriptAnnotated} object which contains the inferred transcription and a sequence of CheetahWord objects
    * containing word confidences. isEndpoint will always be true.

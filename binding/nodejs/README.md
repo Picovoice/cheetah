@@ -34,7 +34,7 @@ Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get you
 
 ### Usage
 
-Create an instance of the engine and transcribe audio :
+Create an instance of the engine and transcribe audio:
 
 ```javascript
 const {Cheetah} = require("@picovoice/cheetah-node");
@@ -52,13 +52,40 @@ while (true) {
   const audioFrame = getNextAudioFrame();
   const [partialTranscript, isEndpoint] = handle.process(audioFrame);
   if (isEndpoint) {
-    finalTranscript = handle.flush()
+    const finalTranscript = handle.flush();
   }
 }
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from [Picovoice Console](https://console.picovoice.ai/). Finally, when done be sure to explicitly release the resources using
 `handle.release()`.
+
+You can also get per-word annotations:
+
+```javascript
+const {Cheetah} = require("@picovoice/cheetah-node");
+
+const accessKey = "${ACCESS_KEY}"; // Obtained from the Picovoice Console (https://console.picovoice.ai/)
+const endpointDurationSec = 2.0;
+const handle = new Cheetah(accessKey);
+
+function getNextAudioFrame() {
+  // ...
+  return audioFrame;
+}
+
+let words = [];
+while (true) {
+  const audioFrame = getNextAudioFrame();
+  const transcript = handle.processAnnotated(audioFrame);
+  words.push(...transcript.words);
+
+  if (isEndpoint) {
+    const finalTranscript = handle.processAnnotated();
+    words.push(...finalTranscript.words);
+  }
+}
+```
 
 ### Language Model
 
