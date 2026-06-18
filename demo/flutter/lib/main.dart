@@ -38,7 +38,7 @@ class MyAppState extends State<MyApp> {
   String errorMessage = "";
 
   bool isProcessing = false;
-  String transcriptText = "";
+  List<Widget> annotatedTranscript = [];
   CheetahManager? _cheetahManager;
 
   final ScrollController _controller = ScrollController();
@@ -47,7 +47,7 @@ class MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     setState(() {
-      transcriptText = "";
+      annotatedTranscript = [];
     });
 
     initCheetah();
@@ -99,12 +99,12 @@ class MyAppState extends State<MyApp> {
     }
   }
 
-  void transcriptCallback(String transcript) {
+  void transcriptCallback(List<Widget> additionalTranscript) {
     bool shouldScroll =
         _controller.position.pixels == _controller.position.maxScrollExtent;
 
     setState(() {
-      transcriptText = transcriptText + transcript;
+      annotatedTranscript = annotatedTranscript + additionalTranscript;
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -129,7 +129,7 @@ class MyAppState extends State<MyApp> {
     try {
       await _cheetahManager!.startProcess();
       setState(() {
-        transcriptText = "";
+        annotatedTranscript = [];
         isProcessing = true;
       });
     } on CheetahException catch (ex) {
@@ -216,10 +216,10 @@ class MyAppState extends State<MyApp> {
           physics: RangeMaintainingScrollPhysics(),
           child: Align(
             alignment: Alignment.topLeft,
-            child: Text(
-              transcriptText,
-              textAlign: TextAlign.left,
-              style: TextStyle(color: Colors.white, fontSize: 20),
+            child: Wrap(
+              spacing: 1,
+              runSpacing: 0,
+              children: annotatedTranscript
             ),
           ),
         ),

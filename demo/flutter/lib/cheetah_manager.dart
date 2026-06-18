@@ -14,8 +14,10 @@ import 'package:cheetah_flutter/cheetah.dart';
 import 'package:cheetah_flutter/cheetah_error.dart';
 import 'package:flutter_voice_processor/flutter_voice_processor.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 
-typedef TranscriptCallback = Function(String transcript);
+
+typedef TranscriptCallback = Function(List<Widget> additionalTranscript);
 
 typedef ProcessErrorCallback = Function(CheetahException error);
 
@@ -40,6 +42,37 @@ class CheetahManager {
     return CheetahManager._(cheetah, transcriptCallback, processErrorCallback);
   }
 
+  static List<Widget> _amendTranscript(String transcript, List<CheetahWord> words) {
+    List<Widget> parts = [];
+
+    int startingIndex = 0;
+    for (CheetahWord word in words) {
+      int strIndex = transcript.substring(startingIndex).indexOf(word.word);
+      String nonWordComponent = transcript.substring(startingIndex, startingIndex + strIndex);
+      parts.add(Text(nonWordComponent));
+      startingIndex += strIndex + word.word.length;
+
+      parts.add(Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            word.word,
+            style: TextStyle(color: Colors.white, fontSize: 20)
+          ),
+          Transform.translate(
+            offset: const Offset(0, -6),
+            child: Text(
+              "${(100 * word.confidence).toStringAsFixed(0)}%",
+              style: TextStyle(color: Color.lerp(Color(0xff25187e), Colors.grey, word.confidence * word.confidence), fontSize: 10)
+            ),
+          ),
+      ]));
+    }
+
+    return parts;
+  }
+
   CheetahManager._(this._cheetah, this._transcriptCallback,
       ProcessErrorCallback processErrorCallback)
       : _voiceProcessor = VoiceProcessor.instance {
@@ -54,20 +87,22 @@ class CheetahManager {
       }
 
       try {
-        CheetahTranscript partialResult = await _cheetah!.processAnnotated(frame);
+        CheetahTranscriptAnnotated partialResult = await _cheetah!.processAnnotated(frame);
 
-        // TODO: figure out how to display underlines
+        String finalTranscript = partialResult.transcript;
+        List<CheetahWord> finalWords = partialResult.words;
         if (partialResult.isEndpoint) {
-          CheetahTranscript remainingResult = await _cheetah!.flushAnnotated();
-          String finalTranscript =
-              partialResult.transcript + remainingResult.transcript;
+          CheetahTranscriptAnnotated remainingResult = await _cheetah!.flushAnnotated();
+          finalTranscript += remainingResult.transcript;
           if (remainingResult.transcript.isNotEmpty) {
             finalTranscript += " ";
           }
-          _transcriptCallback(finalTranscript);
-        } else {
-          _transcriptCallback(partialResult.transcript);
+          finalWords.addAll(remainingResult.words);
         }
+
+        List<Widget> parts = _amendTranscript(finalTranscript, finalWords);
+        _transcriptCallback(parts);
+
       } on CheetahException catch (error) {
         processErrorCallback(error);
       }
@@ -116,8 +151,9 @@ class CheetahManager {
             "Failed to stop audio recording: ${e.message}");
       }
 
-      CheetahTranscript cheetahTranscript = await _cheetah!.flush();
-      _transcriptCallback("${cheetahTranscript.transcript} ");
+      CheetahTranscriptAnnotated cheetahTranscript = await _cheetah!.flushAnnotated();
+      List<Widget> parts = _amendTranscript(cheetahTranscript.transcript, cheetahTranscript.words);
+      _transcriptCallback(parts);
     }
   }
 
