@@ -91,7 +91,7 @@ class CheetahCTestCase(unittest.TestCase):
 
         process = subprocess.Popen(args, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
         stdout, stderr = process.communicate()
-        self.assertEqual(process.poll(), 0)
+        self.assertEqual(process.poll(), 0, stderr.decode('utf-8'))
         self.assertEqual(stderr.decode('utf-8'), '')
 
         transcript = stdout.decode('utf-8').strip().split('\n')[-2]
@@ -128,7 +128,7 @@ class CheetahCTestCase(unittest.TestCase):
 
         process = subprocess.Popen(args, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
         stdout, stderr = process.communicate()
-        self.assertEqual(process.poll(), 0)
+        self.assertEqual(process.poll(), 0, stderr.decode('utf-8'))
         self.assertEqual(stderr.decode('utf-8'), '')
 
         transcript = stdout.decode('utf-8').strip().split('\n')[-2]
@@ -162,7 +162,7 @@ class CheetahCTestCase(unittest.TestCase):
 
         process = subprocess.Popen(args, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
         stdout, stderr = process.communicate()
-        self.assertEqual(process.poll(), 0)
+        self.assertEqual(process.poll(), 0, stderr.decode('utf-8'))
         self.assertEqual(stderr.decode('utf-8'), '')
 
         lines = stdout.decode('utf-8').strip().split('\n')
@@ -230,7 +230,7 @@ class CheetahCTestCase(unittest.TestCase):
 
         process = subprocess.Popen(args, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
         stdout, stderr = process.communicate()
-        self.assertEqual(process.poll(), 0)
+        self.assertEqual(process.poll(), 0, stderr.decode('utf-8'))
         self.assertEqual(stderr.decode('utf-8'), '')
 
         lines = stdout.decode('utf-8').strip().split('\n')
