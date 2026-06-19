@@ -158,16 +158,16 @@ public class Cheetah {
      */
     public CheetahTranscriptAnnotated processAnnotated(short[] pcm) throws CheetahException {
         if (handle == 0) {
-            throw new CheetahInvalidStateException("Attempted to call Cheetah process after delete.");
+            throw new CheetahInvalidStateException("Attempted to call Cheetah processAnnotated after delete.");
         }
 
         if (pcm == null) {
-            throw new CheetahInvalidArgumentException("Passed null frame to Cheetah process.");
+            throw new CheetahInvalidArgumentException("Passed null frame to Cheetah processAnnotated.");
         }
 
         if (pcm.length != getFrameLength()) {
             throw new CheetahInvalidArgumentException(
-                    String.format("Cheetah process requires frames of length %d. " +
+                    String.format("Cheetah processAnnotated requires frames of length %d. " +
                             "Received frame of size %d.", getFrameLength(), pcm.length));
         }
 
@@ -186,7 +186,7 @@ public class Cheetah {
      */
     public CheetahTranscriptAnnotated flushAnnotated() throws CheetahException {
         if (handle == 0) {
-            throw new CheetahInvalidStateException("Attempted to call Cheetah flush after delete.");
+            throw new CheetahInvalidStateException("Attempted to call Cheetah flushAnnotated after delete.");
         }
 
         CheetahTranscript transcript =  CheetahNative.flush(handle);
