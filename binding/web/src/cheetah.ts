@@ -455,7 +455,7 @@ export class Cheetah {
         this._transcriptCallback({ transcript });
 
         if (isEndpoint) {
-          [transcript] = await this.cheetahFlush();
+          transcript = await this.cheetahFlush();
           this._transcriptCallback({ transcript, isEndpoint: true });
         }
       })

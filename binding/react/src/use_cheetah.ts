@@ -24,7 +24,7 @@ import {
 export const useCheetah = (): {
   result: {
     transcript: string;
-    words: CheetahWord[];
+    words?: CheetahWord[];
     isComplete?: boolean;
   } | null;
   isLoaded: boolean;
@@ -36,14 +36,27 @@ export const useCheetah = (): {
     options?: CheetahOptions
   ) => Promise<void>;
   start: () => Promise<void>;
+  startAnnotated: () => Promise<void>;
   stop: () => Promise<void>;
   release: () => Promise<void>;
 } => {
+  type WvpMessageEvent = { command: string; };
+  type PvEngine = {
+    worker: {
+      postMessage: (e: WvpMessageEvent) => void;
+    },
+  };
+  type PvEngineKind = {
+    isAnnotated: boolean,
+    engine: PvEngine,
+  };
+
   const cheetahRef = useRef<CheetahWorker | null>(null);
+  const engineRef = useRef<PvEngineKind | null>(null);
 
   const [result, setResult] = useState<{
     transcript: string;
-    words: CheetahWord[];
+    words: CheetahWord[] | undefined;
     isComplete: boolean | undefined;
   } | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -58,12 +71,16 @@ export const useCheetah = (): {
   const transcriptCallback = useCallback(
     (cheetahTranscript: CheetahTranscript): void => {
       if (cheetahTranscript.isEndpoint) {
-        cheetahRef.current?.flush();
+        if (engineRef.current?.isAnnotated) {
+          cheetahRef.current?.flushAnnotated();
+        } else {
+          cheetahRef.current?.flush();
+        }
       }
 
       setResult({
         transcript: cheetahTranscript.transcript,
-        words: cheetahTranscript.words,
+        words: cheetahTranscript.words ? cheetahTranscript.words : undefined,
         isComplete: cheetahTranscript.isFlushed,
       });
 
@@ -119,7 +136,8 @@ export const useCheetah = (): {
         return;
       }
 
-      await WebVoiceProcessor.subscribe(cheetahRef.current);
+      engineRef.current = { engine: cheetahRef.current, isAnnotated: false };
+      await WebVoiceProcessor.subscribe(engineRef.current.engine);
       setError(null);
       setIsListening(true);
 
@@ -129,14 +147,49 @@ export const useCheetah = (): {
     }
   }, [isListening]);
 
-  // startAnnotated
-  // TODO: pass into webvoiceprocessor
-
-  const stop = useCallback(async (): Promise<void> => {
+  const startAnnotated = useCallback(async (): Promise<void> => {
     try {
       if (!cheetahRef.current) {
         setError(
           new Error('Cheetah has not been initialized or has been released')
+        );
+        return;
+      }
+
+      if (isListening) {
+        return;
+      }
+
+      const processAnnotatedEngine = {
+        worker: {
+          postMessage: (e: WvpMessageEvent) => {
+            if (!cheetahRef.current) {
+              return;
+            }
+
+            if (e.command && e.command === "process") {
+              e.command = "process_annotated";
+            }
+            cheetahRef.current.worker.postMessage(e);
+          }
+        }
+      };
+      engineRef.current = { engine: processAnnotatedEngine, isAnnotated: true };
+      await WebVoiceProcessor.subscribe(engineRef.current.engine);
+      setError(null);
+      setIsListening(true);
+
+    } catch (e: any) {
+      setError(e);
+      setIsListening(false);
+    }
+  }, [isListening]);
+
+  const stop = useCallback(async (): Promise<void> => {
+    try {
+      if (!cheetahRef.current || !engineRef.current) {
+        setError(
+          new Error(`Cheetah ${(!engineRef.current) ? "engine" : ""} has not been initialized or has been released`)
         );
         return Promise.resolve();
       }
@@ -145,12 +198,20 @@ export const useCheetah = (): {
         return Promise.resolve();
       }
 
-      await WebVoiceProcessor.unsubscribe(cheetahRef.current);
+      await WebVoiceProcessor.unsubscribe(engineRef.current.engine);
       const returnPromise: Promise<void> = new Promise((resolve) => {
         if (flushResolveRef.current !== null) {
           flushResolveRef.current();
         }
-        cheetahRef.current?.flush();
+
+        if (engineRef.current && cheetahRef.current) {
+          if (engineRef.current.isAnnotated) {
+            cheetahRef.current.flushAnnotated();
+          } else {
+            cheetahRef.current.flush();
+          }
+        }
+        engineRef.current = null;
         flushResolveRef.current = resolve;
       });
       setIsListening(false);
@@ -193,6 +254,7 @@ export const useCheetah = (): {
     error,
     init,
     start,
+    startAnnotated,
     stop,
     release,
   };

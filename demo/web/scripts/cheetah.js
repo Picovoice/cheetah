@@ -53,14 +53,18 @@ async function startCheetah(accessKey) {
     writeMessage(
       "WebVoiceProcessor initializing. Microphone permissions requested ...",
     );
-    await window.WebVoiceProcessor.WebVoiceProcessor.subscribe({
-      onmessage: e => {
-        if (e.command && e.command === "process") {
-          e.command = "process_annotated";
+    const processAnnotatedEngine = {
+      worker: {
+        postMessage: e => {
+          console.log(e);
+          if (e.command && e.command === "process") {
+            e.command = "process_annotated";
+          }
+          cheetah.worker.postMessage(e);
         }
-        cheetah.onmessage(e);
       }
-    });
+    };
+    await window.WebVoiceProcessor.WebVoiceProcessor.subscribe(processAnnotatedEngine);
     writeMessage("WebVoiceProcessor ready and listening!");
   } catch (err) {
     cheetahErrorCallback(err);

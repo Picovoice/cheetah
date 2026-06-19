@@ -9,7 +9,7 @@ export default function VoiceWidget() {
   const [isBusy, setIsBusy] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<React.ReactNode[]>([]);
 
-  const { result, isLoaded, isListening, error, init, start, stop, release } =
+  const { result, isLoaded, isListening, error, init, startAnnotated, stop, release } =
     useCheetah();
 
   useEffect(() => {
@@ -18,8 +18,9 @@ export default function VoiceWidget() {
         let inputTranscript = result.transcript;
         let outputTranscriptHTML: React.ReactNode[] = []
 
+        const words = result.words ? result.words : [];
         let startingIndex = 0;
-        for (const word of result.words) {
+        for (const word of words) {
           let strIndex = inputTranscript.slice(startingIndex).indexOf(word.word);
           outputTranscriptHTML.push(inputTranscript.slice(startingIndex, startingIndex + strIndex));
           startingIndex += strIndex + word.word.length;
@@ -67,7 +68,7 @@ export default function VoiceWidget() {
       await stop();
     } else {
       setTranscript([]);
-      await start();
+      await startAnnotated();
     }
     setIsBusy(false);
   };
