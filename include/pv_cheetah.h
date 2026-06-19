@@ -33,6 +33,16 @@ extern "C" {
 typedef struct pv_cheetah pv_cheetah_t;
 
 /**
+ * A transcribed word and its associated metadata.
+ */
+typedef struct {
+    char *word; /** Transcribed word. */
+    float start_sec; /** Start of word in seconds. */
+    float end_sec; /** End of word in seconds. */
+    float confidence; /** Transcription confidence. It is a number within [0, 1]. */
+} pv_word_t;
+
+/**
  * Constructor.
  *
  * @param access_key AccessKey obtained from Picovoice Console (https://picovoice.ai/console/)
@@ -71,41 +81,66 @@ PV_API pv_status_t pv_cheetah_init(
 PV_API void pv_cheetah_delete(pv_cheetah_t *object);
 
 /**
- * Processes a frame of audio and returns newly-transcribed text and a flag indicating if an endpoint has been detected.
- * Upon detection of an endpoint, the client may invoke `pv_cheetah_flush()` to retrieve any remaining transcription.
- * The caller is responsible for freeing the transcription buffer.
+ * Processes a frame of audio and returns newly-transcribed text, word-level information, and a flag indicating if an
+ * endpoint has been detected. Upon detection of an endpoint, the client may invoke `pv_cheetah_flush()` to retrieve any
+ * remaining transcription and word-level information. The caller is responsible for freeing the transcription buffer by
+ * calling `pv_cheetah_transcript_delete()` and the word-level information buffer by calling
+ * `pv_cheetah_words_delete()`.
  *
  * @param object Cheetah object.
  * @param pcm A frame of audio samples. The number of samples per frame can be attained by calling
  * `pv_cheetah_frame_length()`. The incoming audio needs to have a sample rate equal to `pv_sample_rate()` and be 16-bit
  * linearly-encoded. Cheetah operates on single-channel audio.
  * @param[out] transcript Any newly-transcribed speech. If none is available then an empty string is returned.
+ * @param[out] num_words Number of elements in `words`.
+ * @param[out] words Word-level information for the newly-transcribed speech. The caller is responsible 
+ * for freeing this buffer by calling `pv_cheetah_words_delete()`.
  * @param[out] is_endpoint Flag indicating if an endpoint has been detected. If endpointing is disabled then set to
  * `NULL`.
  * @return Status code. Returns `PV_STATUS_INVALID_ARGUMENT` or `PV_STATUS_OUT_OF_MEMORY`,
  * `PV_STATUS_RUNTIME_ERROR`, `PV_STATUS_ACTIVATION_ERROR`, `PV_STATUS_ACTIVATION_LIMIT_REACHED`,
  * `PV_STATUS_ACTIVATION_THROTTLED`, or `PV_STATUS_ACTIVATION_REFUSED` on failure.
  */
-PV_API pv_status_t pv_cheetah_process(pv_cheetah_t *object, const int16_t *pcm, char **transcript, bool *is_endpoint);
-
+PV_API pv_status_t pv_cheetah_process(
+        pv_cheetah_t *object,
+        const int16_t *pcm,
+        char **transcript,
+        int32_t *num_words,
+        pv_word_t **words,
+        bool *is_endpoint);
 /**
- * Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcript. The
- * caller is responsible for freeing the transcription buffer.
+ * Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcript and
+ * word-level information. The caller is responsible for freeing the transcription buffer by calling
+ * `pv_cheetah_transcript_delete()` and the word-level information buffer by calling
+ * `pv_cheetah_words_delete()`.
  *
  * @param object Cheetah object.
  * @param[out] transcript Any remaining transcribed text. If none is available then an empty string is returned.
+ * @param[out] num_words Number of elements in `words`.
+ * @param[out] words Word-level information for the remaining transcribed text.
+ * The caller is responsible for freeing this buffer by calling `pv_cheetah_words_delete()`.
  * @return Status code. Returns `PV_STATUS_INVALID_ARGUMENT` or `PV_STATUS_OUT_OF_MEMORY`,
  * `PV_STATUS_RUNTIME_ERROR`, `PV_STATUS_ACTIVATION_ERROR`, `PV_STATUS_ACTIVATION_LIMIT_REACHED`,
  * `PV_STATUS_ACTIVATION_THROTTLED`, or `PV_STATUS_ACTIVATION_REFUSED` on failure.
  */
-PV_API pv_status_t pv_cheetah_flush(pv_cheetah_t *object, char **transcript);
-
+PV_API pv_status_t pv_cheetah_flush(
+        pv_cheetah_t *object,
+        char **transcript,
+        int32_t *num_words,
+        pv_word_t **words);
 /**
  * Deletes transcript returned from `pv_cheetah_process()` or `pv_cheetah_flush()`
  *
  * @param transcript transcription string returned from `pv_cheetah_process()` or `pv_cheetah_flush()`
  */
 PV_API void pv_cheetah_transcript_delete(char *transcript);
+/**
+ * Deletes word-level information returned from `pv_cheetah_process()` or `pv_cheetah_flush()`.
+ *
+ * @param num_words Number of elements in `words`.
+ * @param words Word-level information returned from `pv_cheetah_process()` or `pv_cheetah_flush()`.
+ */
+PV_API void pv_cheetah_words_delete(int32_t num_words, pv_word_t *words);
 
 /**
  * Getter for version.

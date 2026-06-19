@@ -11,9 +11,10 @@
 
 import json
 import os
+from typing import List, Tuple
 
 
-def get_lib_ext(platform):
+def get_lib_ext(platform: str) -> str:
     if platform == "windows":
         return "dll"
     elif platform == "mac":
@@ -22,13 +23,30 @@ def get_lib_ext(platform):
         return "so"
 
 
-def append_language(s, language):
+def append_language(s: str, language: str) -> str:
     if language == 'en':
         return s
     return "%s_%s" % (s, language)
 
 
-def load_languages_test_data():
+def separate_words(text: str, punctuation: set[str] = {"."}) -> list[str]:
+    result = []
+    for chunk in text.split():
+        current = ""
+        for char in chunk:
+            if char in punctuation:
+                if current:
+                    result.append(current)
+                    current = ""
+                result.append(char)
+            else:
+                current += char
+        if current:
+            result.append(current)
+    return result
+
+
+def load_languages_test_data() -> List[Tuple[str, str, str, str, List[str], List[str], bool, float, int]]:
     data_file_path = os.path.join(os.path.dirname(__file__), "../../../resources/.test/test_data.json")
     with open(data_file_path, encoding="utf8") as data_file:
         json_test_data = data_file.read()
@@ -43,9 +61,11 @@ def load_languages_test_data():
                     model_file,
                     t['audio_file'],
                     t['transcript'],
+                    separate_words(t['transcript']),
                     t['punctuations'],
                     t['normalization'],
-                    t['error_rate']
+                    t['error_rate'],
+                    2
                 )
             )
 
