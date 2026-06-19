@@ -47,7 +47,7 @@ public class TrainTests extends BaseTest {
         Cheetah c = new Cheetah.Builder()
                 .setAccessKey(accessKey)
                 .setDevice(device)
-                .setModelPAth(outputPath)
+                .setModelPath(outputPath)
                 .build(appContext);
 
         assertTrue(c.getVersion() != null && !c.getVersion().equals(""));

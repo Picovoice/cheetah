@@ -77,7 +77,6 @@ public class Cheetah {
             String accessKey,
             String outputPath,
             String language,
-            String contextPath,
             Map<String, String[]> newWords,
             String[] boostWords) throws CheetahException {
 
