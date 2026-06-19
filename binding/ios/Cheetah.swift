@@ -10,9 +10,12 @@
 import Foundation
 
 import PvCheetah
+import Yams
 
 /// iOS binding for Cheetah speech-to-text engine. Provides a Swift interface to the Cheetah library.
 public class Cheetah {
+    private static let PV_API_URL = "https://rest.picovoice.ai/"
+    private static let VALID_LANGUAGES: Set<String> = ["en", "fr", "de", "es", "it", "pt"]
 
     private var handle: OpaquePointer?
 
@@ -323,6 +326,128 @@ public class Cheetah {
             "Could not find file at path '\(filePath)'. If this is a packaged asset, " +
             "ensure you have added it to your xcode project."
         )
+    }
+
+    /// Trains a new model using the specified `newWords` and `boostWords` arguments.
+    ///
+    /// - Parameters:
+    ///   - accessKey: AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+    ///   - outputPath: Absolute path to file where the trained model will be saved.
+    ///   - language: Two character language code for the model (e.g. "en", "fr").
+    ///               See https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
+    ///   - slots: Map of existing slot names to the set of values that will replace the
+    ///            corresponding entries in the YAML's `context.slots` section.
+    ///            Each value must be a non-empty set of strings.
+    ///   - newWords: A dictionary of words to pronunciations to add to the new model. Keys should be
+    ///               the word string. Values are a list of pronunciations for the given word, each pronunciation
+    ///               is a string of space separated IPA phonemes. An empty list will result in the training
+    ///               generating a default pronunciation.
+    ///   - boost_words: A list of words to "boost". When the engine has a situation with competing
+    ///                  homophones the engine will be more likely to select the boosted words.
+
+    /// - Throws: `CheetahError` if model training fails.
+    public static func trainModelFromWords(
+        accessKey: String,
+        outputPath: String,
+        language: String,
+        newWords: [String: [String]],
+        boostWords: [String]
+    ) throws {
+        var root: [String: Any] = [
+            "new": newWords,
+            "boost": boostWords
+        ]
+
+        let newYaml: String
+        do {
+            newYaml = try Yams.dump(object: root)
+        } catch {
+            throw CheetahRuntimeError("Failed to serialize yaml content")
+        }
+
+        try trainModelFromYaml(
+            accessKey: accessKey,
+            outputPath: outputPath,
+            language: language,
+            yamlContent: newYaml)
+    }
+
+    /// Trains a model using a YAML configuration string.
+    ///
+    /// - Parameters:
+    ///   - accessKey: AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+    ///   - outputPath: Absolute path to file where the trained model will be saved.
+    ///   - language: Two character language code for the model (e.g. "en", "fr").
+    ///               See https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
+    ///   - yamlContent: YAML configuration string to be used for training.
+    /// - Throws: `CheetahError` if model training fails.
+    public static func trainModelFromYaml(
+        accessKey: String,
+        outputPath: String,
+        language: String,
+        yamlContent: String
+    ) throws {
+
+        guard VALID_LANGUAGES.contains(language) else {
+            throw CheetahInvalidArgumentError("Invalid language ('\(language)')")
+        }
+
+        let payload: Data
+        do {
+            payload = try JSONSerialization.data(withJSONObject: [
+                "engine": "cheetah",
+                "model_type": "default",
+                "yaml_content": yamlContent
+            ])
+        } catch {
+            throw CheetahRuntimeError("Failed to create request payload \(error.localizedDescription)")
+        }
+
+        guard let url = URL(string: PV_API_URL + language + "/api/cat") else {
+            throw CheetahRuntimeError("Invalid request URL")
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = payload
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(accessKey, forHTTPHeaderField: "x-api-key")
+
+        var resultData: Data?
+        var resultResponse: URLResponse?
+        var resultError: Error?
+        let semaphore = DispatchSemaphore(value: 0)
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            resultData = data
+            resultResponse = response
+            resultError = error
+            semaphore.signal()
+        }.resume()
+        semaphore.wait()
+
+        if let error = resultError {
+            throw CheetahRuntimeError("Request failed: \(error.localizedDescription)")
+        }
+
+        guard let http = resultResponse as? HTTPURLResponse else {
+            throw CheetahRuntimeError("Invalid response")
+        }
+
+        guard (200...299).contains(http.statusCode) else {
+            let errorBody = resultData.flatMap { String(data: $0, encoding: .utf8) } ?? ""
+            throw CheetahRuntimeError("Failed to train model: \(errorBody)")
+        }
+
+        guard let data = resultData, !data.isEmpty else {
+            throw CheetahRuntimeError("Empty response body")
+        }
+
+        do {
+            try data.write(to: URL(fileURLWithPath: outputPath))
+        } catch {
+            throw CheetahRuntimeError("Failed to save Cheetah model file: \(error.localizedDescription)")
+        }
     }
 
     /// Lists all available devices that Cheetah can use for inference.

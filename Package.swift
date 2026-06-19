@@ -11,6 +11,12 @@ let package = Package(
             targets: ["Cheetah"]
         )
     ],
+    dependencies: [
+        .package(
+            url: "https://github.com/jpsim/yams",
+            .upToNextMajor(from: "5.0.6")
+        )
+    ],
     targets: [
         .binaryTarget(
             name: "PvCheetah",
@@ -18,7 +24,10 @@ let package = Package(
         ),
         .target(
             name: "Cheetah",
-            dependencies: ["PvCheetah"],
+            dependencies: [
+                "PvCheetah",
+                .product(name: "Yams", package: "Yams")
+            ],
             path: ".",
             exclude: [
                 "binding/ios/CheetahAppTest",
