@@ -31,11 +31,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import ai.picovoice.cheetah.Cheetah;
 import ai.picovoice.cheetah.CheetahTranscript;
+import ai.picovoice.cheetah.CheetahTranscriptAnnotated;
 
 public class BaseTest {
     static Set<String> extractedFiles;
@@ -183,5 +188,33 @@ public class BaseTest {
         result.append(transcriptObj.getTranscript());
 
         return result.toString();
+    }
+
+    Entry<String, ArrayList<CheetahTranscript.Word>> processAnnotatedTestAudio(@NonNull Cheetah c, File testAudio) throws Exception {
+        FileInputStream audioInputStream = new FileInputStream(testAudio);
+
+        byte[] rawData = new byte[c.getFrameLength() * 2];
+        short[] pcm = new short[c.getFrameLength()];
+        ByteBuffer pcmBuff = ByteBuffer.wrap(rawData).order(ByteOrder.LITTLE_ENDIAN);
+
+        audioInputStream.skip(44);
+
+        StringBuilder result = new StringBuilder();
+        ArrayList<CheetahTranscript.Word> words = new ArrayList<>();
+        while (audioInputStream.available() > 0) {
+            int numRead = audioInputStream.read(pcmBuff.array());
+            if (numRead == c.getFrameLength() * 2) {
+                pcmBuff.asShortBuffer().get(pcm);
+                CheetahTranscriptAnnotated transcriptObj = c.processAnnotated(pcm);
+                result.append(transcriptObj.getTranscript());
+                Collections.addAll(words, transcriptObj.getWordArray());
+            }
+        }
+
+        CheetahTranscriptAnnotated transcriptObj = c.flushAnnotated();
+        result.append(transcriptObj.getTranscript());
+        Collections.addAll(words, transcriptObj.getWordArray());
+
+        return new SimpleEntry<>(result.toString(), words);
     }
 }

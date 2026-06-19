@@ -12,19 +12,34 @@
 
 package ai.picovoice.cheetahdemo;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import android.Manifest;
+import android.animation.ArgbEvaluator;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.text.SpannableStringBuilder;
 import android.view.View;
+import android.view.LayoutInflater;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.helper.widget.Flow;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
+
+import java.util.ArrayList;
 import java.util.Objects;
 
 import ai.picovoice.android.voiceprocessor.VoiceProcessor;
@@ -37,6 +52,7 @@ import ai.picovoice.cheetah.CheetahActivationThrottledException;
 import ai.picovoice.cheetah.CheetahException;
 import ai.picovoice.cheetah.CheetahInvalidArgumentException;
 import ai.picovoice.cheetah.CheetahTranscript;
+import ai.picovoice.cheetah.CheetahTranscriptAnnotated;
 
 public class MainActivity extends AppCompatActivity {
     private static final String ACCESS_KEY = "${YOUR_ACCESS_KEY_HERE}";
@@ -44,7 +60,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String flavor = BuildConfig.FLAVOR;
     private final VoiceProcessor voiceProcessor = VoiceProcessor.getInstance();
 
+    SpannableStringBuilder transcriptContents = new SpannableStringBuilder();
+
     public Cheetah cheetah;
+    private boolean verbose = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +86,6 @@ public class MainActivity extends AppCompatActivity {
             if (!language.equals("en")) {
                 model += "_" + language;
             }
-            if (flavor.contains("Fast")) {
-                model += "_fast";
-            }
             model += ".pv";
             builder.setModelPath("models/" + model);
 
@@ -90,12 +106,12 @@ public class MainActivity extends AppCompatActivity {
 
         voiceProcessor.addFrameListener(frame -> {
             try {
-                final CheetahTranscript partialResult = cheetah.process(frame);
-                updateTranscriptView(partialResult.getTranscript());
+                final CheetahTranscriptAnnotated partialResult = cheetah.processAnnotated(frame);
+                updateTranscriptView(partialResult.getTranscript(), partialResult.getWordArray());
 
                 if (partialResult.getIsEndpoint()) {
-                    final CheetahTranscript finalResult = cheetah.flush();
-                    updateTranscriptView(finalResult.getTranscript() + " ");
+                    final CheetahTranscriptAnnotated finalResult = cheetah.flushAnnotated();
+                    updateTranscriptView(finalResult.getTranscript() + " ", finalResult.getWordArray());
                 }
             } catch (CheetahException e) {
                 runOnUiThread(() -> displayError(e.toString()));
@@ -161,6 +177,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        SwitchMaterial verboseSwitch = findViewById(R.id.verbose);
+
         try {
             if (recordButton.isChecked()) {
                 if (voiceProcessor.hasRecordAudioPermission(this)) {
@@ -169,29 +187,84 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     requestRecordPermission();
                 }
+
+                TextView transcriptTextView = findViewById(R.id.transcriptTextView);
+                this.transcriptContents.clear();
+                transcriptTextView.setText(this.transcriptContents);
+
+                verboseSwitch.setEnabled(false);
+                if (verboseSwitch.isChecked()) {
+                    transcriptTextView.setTypeface(Typeface.MONOSPACE);
+                } else {
+                    transcriptTextView.setTypeface(Typeface.DEFAULT);
+                }
             } else {
-                recordingTextView.setText("");
+                recordingTextView.setText("Press START to start live audio transcription");
                 voiceProcessor.stop();
-                final CheetahTranscript result = cheetah.flush();
-                updateTranscriptView(result.getTranscript() + " ");
+                final CheetahTranscriptAnnotated result = cheetah.flushAnnotated();
+                updateTranscriptView(result.getTranscript() + " ", result.getWordArray());
+                verboseSwitch.setEnabled(true);
             }
         } catch (VoiceProcessorException | CheetahException e) {
             displayError(e.toString());
         }
     }
 
-    private void updateTranscriptView(String transcript) {
+    private void scrollAndUpdate() {
+        TextView transcriptTextView = findViewById(R.id.transcriptTextView);
+
+        final int scrollAmount = transcriptTextView.getLayout().getLineTop(transcriptTextView.getLineCount()) -
+                transcriptTextView.getHeight() +
+                transcriptTextView.getLineHeight();
+
+        if (scrollAmount > 0) {
+            transcriptTextView.scrollTo(0, scrollAmount);
+        }
+
+        transcriptTextView.setText(this.transcriptContents);
+    }
+
+    private void updateTranscriptView(String transcript, CheetahTranscript.Word[] words) {
+        SwitchMaterial verboseSwitch = findViewById(R.id.verbose);
+        final boolean verbose = verboseSwitch.isChecked();
+
         runOnUiThread(() -> {
-            if (transcript.length() != 0) {
-                TextView transcriptTextView = findViewById(R.id.transcriptTextView);
-                transcriptTextView.append(transcript);
+            if (verbose) {
+                if (words.length > 0) {
+                    TextView transcriptTextView = findViewById(R.id.transcriptTextView);
+                    Paint paint = transcriptTextView.getPaint();
+                    float charWidth = paint.measureText("M");
+                    int usableWidth = transcriptTextView.getWidth()
+                                    - transcriptTextView.getPaddingLeft()
+                                    - transcriptTextView.getPaddingRight();
+                    int charsThatFit = (int) (usableWidth / charWidth);
 
-                final int scrollAmount = transcriptTextView.getLayout().getLineTop(transcriptTextView.getLineCount()) -
-                        transcriptTextView.getHeight() +
-                        transcriptTextView.getLineHeight();
-
-                if (scrollAmount > 0) {
-                    transcriptTextView.scrollTo(0, scrollAmount);
+                    for (CheetahTranscript.Word word : words) {
+                        final int COLUMN_B = 9;
+                        final int COLUMN_C = 9;
+                        final int COLUMN_D = 5;
+                        final int COLUMN_A = charsThatFit - COLUMN_B - COLUMN_C - COLUMN_D - 3;
+                        String a = word.getWord();
+                        String b = String.format("%.2f s", word.getStartSec());
+                        String c = String.format("%.2f s", word.getEndSec());
+                        String d = String.format(" %.0f%%", 100 * word.getConfidence());
+                        String spacesA = new String(new char[max(0, COLUMN_A - a.length())]).replace('\0', ' ');
+                        String spacesB = new String(new char[max(0, COLUMN_B - b.length())]).replace('\0', ' ');
+                        String spacesC = new String(new char[max(0, COLUMN_C - c.length())]).replace('\0', ' ');
+                        String spacesD = new String(new char[max(0, COLUMN_D - d.length())]).replace('\0', ' ');
+                        this.transcriptContents.append(String.format(
+                                "%s%s|%s%s|%s%s|%s%s\n",
+                                a.substring(0, min(COLUMN_A, a.length())), spacesA,
+                                b.substring(0, min(COLUMN_B, b.length())), spacesB,
+                                c.substring(0, min(COLUMN_C, c.length())), spacesC,
+                                d.substring(0, min(COLUMN_D, d.length())), spacesD));
+                    }
+                    scrollAndUpdate();
+                }
+            } else {
+                if (transcript.length() > 0) {
+                    this.transcriptContents.append(transcript);
+                    scrollAndUpdate();
                 }
             }
         });

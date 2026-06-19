@@ -23,6 +23,21 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.182"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/verbose"
+        android:layout_width="102dp"
+        android:layout_height="54dp"
+        android:layout_marginBottom="52dp"
+        android:checked="false"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        android:text="Verbose"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.786"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -49,7 +64,9 @@
         android:background="#2B1A81"
         android:padding="8dp"
         android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:text="test"
         android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/recordingTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
