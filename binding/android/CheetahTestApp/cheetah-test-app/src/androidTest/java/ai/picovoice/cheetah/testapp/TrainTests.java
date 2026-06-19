@@ -12,21 +12,14 @@
 
 package ai.picovoice.cheetah.testapp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import ai.picovoice.cheetah.Cheetah;
 import ai.picovoice.cheetah.CheetahException;
@@ -46,7 +39,7 @@ public class TrainTests extends BaseTest {
         Cheetah.trainModelFromWords(
                 accessKey,
                 outputPath,
-                "en"
+                "en",
                 newWords,
                 new String[]{"computer"}
         );
