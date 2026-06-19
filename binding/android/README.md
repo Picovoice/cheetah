@@ -94,6 +94,38 @@ Add the Cheetah model file to your Android application by:
 1. Either create a model in [Picovoice Console](https://console.picovoice.ai/) or use one of the default language models found in [lib/common](../../lib/common).
 2. Add the model as a bundled resource by placing it under the assets directory of your Android project (`src/main/assets/`).
 
+## Train Models over API
+
+You can train models over API without going to the console:
+
+```java
+Map<String, String[]> newWords = new HashMap<>();
+newWords.put("${NEW_WORD}", new String[]{"${PRONUNCIATION1}", "${PRONUNCIATION2}"});
+
+String[] boostWords = new String[]{"${BOOST_WORD1}", "${BOOST_WORD2}"};
+
+Cheetah.trainModelFromWords(
+        "${ACCESS_KEY}",         # AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
+        "${OUTPUT_PATH}",        # Path to save the newly trained model
+        "${LANGUAGE}",           # Two-character language code
+        newWords,                # New words with optional custom pronunciation to add to the model.
+        boostWords               # Boost words.
+);
+```
+
+(or)
+
+```java
+Cheetah.trainModelFromYaml(
+        "${ACCESS_KEY}",        # AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
+        "${OUTPUT_PATH}",       # Path to save the newly trained model
+        "${LANGUAGE}",          # Two-character language code
+        "${YAML_CONTENT}"       # YAML configuration as a string
+);
+```
+
+Check [Cheetah Model API](https://picovoice.ai/docs/model-api/cheetah/) docs for a list of supported languages.
+
 ## Demo App
 
 For example usage refer to our [Android demo application](../../demo/android).

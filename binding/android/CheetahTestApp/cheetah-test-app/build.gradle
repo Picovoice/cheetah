@@ -121,10 +121,12 @@ android {
                     exclude "**/StandardTests.java"
                     exclude "**/IntegrationTest.java"
                     exclude "**/LanguageTests.java"
+                    exclude "**/TrainTests.java"
                 } else if (System.getProperty("testBuildType", "debug") == "integ") {
                     exclude "**/StandardTests.java"
                     exclude "**/LanguageTests.java"
                     exclude "**/PerformanceTest.java"
+                    exclude "**/TrainTests.java"
                 } else {
                     exclude "**/IntegrationTest.java"
                     exclude "**/PerformanceTest.java"
@@ -151,7 +153,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.code.gson:gson:2.10'
-    implementation 'ai.picovoice:cheetah-android:4.1.0'
+    implementation 'ai.picovoice:cheetah-android:4.1.1'
 
     // Espresso UI Testing
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

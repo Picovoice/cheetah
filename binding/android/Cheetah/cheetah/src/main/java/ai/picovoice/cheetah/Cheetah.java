@@ -13,17 +13,37 @@ package ai.picovoice.cheetah;
 
 import android.content.Context;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.yaml.snakeyaml.Yaml;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import okhttp3.*;
 
 /**
  * Android binding for Cheetah Speech-to-Text engine.
  */
 public class Cheetah {
+    private static final Set<String> VALID_LANGUAGES =
+            new HashSet<>(Arrays.asList("de", "en", "es", "fr", "it", "pt"));
+
+    private static final String PV_API_URL = "https://rest.picovoice.ai/";
+
+    private static final OkHttpClient client = new OkHttpClient();
 
     private static String _sdk = "android";
 
@@ -35,6 +55,115 @@ public class Cheetah {
 
     public static void setSdk(String sdk) {
         Cheetah._sdk = sdk;
+    }
+
+    /**
+     * Trains a model using the specified `new_words` and `boost_words` arguments.
+     *
+     * @param accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+     * @param outputPath Absolute path to file where the trained model will be saved.
+     * @param language Two character language code for the model (e.g. "en", "fr").
+     *                 See https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
+     * @param newWords A dictionary of words to pronunciations to add to the new model.
+     *                 Keys should be the word string. Values are a Sequence of pronunciations
+     *                 for the given word, each pronunciation is a string of space separated
+     *                 IPA phonemes. An empty Sequence will result in the training
+     *                 generating a default pronunciation.
+     * @param boostWords A list of words to "boost". When the engine has a situation with competing
+     *                   homophones the engine will be more likely to select the boosted words.
+     * @throws CheetahException if model training fails.
+     */
+    public static void trainModelFromWords(
+            String accessKey,
+            String outputPath,
+            String language,
+            String contextPath,
+            Map<String, String[]> newWords,
+            String[] boostWords) throws CheetahException {
+
+        Map<String, Object> content = new LinkedHashMap();
+        content.put("new", newWords);
+        content.put("boost", boostWords);
+
+        String yamlContent = new Yaml().dump(content);
+
+        trainModelFromYaml(accessKey, outputPath, language, yamlContent);
+    }
+
+    /**
+     * Trains a model using a YAML configuration string.
+     *
+     * @param accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+     * @param outputPath Absolute path to file where the trained model will be saved.
+     * @param language Two character language code for the model (e.g. "en", "fr").
+     *                 See https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
+     * @param yamlContent YAML configuration in string to be used for training.
+     * @throws CheetahException if model training fails.
+     */
+    public static void trainModelFromYaml(
+            String accessKey,
+            String outputPath,
+            String language,
+            String yamlContent) throws CheetahException {
+
+        if (!VALID_LANGUAGES.contains(language)) {
+            throw new CheetahInvalidArgumentException(
+                    "Invalid language ('" + language + "')"
+            );
+        }
+
+        String payload;
+
+        try {
+            payload = new JSONObject()
+                    .put("engine", "cheetah")
+                    .put("model_type", "default")
+                    .put("yaml_content", yamlContent)
+                    .toString();
+        } catch (JSONException e) {
+            throw new CheetahRuntimeException(
+                    "Failed to create request payload " + e.getMessage()
+            );
+        }
+
+        Request request = new Request.Builder()
+                .url(PV_API_URL + language + "/api/cat")
+                .post(RequestBody.create(
+                        payload,
+                        MediaType.parse("application/json")
+                ))
+                .addHeader("x-api-key", accessKey)
+                .build();
+
+        try (Response res = client.newCall(request).execute()) {
+            if (!res.isSuccessful()) {
+                String errorBody = res.body() != null ? res.body().string() : "";
+                throw new CheetahRuntimeException("Failed to train model: " + errorBody);
+            }
+
+            if (res.body() == null) {
+                throw new CheetahRuntimeException("Empty response body");
+            }
+
+            byte[] data = res.body().bytes();
+
+            if (data.length == 0) {
+                throw new CheetahRuntimeException("Empty response body");
+            }
+
+            File file = new File(outputPath);
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                fos.write(data);
+            } catch (IOException e) {
+                throw new CheetahRuntimeException(
+                        "Failed to save Cheetah model file: " + e.getMessage()
+                );
+            }
+        } catch (IOException e) {
+            throw new CheetahRuntimeException(
+                    "Request failed: " + e.getMessage()
+            );
+        }
     }
 
     /**
