@@ -327,6 +327,15 @@ export class Cheetah {
       throw new Error("YAML must contain `boost` field");
     }
 
+    if (!(content.boost instanceof Array)) {
+      throw new Error("`boost` field should be of type `Array`");
+    }
+    content.boost.forEach((boostWord) => {
+      if (!boostWord || !(typeof boostWord === 'string' || boostWord instanceof String)) {
+        throw new Error("`boost` words should be of type `string`");
+      }
+    });
+
     const payload = {
       engine: 'cheetah',
       model_type: 'default',
@@ -359,6 +368,8 @@ export class Cheetah {
 
     return {
       publicPath: writePath,
+      customWritePath: writePath,
+      forceWrite: false,
     };
   }
 
