@@ -114,7 +114,6 @@ const runProcTest = async (
   }
 
   let transcript = "";
-  let words: CheetahWord[] = [];
   let isTranscriptFinalized = false;
 
   const runProcess = () =>
@@ -123,7 +122,7 @@ const runProcTest = async (
         accessKey,
         cheetahTranscript => {
           transcript += cheetahTranscript.transcript;
-          words.push(...cheetahTranscript.words);
+          expect(cheetahTranscript.words).to.be.undefined;
           if (cheetahTranscript.isFlushed) {
             isTranscriptFinalized = true;
             resolve();
@@ -164,6 +163,90 @@ const runProcTest = async (
     await runProcess();
     const errorRate = wordErrorRate(normalizedTranscript, transcript, useCER);
     expect(errorRate).to.be.lte(expectedErrorRate);
+  } catch (e) {
+    expect(e).to.be.undefined;
+  }
+};
+
+const runProcAnnotatedTest = async (
+  instance: typeof Cheetah | typeof CheetahWorker,
+  inputPcm: Int16Array,
+  punctuations: string[],
+  normalization: boolean,
+  expectedTranscript: string,
+  expectedErrorRate: number,
+  params: {
+    accessKey?: string,
+    model?: PvModel,
+    enablePunctuation?: boolean,
+    useCER?: boolean,
+  } = {}
+) => {
+  const {
+    accessKey = ACCESS_KEY,
+    model = { publicPath: '/test/cheetah_params.pv', forceWrite: true },
+    enablePunctuation = true,
+    useCER = false,
+  } = params;
+
+  let normalizedTranscript = expectedTranscript;
+  if (!enablePunctuation) {
+    for (const punctuation of punctuations) {
+      normalizedTranscript = normalizedTranscript.replaceAll(punctuation, '');
+    }
+  }
+
+  let transcript = "";
+  let words: CheetahWord[] = [];
+  let isTranscriptFinalized = false;
+
+  const runProcessAnnotated = () =>
+    new Promise<void>(async (resolve, reject) => {
+      const cheetah = await instance.create(
+        accessKey,
+        cheetahTranscript => {
+          transcript += cheetahTranscript.transcript;
+          words.push(...cheetahTranscript.words);
+          if (cheetahTranscript.isFlushed) {
+            isTranscriptFinalized = true;
+            resolve();
+          }
+        },
+        model,
+        {
+          enableAutomaticPunctuation: enablePunctuation,
+          enableTextNormalization: normalization,
+          processErrorCallback: (error: CheetahError) => {
+            isTranscriptFinalized = true;
+            reject(error);
+          }
+        }
+      );
+
+      for (
+        let i = 0;
+        i < inputPcm.length - cheetah.frameLength + 1;
+        i += cheetah.frameLength
+      ) {
+        await cheetah.processAnnotated(inputPcm.slice(i, i + cheetah.frameLength));
+      }
+      await cheetah.flushAnnotated();
+
+      while (!isTranscriptFinalized) {
+        await new Promise(r => setTimeout(r, 250));
+      }
+
+      if (cheetah instanceof CheetahWorker) {
+        cheetah.terminate();
+      } else {
+        await cheetah.release();
+      }
+    });
+
+  try {
+    await runProcessAnnotated();
+    const errorRate = wordErrorRate(normalizedTranscript, transcript, useCER);
+    expect(errorRate).to.be.lte(expectedErrorRate);
 
     expect(words.length).to.not.equal(0);
 
@@ -178,6 +261,7 @@ const runProcTest = async (
     expect(e).to.be.undefined;
   }
 };
+
 
 describe("Cheetah Binding", function () {
   it(`should return process and flush error message stack`, async () => {
@@ -320,7 +404,7 @@ describe("Cheetah Binding", function () {
                 },
                 enablePunctuation: false,
               }
-            )
+            );
           }
         ));
 
@@ -342,6 +426,28 @@ describe("Cheetah Binding", function () {
               enablePunctuation: true,
             }
           )
+        ));
+
+        it(`should be able to processAnnotated (${testParam.language}) (default model) (norm ${testParam.normalization}) (${instanceString})`, () => cy.getFramesFromFile(
+            `audio_samples/${testParam.audio_file}`
+        ).then(
+          async (pcm: Int16Array) => {
+            await runProcAnnotatedTest(
+              instance,
+              pcm,
+              testParam.punctuations,
+              testParam.normalization,
+              testParam.transcript,
+              testParam.error_rate,
+              {
+                model: {
+                  publicPath: `/test/${modelFile}`,
+                  forceWrite: true,
+                },
+                enablePunctuation: false,
+              }
+            );
+          }
         ));
       }
     }

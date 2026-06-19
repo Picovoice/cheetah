@@ -378,6 +378,44 @@ export class Cheetah {
     return words;
   }
 
+  private async processInternal(pcm: Int16Array): Promise<boolean> {
+    if (this._module === undefined) {
+      throw new CheetahErrors.CheetahInvalidStateError('Attempted to call Cheetah process after release.');
+    }
+
+    this._module.HEAP16.set(pcm, this._inputBufferAddress / Int16Array.BYTES_PER_ELEMENT);
+
+    const status = await this._pv_cheetah_process(
+      this._objectAddress,
+      this._inputBufferAddress,
+      this._transcriptAddressAddress,
+      this._numWordsAddress,
+      this._wordsAddressAddress,
+      this._isEndpointAddress
+    );
+
+    if (status !== PV_STATUS_SUCCESS) {
+      const messageStack = Cheetah.getMessageStack(
+        this._module._pv_get_error_stack,
+        this._module._pv_free_error_stack,
+        this._messageStackAddressAddressAddress,
+        this._messageStackDepthAddress,
+        this._module.HEAP32,
+        this._module.HEAPU8
+      );
+
+      const error = pvStatusToException(status, "Processing failed", messageStack);
+      if (this._processErrorCallback) {
+        this._processErrorCallback(error);
+      } else {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      }
+      return false;
+    }
+    return true;
+  }
+
   /**
    * Processes a frame of audio. The required sample rate can be retrieved from '.sampleRate' and the length
    * of frame (number of audio samples per frame) can be retrieved from '.frameLength' The audio needs to be
@@ -400,39 +438,60 @@ export class Cheetah {
       .runExclusive(async () => {
         if (this._module === undefined) {
           throw new CheetahErrors.CheetahInvalidStateError('Attempted to call Cheetah process after release.');
+        } else if (!await this.processInternal(pcm)) {
+          return;
         }
 
-        this._module.HEAP16.set(
-          pcm,
-          this._inputBufferAddress / Int16Array.BYTES_PER_ELEMENT
-        );
+        const isEndpoint = this._module.HEAPU8[this._isEndpointAddress / Uint8Array.BYTES_PER_ELEMENT] === 1;
 
-        const status = await this._pv_cheetah_process(
-          this._objectAddress,
-          this._inputBufferAddress,
-          this._transcriptAddressAddress,
-          this._numWordsAddress,
-          this._wordsAddressAddress,
-          this._isEndpointAddress
-        );
+        const transcriptAddress = this._module.HEAP32[this._transcriptAddressAddress / Int32Array.BYTES_PER_ELEMENT];
+        let transcript = arrayBufferToStringAtIndex(this._module.HEAPU8, transcriptAddress);
+        this._module._pv_cheetah_transcript_delete(transcriptAddress);
 
-        if (status !== PV_STATUS_SUCCESS) {
-          const messageStack = Cheetah.getMessageStack(
-            this._module._pv_get_error_stack,
-            this._module._pv_free_error_stack,
-            this._messageStackAddressAddressAddress,
-            this._messageStackDepthAddress,
-            this._module.HEAP32,
-            this._module.HEAPU8
-          );
+        const numWords = this._module.HEAP32[this._numWordsAddress / Int32Array.BYTES_PER_ELEMENT];
+        const wordsAddress = this._module.HEAP32[this._wordsAddressAddress / Int32Array.BYTES_PER_ELEMENT];
+        this._module._pv_cheetah_words_delete(numWords, wordsAddress);
 
-          const error = pvStatusToException(status, "Processing failed", messageStack);
-          if (this._processErrorCallback) {
-            this._processErrorCallback(error);
-          } else {
-            // eslint-disable-next-line no-console
-            console.error(error);
-          }
+        this._transcriptCallback({ transcript });
+
+        if (isEndpoint) {
+          [transcript] = await this.cheetahFlush();
+          this._transcriptCallback({ transcript, isEndpoint: true });
+        }
+      })
+      .catch(async (error: any) => {
+        if (this._processErrorCallback) {
+          this._processErrorCallback(error);
+        } else {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        }
+      });
+  }
+
+  /**
+   * Processes a frame of audio. The required sample rate can be retrieved from '.sampleRate' and the length
+   * of frame (number of audio samples per frame) can be retrieved from '.frameLength' The audio needs to be
+   * 16-bit linearly-encoded. Furthermore, the engine operates on single-channel audio.
+   *
+   * @param pcm A frame of audio with properties described above.
+   */
+  public async processAnnotated(pcm: Int16Array): Promise<void> {
+    if (!(pcm instanceof Int16Array)) {
+      const error = new CheetahErrors.CheetahInvalidArgumentError('The argument \'pcm\' must be provided as an Int16Array');
+      if (this._processErrorCallback) {
+        this._processErrorCallback(error);
+      } else {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      }
+    }
+
+    this._processMutex
+      .runExclusive(async () => {
+        if (this._module === undefined) {
+          throw new CheetahErrors.CheetahInvalidStateError('Attempted to call Cheetah processAnnotated after release.');
+        } else if (!await this.processInternal(pcm)) {
           return;
         }
 
@@ -450,7 +509,7 @@ export class Cheetah {
         this._transcriptCallback({ transcript, words });
 
         if (isEndpoint) {
-          [transcript, words] = await this.cheetahFlush();
+          [transcript, words] = await this.cheetahFlushAnnotated();
           this._transcriptCallback({ transcript, words, isEndpoint: true });
         }
       })
@@ -466,15 +525,41 @@ export class Cheetah {
 
   /**
    * Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcribed
-   * text.
-   *
-   * @return Any remaining transcribed text. If none is available then an empty string is returned.
+   * text through `transcriptCallback`.
    */
   public async flush(): Promise<void> {
     // eslint-disable-next-line consistent-return
     return new Promise<void>((resolve, reject) => {
       this._processMutex
         .runExclusive(async () => await this.cheetahFlush())
+        .then((transcript: string) => {
+          this._transcriptCallback({
+            transcript,
+            isFlushed: true,
+          });
+          resolve();
+        })
+        .catch(async (error: any) => {
+          if (this._processErrorCallback) {
+            this._processErrorCallback(error);
+          } else {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          }
+          reject(error);
+        });
+    });
+  }
+
+  /**
+   * Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcribed
+   * text through `transcriptCallback`.
+   */
+  public async flushAnnotated(): Promise<void> {
+    // eslint-disable-next-line consistent-return
+    return new Promise<void>((resolve, reject) => {
+      this._processMutex
+        .runExclusive(async () => await this.cheetahFlushAnnotated())
         .then(([transcript, words]: [string, CheetahWord[]]) => {
           this._transcriptCallback({
             transcript: transcript,
@@ -495,7 +580,7 @@ export class Cheetah {
     });
   }
 
-  private async cheetahFlush(): Promise<[string, CheetahWord[]]> {
+  private async cheetahFlushInternal(): Promise<void> {
     if (this._module === undefined) {
       throw new CheetahErrors.CheetahInvalidStateError('Attempted to call Cheetah flush after release.');
     }
@@ -519,6 +604,33 @@ export class Cheetah {
 
       throw pvStatusToException(status, "Flush failed", messageStack);
     }
+  }
+
+  private async cheetahFlush(): Promise<string> {
+    if (this._module === undefined) {
+      throw new CheetahErrors.CheetahInvalidStateError('Attempted to call Cheetah flush after release.');
+    }
+
+    await this.cheetahFlushInternal();
+
+    const transcriptAddress = this._module.HEAP32[this._transcriptAddressAddress / Int32Array.BYTES_PER_ELEMENT];
+
+    const transcript = arrayBufferToStringAtIndex(this._module.HEAPU8, transcriptAddress);
+    this._module._pv_cheetah_transcript_delete(transcriptAddress);
+
+    const numWords = this._module.HEAP32[this._numWordsAddress / Int32Array.BYTES_PER_ELEMENT];
+    const wordsAddress = this._module.HEAP32[this._wordsAddressAddress / Int32Array.BYTES_PER_ELEMENT];
+    this._module._pv_cheetah_words_delete(numWords, wordsAddress);
+
+    return transcript;
+  }
+
+  private async cheetahFlushAnnotated(): Promise<[string, CheetahWord[]]> {
+    if (this._module === undefined) {
+      throw new CheetahErrors.CheetahInvalidStateError('Attempted to call Cheetah flushAnnotated after release.');
+    }
+
+    await this.cheetahFlushInternal();
 
     const transcriptAddress = this._module.HEAP32[this._transcriptAddressAddress / Int32Array.BYTES_PER_ELEMENT];
 

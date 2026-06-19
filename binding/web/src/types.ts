@@ -55,7 +55,7 @@ export type CheetahWord = {
 
 export type CheetahTranscript = {
   transcript: string;
-  words: CheetahWord[];
+  words?: CheetahWord[];
   isEndpoint?: boolean;
   isFlushed?: boolean;
 };
@@ -77,8 +77,17 @@ export type CheetahWorkerProcessRequest = {
   inputFrame: Int16Array;
 };
 
+export type CheetahWorkerProcessAnnotatedRequest = {
+  command: 'process_annotated';
+  inputFrame: Int16Array;
+};
+
 export type CheetahWorkerFlushRequest = {
   command: 'flush';
+};
+
+export type CheetahWorkerFlushAnnotatedRequest = {
+  command: 'flush_annotated';
 };
 
 export type CheetahWorkerReleaseRequest = {
@@ -88,7 +97,9 @@ export type CheetahWorkerReleaseRequest = {
 export type CheetahWorkerRequest =
   | CheetahWorkerInitRequest
   | CheetahWorkerProcessRequest
+  | CheetahWorkerProcessAnnotatedRequest
   | CheetahWorkerFlushRequest
+  | CheetahWorkerFlushAnnotatedRequest
   | CheetahWorkerReleaseRequest;
 
 export type CheetahWorkerFailureResponse = {

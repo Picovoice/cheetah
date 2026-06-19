@@ -231,6 +231,21 @@ export class CheetahWorker {
   }
 
   /**
+   * Processes a frame of audio in a worker.
+   * The annotated transcript result will be supplied with the callback provided when initializing the worker either
+   * by 'fromBase64' or 'fromPublicDirectory'.
+   * Can also send a message directly using 'this.worker.postMessage({command: "process_annotated", pcm: [...]})'.
+   *
+   * @param pcm A frame of audio sample.
+   */
+  public processAnnotated(pcm: Int16Array): void {
+    this._worker.postMessage({
+      command: 'process_annotated',
+      inputFrame: pcm,
+    });
+  }
+
+  /**
    * Flushes internal state of the object, sends a message to the worker to transcribe remaining text.
    * The transcript result will be supplied with the callback provided when initializing the worker either
    * by 'fromBase64' or 'fromPublicDirectory' with 'endpoint=true'.
@@ -239,6 +254,18 @@ export class CheetahWorker {
   public flush(): void {
     this._worker.postMessage({
       command: 'flush',
+    });
+  }
+
+  /**
+   * Flushes internal state of the object, sends a message to the worker to transcribe remaining text.
+   * The annotated transcript result will be supplied with the callback provided when initializing the worker either
+   * by 'fromBase64' or 'fromPublicDirectory' with 'endpoint=true'.
+   * Can also send a message directly using 'this.worker.postMessage({command: "flush_annotated"})'.
+   */
+  public flushAnnotated(): void {
+    this._worker.postMessage({
+      command: 'flush_annotated',
     });
   }
 

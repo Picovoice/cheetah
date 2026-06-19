@@ -129,6 +129,9 @@ export const useCheetah = (): {
     }
   }, [isListening]);
 
+  // startAnnotated
+  // TODO: pass into webvoiceprocessor
+
   const stop = useCallback(async (): Promise<void> => {
     try {
       if (!cheetahRef.current) {
