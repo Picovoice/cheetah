@@ -234,30 +234,30 @@ public class MainActivity extends AppCompatActivity {
                     TextView transcriptTextView = findViewById(R.id.transcriptTextView);
                     Paint paint = transcriptTextView.getPaint();
                     float charWidth = paint.measureText("M");
-                    int usableWidth = transcriptTextView.getWidth()
-                                    - transcriptTextView.getPaddingLeft()
-                                    - transcriptTextView.getPaddingRight();
+                    int usableWidth = transcriptTextView.getWidth() -
+                                      transcriptTextView.getPaddingLeft() -
+                                      transcriptTextView.getPaddingRight();
                     int charsThatFit = (int) (usableWidth / charWidth);
 
                     for (CheetahTranscript.Word word : words) {
-                        final int COLUMN_B = 9;
-                        final int COLUMN_C = 9;
-                        final int COLUMN_D = 5;
-                        final int COLUMN_A = charsThatFit - COLUMN_B - COLUMN_C - COLUMN_D - 3;
+                        final int column_b = 9;
+                        final int column_c = 9;
+                        final int column_d = 5;
+                        final int column_a = charsThatFit - column_b - column_c - column_d - 3;
                         String a = word.getWord();
                         String b = String.format("%.2f s", word.getStartSec());
                         String c = String.format("%.2f s", word.getEndSec());
                         String d = String.format(" %.0f%%", 100 * word.getConfidence());
-                        String spacesA = new String(new char[max(0, COLUMN_A - a.length())]).replace('\0', ' ');
-                        String spacesB = new String(new char[max(0, COLUMN_B - b.length())]).replace('\0', ' ');
-                        String spacesC = new String(new char[max(0, COLUMN_C - c.length())]).replace('\0', ' ');
-                        String spacesD = new String(new char[max(0, COLUMN_D - d.length())]).replace('\0', ' ');
+                        String spacesA = new String(new char[max(0, column_a - a.length())]).replace('\0', ' ');
+                        String spacesB = new String(new char[max(0, column_b - b.length())]).replace('\0', ' ');
+                        String spacesC = new String(new char[max(0, column_c - c.length())]).replace('\0', ' ');
+                        String spacesD = new String(new char[max(0, column_d - d.length())]).replace('\0', ' ');
                         this.transcriptContents.append(String.format(
                                 "%s%s|%s%s|%s%s|%s%s\n",
-                                a.substring(0, min(COLUMN_A, a.length())), spacesA,
-                                b.substring(0, min(COLUMN_B, b.length())), spacesB,
-                                c.substring(0, min(COLUMN_C, c.length())), spacesC,
-                                d.substring(0, min(COLUMN_D, d.length())), spacesD));
+                                a.substring(0, min(column_a, a.length())), spacesA,
+                                b.substring(0, min(column_b, b.length())), spacesB,
+                                c.substring(0, min(column_c, c.length())), spacesC,
+                                d.substring(0, min(column_d, d.length())), spacesD));
                     }
                     scrollAndUpdate();
                 }

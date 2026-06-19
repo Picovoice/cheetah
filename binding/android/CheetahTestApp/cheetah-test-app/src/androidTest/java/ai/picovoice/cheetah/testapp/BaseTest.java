@@ -190,7 +190,9 @@ public class BaseTest {
         return result.toString();
     }
 
-    Entry<String, ArrayList<CheetahTranscript.Word>> processAnnotatedTestAudio(@NonNull Cheetah c, File testAudio) throws Exception {
+    Entry<String, ArrayList<CheetahTranscript.Word>> processAnnotatedTestAudio(
+            @NonNull Cheetah c,
+            File testAudio) throws Exception {
         FileInputStream audioInputStream = new FileInputStream(testAudio);
 
         byte[] rawData = new byte[c.getFrameLength() * 2];

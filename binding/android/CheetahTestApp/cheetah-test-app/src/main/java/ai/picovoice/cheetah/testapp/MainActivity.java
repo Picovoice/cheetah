@@ -116,7 +116,9 @@ public class MainActivity extends AppCompatActivity {
         try {
             String audioPath = "audio_samples/test_en.wav";
 
-            Entry<String, ArrayList<CheetahTranscript.Word>> processResult = processAnnotatedTestAudio(cheetah, audioPath);
+            Entry<String, ArrayList<CheetahTranscript.Word>> processResult = processAnnotatedTestAudio(
+                    cheetah,
+                    audioPath);
             String resultText = processResult.getKey();
             ArrayList<CheetahTranscript.Word> resultWords = processResult.getValue();
             if ((resultText.length() > 0) && (resultWords.size() > 0)) {
