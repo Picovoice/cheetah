@@ -83,6 +83,7 @@ pvcheetahdemo
 pvrecorder
 reactnative
 reactnative
+recyclerview
 repr
 rodio
 signup
