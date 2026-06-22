@@ -48,8 +48,15 @@ namespace CheetahDemo
             string modelPath,
             string device,
             bool enableAutomaticPunctuation,
-            bool enableTextNormalization)
+            bool enableTextNormalization,
+            bool verbose)
         {
+            if (verbose)
+            {
+                Console.WriteLine($"{"word",-15} {"start_sec",10} {"end_sec",10} {"confidence",12}");
+                Console.WriteLine($"{new string('-', 15)} {new string('-', 10)} {new string('-', 10)} {new string('-', 12)}");
+            }
+
             // init Cheetah speech-to-text engine
             using (Cheetah cheetah = Cheetah.Create(
                 accessKey: accessKey,
@@ -73,10 +80,20 @@ namespace CheetahDemo
                         {
                             try
                             {
-                                CheetahTranscript transcriptObj = cheetah.Process(cheetahFrame);
-                                if (!string.IsNullOrEmpty(transcriptObj.Transcript))
+                                CheetahTranscriptAnnotated transcriptObj = cheetah.ProcessAnnotated(cheetahFrame);
+                                if (verbose)
                                 {
-                                    Console.Write(transcriptObj.Transcript);
+                                    foreach (CheetahWord word in transcriptObj.Words)
+                                    {
+                                        Console.WriteLine($"{word.Word,-15} {word.StartSec,10} {word.EndSec,10} {word.Confidence,12}");
+                                    }
+                                }
+                                else
+                                {
+                                    if (!string.IsNullOrEmpty(transcriptObj.Transcript))
+                                    {
+                                        Console.Write(transcriptObj.Transcript);
+                                    }
                                 }
                             }
                             catch (CheetahActivationLimitException)
@@ -94,11 +111,20 @@ namespace CheetahDemo
                             reader.ReadInt16();
                         }
                     }
-                    CheetahTranscript finalTranscriptObj = cheetah.Flush();
-                    string transcript = finalTranscriptObj.Transcript;
-                    if (!string.IsNullOrEmpty(transcript))
+                    CheetahTranscriptAnnotated finalTranscriptObj = cheetah.FlushAnnotated();
+                    if (verbose)
                     {
-                        Console.WriteLine(transcript);
+                        foreach (CheetahWord word in finalTranscriptObj.Words)
+                        {
+                            Console.WriteLine($"{word.Word,-15} {word.StartSec,10} {word.EndSec,10} {word.Confidence,12}");
+                        }
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(finalTranscriptObj.Transcript))
+                        {
+                            Console.Write(finalTranscriptObj.Transcript);
+                        }
                     }
                 }
             }
@@ -156,6 +182,7 @@ namespace CheetahDemo
             bool enableTextNormalization = true;
             bool showHelp = false;
             bool showInferenceDevices = false;
+            bool verbose = false;
 
             // parse command line arguments
             int argIndex = 0;
@@ -204,6 +231,11 @@ namespace CheetahDemo
                     showInferenceDevices = true;
                     argIndex++;
                 }
+                else if (args[argIndex] == "--verbose")
+                {
+                    verbose = true;
+                    argIndex++;
+                }
                 else if (args[argIndex] == "-h" || args[argIndex] == "--help")
                 {
                     showHelp = true;
@@ -245,7 +277,8 @@ namespace CheetahDemo
                 modelPath,
                 device,
                 enableAutomaticPunctuation,
-                enableTextNormalization);
+                enableTextNormalization,
+                verbose);
         }
 
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -262,7 +295,8 @@ namespace CheetahDemo
             "\t--model_path: Absolute path to the file containing model parameters.\n" +
             "\t--disable_automatic_punctuation: Disable automatic punctuation.\n" +
             "\t--disable_text_normalization: Disable text normalization.\n" +
-            "\t--show_inference_devices: Print devices that are available to run Cheetah inference.\n";
+            "\t--show_inference_devices: Print devices that are available to run Cheetah inference.\n" +
+            "\t--verbose: Print word-level metadata of the transcription\n";
 
     }
 }
