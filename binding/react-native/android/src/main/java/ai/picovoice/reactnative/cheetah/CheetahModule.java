@@ -32,7 +32,6 @@ import ai.picovoice.cheetah.CheetahException;
 import ai.picovoice.cheetah.CheetahInvalidStateException;
 import ai.picovoice.cheetah.CheetahTranscript;
 import ai.picovoice.cheetah.CheetahTranscriptAnnotated;
-import ai.picovoice.cheetah.CheetahWord;
 
 /**
  * CheetahModule Class.
@@ -202,7 +201,7 @@ public class CheetahModule extends ReactContextBaseJavaModule {
             resultMap.putBoolean("isEndpoint", result.getIsEndpoint());
 
             WritableArray wordsArray = Arguments.createArray();
-            for (CheetahWord word : result.getWordArray()) {
+            for (CheetahTranscript.CheetahWord word : result.getWordArray()) {
                 WritableMap wordMap = Arguments.createMap();
                 wordMap.putString("word", word.getWord());
                 wordMap.putFloat("startSec", word.getStartSec());
@@ -240,7 +239,7 @@ public class CheetahModule extends ReactContextBaseJavaModule {
             resultMap.putString("transcript", result.getTranscript());
 
             WritableArray wordsArray = Arguments.createArray();
-            for (CheetahWord word : result.getWordArray()) {
+            for (CheetahTranscript.CheetahWord word : result.getWordArray()) {
                 WritableMap wordMap = Arguments.createMap();
                 wordMap.putString("word", word.getWord());
                 wordMap.putFloat("startSec", word.getStartSec());
