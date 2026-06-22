@@ -31,6 +31,8 @@ import ai.picovoice.cheetah.Cheetah;
 import ai.picovoice.cheetah.CheetahException;
 import ai.picovoice.cheetah.CheetahInvalidStateException;
 import ai.picovoice.cheetah.CheetahTranscript;
+import ai.picovoice.cheetah.CheetahTranscriptAnnotated;
+import ai.picovoice.cheetah.CheetahWord;
 
 /**
  * CheetahModule Class.
