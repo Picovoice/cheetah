@@ -335,14 +335,11 @@ public class Cheetah {
     ///   - outputPath: Absolute path to file where the trained model will be saved.
     ///   - language: Two character language code for the model (e.g. "en", "fr").
     ///               See https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
-    ///   - slots: Map of existing slot names to the set of values that will replace the
-    ///            corresponding entries in the YAML's `context.slots` section.
-    ///            Each value must be a non-empty set of strings.
     ///   - newWords: A dictionary of words to pronunciations to add to the new model. Keys should be
     ///               the word string. Values are a list of pronunciations for the given word, each pronunciation
     ///               is a string of space separated IPA phonemes. An empty list will result in the training
     ///               generating a default pronunciation.
-    ///   - boost_words: A list of words to "boost". When the engine has a situation with competing
+    ///   - boostWords: A list of words to "boost". When the engine has a situation with competing
     ///                  homophones the engine will be more likely to select the boosted words.
 
     /// - Throws: `CheetahError` if model training fails.

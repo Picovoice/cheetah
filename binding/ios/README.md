@@ -110,11 +110,11 @@ You can train models over API without going to the console:
 
 ```swift
 Cheetah.trainModelFromWords(
-        "${ACCESS_KEY}",                                              # AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
-        "${OUTPUT_PATH}",                                             # Path to save the newly trained model
-        "${LANGUAGE}",                                                # Two-character language code
-        ["${NEW_WORD}": ["${PRONUNCIATION1}", "${PRONUNCIATION2}"]],  # New words with optional custom pronunciation to add to the model.
-        ["${BOOST_WORD1}", "${BOOST_WORD2}"]                          # Boost words.
+        "${ACCESS_KEY}",                                              // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+        "${OUTPUT_PATH}",                                             // Path to save the newly trained model.
+        "${LANGUAGE}",                                                // Two-character language code.
+        ["${NEW_WORD}": ["${PRONUNCIATION1}", "${PRONUNCIATION2}"]],  // New words with optional custom pronunciation to add to the model.
+        ["${BOOST_WORD1}", "${BOOST_WORD2}"]                          // Boost words.
 )
 ```
 
@@ -122,10 +122,10 @@ Cheetah.trainModelFromWords(
 
 ```swift
 Cheetah.trainModelFromYaml(
-        "${ACCESS_KEY}",                             # AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
-        "${OUTPUT_PATH}",                            # Path to save the newly trained model
-        "${LANGUAGE}",                               # Two-character language code
-        "${YAML_CONTENT}"                            # YAML configuration as string
+        "${ACCESS_KEY}",     // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+        "${OUTPUT_PATH}",    // Path to save the newly trained model.
+        "${LANGUAGE}",       // Two-character language code.
+        "${YAML_CONTENT}"    // YAML configuration as string.
 )
 ```
 
