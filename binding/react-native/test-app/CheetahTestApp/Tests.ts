@@ -222,7 +222,7 @@ async function runProcTestCase(
 
     if (annotated) {
       if (words.length < 1) {
-        result.errorString = 'Epected at least 1 word';
+        result.errorString = 'Expected at least 1 word';
         return result;
       }
 

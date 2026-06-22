@@ -193,14 +193,14 @@ public class CheetahModule extends ReactContextBaseJavaModule {
         }
 
         try {
-            CheetahTranscript result = cheetah.processAnnotated(buffer);
+            CheetahTranscriptAnnotated result = cheetah.processAnnotated(buffer);
 
             WritableMap resultMap = Arguments.createMap();
             resultMap.putString("transcript", result.getTranscript());
             resultMap.putBoolean("isEndpoint", result.getIsEndpoint());
 
             WritableArray wordsArray = Arguments.createArray();
-            for (CheetahWord word : result.getWords()) {
+            for (CheetahWord word : result.getWordArray()) {
                 WritableMap wordMap = Arguments.createMap();
                 wordMap.putString("word", word.getWord());
                 wordMap.putFloat("startSec", word.getStartSec());
@@ -233,12 +233,12 @@ public class CheetahModule extends ReactContextBaseJavaModule {
         }
 
         try {
-            CheetahTranscript result = cheetah.flushAnnotated();
+            CheetahTranscriptAnnotated result = cheetah.flushAnnotated();
             WritableMap resultMap = Arguments.createMap();
             resultMap.putString("transcript", result.getTranscript());
 
             WritableArray wordsArray = Arguments.createArray();
-            for (CheetahWord word : result.getWords()) {
+            for (CheetahWord word : result.getWordArray()) {
                 WritableMap wordMap = Arguments.createMap();
                 wordMap.putString("word", word.getWord());
                 wordMap.putFloat("startSec", word.getStartSec());
