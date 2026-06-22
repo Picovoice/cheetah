@@ -1,5 +1,5 @@
 //
-//  Copyright 2022-2025 Picovoice Inc.
+//  Copyright 2022-2026 Picovoice Inc.
 //  You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 //  file accompanying this source.
 //  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
@@ -162,6 +162,107 @@ class CheetahDemoUITests: XCTestCase {
 
                 try XCTContext.runActivity(named: "(\(testCase.language) \(modelFile)") { _ in
                     try runTestTranscribe(
+                            modelPath: modelPath,
+                            testAudio: testCase.audio_file,
+                            expectedTranscript: expectedTranscript,
+                            errorRate: testCase.error_rate,
+                            enableAutomaticPunctuation: false,
+                            enableTextNormalization: testCase.normalization)
+                }
+            }
+        }
+    }
+
+    func processFileAnnotated(cheetah: Cheetah, fileURL: URL) throws -> CheetahTranscriptAnnotated {
+        let data = try Data(contentsOf: fileURL)
+        let frameLengthBytes = Int(Cheetah.frameLength) * 2
+
+        var pcmBuffer = [Int16](repeating: 0, count: Int(Cheetah.frameLength))
+
+        var index = 0
+        var transcript = ""
+        var words: [CheetahWord] = []
+        while index + frameLengthBytes < data.count {
+            _ = pcmBuffer.withUnsafeMutableBytes { data.copyBytes(to: $0, from: index..<(index + frameLengthBytes)) }
+            let partial = try cheetah.processAnnotated(pcmBuffer)
+            transcript += partial.transcript
+            words.append(contentsOf: partial.words)
+            index += frameLengthBytes
+        }
+
+        let final = try cheetah.flushAnnotated()
+        transcript += final.transcript
+        words.append(contentsOf: final.words)
+
+        return CheetahTranscriptAnnotated(
+                transcript: transcript,
+                isEndpoint: false,
+                words: words)
+    }
+
+    func runTestTranscribeAnnotated(
+            modelPath: String,
+            testAudio: String,
+            expectedTranscript: String,
+            errorRate: Float,
+            enableAutomaticPunctuation: Bool = false,
+            enableTextNormalization: Bool = false
+        ) throws {
+        let bundle = Bundle(for: type(of: self))
+        let audioFileURL: URL = bundle.url(
+                forResource: testAudio,
+                withExtension: "",
+                subdirectory: "test_resources/audio_samples")!
+
+        let cheetah = try Cheetah(
+                accessKey: accessKey,
+                modelPath: modelPath,
+                device: device,
+                enableAutomaticPunctuation: enableAutomaticPunctuation,
+                enableTextNormalization: enableTextNormalization)
+
+        let res: CheetahTranscriptAnnotated = try processFileAnnotated(cheetah: cheetah, fileURL: audioFileURL)
+        cheetah.delete()
+
+        XCTAssert(characterErrorRate(
+                transcript: res.transcript,
+                expectedTranscript: expectedTranscript) < errorRate)
+
+        XCTAssertFalse(res.words.isEmpty)
+
+        var currentTime: Float = 0.0
+        for word in res.words {
+            XCTAssertFalse(word.word.isEmpty)
+            XCTAssertTrue(word.startSec >= currentTime)
+            XCTAssertTrue(word.endSec >= word.startSec)
+            currentTime = word.endSec
+        }
+    }
+
+    func testTranscribeAnnotated() throws {
+        let bundle = Bundle(for: type(of: self))
+        let testDataJsonUrl = bundle.url(
+            forResource: "test_data",
+            withExtension: "json",
+            subdirectory: "test_resources")!
+        let testDataJsonData = try Data(contentsOf: testDataJsonUrl)
+        let testData = try JSONDecoder().decode(TestData.self, from: testDataJsonData)
+
+        for testCase in testData.tests.language_tests {
+            for modelFile in testCase.models {
+                let modelFileBaseName = (modelFile as NSString).deletingPathExtension
+                let modelPath: String = bundle.path(
+                    forResource: modelFileBaseName,
+                    ofType: "pv",
+                    inDirectory: "test_resources/model_files")!
+
+                var expectedTranscript = testCase.transcript
+                for p in testCase.punctuations {
+                    expectedTranscript = expectedTranscript.replacingOccurrences(of: p, with: "")
+                }
+
+                try XCTContext.runActivity(named: "(\(testCase.language) \(modelFile)") { _ in
+                    try runTestTranscribeAnnotated(
                             modelPath: modelPath,
                             testAudio: testCase.audio_file,
                             expectedTranscript: expectedTranscript,

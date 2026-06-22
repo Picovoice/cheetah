@@ -1,5 +1,5 @@
 //
-//  Copyright 2022-2023 Picovoice Inc.
+//  Copyright 2022-2026 Picovoice Inc.
 //  You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 //  file accompanying this source.
 //  Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
@@ -33,6 +33,7 @@ class ViewModel: ObservableObject {
     @Published var errorMessage = ""
     @Published var state = UIState.INIT
     @Published var result: String = ""
+    @Published var words: [CheetahWord] = []
 
     init() {
         initialize()
@@ -115,6 +116,7 @@ class ViewModel: ObservableObject {
             )
 
             result = ""
+            words = []
             state = UIState.RECORDING
             isListening = true
         } catch {
@@ -136,13 +138,19 @@ class ViewModel: ObservableObject {
         }
 
         do {
-            var (transcription, endpoint) = try cheetah.process(frame)
-            if endpoint {
-                transcription += "\(try cheetah.flush()) "
+            let partial = try cheetah.processAnnotated(frame)
+
+            var transcript = partial.transcript
+            var words = partial.words
+            if partial.isEndpoint {
+                let final = try cheetah.flushAnnotated()
+                transcript += "\(final.transcript) "
+                words.append(contentsOf: final.words)
             }
-            if transcription.count > 0 {
+            if transcript.count > 0 || words.count > 0 {
                 DispatchQueue.main.async {
-                    self.result += transcription
+                    self.result += transcript
+                    self.words.append(contentsOf: words)
                 }
             }
         } catch {
