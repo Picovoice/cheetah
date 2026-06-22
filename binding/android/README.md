@@ -105,11 +105,11 @@ newWords.put("${NEW_WORD}", new String[]{"${PRONUNCIATION1}", "${PRONUNCIATION2}
 String[] boostWords = new String[]{"${BOOST_WORD1}", "${BOOST_WORD2}"};
 
 Cheetah.trainModelFromWords(
-        "${ACCESS_KEY}",         # AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
-        "${OUTPUT_PATH}",        # Path to save the newly trained model
-        "${LANGUAGE}",           # Two-character language code
-        newWords,                # New words with optional custom pronunciation to add to the model.
-        boostWords               # Boost words.
+        "${ACCESS_KEY}",      // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+        "${OUTPUT_PATH}",     // Path to save the newly trained model.
+        "${LANGUAGE}",        // Two-character language code.
+        newWords,             // New words with optional custom pronunciation to add to the model.
+        boostWords            // Boost words.
 );
 ```
 
@@ -117,10 +117,10 @@ Cheetah.trainModelFromWords(
 
 ```java
 Cheetah.trainModelFromYaml(
-        "${ACCESS_KEY}",        # AccessKey obtained from Picovoice Console (https://console.picovoice.ai/)
-        "${OUTPUT_PATH}",       # Path to save the newly trained model
-        "${LANGUAGE}",          # Two-character language code
-        "${YAML_CONTENT}"       # YAML configuration as a string
+        "${ACCESS_KEY}",     // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+        "${OUTPUT_PATH}",    // Path to save the newly trained model.
+        "${LANGUAGE}",       // Two-character language code.
+        "${YAML_CONTENT}"    // YAML configuration as a string.
 );
 ```
 

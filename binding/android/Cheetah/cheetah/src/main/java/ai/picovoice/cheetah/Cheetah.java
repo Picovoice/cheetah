@@ -58,7 +58,7 @@ public class Cheetah {
     }
 
     /**
-     * Trains a model using the specified `new_words` and `boost_words` arguments.
+     * Trains a model using the specified `newWords` and `boostWords` arguments.
      *
      * @param accessKey AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
      * @param outputPath Absolute path to file where the trained model will be saved.
@@ -69,8 +69,7 @@ public class Cheetah {
      *                 for the given word, each pronunciation is a string of space separated
      *                 IPA phonemes. An empty Sequence will result in the training
      *                 generating a default pronunciation.
-     * @param boostWords A list of words to "boost". When the engine has a situation with competing
-     *                   homophones the engine will be more likely to select the boosted words.
+     * @param boostWords A list of words to "boost". The engine will be more likely to select the boosted words.
      * @throws CheetahException if model training fails.
      */
     public static void trainModelFromWords(
