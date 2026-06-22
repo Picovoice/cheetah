@@ -17,7 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
 
-typedef TranscriptCallback = Function(List<Widget> additionalTranscript);
+typedef TranscriptCallback = Function(String additionalTranscript, List<CheetahWord> additionalWords);
 
 typedef ProcessErrorCallback = Function(CheetahException error);
 
@@ -40,37 +40,6 @@ class CheetahManager {
         enableAutomaticPunctuation: true,
         enableTextNormalization: true);
     return CheetahManager._(cheetah, transcriptCallback, processErrorCallback);
-  }
-
-  static List<Widget> _amendTranscript(String transcript, List<CheetahWord> words) {
-    List<Widget> parts = [];
-
-    int startingIndex = 0;
-    for (CheetahWord word in words) {
-      int strIndex = transcript.substring(startingIndex).indexOf(word.word);
-      String nonWordComponent = transcript.substring(startingIndex, startingIndex + strIndex);
-      parts.add(Text(nonWordComponent));
-      startingIndex += strIndex + word.word.length;
-
-      parts.add(Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            word.word,
-            style: TextStyle(color: Colors.white, fontSize: 20)
-          ),
-          Transform.translate(
-            offset: const Offset(0, -6),
-            child: Text(
-              "${(100 * word.confidence).toStringAsFixed(0)}%",
-              style: TextStyle(color: Color.lerp(Color(0xff25187e), Colors.grey, word.confidence * word.confidence), fontSize: 10)
-            ),
-          ),
-      ]));
-    }
-
-    return parts;
   }
 
   CheetahManager._(this._cheetah, this._transcriptCallback,
@@ -100,8 +69,7 @@ class CheetahManager {
           finalWords.addAll(remainingResult.words);
         }
 
-        List<Widget> parts = _amendTranscript(finalTranscript, finalWords);
-        _transcriptCallback(parts);
+        _transcriptCallback(finalTranscript, finalWords);
 
       } on CheetahException catch (error) {
         processErrorCallback(error);
@@ -152,8 +120,7 @@ class CheetahManager {
       }
 
       CheetahTranscriptAnnotated cheetahTranscript = await _cheetah!.flushAnnotated();
-      List<Widget> parts = _amendTranscript(cheetahTranscript.transcript, cheetahTranscript.words);
-      _transcriptCallback(parts);
+      _transcriptCallback(cheetahTranscript.transcript, cheetahTranscript.words);
     }
   }
 

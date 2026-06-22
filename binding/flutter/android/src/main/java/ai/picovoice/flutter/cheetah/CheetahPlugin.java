@@ -27,6 +27,7 @@ import ai.picovoice.cheetah.CheetahInvalidArgumentException;
 import ai.picovoice.cheetah.CheetahInvalidStateException;
 import ai.picovoice.cheetah.CheetahRuntimeException;
 import ai.picovoice.cheetah.CheetahTranscript;
+import ai.picovoice.cheetah.CheetahTranscriptAnnotated;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -214,8 +215,18 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
 
             Map<String, Object> resultMap = new HashMap<>();
             resultMap.put("transcript", transcriptObj.getTranscript());
-            resultMap.put("words", transcriptObj.getWords());
             resultMap.put("isEndpoint", transcriptObj.getIsEndpoint());
+
+            ArrayList<Map<String, Object>> words = new ArrayList<>();
+            for (CheetahTranscript.Word word : transcriptObj.getWordArray()) {
+                Map<String, Object> wordObj = new HashMap<>();
+                wordObj.put("word", word.getWord());
+                wordObj.put("startSeconds", word.getStartSec());
+                wordObj.put("endSeconds", word.getEndSec());
+                wordObj.put("confidence", word.getConfidence());
+                words.add(wordObj);
+            }
+            resultMap.put("words", words);
 
             result.success(resultMap);
         } catch (CheetahException e) {
@@ -286,7 +297,17 @@ public class CheetahPlugin implements FlutterPlugin, MethodCallHandler {
 
             Map<String, Object> param = new HashMap<>();
             param.put("transcript", transcriptObj.getTranscript());
-            param.put("words", transcriptObj.getWords());
+
+            ArrayList<Map<String, Object>> words = new ArrayList<>();
+            for (CheetahTranscript.Word word : transcriptObj.getWordArray()) {
+                Map<String, Object> wordObj = new HashMap<>();
+                wordObj.put("word", word.getWord());
+                wordObj.put("startSeconds", word.getStartSec());
+                wordObj.put("endSeconds", word.getEndSec());
+                wordObj.put("confidence", word.getConfidence());
+                words.add(wordObj);
+            }
+            param.put("words", words);
 
             result.success(param);
         } catch (CheetahException e) {

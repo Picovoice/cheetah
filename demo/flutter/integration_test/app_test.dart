@@ -241,7 +241,7 @@ void main() {
       }
     });
 
-    testWidgets('Test Process annotated all languages', (tester) async {
+    testWidgets('Test ProcessAnnotated all languages', (tester) async {
       final languageTests = testData['tests']['language_tests'];
       for (int t = 0; t < languageTests.length; t++) {
         for (int j = 0; j < languageTests[t]['models'].length; j++) {

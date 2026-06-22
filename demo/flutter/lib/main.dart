@@ -1,5 +1,5 @@
 //
-// Copyright 2022-2025 Picovoice Inc.
+// Copyright 2022-2026 Picovoice Inc.
 //
 // You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 // file accompanying this source.
@@ -12,6 +12,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:cheetah_flutter/cheetah.dart';
 import 'package:cheetah_demo/cheetah_manager.dart';
 import 'package:cheetah_flutter/cheetah_error.dart';
 import 'package:flutter/material.dart';
@@ -38,16 +39,19 @@ class MyAppState extends State<MyApp> {
   String errorMessage = "";
 
   bool isProcessing = false;
-  List<Widget> annotatedTranscript = [];
+  String transcriptText = "";
+  List<CheetahWord> words = [];
   CheetahManager? _cheetahManager;
 
   final ScrollController _controller = ScrollController();
+  final ScrollController _wordController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     setState(() {
-      annotatedTranscript = [];
+      transcriptText = "";
+      words = [];
     });
 
     initCheetah();
@@ -99,19 +103,29 @@ class MyAppState extends State<MyApp> {
     }
   }
 
-  void transcriptCallback(List<Widget> additionalTranscript) {
-    bool shouldScroll =
-        _controller.position.pixels == _controller.position.maxScrollExtent;
-
-    setState(() {
-      annotatedTranscript = annotatedTranscript + additionalTranscript;
-    });
-
+  void _scrollToBottom(ScrollController controller) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (shouldScroll && !_controller.position.atEdge) {
-        _controller.jumpTo(_controller.position.maxScrollExtent);
-      }
+      controller.animateTo(
+        controller.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
     });
+  }
+
+  void transcriptCallback(String additionalTranscript, List<CheetahWord> additionalWords) {
+    setState(() {
+      transcriptText += additionalTranscript;
+      words.addAll(additionalWords);
+    });
+
+    if (additionalTranscript.length > 0) {
+      _scrollToBottom(_controller);
+    }
+
+    if (additionalWords.length > 0) {
+      _scrollToBottom(_wordController);
+    }
   }
 
   void errorCallback(CheetahException error) {
@@ -129,7 +143,8 @@ class MyAppState extends State<MyApp> {
     try {
       await _cheetahManager!.startProcess();
       setState(() {
-        annotatedTranscript = [];
+        transcriptText = "";
+        words = [];
         isProcessing = true;
       });
     } on CheetahException catch (ex) {
@@ -165,6 +180,7 @@ class MyAppState extends State<MyApp> {
         body: Column(
           children: [
             buildCheetahTextArea(context),
+            buildCheetahWordArea(context),
             buildErrorMessage(context),
             buildStartButton(context),
             footer,
@@ -177,15 +193,15 @@ class MyAppState extends State<MyApp> {
   buildStartButton(BuildContext context) {
     final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
       backgroundColor: picoBlue,
-      shape: CircleBorder(),
-      textStyle: TextStyle(color: Colors.white),
+      shape: BeveledRectangleBorder(),
+      foregroundColor: Colors.white,
     );
 
     return Expanded(
-      flex: 2,
+      flex: 1,
       child: SizedBox(
         width: 130,
-        height: 130,
+        height: 65,
         child: ElevatedButton(
           style: buttonStyle,
           onPressed: isError
@@ -216,10 +232,10 @@ class MyAppState extends State<MyApp> {
           physics: RangeMaintainingScrollPhysics(),
           child: Align(
             alignment: Alignment.topLeft,
-            child: Wrap(
-              spacing: 1,
-              runSpacing: 0,
-              children: annotatedTranscript
+            child: Text(
+              transcriptText,
+              textAlign: TextAlign.left,
+              style: TextStyle(color: Colors.white, fontSize: 20),
             ),
           ),
         ),
@@ -227,9 +243,97 @@ class MyAppState extends State<MyApp> {
     );
   }
 
+  buildCheetahWordArea(BuildContext context) {
+    List<TableRow> tableRows = words.map<TableRow>((word) {
+      return TableRow(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(word.word, style: TextStyle(color: Colors.white)),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '${word.startSeconds.toStringAsFixed(2)}s',
+                style: TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '${word.endSeconds.toStringAsFixed(2)}s',
+                style: TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '${(word.confidence * 100).toStringAsFixed(0)}%',
+                style: TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+        ],
+      );
+    }).toList();
+
+    return Expanded(
+      flex: 4,
+      child: Container(
+        color: Color(0xff25187e),
+        alignment: Alignment.topCenter,
+        margin: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.only(bottom: 5, top: 5),
+              child: Table(
+                children: [
+                  TableRow(
+                    children: [
+                      Column(
+                        children: [Text("Word")]
+                      ),
+                      Column(
+                        children: [Text("Start")]
+                      ),
+                      Column(
+                        children: [Text("End")]
+                      ),
+                      Column(
+                        children: [Text("Confidence")]
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: SingleChildScrollView(
+                controller: _wordController,
+                scrollDirection: Axis.vertical,
+                padding: EdgeInsets.all(10),
+                physics: RangeMaintainingScrollPhysics(),
+                child: Table(children: tableRows),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   buildErrorMessage(BuildContext context) {
     return Expanded(
-      flex: isError ? 2 : 0,
+      flex: isError ? 4 : 0,
       child: Container(
         alignment: Alignment.center,
         margin: EdgeInsets.only(left: 20, right: 20),

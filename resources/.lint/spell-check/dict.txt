@@ -95,6 +95,7 @@ swiftlint
 switchmaterial
 testapp
 tmpdir
+unconfident
 uppercased
 vtable
 wargv
