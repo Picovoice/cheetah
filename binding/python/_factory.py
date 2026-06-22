@@ -140,8 +140,7 @@ def train_model_from_words(
     the word string. Values are a Sequence of pronunciations for the given word, each pronunciation
     is a string of space separated IPA phonemes. An empty Sequence will result in the training
     generating a default pronunciation.
-    :param boost_words: A list of words to "boost". When the engine has a situation with competing
-    homophones the engine will be more likely to select the boosted words.
+    :param boost_words: A list of words to "boost". The engine will be more likely to select the boosted words.
     """
 
     yaml = YAML()
