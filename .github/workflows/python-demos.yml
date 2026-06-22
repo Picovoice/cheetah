@@ -40,12 +40,6 @@ jobs:
     - name: Pre-build dependencies
       run: python -m pip install --upgrade pip
 
-# ************** REMOVE AFTER RELEASE ********************
-    - name: Build binding
-      run: |
-        pip install setuptools && pip install wheel && cd ../../binding/python && python setup.py sdist bdist_wheel && pip install --force-reinstall dist/pvcheetah-4.1.0-py3-none-any.whl
-# ********************************************************
-
     - name: Install dependencies
       run: pip install -r requirements.txt
 
@@ -95,12 +89,6 @@ jobs:
 
     - name: Pre-build dependencies
       run: python3 -m pip install --upgrade pip
-
-# ************** REMOVE AFTER RELEASE ********************
-    - name: Build binding
-      run: |
-        pip install setuptools && pip install wheel && cd ../../binding/python && python setup.py sdist bdist_wheel && pip install --force-reinstall dist/pvcheetah-4.1.0-py3-none-any.whl
-# ********************************************************
 
     - name: Install dependencies
       run: python3 -m pip install -r requirements.txt
