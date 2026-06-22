@@ -204,9 +204,9 @@ public class CheetahModule extends ReactContextBaseJavaModule {
             for (CheetahTranscript.Word word : result.getWordArray()) {
                 WritableMap wordMap = Arguments.createMap();
                 wordMap.putString("word", word.getWord());
-                wordMap.putFloat("startSec", word.getStartSec());
-                wordMap.putFloat("endSec", word.getEndSec());
-                wordMap.putFloat("confidence", word.getConfidence());
+                wordMap.putDouble("startSec", word.getStartSec());
+                wordMap.putDouble("endSec", word.getEndSec());
+                wordMap.putDouble("confidence", word.getConfidence());
                 wordsArray.pushMap(wordMap);
             }
             resultMap.putArray("words", wordsArray);
@@ -242,9 +242,9 @@ public class CheetahModule extends ReactContextBaseJavaModule {
             for (CheetahTranscript.Word word : result.getWordArray()) {
                 WritableMap wordMap = Arguments.createMap();
                 wordMap.putString("word", word.getWord());
-                wordMap.putFloat("startSec", word.getStartSec());
-                wordMap.putFloat("endSec", word.getEndSec());
-                wordMap.putFloat("confidence", word.getConfidence());
+                wordMap.putDouble("startSec", word.getStartSec());
+                wordMap.putDouble("endSec", word.getEndSec());
+                wordMap.putDouble("confidence", word.getConfidence());
                 wordsArray.pushMap(wordMap);
             }
             resultMap.putArray("words", wordsArray);
