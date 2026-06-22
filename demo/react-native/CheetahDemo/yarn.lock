@@ -1456,10 +1456,8 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@picovoice/cheetah-react-native@4.0.5":
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-react-native/-/cheetah-react-native-4.0.5.tgz#3374eee71d8ce636d783fe2fdf42a7cea057bdbe"
-  integrity sha512-6yG9KuDhiCIEGHuJiaNmEBFv6Zvbp/FHs5Ea03Hgm+MrImrxh+Gr6oPUgDaoRemnzB6MYyr249VjL/+81K0fzQ==
+"@picovoice/cheetah-react-native@../../../binding/react-native":
+  version "4.1.0"
 
 "@picovoice/react-native-voice-processor@1.2.3":
   version "1.2.3"

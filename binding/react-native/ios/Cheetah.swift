@@ -139,7 +139,7 @@ class PvCheetah: NSObject {
         }
     }
 
-    @objc(process:pcm:resolver:rejecter:)
+    @objc(processAnnotated:pcm:resolver:rejecter:)
     func processAnnotated(
             handle: String,
             pcm: [Int16],
@@ -178,7 +178,7 @@ class PvCheetah: NSObject {
         }
     }
 
-    @objc(flush:resolver:rejecter:)
+    @objc(flushAnnotated:resolver:rejecter:)
     func flushAnnotated(
             handle: String,
             resolver resolve: RCTPromiseResolveBlock,

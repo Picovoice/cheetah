@@ -1,8 +1,8 @@
 PODS:
   - boost (1.84.0)
-  - Cheetah-iOS (3.0.0)
-  - cheetah-react-native (3.0.0):
-    - Cheetah-iOS (~> 3.0.0)
+  - Cheetah-iOS (4.1.0)
+  - cheetah-react-native (4.1.0):
+    - Cheetah-iOS (~> 4.1.0)
     - React
   - DoubleConversion (1.1.6)
   - fast_float (6.1.4)
@@ -1536,7 +1536,6 @@ PODS:
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
-  - Cheetah-iOS (from `https://raw.githubusercontent.com/Picovoice/cheetah/v3.0/binding/ios/Cheetah-iOS.podspec`)
   - "cheetah-react-native (from `../node_modules/@picovoice/cheetah-react-native`)"
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
@@ -1609,13 +1608,12 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Cheetah-iOS
     - SocketRocket
 
 EXTERNAL SOURCES:
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
-  Cheetah-iOS:
-    :podspec: https://raw.githubusercontent.com/Picovoice/cheetah/v3.0/binding/ios/Cheetah-iOS.podspec
   cheetah-react-native:
     :path: "../node_modules/@picovoice/cheetah-react-native"
   DoubleConversion:
@@ -1754,8 +1752,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
-  Cheetah-iOS: d3348266063f66046b05958551ac510954ed734a
-  cheetah-react-native: 2d69e52a1b610eed7830f5652f9dea9b8b8f6259
+  Cheetah-iOS: d7505314d5e1ae1cd8d86b4b84fee94282655d83
+  cheetah-react-native: 04c72f7a655405b2e9c42084a3b4b6eb95d62637
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: 6fe148afcef2e3213e484758e3459609d40d57f5
@@ -1824,6 +1822,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: afd04ff05ebe0121a00c468a8a3c8080221cb14c
 
-PODFILE CHECKSUM: a17604c175d9c4baf850339c5d1606ff74bec4f3
+PODFILE CHECKSUM: bf7f2d773660cc961623cc0897bde1a70e448d35
 
 COCOAPODS: 1.16.2
