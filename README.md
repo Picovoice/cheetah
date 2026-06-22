@@ -71,7 +71,7 @@ using Picovoice needs to have a valid AccessKey. You must keep your AccessKey se
 connectivity to validate your AccessKey with Picovoice license servers even though the voice recognition is running 100%
 offline.
 
-AccessKey also verifies that your usage is within the limits of your account. You can see your usage limits and real-time usage on your [Picovoice Console Profile](https://console.picovoice.ai/profile). To continue using Picovoice after your trial or renew and adjust your usage limits, please reach out to our [Enterprise Sales Team](https://picovoice.ai/contact) or your existing Picovoice contact.
+AccessKey also verifies that your usage is within the limits of your account. You can see your usage limits and real-time usage on your [Picovoice Console Profile](https://console.picovoice.ai/profile). To get, renew or adjust your usage limits, please reach out to our [Enterprise Sales Team](https://picovoice.ai/contact) or your existing Picovoice contact.
 
 ## Language Support
 
@@ -290,6 +290,29 @@ while True:
 ```
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
+
+To get word-level metadata, use the annotated API:
+
+```python
+import pvcheetah
+
+handle = pvcheetah.create(access_key='${ACCESS_KEY}')
+
+def get_next_audio_frame():
+    pass
+
+while True:
+    partial_output = handle.process_annotated(get_next_audio_frame())
+
+    partial_transcript = partial_output.transcript
+    partial_words = partial_output.words
+    is_endpoint = partial_output.is_endpoint
+
+    if is_endpoint:
+        final_output = handle.flush_annotated()
+        final_transcript = final_output.transcript
+        final_words = final_output.words
+```
 
 ### C
 
