@@ -42,18 +42,97 @@
         android:id="@+id/transcriptTextView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:background="#2B1A81"
         android:padding="8dp"
-        android:scrollbarAlwaysDrawVerticalTrack="true"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/recordingTextView"
+        app:layout_constraintBottom_toTopOf="@+id/verboseResultsLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/verboseResultsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/recordingTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/transcriptTextView">
+
+        <LinearLayout
+            android:id="@+id/verboseResultsHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2.75"
+                android:paddingStart="13dp"
+                android:paddingEnd="8dp"
+                android:text="Word"
+                android:textAlignment="textStart"
+                android:textColor="#555555"
+                android:textSize="12dp" />
+
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Confidence"
+                android:textColor="#555555"
+                android:textSize="12dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:textAlignment="textEnd" />
+
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Start (s)"
+                android:textColor="#555555"
+                android:textSize="12dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:textAlignment="textEnd" />
+
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="End (s)"
+                android:textColor="#555555"
+                android:textSize="12dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="13dp"
+                android:textAlignment="textEnd" />
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/verboseResultsView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:padding="8dp"
+                android:background="@color/colorPrimaryDark"
+                android:paddingVertical="7dp" />
+        </ScrollView>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/errorTextView"

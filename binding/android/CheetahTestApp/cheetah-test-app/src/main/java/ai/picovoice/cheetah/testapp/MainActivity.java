@@ -33,12 +33,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import ai.picovoice.cheetah.Cheetah;
 import ai.picovoice.cheetah.CheetahException;
 import ai.picovoice.cheetah.CheetahTranscript;
+import ai.picovoice.cheetah.CheetahTranscriptAnnotated;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -95,6 +99,29 @@ public class MainActivity extends AppCompatActivity {
 
             String processResult = processTestAudio(cheetah, audioPath);
             if (processResult.length() > 0) {
+                result.success = true;
+            } else {
+                result.success = false;
+                result.errorMessage = "Process returned invalid result.";
+            }
+        } catch (Exception e) {
+            result.success = false;
+            result.errorMessage = String.format("Failed to process with '%s'", e);
+        } finally {
+            results.add(result);
+        }
+
+        result = new TestResult();
+        result.testName = "Test Process Annotated";
+        try {
+            String audioPath = "audio_samples/test_en.wav";
+
+            Entry<String, ArrayList<CheetahTranscript.Word>> processResult = processAnnotatedTestAudio(
+                    cheetah,
+                    audioPath);
+            String resultText = processResult.getKey();
+            ArrayList<CheetahTranscript.Word> resultWords = processResult.getValue();
+            if ((resultText.length() > 0) && (resultWords.size() > 0)) {
                 result.success = true;
             } else {
                 result.success = false;
@@ -208,6 +235,43 @@ public class MainActivity extends AppCompatActivity {
         partialTranscript.append(cheetahTranscript.getTranscript());
 
         return partialTranscript.toString();
+    }
+
+    private Entry<String, ArrayList<CheetahTranscript.Word>> processAnnotatedTestAudio(
+            @NonNull Cheetah c,
+            String audioPath) throws Exception {
+        File testAudio = new File(getApplicationContext().getFilesDir(), audioPath);
+
+        if (!testAudio.exists()) {
+            testAudio.getParentFile().mkdirs();
+            extractFile(audioPath);
+        }
+
+        FileInputStream audioInputStream = new FileInputStream(testAudio);
+
+        byte[] rawData = new byte[c.getFrameLength() * 2];
+        short[] pcm = new short[c.getFrameLength()];
+        ByteBuffer pcmBuff = ByteBuffer.wrap(rawData).order(ByteOrder.LITTLE_ENDIAN);
+
+        audioInputStream.skip(44);
+
+        StringBuilder result = new StringBuilder();
+        ArrayList<CheetahTranscript.Word> words = new ArrayList<>();
+        while (audioInputStream.available() > 0) {
+            int numRead = audioInputStream.read(pcmBuff.array());
+            if (numRead == c.getFrameLength() * 2) {
+                pcmBuff.asShortBuffer().get(pcm);
+                CheetahTranscriptAnnotated transcriptObj = c.processAnnotated(pcm);
+                result.append(transcriptObj.getTranscript());
+                Collections.addAll(words, transcriptObj.getWordArray());
+            }
+        }
+
+        CheetahTranscriptAnnotated transcriptObj = c.flushAnnotated();
+        result.append(transcriptObj.getTranscript());
+        Collections.addAll(words, transcriptObj.getWordArray());
+
+        return new SimpleEntry<>(result.toString(), words);
     }
 
     private void extractFile(String filepath) throws IOException {

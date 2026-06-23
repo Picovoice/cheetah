@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2025 Picovoice Inc.
+    Copyright 2022-2026 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -14,18 +14,26 @@ package ai.picovoice.cheetahdemo;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.text.SpannableStringBuilder;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.LayoutInflater;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import ai.picovoice.android.voiceprocessor.VoiceProcessor;
 import ai.picovoice.android.voiceprocessor.VoiceProcessorException;
@@ -37,12 +45,15 @@ import ai.picovoice.cheetah.CheetahActivationThrottledException;
 import ai.picovoice.cheetah.CheetahException;
 import ai.picovoice.cheetah.CheetahInvalidArgumentException;
 import ai.picovoice.cheetah.CheetahTranscript;
+import ai.picovoice.cheetah.CheetahTranscriptAnnotated;
 
 public class MainActivity extends AppCompatActivity {
     private static final String ACCESS_KEY = "${YOUR_ACCESS_KEY_HERE}";
 
     private static final String flavor = BuildConfig.FLAVOR;
     private final VoiceProcessor voiceProcessor = VoiceProcessor.getInstance();
+
+    VerboseResultsViewAdaptor searchResultsViewAdaptor;
 
     public Cheetah cheetah;
 
@@ -53,6 +64,14 @@ public class MainActivity extends AppCompatActivity {
 
         TextView transcriptTextView = findViewById(R.id.transcriptTextView);
         transcriptTextView.setMovementMethod(new ScrollingMovementMethod());
+
+        RecyclerView verboseResultsView = findViewById(R.id.verboseResultsView);
+        verboseResultsView.setItemAnimator(null);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        verboseResultsView.setLayoutManager(linearLayoutManager);
+
+        searchResultsViewAdaptor = new VerboseResultsViewAdaptor(getApplicationContext());
+        verboseResultsView.setAdapter(searchResultsViewAdaptor);
 
         try {
             Cheetah.Builder builder = new Cheetah.Builder()
@@ -66,9 +85,6 @@ public class MainActivity extends AppCompatActivity {
             String language = flavor.substring(0, 2);
             if (!language.equals("en")) {
                 model += "_" + language;
-            }
-            if (flavor.contains("Fast")) {
-                model += "_fast";
             }
             model += ".pv";
             builder.setModelPath("models/" + model);
@@ -90,12 +106,12 @@ public class MainActivity extends AppCompatActivity {
 
         voiceProcessor.addFrameListener(frame -> {
             try {
-                final CheetahTranscript partialResult = cheetah.process(frame);
-                updateTranscriptView(partialResult.getTranscript());
+                final CheetahTranscriptAnnotated partialResult = cheetah.processAnnotated(frame);
+                updateTranscriptView(partialResult.getTranscript(), partialResult.getWordArray());
 
                 if (partialResult.getIsEndpoint()) {
-                    final CheetahTranscript finalResult = cheetah.flush();
-                    updateTranscriptView(finalResult.getTranscript() + " ");
+                    final CheetahTranscriptAnnotated finalResult = cheetah.flushAnnotated();
+                    updateTranscriptView(finalResult.getTranscript() + " ", finalResult.getWordArray());
                 }
             } catch (CheetahException e) {
                 runOnUiThread(() -> displayError(e.toString()));
@@ -169,31 +185,114 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     requestRecordPermission();
                 }
+
+                TextView transcriptTextView = findViewById(R.id.transcriptTextView);
+                transcriptTextView.setText("");
+                searchResultsViewAdaptor.clearData();
+
             } else {
-                recordingTextView.setText("");
+                recordingTextView.setText("Press START to start live audio transcription");
                 voiceProcessor.stop();
-                final CheetahTranscript result = cheetah.flush();
-                updateTranscriptView(result.getTranscript() + " ");
+                final CheetahTranscriptAnnotated result = cheetah.flushAnnotated();
+                updateTranscriptView(result.getTranscript() + " ", result.getWordArray());
             }
         } catch (VoiceProcessorException | CheetahException e) {
             displayError(e.toString());
         }
     }
 
-    private void updateTranscriptView(String transcript) {
+    private void updateTranscriptView(String transcript, CheetahTranscript.Word[] words) {
+        System.out.println(transcript);
+
         runOnUiThread(() -> {
-            if (transcript.length() != 0) {
+            if (transcript.length() > 0) {
                 TextView transcriptTextView = findViewById(R.id.transcriptTextView);
-                transcriptTextView.append(transcript);
 
                 final int scrollAmount = transcriptTextView.getLayout().getLineTop(transcriptTextView.getLineCount()) -
                         transcriptTextView.getHeight() +
                         transcriptTextView.getLineHeight();
-
                 if (scrollAmount > 0) {
                     transcriptTextView.scrollTo(0, scrollAmount);
                 }
+
+                transcriptTextView.append(transcript);
             }
         });
+
+        searchResultsViewAdaptor.addData(Arrays.asList(words));
+    }
+
+    private static class VerboseResultsViewAdaptor extends RecyclerView.Adapter<VerboseResultsViewAdaptor.ViewHolder> {
+        private final ArrayList<CheetahTranscript.Word> data;
+        private final LayoutInflater inflater;
+        private RecyclerView recyclerView;
+
+        VerboseResultsViewAdaptor(Context context) {
+            this.inflater = LayoutInflater.from(context);
+            this.data = new ArrayList<CheetahTranscript.Word>();
+        }
+
+        @Override
+        public void onAttachedToRecyclerView(@NonNull RecyclerView rv) {
+            super.onAttachedToRecyclerView(rv);
+            this.recyclerView = rv;
+        }
+
+        @Override
+        public void onDetachedFromRecyclerView(@NonNull RecyclerView rv) {
+            super.onDetachedFromRecyclerView(rv);
+            this.recyclerView = null;
+        }
+
+        public void addData(List<CheetahTranscript.Word> data) {
+            if (data.size() > 0) {
+                this.data.addAll(data);
+                notifyItemRangeInserted(this.data.size() - data.size(), data.size());
+                recyclerView.scrollToPosition(this.data.size() - 1);
+            }
+        }
+
+        public void clearData() {
+            final int size = this.data.size();
+            this.data.clear();
+            notifyItemRangeRemoved(0, size);
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = inflater.inflate(R.layout.recyclerview_row, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @SuppressLint("DefaultLocale")
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            CheetahTranscript.Word word = data.get(position);
+            holder.word.setText(word.getWord());
+            holder.startSec.setText(String.format("%.2fs", word.getStartSec()));
+            holder.endSec.setText(String.format("%.2fs", word.getEndSec()));
+            holder.confidence.setText(String.format("%.0f%%", word.getConfidence() * 100));
+        }
+
+        @Override
+        public int getItemCount() {
+            return data.size();
+        }
+
+        public static class ViewHolder extends RecyclerView.ViewHolder {
+            TextView word;
+            TextView startSec;
+            TextView endSec;
+            TextView confidence;
+
+            ViewHolder(View itemView) {
+                super(itemView);
+                word = itemView.findViewById(R.id.word);
+                startSec = itemView.findViewById(R.id.startSec);
+                endSec = itemView.findViewById(R.id.endSec);
+                confidence = itemView.findViewById(R.id.confidence);
+            }
+        }
     }
 }

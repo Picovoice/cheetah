@@ -147,6 +147,56 @@ public class Cheetah {
     }
 
     /**
+     * Processes given audio data and returns its transcription.
+     *
+     * @param pcm A frame of audio samples. The number of samples per frame can be attained by
+     *            calling {@link #getFrameLength()}. The incoming audio needs to have a sample rate
+     *            equal to {@link #getSampleRate()} and be 16-bit linearly-encoded. Furthermore,
+     *            Cheetah operates on single channel audio only.
+     * @return Inferred transcription.
+     * @throws CheetahException if there is an error while processing the audio frame.
+     */
+    public CheetahTranscriptAnnotated processAnnotated(short[] pcm) throws CheetahException {
+        if (handle == 0) {
+            throw new CheetahInvalidStateException("Attempted to call Cheetah processAnnotated after delete.");
+        }
+
+        if (pcm == null) {
+            throw new CheetahInvalidArgumentException("Passed null frame to Cheetah processAnnotated.");
+        }
+
+        if (pcm.length != getFrameLength()) {
+            throw new CheetahInvalidArgumentException(
+                    String.format("Cheetah processAnnotated requires frames of length %d. " +
+                            "Received frame of size %d.", getFrameLength(), pcm.length));
+        }
+
+        CheetahTranscript transcript = CheetahNative.process(handle, pcm);
+        return new CheetahTranscriptAnnotated(
+            transcript.getTranscript(),
+            transcript.getWordArray(),
+            transcript.getIsEndpoint());
+    }
+
+    /**
+     * Processes any remaining audio data and returns its transcription.
+     *
+     * @return Inferred transcription.
+     * @throws CheetahException if there is an error while processing the audio frame.
+     */
+    public CheetahTranscriptAnnotated flushAnnotated() throws CheetahException {
+        if (handle == 0) {
+            throw new CheetahInvalidStateException("Attempted to call Cheetah flushAnnotated after delete.");
+        }
+
+        CheetahTranscript transcript =  CheetahNative.flush(handle);
+        return new CheetahTranscriptAnnotated(
+            transcript.getTranscript(),
+            transcript.getWordArray(),
+            transcript.getIsEndpoint());
+    }
+
+    /**
      * Getter for required number of audio samples per frame.
      *
      * @return Required number of audio samples per frame.
