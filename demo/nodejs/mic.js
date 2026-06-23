@@ -46,6 +46,7 @@ program
   .option("-s, --show_audio_devices", "show the list of available devices")
   .option("-p, --disable_automatic_punctuation", "disable automatic punctuation")
   .option("-n, --disable_text_normalization", "disable text normalization")
+  .option("-v, --verbose", "verbose mode, prints metadata")
   .option(
       "-z, --show_inference_devices",
       "Print devices that are available to run Porcupine inference.",
@@ -68,6 +69,7 @@ async function micDemo() {
   let showAudioDevices = program["show_audio_devices"];
   let disableAutomaticPunctuation = program["disable_automatic_punctuation"];
   let disableTextNormalization = program["disable_text_normalization"];
+  let verbose = program["verbose"];
 
   let showAudioDevicesDefined = showAudioDevices !== undefined;
 
@@ -119,15 +121,65 @@ async function micDemo() {
     }
   });
 
-  while (!isInterrupted) {
-    const pcm = await recorder.read();
-    try {
+  const COLUMN_A = 22;
+  const COLUMN_B = "startSeconds".length + 2;
+  const COLUMN_C = "endSeconds".length + 2;
+  const COLUMN_D = "confidence".length + 2;
+  const logRow = (a, b, c, d) => {
+    process.stdout.write(a.slice(0, COLUMN_A));
+    process.stdout.write(" ".repeat(COLUMN_A - a.length));
+    process.stdout.write(b.slice(0, COLUMN_B));
+    process.stdout.write(" ".repeat(COLUMN_B - b.length));
+    process.stdout.write(c.slice(0, COLUMN_C));
+    process.stdout.write(" ".repeat(COLUMN_C - c.length));
+    process.stdout.write(d.slice(0, COLUMN_D));
+    process.stdout.write(" ".repeat(COLUMN_D - d.length));
+    process.stdout.write("\n");
+  };
+
+  if (verbose) {
+    logRow("word", "startSeconds", "endSeconds", "confidence");
+    process.stdout.write("-".repeat(COLUMN_A + COLUMN_B + COLUMN_C + COLUMN_D));
+    process.stdout.write("\n");
+  }
+
+  const processFrame = pcm => {
+    if (verbose) {
+      const { words: words, isEndpoint: isEndpoint } = engineInstance.processAnnotated(pcm);
+      for (const word of words) {
+        logRow(
+          word.word,
+          `${word.startSeconds.toFixed(4)}`,
+          `${word.endSeconds.toFixed(4)}`,
+          `${(100 * word.confidence).toFixed(1)}%`
+        );
+      }
+
+      if (isEndpoint === true) {
+        const { words: extraWords } = engineInstance.flushAnnotated();
+        for (const word of extraWords) {
+          logRow(
+            word.word,
+            `${word.startSeconds.toFixed(4)}`,
+            `${word.endSeconds.toFixed(4)}`,
+            `${(100 * word.confidence).toFixed(1)}%`
+          );
+        }
+      }
+    } else {
       const [partialTranscript, isEndpoint] = engineInstance.process(pcm);
       process.stdout.write(partialTranscript);
       if (isEndpoint === true) {
         const finalTranscript = engineInstance.flush();
         process.stdout.write(`${finalTranscript}\n`);
       }
+    }
+  }
+
+  while (!isInterrupted) {
+    const pcm = await recorder.read();
+    try {
+      processFrame(pcm);
     } catch (err) {
       if (err instanceof CheetahActivationLimitReachedError) {
         console.error(`AccessKey '${accessKey}' has reached it's processing limit.`);
