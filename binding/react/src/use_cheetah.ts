@@ -162,7 +162,7 @@ export const useCheetah = (): {
 
       const processAnnotatedEngine = {
         worker: {
-          postMessage: (e: WvpMessageEvent) => {
+          postMessage: (e: WvpMessageEvent): void => {
             if (!cheetahRef.current) {
               return;
             }
@@ -199,7 +199,7 @@ export const useCheetah = (): {
       }
 
       await WebVoiceProcessor.unsubscribe(engineRef.current.engine);
-      const returnPromise: Promise<void> = new Promise((resolve) => {
+      const returnPromise: Promise<void> = new Promise(resolve => {
         if (flushResolveRef.current !== null) {
           flushResolveRef.current();
         }
