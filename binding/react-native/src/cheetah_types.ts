@@ -14,6 +14,26 @@ export type CheetahTranscript = {
   isEndpoint?: boolean;
 };
 
+export type CheetahWord = {
+  /** Transcribed word. */
+  word: string;
+  /** Start time of word in seconds. */
+  startSec: number;
+  /** End time of word in seconds. */
+  endSec: number;
+  /** Transcription confidence. It is a number in the range [0, 1]. */
+  confidence: number;
+};
+
+export type CheetahTranscriptAnnotated = {
+  /** Any newly-transcribed speech. If none is available then an empty string is returned. */
+  transcript: string;
+  /** Flag indicating if an endpoint has been detected. */
+  isEndpoint?: boolean;
+  /** A list of transcribed words and word-level metadata. */
+  words: CheetahWord[];
+};
+
 export type CheetahOptions = {
   /** String representation of the device (e.g., CPU or GPU) to use for inference.
    * If set to `best`, the most suitable device is selected automatically. If set to `gpu`, the engine uses the

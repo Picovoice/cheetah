@@ -21,7 +21,7 @@ import {
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
-import { Cheetah, CheetahErrors } from '@picovoice/cheetah-react-native';
+import { Cheetah, CheetahErrors, CheetahWord } from '@picovoice/cheetah-react-native';
 import {
   VoiceProcessor,
   VoiceProcessorError,
@@ -43,6 +43,7 @@ type State = {
   errorMessage: string | null;
   transcription: string;
   isBottom: boolean;
+  words: CheetahWord[];
 };
 
 export default class App extends Component<Props, State> {
@@ -59,6 +60,7 @@ export default class App extends Component<Props, State> {
       errorMessage: null,
       transcription: '',
       isBottom: false,
+      words: [],
     };
   }
 
@@ -99,9 +101,9 @@ export default class App extends Component<Props, State> {
         }
 
         try {
-          const partialResult = await this._cheetah.process(buffer);
+          const partialResult = await this._cheetah.processAnnotated(buffer);
           if (partialResult.isEndpoint) {
-            const remainingResult = await this._cheetah.flush();
+            const remainingResult = await this._cheetah.flushAnnotated();
             let transcriptText =
               this.state.transcription +
               partialResult.transcript +
@@ -109,12 +111,14 @@ export default class App extends Component<Props, State> {
             if (remainingResult.transcript.length > 0) {
               transcriptText += ' ';
             }
-            this.setState({
+            this.setState(prevState => ({
               transcription: transcriptText,
-            });
+              words: [...prevState.words, ...partialResult.words, ...remainingResult.words]
+            }));
           } else {
             this.setState(prevState => ({
               transcription: prevState.transcription + partialResult.transcript,
+              words: [...prevState.words, ...partialResult.words]
             }));
           }
         } catch (e: any) {
@@ -159,6 +163,7 @@ export default class App extends Component<Props, State> {
     this.setState({
       appState: UIState.recording,
       transcription: '',
+      words: [],
       isBottom: true,
     });
 
@@ -229,7 +234,7 @@ export default class App extends Component<Props, State> {
           <View style={styles.statusBar}>
             <Text style={styles.statusBarText}>Cheetah</Text>
           </View>
-          <View style={{flex: 6}}>
+          <View style={{flex: 4}}>
             <View style={styles.transcriptionBox}>
               <ScrollView
                 ref={(el) => {
@@ -244,6 +249,55 @@ export default class App extends Component<Props, State> {
                 <Text style={styles.transcriptionText}>
                   {this.state.transcription}
                 </Text>
+              </ScrollView>
+            </View>
+          </View>
+
+          <View style={{flex: 4}}>
+            <View style={{flex: 1, flexDirection: 'row', marginHorizontal: 20, paddingHorizontal: 20, position: 'absolute'}}>
+              <Text style={{flex: 4, textAlign: 'left'}}>
+                word
+              </Text>
+              <Text style={{flex: 3, textAlign: 'right'}}>
+                start_sec
+              </Text>
+              <Text style={{flex: 3, textAlign: 'right'}}>
+                end_sec
+              </Text>
+              <Text style={{flex: 4, textAlign: 'right'}}>
+                confidence
+              </Text>
+            </View>
+
+            <View style={styles.wordsBox}>
+              <ScrollView
+                ref={(el) => {
+                  this._scrollView = el;
+                }}
+                onScroll={({nativeEvent}) => this.checkBottom(nativeEvent)}
+                onContentSizeChange={() => {
+                  if (this.state.isBottom) {
+                    this._scrollView?.scrollToEnd({animated: true});
+                  }
+                }}>
+
+                {this.state.words.map((word) => {
+                  return <View key={word.id} style={styles.wordsRow}>
+                    <Text style={{flex: 4, textAlign: 'left', color: 'white'}}>
+                      {word.word}
+                    </Text>
+                    <Text style={{flex: 3, textAlign: 'right', color: 'white'}}>
+                      {word.startSec.toFixed(2)}
+                    </Text>
+                    <Text style={{flex: 3, textAlign: 'right', color: 'white'}}>
+                      {word.endSec.toFixed(2)}
+                    </Text>
+                    <Text style={{flex: 4, textAlign: 'right', color: 'white'}}>
+                      {word.confidence.toFixed(2)}
+                    </Text>
+                  </View>
+                })}
+
               </ScrollView>
             </View>
           </View>
@@ -349,5 +403,17 @@ const styles = StyleSheet.create({
   transcriptionText: {
     fontSize: 20,
     color: 'white',
+  },
+  wordsBox: {
+    backgroundColor: '#25187E',
+    margin: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+    height: '100%',
+    flex: 1,
+  },
+  wordsRow: {
+    flex: 1,
+    flexDirection: 'row',
   },
 });
