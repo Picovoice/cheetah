@@ -99,10 +99,10 @@ Add the Cheetah model file to your Android application by:
 You can train models over API without going to the console:
 
 ```java
-Map<String, String[]> newWords = new HashMap<>();
-newWords.put("${NEW_WORD}", new String[]{"${PRONUNCIATION1}", "${PRONUNCIATION2}"});
+Map<String, Set<String>> newWords = new HashMap<>();
+newWords.put("${NEW_WORD}", new HashSet<>(Arrays.asList("${PRONUNCIATION1}", "${PRONUNCIATION2}")));
 
-String[] boostWords = new String[]{"${BOOST_WORD1}", "${BOOST_WORD2}"};
+Set<String> boostWords = new HashSet<>(Arrays.asList("${BOOST_WORD1}", "${BOOST_WORD2}"));
 
 Cheetah.trainModelFromWords(
         "${ACCESS_KEY}",      // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).

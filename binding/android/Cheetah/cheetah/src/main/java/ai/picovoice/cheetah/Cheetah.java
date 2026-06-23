@@ -65,19 +65,19 @@ public class Cheetah {
      * @param language Two character language code for the model (e.g. "en", "fr").
      *                 See https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
      * @param newWords A dictionary of words to pronunciations to add to the new model.
-     *                 Keys should be the word string. Values are a Sequence of pronunciations
+     *                 Keys should be the word string. Values are a Set of pronunciations
      *                 for the given word, each pronunciation is a string of space separated
-     *                 IPA phonemes. An empty Sequence will result in the training
+     *                 IPA phonemes. An empty Set will result in the training
      *                 generating a default pronunciation.
-     * @param boostWords A list of words to "boost". The engine will be more likely to select the boosted words.
+     * @param boostWords A Set of words to "boost". The engine will be more likely to select the boosted words.
      * @throws CheetahException if model training fails.
      */
     public static void trainModelFromWords(
             String accessKey,
             String outputPath,
             String language,
-            Map<String, String[]> newWords,
-            String[] boostWords) throws CheetahException {
+            Map<String, Set<String>> newWords,
+            Set<String> boostWords) throws CheetahException {
 
         Map<String, Object> content = new LinkedHashMap();
         content.put("new", newWords);
