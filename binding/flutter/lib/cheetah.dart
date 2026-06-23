@@ -24,7 +24,11 @@ enum _NativeFunctions {
   // ignore:constant_identifier_names
   PROCESS,
   // ignore:constant_identifier_names
+  PROCESS_ANNOTATED,
+  // ignore:constant_identifier_names
   FLUSH,
+  // ignore:constant_identifier_names
+  FLUSH_ANNOTATED,
   // ignore:constant_identifier_names
   DELETE
 }
@@ -36,6 +40,29 @@ class CheetahTranscript {
   CheetahTranscript(this._transcript, this._isEndpoint);
 
   String get transcript => _transcript ?? "";
+
+  bool get isEndpoint => _isEndpoint ?? false;
+}
+
+class CheetahWord {
+  final String word;
+  final double startSeconds;
+  final double endSeconds;
+  final double confidence;
+
+  CheetahWord(this.word, this.startSeconds, this.endSeconds, this.confidence);
+}
+
+class CheetahTranscriptAnnotated {
+  final String? _transcript;
+  final List<CheetahWord>? _words;
+  final bool? _isEndpoint;
+
+  CheetahTranscriptAnnotated(this._transcript, this._words, this._isEndpoint);
+
+  String get transcript => _transcript ?? "";
+
+  List<CheetahWord> get words => _words ?? [];
 
   bool get isEndpoint => _isEndpoint ?? false;
 }
@@ -122,16 +149,44 @@ class Cheetah {
   Future<CheetahTranscript> process(List<int>? frame) async {
     try {
       Map<String, dynamic> transcript = Map<String, dynamic>.from(await _channel
-          .invokeMethod(_NativeFunctions.PROCESS.name,
-              {'handle': _handle, 'frame': frame}));
+          .invokeMethod(_NativeFunctions.PROCESS.name, {'handle': _handle, 'frame': frame}));
 
       if (transcript['transcript'] == null) {
-        throw CheetahInvalidStateException(
-            "field 'transcript' must be always present");
+        throw CheetahInvalidStateException("field 'transcript' must be always present");
       }
 
-      return CheetahTranscript(
-          transcript['transcript'], transcript['isEndpoint']);
+      return CheetahTranscript(transcript['transcript'], transcript['isEndpoint']);
+    } on PlatformException catch (error) {
+      throw cheetahStatusToException(error.code, error.message);
+    } on Exception catch (error) {
+      throw CheetahException(error.toString());
+    }
+  }
+
+  /// Process a frame of pcm audio with the speech-to-text engine.
+  ///
+  /// [frame] frame of 16-bit integers of 16kHz linear PCM mono audio.
+  /// The specific array length is obtained from Cheetah via the frameLength field.
+  ///
+  /// returns CheetahTranscriptAnnotated object.
+  Future<CheetahTranscriptAnnotated> processAnnotated(List<int>? frame) async {
+    try {
+      Map<String, dynamic> transcript = Map<String, dynamic>.from(await _channel
+          .invokeMethod(_NativeFunctions.PROCESS_ANNOTATED.name, {'handle': _handle, 'frame': frame}));
+
+      if (transcript['transcript'] == null) {
+        throw CheetahInvalidStateException("field 'transcript' must be always present");
+      } else if (transcript['words'] == null) {
+        throw CheetahInvalidStateException("field 'words' must be always present");
+      }
+
+      List<CheetahWord> words = (transcript['words'] as List).map(
+        (obj) {
+          Map<String, dynamic> word = Map<String, dynamic>.from(obj as Map);
+          return CheetahWord(word["word"], word["startSeconds"], word["endSeconds"], word["confidence"]);
+        }
+      ).toList();
+      return CheetahTranscriptAnnotated(transcript['transcript'], words, transcript['isEndpoint']);
     } on PlatformException catch (error) {
       throw cheetahStatusToException(error.code, error.message);
     } on Exception catch (error) {
@@ -148,11 +203,38 @@ class Cheetah {
           .invokeMethod(_NativeFunctions.FLUSH.name, {'handle': _handle}));
 
       if (transcript['transcript'] == null) {
-        throw CheetahInvalidStateException(
-            "field 'transcript' must be always present");
+        throw CheetahInvalidStateException("field 'transcript' must be always present");
       }
 
       return CheetahTranscript(transcript['transcript'], null);
+    } on PlatformException catch (error) {
+      throw cheetahStatusToException(error.code, error.message);
+    } on Exception catch (error) {
+      throw CheetahException(error.toString());
+    }
+  }
+
+  /// Processes any remaining audio data and returns its transcription.
+  ///
+  /// returns CheetahTranscriptAnnotated object.
+  Future<CheetahTranscriptAnnotated> flushAnnotated() async {
+    try {
+      Map<String, dynamic> transcript = Map<String, dynamic>.from(await _channel
+          .invokeMethod(_NativeFunctions.FLUSH_ANNOTATED.name, {'handle': _handle}));
+
+      if (transcript['transcript'] == null) {
+        throw CheetahInvalidStateException("field 'transcript' must be always present");
+      } else if (transcript['words'] == null) {
+        throw CheetahInvalidStateException("field 'words' must be always present");
+      }
+
+      List<CheetahWord> words = (transcript['words'] as List).map(
+        (obj) {
+          Map<String, dynamic> word = Map<String, dynamic>.from(obj as Map);
+          return CheetahWord(word["word"], word["startSeconds"], word["endSeconds"], word["confidence"]);
+        }
+      ).toList();
+      return CheetahTranscriptAnnotated(transcript['transcript'], words, null);
     } on PlatformException catch (error) {
       throw cheetahStatusToException(error.code, error.message);
     } on Exception catch (error) {

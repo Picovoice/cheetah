@@ -111,8 +111,8 @@ void main() {
             enableAutomaticPunctuation: testPunctuations,
             enableTextNormalization: normalization,
             device: device);
-      } on CheetahException catch (ex) {
-        expect(ex, equals(null), reason: "Failed to initialize Cheetah: $ex");
+      } on CheetahException catch (ex, trace) {
+        expect(ex, equals(null), reason: "Failed to initialize Cheetah: $ex, $trace");
         return;
       }
 
@@ -133,6 +133,66 @@ void main() {
       expect(characterErrorRate(partialTranscript, normTranscript),
           lessThanOrEqualTo(errorRate),
           reason: "Character error rate was incorrect");
+    }
+
+    Future<void> runCheetahProcessAnnotated(
+        String modelFile,
+        String transcript,
+        List<String> punctuations,
+        bool testPunctuations,
+        bool normalization,
+        double errorRate,
+        String audioFile) async {
+      String modelPath = getModelPath(modelFile);
+
+      String normTranscript = transcript;
+      if (!testPunctuations) {
+        for (var p in punctuations) {
+          normTranscript = normTranscript.replaceAll(p, "");
+        }
+      }
+
+      Cheetah cheetah;
+      try {
+        cheetah = await Cheetah.create(accessKey, modelPath,
+            enableAutomaticPunctuation: testPunctuations,
+            enableTextNormalization: normalization,
+            device: device);
+      } on CheetahException catch (ex, trace) {
+        expect(ex, equals(null), reason: "Failed to initialize Cheetah: $ex, $trace");
+        return;
+      }
+
+      String partialTranscript = "";
+      List<CheetahWord> words = [];
+      List<int> pcm = await loadAudioFile(audioFile);
+
+      final int frameLength = cheetah.frameLength;
+      for (var i = 0; i < (pcm.length - frameLength); i += frameLength) {
+        CheetahTranscriptAnnotated res =
+            await cheetah.processAnnotated(pcm.sublist(i, i + frameLength));
+        partialTranscript += res.transcript;
+        words.addAll(res.words);
+      }
+      CheetahTranscriptAnnotated res = await cheetah.flushAnnotated();
+      partialTranscript += res.transcript;
+      words.addAll(res.words);
+
+      cheetah.delete();
+
+      expect(characterErrorRate(partialTranscript, normTranscript),
+          lessThanOrEqualTo(errorRate),
+          reason: "Character error rate was incorrect");
+
+      expect(words.length, isNot(equals(0)), reason: "words should not be empty");
+
+      var currentTime = 0.0;
+      for (var word in words) {
+        expect(word.word.length, isNot(equals(0)), reason: "word should not have length zero");
+        expect(word.startSeconds, greaterThanOrEqualTo(currentTime));
+        expect(word.endSeconds, greaterThanOrEqualTo(word.startSeconds));
+        currentTime = word.endSeconds;
+      }
     }
 
     testWidgets('Test Process all languages', (tester) async {
@@ -177,6 +237,25 @@ void main() {
 
           await runCheetahProcess(
               modelFile, transcript, punctuations, true, normalization, errorRate, audioFile);
+        }
+      }
+    });
+
+    testWidgets('Test ProcessAnnotated all languages', (tester) async {
+      final languageTests = testData['tests']['language_tests'];
+      for (int t = 0; t < languageTests.length; t++) {
+        for (int j = 0; j < languageTests[t]['models'].length; j++) {
+          String modelFile = languageTests[t]['models'][j];
+          String transcript = languageTests[t]['transcript'];
+          List<dynamic> punctuationsRaw = languageTests[t]['punctuations'];
+          List<String> punctuations =
+              punctuationsRaw.map((p) => p.toString()).toList();
+          bool normalization = languageTests[t]['normalization'];
+          double errorRate = languageTests[t]['error_rate'];
+          String audioFile = languageTests[t]['audio_file'];
+
+          await runCheetahProcessAnnotated(
+              modelFile, transcript, punctuations, false, normalization, errorRate, audioFile);
         }
       }
     });
