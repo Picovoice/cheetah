@@ -756,11 +756,17 @@ function App(props) {
 
 ## Releases
 
+### v4.1.0 - June 24th, 2026
+
+- Added annotated transcriptions that include word timestamps and confidences
+
 ### v4.0.0 - March 19th, 2026
+
 - Improved engine performance and latency
 - Added text normalization feature
 
 ### v3.0.0 - December 17th, 2025
+
 - Improved engine performance
 - Added support for running on GPU or multiple CPU cores
 - Node.js min version bumped to Node 18
