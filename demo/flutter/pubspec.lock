@@ -28,9 +28,10 @@ packages:
   cheetah_flutter:
     dependency: "direct main"
     description:
-      path: "../../binding/flutter"
-      relative: true
-    source: path
+      name: cheetah_flutter
+      sha256: "97a0ee4ad2a13c45edd9c98ba7145bd10ff09530d9714370aa066be8568e08c5"
+      url: "https://pub.dev"
+    source: hosted
     version: "4.1.0"
   clock:
     dependency: transitive
