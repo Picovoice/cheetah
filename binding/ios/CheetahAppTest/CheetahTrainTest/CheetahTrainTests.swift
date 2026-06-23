@@ -25,8 +25,8 @@ class CheetahTrainTests: XCTestCase {
         }
         let outputPath = documentsDirectory.appendingPathComponent("custom_cheetah_params.pv").path
 
-        let newWords: [String: [String]] = ["picovoice": ["t l k dʒ ɛ dʒ"]]
-        let boostWords: [String] = ["computer"]
+        let newWords: [String: Set<String>] = ["picovoice": ["t l k dʒ ɛ dʒ"]]
+        let boostWords: Set<String> = ["computer"]
 
         try Cheetah.trainModelFromWords(
             accessKey: accessKey,

@@ -336,19 +336,18 @@ public class Cheetah {
     ///   - language: Two character language code for the model (e.g. "en", "fr").
     ///               See https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
     ///   - newWords: A dictionary of words to pronunciations to add to the new model. Keys should be
-    ///               the word string. Values are a list of pronunciations for the given word, each pronunciation
-    ///               is a string of space separated IPA phonemes. An empty list will result in the training
+    ///               the word string. Values are a Set of pronunciations for the given word, each pronunciation
+    ///               is a string of space separated IPA phonemes. An empty Set will result in the training
     ///               generating a default pronunciation.
-    ///   - boostWords: A list of words to "boost". When the engine has a situation with competing
-    ///                  homophones the engine will be more likely to select the boosted words.
+    ///   - boostWords: A Set of words to "boost". The engine will be more likely to select the boosted words.
 
     /// - Throws: `CheetahError` if model training fails.
     public static func trainModelFromWords(
         accessKey: String,
         outputPath: String,
         language: String,
-        newWords: [String: [String]],
-        boostWords: [String]
+        newWords: [String: Set<String>],
+        boostWords: Set<String>
     ) throws {
         var root: [String: Any] = [
             "new": newWords,
