@@ -17,12 +17,14 @@ import {
   CheetahModel,
   CheetahOptions,
   CheetahTranscript,
+  CheetahWord,
   CheetahWorker,
 } from '@picovoice/cheetah-web';
 
 export const useCheetah = (): {
   result: {
     transcript: string;
+    words?: CheetahWord[];
     isComplete?: boolean;
   } | null;
   isLoaded: boolean;
@@ -34,17 +36,32 @@ export const useCheetah = (): {
     options?: CheetahOptions
   ) => Promise<void>;
   start: () => Promise<void>;
+  startAnnotated: () => Promise<void>;
   stop: () => Promise<void>;
   release: () => Promise<void>;
 } => {
+  type WvpMessageEvent = { command: string; };
+  type PvEngine = {
+    worker: {
+      postMessage: (e: WvpMessageEvent) => void;
+    },
+  };
+  type PvEngineKind = {
+    isAnnotated: boolean,
+    engine: PvEngine,
+  };
+
   const cheetahRef = useRef<CheetahWorker | null>(null);
+  const engineRef = useRef<PvEngineKind | null>(null);
 
   const [result, setResult] = useState<{
     transcript: string;
+    words: CheetahWord[] | undefined;
     isComplete: boolean | undefined;
   } | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isListening, setIsListening] = useState<boolean>(false);
+  const flushResolveRef = useRef<((value: (void | PromiseLike<void>)) => void) | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
   const errorCallback = useCallback((cheetahError: Error) => {
@@ -54,13 +71,23 @@ export const useCheetah = (): {
   const transcriptCallback = useCallback(
     (cheetahTranscript: CheetahTranscript): void => {
       if (cheetahTranscript.isEndpoint) {
-        cheetahRef.current?.flush();
+        if (engineRef.current?.isAnnotated) {
+          cheetahRef.current?.flushAnnotated();
+        } else {
+          cheetahRef.current?.flush();
+        }
       }
 
       setResult({
         transcript: cheetahTranscript.transcript,
+        words: cheetahTranscript.words ? cheetahTranscript.words : undefined,
         isComplete: cheetahTranscript.isFlushed,
       });
+
+      if ((flushResolveRef.current !== null) && cheetahTranscript.isFlushed) {
+        flushResolveRef.current();
+        flushResolveRef.current = null;
+      }
     },
     []
   );
@@ -109,16 +136,18 @@ export const useCheetah = (): {
         return;
       }
 
-      await WebVoiceProcessor.subscribe(cheetahRef.current);
+      engineRef.current = { engine: cheetahRef.current, isAnnotated: false };
+      await WebVoiceProcessor.subscribe(engineRef.current.engine);
       setError(null);
       setIsListening(true);
+
     } catch (e: any) {
       setError(e);
       setIsListening(false);
     }
   }, [isListening]);
 
-  const stop = useCallback(async (): Promise<void> => {
+  const startAnnotated = useCallback(async (): Promise<void> => {
     try {
       if (!cheetahRef.current) {
         setError(
@@ -127,17 +156,72 @@ export const useCheetah = (): {
         return;
       }
 
-      if (!isListening) {
+      if (isListening) {
         return;
       }
 
-      await WebVoiceProcessor.unsubscribe(cheetahRef.current);
-      cheetahRef.current?.flush();
+      const processAnnotatedEngine = {
+        worker: {
+          postMessage: (e: WvpMessageEvent): void => {
+            if (!cheetahRef.current) {
+              return;
+            }
+
+            if (e.command && e.command === "process") {
+              e.command = "process_annotated";
+            }
+            cheetahRef.current.worker.postMessage(e);
+          }
+        }
+      };
+      engineRef.current = { engine: processAnnotatedEngine, isAnnotated: true };
+      await WebVoiceProcessor.subscribe(engineRef.current.engine);
       setError(null);
-      setIsListening(false);
+      setIsListening(true);
+
     } catch (e: any) {
       setError(e);
       setIsListening(false);
+    }
+  }, [isListening]);
+
+  const stop = useCallback(async (): Promise<void> => {
+    try {
+      if (!cheetahRef.current || !engineRef.current) {
+        setError(
+          new Error(`Cheetah ${(!engineRef.current) ? "engine" : ""} has not been initialized or has been released`)
+        );
+        return Promise.resolve();
+      }
+
+      if (!isListening) {
+        return Promise.resolve();
+      }
+
+      await WebVoiceProcessor.unsubscribe(engineRef.current.engine);
+      const returnPromise: Promise<void> = new Promise(resolve => {
+        if (flushResolveRef.current !== null) {
+          flushResolveRef.current();
+        }
+
+        if (engineRef.current && cheetahRef.current) {
+          if (engineRef.current.isAnnotated) {
+            cheetahRef.current.flushAnnotated();
+          } else {
+            cheetahRef.current.flush();
+          }
+        }
+        engineRef.current = null;
+        flushResolveRef.current = resolve;
+      });
+      setIsListening(false);
+      setError(null);
+
+      return returnPromise;
+    } catch (e: any) {
+      setError(e);
+      setIsListening(false);
+      return Promise.resolve();
     }
   }, [isListening]);
 
@@ -170,6 +254,7 @@ export const useCheetah = (): {
     error,
     init,
     start,
+    startAnnotated,
     stop,
     release,
   };

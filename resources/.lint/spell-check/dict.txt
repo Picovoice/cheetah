@@ -2,8 +2,6 @@ Cdecl
 Compat
 Fastenshtein
 HEAPF
-HEAPF
-HEAPU
 HEAPU
 HMODULE
 IIFE
@@ -35,7 +33,6 @@ armv7l
 calcsize
 camelcase
 ccall
-ccall
 ccheetah
 cheetahdemo
 cheetahfiledemo
@@ -48,7 +45,6 @@ constraintlayout
 cstring
 cuda
 cwrap
-cwrap
 dlfcn
 dlopen
 dlsym
@@ -58,13 +54,13 @@ drwav
 dylib
 embedder
 emscripten
-emscripten
 endpointing
 exopackage
 filedemo
 framecount
 gradlew
 heteronyms
+hoverable
 instanceof
 jiwer
 jsbundle
@@ -81,7 +77,6 @@ pvbase
 pvcheetah
 pvcheetahdemo
 pvrecorder
-reactnative
 reactnative
 recyclerview
 repr

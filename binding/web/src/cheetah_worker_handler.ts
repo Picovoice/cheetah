@@ -95,16 +95,38 @@ self.onmessage = async function (
       }
       await cheetah.process(event.data.inputFrame);
       break;
+    case 'process_annotated':
+      if (cheetah === null) {
+        self.postMessage({
+          command: 'error',
+          status: PvStatus.INVALID_STATE,
+          shortMessage: 'Cheetah not initialized',
+        });
+        return;
+      }
+      await cheetah.processAnnotated(event.data.inputFrame);
+      break;
     case 'flush':
       if (cheetah === null) {
         self.postMessage({
           command: 'error',
           status: PvStatus.INVALID_STATE,
-          shortMEssage: 'Cheetah not initialized',
+          shortMessage: 'Cheetah not initialized',
         });
         return;
       }
       await cheetah.flush();
+      break;
+    case 'flush_annotated':
+      if (cheetah === null) {
+        self.postMessage({
+          command: 'error',
+          status: PvStatus.INVALID_STATE,
+          shortMessage: 'Cheetah not initialized',
+        });
+        return;
+      }
+      await cheetah.flushAnnotated();
       break;
     case 'release':
       if (cheetah !== null) {

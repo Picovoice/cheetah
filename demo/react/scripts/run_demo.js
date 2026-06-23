@@ -28,10 +28,6 @@ if (!availableLanguages.includes(language)) {
 }
 
 let suffix = language === "en" ? "" : `_${language}`;
-if (args.length > 2 && args[2] === "fast") {
-  suffix += "_fast";
-}
-
 const rootDir = path.join(__dirname, "..", "..", "..");
 
 const libDirectory = path.join(__dirname, "..", "src", "lib");
@@ -70,3 +66,4 @@ child_process.execSync(`${command} react-scripts ${args.join(" ")}`, {
   shell: true,
   stdio: 'inherit'
 });
+
