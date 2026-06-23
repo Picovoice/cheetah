@@ -222,11 +222,11 @@ You can train models over API without going to the console:
 
 ```javascript
 let cheetahModel = await Cheetah.trainModelFromWords(
-        "${ACCESS_KEY}",                                              // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
-        "${WRITE_PATH}",                                              // Custom path/key used to store the trained model in IndexedDB.
-        "${LANGUAGE}",                                                // Two-character language code.
-        {"${NEW_WORD}": ["${PRONUNCIATION1}", "${PRONUNCIATION2}"]},  // New words with optional custom pronunciation to add to the model.
-        ["${BOOST_WORD1}", "${BOOST_WORD2}"                           // Boost words.
+        "${ACCESS_KEY}",                                                       // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+        "${WRITE_PATH}",                                                       // Custom path/key used to store the trained model in IndexedDB.
+        "${LANGUAGE}",                                                         // Two-character language code.
+        {"${NEW_WORD}": new Set(["${PRONUNCIATION1}", "${PRONUNCIATION2}"])},  // New words with optional custom pronunciation to add to the model.
+        new Set(["${BOOST_WORD1}", "${BOOST_WORD2}")                           // Boost words.
 )
 ```
 

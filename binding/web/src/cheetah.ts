@@ -261,10 +261,10 @@ export class Cheetah {
    * @param language Two character language code for the model (e.g. 'en', 'fr').
    * Check https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
    * @param newWords A dictionary of words to pronunciations to add to the new model. Keys should be
-    the word string. Values are an array of pronunciations for the given word, each pronunciation
-    is a string of space separated IPA phonemes. An empty array will result in the training
+    the word string. Values are a Set of pronunciations for the given word, each pronunciation
+    is a string of space separated IPA phonemes. An empty Set will result in the training
     generating a default pronunciation.
-   * @param boostWords A list of words to "boost". The engine will be more likely to select the boosted words.
+   * @param boostWords A Set of words to "boost". The engine will be more likely to select the boosted words.
    * @returns A new CheetahModel object containing the trained model. Pass this to `.create()`.
    * Object must have 'forceWrite: false' or be empty for Cheetah to initialize.
    */
@@ -272,8 +272,8 @@ export class Cheetah {
     accessKey: string,
     writePath: string,
     language: string,
-    newWords: Record<string, string[]>[],
-    boostWords: string[],
+    newWords: Record<string, Set<string>>,
+    boostWords: Set<string>,
   ): Promise<CheetahModel> {
     const content: any = {
       new: newWords,
