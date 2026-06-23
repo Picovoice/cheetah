@@ -12,9 +12,10 @@
 import os
 from io import StringIO
 from typing import (
+    Dict,
     Optional,
     Sequence,
-    Dict
+    Set
 )
 
 from ruamel.yaml import YAML
@@ -127,8 +128,8 @@ def train_model_from_words(
         access_key: str,
         output_path: str,
         language: str,
-        new_words: Dict[str, Sequence[str]],
-        boost_words: Sequence[str]):
+        new_words: Dict[str, Set[str]],
+        boost_words: Set[str]):
     """
     Trains a model using the specified `new_words` and `boost_words` arguments.
 
@@ -137,10 +138,10 @@ def train_model_from_words(
     :param language: Two character language code for the model (i.e 'en', 'fr').
     Check https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
     :param new_words: A dictionary of words to pronunciations to add to the new model. Keys should be
-    the word string. Values are a Sequence of pronunciations for the given word, each pronunciation
-    is a string of space separated IPA phonemes. An empty Sequence will result in the training
+    the word string. Values are a Set of pronunciations for the given word, each pronunciation
+    is a string of space separated IPA phonemes. An empty Set will result in the training
     generating a default pronunciation.
-    :param boost_words: A list of words to "boost". The engine will be more likely to select the boosted words.
+    :param boost_words: A Set of words to "boost". The engine will be more likely to select the boosted words.
     """
 
     yaml = YAML()
