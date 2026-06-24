@@ -85,11 +85,11 @@ public class Cheetah {
             newWordsContent.put(key, value.toArray(new String[value.size()]));
         }
 
-        String[] boostwordsContent = boostWords.toArray(new String[boostWords.size()]);
+        String[] boostWordsContent = boostWords.toArray(new String[boostWords.size()]);
 
         Map<String, Object> content = new LinkedHashMap();
         content.put("new", newWordsContent);
-        content.put("boost", boostwordsContent);
+        content.put("boost", boostWordsContent);
 
         String yamlContent = new Yaml().dump(content);
 
