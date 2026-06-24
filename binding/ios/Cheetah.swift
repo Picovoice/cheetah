@@ -354,7 +354,7 @@ public class Cheetah {
             newWordsContent[key] = Array(value)
         }
         let boostWordsContent: [String] = Array(boostWords)
-        
+
         let root: [String: Any] = [
             "new": newWords,
             "boost": boostWords
