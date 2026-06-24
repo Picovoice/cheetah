@@ -349,7 +349,13 @@ public class Cheetah {
         newWords: [String: Set<String>],
         boostWords: Set<String>
     ) throws {
-        var root: [String: Any] = [
+        var newWordsContent: [String: [String]] = [:]
+        for (key, value) in newWords {
+            newWordsContent[key] = Array(value)
+        }
+        let boostWordsContent: [String] = Array(boostWords)
+        
+        let root: [String: Any] = [
             "new": newWords,
             "boost": boostWords
         ]
