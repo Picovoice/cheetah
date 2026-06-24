@@ -79,9 +79,17 @@ public class Cheetah {
             Map<String, Set<String>> newWords,
             Set<String> boostWords) throws CheetahException {
 
+        Map<String, String[]> newWordsContent = new LinkedHashMap();
+        for (String key : newWords.keySet()) {
+            Set<String> value = newWords.get(key);
+            newWordsContent.put(key, value.toArray(new String[value.size()]));
+        }
+
+        String[] boostwordsContent = boostWords.toArray(new String[boostWords.size()]);
+
         Map<String, Object> content = new LinkedHashMap();
-        content.put("new", newWords);
-        content.put("boost", boostWords);
+        content.put("new", newWordsContent);
+        content.put("boost", boostwordsContent);
 
         String yamlContent = new Yaml().dump(content);
 
