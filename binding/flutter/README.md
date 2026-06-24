@@ -84,7 +84,7 @@ String accessKey = '{ACCESS_KEY}' // AccessKey obtained from Picovoice Console (
 String modelPath = '{CHEETAH_MODEL_PATH}' // path relative to the assets folder or absolute path to file on device
 
 void createCheetah() async {
-    try{
+    try {
         _cheetah = await Cheetah.create(accessKey, modelPath);
     } on CheetahException catch (err) {
         // handle Cheetah init error
@@ -95,11 +95,9 @@ void createCheetah() async {
 Transcribe audio:
 
 ```dart
-List<int> buffer = getAudioFrame();
-
 String transcript = "";
 
-while true {
+while (true) {
     CheetahTranscript partialResult = await _cheetah.process(getAudioFrame());
     transcript += partialResult.transcript;
 
@@ -107,6 +105,28 @@ while true {
         CheetahTranscript finalResult = await _cheetah.flush();
         transcript += finalResult.transcript;
     }
+}
+```
+
+You can also access per-word annotations:
+
+```dart
+List<CheetahWord> words = [];
+
+while (true) {
+    CheetahTranscript partialResult = await _cheetah.process(getAudioFrame());
+    words += partialResult.words;
+
+    if (partialResult.isEndpoint) {
+        CheetahTranscript finalResult = await _cheetah.flush();
+        words += finalResult.words;
+    }
+}
+
+for (var word in words) {
+  if (word.confidence < 0.5) {
+    print("Found unconfident word ${word.word}");
+  }
 }
 ```
 

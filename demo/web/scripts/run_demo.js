@@ -27,9 +27,6 @@ if (!availableLanguages.includes(language)) {
 }
 
 let suffix = language === "en" ? "" : `_${language}`;
-if (process.argv.length > 3 && process.argv[3] === "fast") {
-  suffix += "_fast";
-}
 
 const rootDir = path.join(__dirname, "..", "..", "..");
 

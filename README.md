@@ -71,7 +71,7 @@ using Picovoice needs to have a valid AccessKey. You must keep your AccessKey se
 connectivity to validate your AccessKey with Picovoice license servers even though the voice recognition is running 100%
 offline.
 
-AccessKey also verifies that your usage is within the limits of your account. You can see your usage limits and real-time usage on your [Picovoice Console Profile](https://console.picovoice.ai/profile). To continue using Picovoice after your trial or renew and adjust your usage limits, please reach out to our [Enterprise Sales Team](https://picovoice.ai/contact) or your existing Picovoice contact.
+AccessKey also verifies that your usage is within the limits of your account. You can see your usage limits and real-time usage on your [Picovoice Console Profile](https://console.picovoice.ai/profile). To get, renew or adjust your usage limits, please reach out to our [Enterprise Sales Team](https://picovoice.ai/contact) or your existing Picovoice contact.
 
 ## Language Support
 
@@ -291,6 +291,29 @@ while True:
 
 Replace `${ACCESS_KEY}` with yours obtained from Picovoice Console.
 
+To get word-level metadata, use the annotated API:
+
+```python
+import pvcheetah
+
+handle = pvcheetah.create(access_key='${ACCESS_KEY}')
+
+def get_next_audio_frame():
+    pass
+
+while True:
+    partial_output = handle.process_annotated(get_next_audio_frame())
+
+    partial_transcript = partial_output.transcript
+    partial_words = partial_output.words
+    is_endpoint = partial_output.is_endpoint
+
+    if is_endpoint:
+        final_output = handle.flush_annotated()
+        final_transcript = final_output.transcript
+        final_words = final_output.words
+```
+
 ### C
 
 Create an instance of the engine and transcribe audio in real-time:
@@ -312,25 +335,33 @@ extern const int16_t *get_next_audio_frame(void);
 
 while (true) {
     char *partial_transcript = NULL;
+    int32_t partial_num_words = 0;
+    pv_word_t *partial_words = NULL;
     bool is_endpoint = false;
     const pv_status_t status = pv_cheetah_process(
             handle,
             get_next_audio_frame(),
             &partial_transcript,
+            &partial_num_words,
+            &partial_words,
             &is_endpoint);
     if (status != PV_STATUS_SUCCESS) {
         // error handling logic
     }
     // do something with transcript
-    free(partial_transcript);
+    pv_cheetah_transcript_delete(partial_transcript);
+    pv_cheetah_words_delete(partial_num_words, partial_words);
     if (is_endpoint) {
         char *final_transcript = NULL;
-        const pv_status_t status = pv_cheetah_flush(handle, &final_transcript);
+        int32_t final_num_words = 0;
+        pv_word_t *final_words = NULL;
+        const pv_status_t status = pv_cheetah_flush(handle, &final_transcript, &final_num_words, &final_words);
         if (status != PV_STATUS_SUCCESS) {
             // error handling logic
         }
         // do something with transcript
-        free(final_transcript);
+        pv_cheetah_transcript_delete(final_transcript);
+        pv_cheetah_words_delete(final_num_words, final_words);
     }
 }
 ```
@@ -725,11 +756,17 @@ function App(props) {
 
 ## Releases
 
+### v4.1.0 - June 24th, 2026
+
+- Added annotated transcriptions that include word timestamps and confidences
+
 ### v4.0.0 - March 19th, 2026
+
 - Improved engine performance and latency
 - Added text normalization feature
 
 ### v3.0.0 - December 17th, 2025
+
 - Improved engine performance
 - Added support for running on GPU or multiple CPU cores
 - Node.js min version bumped to Node 18

@@ -14,13 +14,15 @@ package ai.picovoice.cheetah;
 
 class CheetahNative {
 
+    static native String getVersion();
+
     static native int getFrameLength();
 
     static native int getSampleRate();
 
-    static native String getVersion();
-
     static native void setSdk(String sdk);
+    
+    static native String[] listHardwareDevices() throws CheetahException;
 
     static native long init(
             String accessKey,
@@ -35,7 +37,5 @@ class CheetahNative {
     static native CheetahTranscript process(long object, short[] pcm) throws CheetahException;
 
     static native CheetahTranscript flush(long object) throws CheetahException;
-
-    static native String[] listHardwareDevices() throws CheetahException;
 
 }

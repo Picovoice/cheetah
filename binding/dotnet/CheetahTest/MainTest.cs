@@ -237,6 +237,74 @@ namespace CheetahTest
 
         [TestMethod]
         [DynamicData(nameof(LanguageTestParameters))]
+        public void TestProcessAnnotated(
+            string modelFile,
+            string testAudioFile,
+            string referenceTranscript,
+            string[] punctuations,
+            bool normalization,
+            float targetErrorRate)
+        {
+            using (Cheetah cheetah = Cheetah.Create(
+                accessKey: _accessKey,
+                modelPath: GetModelPath(modelFile),
+                device: _device,
+                endpointDurationSec: 0.2f,
+                enableAutomaticPunctuation: false,
+                enableTextNormalization: normalization))
+            {
+                string testAudioPath = Path.Combine(ROOT_DIR, "resources/audio_samples", testAudioFile);
+                List<short> pcm = GetPcmFromFile(testAudioPath, cheetah.SampleRate);
+
+                int frameLen = cheetah.FrameLength;
+                int framecount = (int)Math.Floor((float)(pcm.Count / frameLen));
+
+                string transcript = "";
+                bool isEndpoint = false;
+                List<CheetahWord> words = new List<CheetahWord>();
+                for (int i = 0; i < framecount; i++)
+                {
+                    int start = i * cheetah.FrameLength;
+                    List<short> frame = pcm.GetRange(start, frameLen);
+                    CheetahTranscriptAnnotated transcriptObj = cheetah.ProcessAnnotated(frame.ToArray());
+                    transcript += transcriptObj.Transcript;
+                    isEndpoint = transcriptObj.IsEndpoint;
+                    foreach (CheetahWord word in transcriptObj.Words)
+                    {
+                        words.Add(word);
+                    }
+                }
+                CheetahTranscriptAnnotated finalTranscriptObj = cheetah.FlushAnnotated();
+                transcript += finalTranscriptObj.Transcript;
+                foreach (CheetahWord word in finalTranscriptObj.Words)
+                {
+                    words.Add(word);
+                }
+
+                string normalizedTranscript = referenceTranscript;
+                foreach (string punctuation in punctuations)
+                {
+                    normalizedTranscript = normalizedTranscript.Replace(punctuation, "");
+                }
+
+                Assert.IsTrue(GetErrorRate(transcript, normalizedTranscript) <= targetErrorRate);
+                Assert.IsTrue(words.Count > 0);
+
+                float currentTime = 0.0f;
+                foreach (CheetahWord word in words)
+                {
+                    Assert.IsTrue(word.StartSec >= currentTime);
+                    Assert.IsTrue(word.EndSec >= word.StartSec);
+                    Assert.IsTrue(word.Confidence >= 0.0f);
+                    Assert.IsTrue(word.Confidence <= 1.0f);
+
+                    currentTime = word.EndSec;
+                }
+            }
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(LanguageTestParameters))]
         public void TestProcessWithPunctuation(
             string modelFile,
             string testAudioFile,

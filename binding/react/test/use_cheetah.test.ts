@@ -2,6 +2,10 @@ import { renderHook } from '@testing-library/react-hooks/dom';
 
 import { useCheetah } from '../src';
 
+import {
+  CheetahWord
+} from '@picovoice/cheetah-web';
+
 // @ts-ignore
 import cheetahParams from '@/cheetah_params.js';
 
@@ -83,13 +87,17 @@ const runProcTest = async (
     ).to.be.true;
   });
 
-  cy.wrapHook(result.current.start).then(() => {
+  cy.wrapHook(
+    async () => await result.current.start()
+  ).then(() => {
     expect(result.current.isListening).to.be.true;
   });
 
   cy.mockRecording(audioFile);
 
-  cy.wrapHook(result.current.stop).then(() => {
+  cy.wrapHook(
+    async () => await result.current.stop()
+  ).then(() => {
     let normalizedTranscript = expectedTranscript;
     if (!enablePunctuation) {
       for (const punctuation of punctuations) {
@@ -101,6 +109,7 @@ const runProcTest = async (
     result.all.forEach(resultObj => {
       if ('result' in resultObj && resultObj.result !== null) {
         completeTranscript += resultObj.result.transcript;
+        expect(resultObj.result.words).to.be.undefined;
       }
     });
 
@@ -110,11 +119,103 @@ const runProcTest = async (
       useCER
     );
     expect(errorRate).to.be.lte(expectedErrorRate);
+    expect(result.current.isListening).to.be.false;
   });
 
-  expect(result.current.isListening).to.be.false;
+  cy.wrapHook(
+    async () => await result.current.release()
+  ).then(() => {
+    expect(
+      result.current.isLoaded,
+      `Failed to release cheetah with ${result.current.error}`
+    ).to.be.false;
+  });
+};
 
-  cy.wrapHook(result.current.release).then(() => {
+const runProcAnnotatedTest = async (
+  audioFile: string,
+  punctuations: string[],
+  normalization: boolean,
+  expectedTranscript: string,
+  expectedErrorRate: number,
+  params: {
+    accessKey?: string;
+    model?: Record<string, string | boolean>;
+    enablePunctuation?: boolean;
+    useCER?: boolean;
+  } = {}
+) => {
+  const {
+    accessKey = ACCESS_KEY,
+    model = { publicPath: `${CYPRESS_BASE_URI}/test/cheetah_params.pv`, forceWrite: true },
+    enablePunctuation = false,
+    useCER = false,
+  } = params;
+  const { result } = renderHook(() => useCheetah());
+
+  cy.wrapHook(() =>
+    result.current.init(accessKey, model, {
+      enableAutomaticPunctuation: enablePunctuation,
+      enableTextNormalization: normalization,
+      device: DEVICE,
+    })
+  ).then(() => {
+    expect(
+      result.current.isLoaded,
+      `Failed to load 'cheetah_params.pv' with ${result.current.error}`
+    ).to.be.true;
+  });
+
+  cy.wrapHook(
+    async () => await result.current.startAnnotated()
+  ).then(() => {
+    expect(result.current.isListening).to.be.true;
+  });
+
+  cy.mockRecording(audioFile);
+
+  cy.wrapHook(
+    async () => await result.current.stop()
+  ).then(() => {
+    let normalizedTranscript = expectedTranscript;
+    if (!enablePunctuation) {
+      for (const punctuation of punctuations) {
+        normalizedTranscript = normalizedTranscript.replaceAll(punctuation, '');
+      }
+    }
+
+    let completeTranscript = '';
+    let allWords: CheetahWord[] = [];
+    result.all.forEach(resultObj => {
+      if ('result' in resultObj && resultObj.result !== null) {
+        completeTranscript += resultObj.result.transcript;
+        allWords.push(...resultObj.result.words);
+      }
+    });
+
+    const errorRate = wordErrorRate(
+      normalizedTranscript,
+      completeTranscript,
+      useCER
+    );
+    expect(errorRate).to.be.lte(expectedErrorRate);
+
+    expect(allWords.length).to.not.equal(0);
+
+    let currentTime = 0.0;
+    for (const word of allWords) {
+      expect(word.word.length).to.not.equal(0);
+      expect(word.startSeconds).to.be.gte(currentTime);
+      expect(word.endSeconds).to.be.gte(word.startSeconds);
+      currentTime = word.endSeconds;
+    }
+
+    expect(result.current.isListening).to.be.false;
+  });
+
+  cy.wrapHook(
+    async () => await result.current.release()
+  ).then(() => {
     expect(
       result.current.isLoaded,
       `Failed to release cheetah with ${result.current.error}`
@@ -139,7 +240,9 @@ describe('Cheetah binding', () => {
       ).to.be.true;
     });
 
-    cy.wrapHook(result.current.release).then(() => {
+    cy.wrapHook(
+      async () => await result.current.release()
+    ).then(() => {
       expect(
         result.current.isLoaded,
         `Failed to release cheetah with ${result.current.error}`
@@ -211,6 +314,7 @@ describe('Cheetah binding', () => {
                 publicPath: `${CYPRESS_BASE_URI}/test/${modelFile}`,
                 forceWrite: true,
               },
+              enablePunctuation: false
             }
           );
         });
@@ -229,7 +333,26 @@ describe('Cheetah binding', () => {
                 publicPath: `${CYPRESS_BASE_URI}/test/${modelFile}`,
                 forceWrite: true,
               },
-              enablePunctuation: true,
+              enablePunctuation: true
+            }
+          );
+        });
+      });
+
+      it(`should be able to processAnnotated (${testParam.language} ${modelFile}) (norm ${testParam.normalization})`, () => {
+        cy.wrap(null).then(async () => {
+          await runProcAnnotatedTest(
+            `audio_samples/${testParam.audio_file}`,
+            testParam.punctuations,
+            testParam.normalization,
+            testParam.transcript,
+            testParam.error_rate,
+            {
+              model: {
+                publicPath: `${CYPRESS_BASE_URI}/test/${modelFile}`,
+                forceWrite: true,
+              },
+              enablePunctuation: false
             }
           );
         });

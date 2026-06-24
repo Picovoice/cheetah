@@ -12,8 +12,7 @@
 ## AccessKey
 
 Cheetah requires a valid Picovoice `AccessKey` at initialization. `AccessKey` acts as your credentials when using Cheetah SDKs.
-You can get your `AccessKey` for free. Make sure to keep your `AccessKey` secret.
-Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get your `AccessKey`.
+Signup or Login to [Picovoice Console](https://console.picovoice.ai/) to get your `AccessKey`. Make sure to keep your `AccessKey` secret.
 
 ## Usage
 
@@ -58,7 +57,8 @@ The {PV_RECORDER_PLATFORM} variable will set the compilation flags for the given
 Running the demo without arguments prints the usage:
 
 ```console
-usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-e ENDPOINT_DURATION] [-y DEVICE] [-p] [-n] [-d DEVICE_INDEX]
+usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-e ENDPOINT_DURATION] [-y DEVICE] [-p] [-n] [-v] [-d DEVICE_INDEX] [-e ENDPOINT_DURATION]
+-i (show inference devices)
 -s (show audio device indices)
 ```
 
@@ -76,10 +76,12 @@ Use the `-p` flag to disable automatic punctuation.
 
 Use the `-n` flag to disable text normalization.
 
+Use the `-v` flag to enable the printing of word metadata.
+
 ##### Linux (x86_64)
 
 ```console
-./demo/c/build/cheetah_demo \
+./demo/c/build/cheetah_demo_mic \
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/linux/x86_64/libpv_cheetah.so \
@@ -90,7 +92,7 @@ Use the `-n` flag to disable text normalization.
 ##### macOS (x86_64)
 
 ```console
-./demo/c/build/cheetah_demo \
+./demo/c/build/cheetah_demo_mic \
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/mac/x86_64/libpv_cheetah.dylib \
@@ -101,7 +103,7 @@ Use the `-n` flag to disable text normalization.
 ##### macOS (arm64)
 
 ```console
-./demo/c/build/cheetah_demo \
+./demo/c/build/cheetah_demo_mic \
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/mac/arm64/libpv_cheetah.dylib \
@@ -114,7 +116,7 @@ Use the `-n` flag to disable text normalization.
 Run using `Command Prompt`.
 
 ```console
-demo\\c\\build\\cheetah_demo.exe ^
+demo\\c\\build\\cheetah_demo_mic.exe ^
 -a ${ACCESS_KEY} ^
 -m lib\\common\\cheetah_params.pv ^
 -l lib\\windows\\amd64\\libpv_cheetah.dll ^
@@ -125,7 +127,7 @@ demo\\c\\build\\cheetah_demo.exe ^
 ##### Raspberry Pi 4
 
 ```console
-./demo/c/build/cheetah_demo \
+./demo/c/build/cheetah_demo_mic \
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a72/libpv_cheetah.so \
@@ -136,7 +138,7 @@ demo\\c\\build\\cheetah_demo.exe ^
 ##### Raspberry Pi 4 (64-bit)
 
 ```console
-./demo/c/build/cheetah_demo \
+./demo/c/build/cheetah_demo_mic \
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a72-aarch64/libpv_cheetah.so \
@@ -147,7 +149,7 @@ demo\\c\\build\\cheetah_demo.exe ^
 ##### Raspberry Pi 3
 
 ```console
-./demo/c/build/cheetah_demo \
+./demo/c/build/cheetah_demo_mic \
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a53/libpv_cheetah.so \
@@ -158,7 +160,7 @@ demo\\c\\build\\cheetah_demo.exe ^
 ##### Raspberry Pi 3 (64-bit)
 
 ```console
-./demo/c/build/cheetah_demo \
+./demo/c/build/cheetah_demo_mic \
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a53-aarch64/libpv_cheetah.so \
@@ -169,7 +171,8 @@ demo\\c\\build\\cheetah_demo.exe ^
 #### File Demo
 
 ```console
-usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-y DEVICE] [-p] [-n] wav_path0 wav_path1 ...
+usage: -a ACCESS_KEY -m MODEL_PATH -l LIBRARY_PATH [-y DEVICE] [-p] [-n] [-v] wav_path0 wav_path1 ...
+-i (show_inference_devices)
 ```
 
 Run the command corresponding to your platform from the root of the repository. Replace `${ACCESS_KEY}` with yours
@@ -178,12 +181,14 @@ obtained from [Picovoice Console](https://console.picovoice.ai/) and `${WAV_PATH
 
 Use the `-p` flag to disable automatic punctuation.
 
-Use the `-n` flag to enable text normalization.
+Use the `-n` flag to disable text normalization.
+
+Use the `-v` flag to enable the printing of word metadata.
 
 ##### Linux (x86_64)
 
 ```console
-./demo/c/build/cheetah_demo \
+./demo/c/build/cheetah_demo_file \
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/linux/x86_64/libpv_cheetah.so \
@@ -194,7 +199,7 @@ ${WAV_PATH}
 ##### macOS (x86_64)
 
 ```console
-./demo/c/build/cheetah_demo \
+./demo/c/build/cheetah_demo_file \
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/mac/x86_64/libpv_cheetah.dylib \
@@ -205,7 +210,7 @@ ${WAV_PATH}
 ##### macOS (arm64)
 
 ```console
-./demo/c/build/cheetah_demo \
+./demo/c/build/cheetah_demo_file \
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/mac/arm64/libpv_cheetah.dylib \
@@ -218,7 +223,7 @@ ${WAV_PATH}
 Run using `Command Prompt`.
 
 ```console
-demo\\c\\build\\cheetah_demo.exe ^
+demo\\c\\build\\cheetah_demo_file.exe ^
 -a ${ACCESS_KEY} ^
 -m lib\\common\\cheetah_params.pv ^
 -l lib\\windows\\amd64\\libpv_cheetah.dll ^
@@ -229,7 +234,7 @@ ${WAV_PATH}
 ##### Raspberry Pi 4
 
 ```console
-./demo/c/build/cheetah_demo \
+./demo/c/build/cheetah_demo_file \
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a72/libpv_cheetah.so \
@@ -240,7 +245,7 @@ ${WAV_PATH}
 ##### Raspberry Pi 4 (64-bit)
 
 ```console
-./demo/c/build/cheetah_demo \
+./demo/c/build/cheetah_demo_file \
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a72-aarch64/libpv_cheetah.so \
@@ -251,7 +256,7 @@ ${WAV_PATH}
 ##### Raspberry Pi 3
 
 ```console
-./demo/c/build/cheetah_demo \
+./demo/c/build/cheetah_demo_file \
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a53/libpv_cheetah.so \
@@ -262,7 +267,7 @@ ${WAV_PATH}
 ##### Raspberry Pi 3 (64-bit)
 
 ```console
-./demo/c/build/cheetah_demo \
+./demo/c/build/cheetah_demo_file \
 -a ${ACCESS_KEY} \
 -m lib/common/cheetah_params.pv \
 -l lib/raspberry-pi/cortex-a53-aarch64/libpv_cheetah.so \

@@ -14,7 +14,10 @@ import struct
 import wave
 
 import pvcheetah
-from pvcheetah import CheetahActivationLimitError, create
+from pvcheetah import (
+    CheetahActivationLimitError,
+    create
+)
 
 
 def main():
@@ -28,6 +31,10 @@ def main():
     parser.add_argument(
         '--model_path',
         help='Absolute path to Cheetah model. Default: using the model provided by `pvcheetah`')
+    parser.add_argument(
+        '--verbose',
+        action='store_true',
+        help='Print word-level metadata of the transcription')
     parser.add_argument(
         '--disable_automatic_punctuation',
         action='store_true',
@@ -59,20 +66,22 @@ def main():
     if args.access_key is None or args.wav_paths is None:
         raise ValueError("Arguments --access_key and --wav_paths are required.")
 
-    o = create(
-        access_key=args.access_key,
-        model_path=args.model_path,
-        device=args.device,
-        library_path=args.library_path,
-        enable_automatic_punctuation=not args.disable_automatic_punctuation,
-        enable_text_normalization=not args.disable_text_normalization)
-
     try:
         for wav_path in args.wav_paths:
+            o = create(
+                access_key=args.access_key,
+                model_path=args.model_path,
+                device=args.device,
+                library_path=args.library_path,
+                enable_automatic_punctuation=not args.disable_automatic_punctuation,
+                enable_text_normalization=not args.disable_text_normalization)
+
             with wave.open(wav_path, 'rb') as f:
                 if f.getframerate() != o.sample_rate:
                     raise ValueError(
-                        "invalid sample rate of `%d`. cheetah only accepts `%d`" % (f.getframerate(), o.sample_rate))
+                        "invalid sample rate of `%d`. cheetah only accepts `%d`"
+                        % (f.getframerate(), o.sample_rate)
+                    )
                 if f.getnchannels() != 1:
                     raise ValueError("this demo can only process single-channel WAV files")
                 if f.getsampwidth() != 2:
@@ -82,15 +91,39 @@ def main():
                 audio = struct.unpack('%dh' % (len(buffer) / struct.calcsize('h')), buffer)
 
             num_frames = len(audio) // o.frame_length
-            transcript = ''
+            if args.verbose:
+                print(f"{'word':<15} {'start_sec':>10} {'end_sec':>10} {'confidence':>12}", flush=True)
+                print(f"{'-' * 15} {'-' * 10} {'-' * 10} {'-' * 12}", flush=True)
+
             for i in range(num_frames):
                 frame = audio[i * o.frame_length:(i + 1) * o.frame_length]
-                partial_transcript, _ = o.process(frame)
-                print(partial_transcript, end='', flush=True)
-                transcript += partial_transcript
+                partial_output = o.process_annotated(frame)
+                if args.verbose:
+                    for word in partial_output.words:
+                        print(
+                            f"{word.word:<15} "
+                            f"{word.start_sec:>10.2f} "
+                            f"{word.end_sec:>10.2f} "
+                            f"{word.confidence:>12.2f}",
+                            flush=True,
+                        )
+                else:
+                    print(partial_output.transcript, end='', flush=True)
 
-            final_transcript = o.flush()
-            print(final_transcript)
+            final_output = o.flush_annotated()
+
+            if args.verbose:
+                for word in final_output.words:
+                    print(
+                        f"{word.word:<15} "
+                        f"{word.start_sec:>10.2f} "
+                        f"{word.end_sec:>10.2f} "
+                        f"{word.confidence:>12.2f}",
+                        flush=True,
+                    )
+                print()
+            else:
+                print(final_output.transcript, flush=True)
 
     except CheetahActivationLimitError:
         print('AccessKey has reached its processing limit.')

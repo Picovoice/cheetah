@@ -14,8 +14,10 @@ import 'package:cheetah_flutter/cheetah.dart';
 import 'package:cheetah_flutter/cheetah_error.dart';
 import 'package:flutter_voice_processor/flutter_voice_processor.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 
-typedef TranscriptCallback = Function(String transcript);
+
+typedef TranscriptCallback = Function(String additionalTranscript, List<CheetahWord> additionalWords);
 
 typedef ProcessErrorCallback = Function(CheetahException error);
 
@@ -54,19 +56,21 @@ class CheetahManager {
       }
 
       try {
-        CheetahTranscript partialResult = await _cheetah!.process(frame);
+        CheetahTranscriptAnnotated partialResult = await _cheetah!.processAnnotated(frame);
 
+        String finalTranscript = partialResult.transcript;
+        List<CheetahWord> finalWords = partialResult.words;
         if (partialResult.isEndpoint) {
-          CheetahTranscript remainingResult = await _cheetah!.flush();
-          String finalTranscript =
-              partialResult.transcript + remainingResult.transcript;
+          CheetahTranscriptAnnotated remainingResult = await _cheetah!.flushAnnotated();
+          finalTranscript += remainingResult.transcript;
           if (remainingResult.transcript.isNotEmpty) {
             finalTranscript += " ";
           }
-          _transcriptCallback(finalTranscript);
-        } else {
-          _transcriptCallback(partialResult.transcript);
+          finalWords.addAll(remainingResult.words);
         }
+
+        _transcriptCallback(finalTranscript, finalWords);
+
       } on CheetahException catch (error) {
         processErrorCallback(error);
       }
@@ -115,8 +119,8 @@ class CheetahManager {
             "Failed to stop audio recording: ${e.message}");
       }
 
-      CheetahTranscript cheetahTranscript = await _cheetah!.flush();
-      _transcriptCallback("${cheetahTranscript.transcript} ");
+      CheetahTranscriptAnnotated cheetahTranscript = await _cheetah!.flushAnnotated();
+      _transcriptCallback(cheetahTranscript.transcript, cheetahTranscript.words);
     }
   }
 

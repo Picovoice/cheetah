@@ -27,12 +27,15 @@ import org.junit.runners.Parameterized;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
 
 import ai.picovoice.cheetah.Cheetah;
 import ai.picovoice.cheetah.CheetahException;
+import ai.picovoice.cheetah.CheetahTranscript;
 
 
 @RunWith(Parameterized.class)
@@ -146,5 +149,42 @@ public class LanguageTests extends BaseTest {
 
         boolean useCER = language.equals("ja");
         assertTrue(getWordErrorRate(result, expectedTranscript, useCER) < errorRate);
+    }
+
+    @Test
+    public void testTranscribeAnnotated() throws Exception {
+        String modelPath = getModelFilepath(modelFile);
+        Cheetah cheetah = new Cheetah.Builder()
+                .setAccessKey(accessKey)
+                .setModelPath(modelPath)
+                .setDevice(device)
+                .setEnableTextNormalization(normalization)
+                .build(appContext);
+
+        File audioFile = new File(getAudioFilepath(testAudioFile));
+        Entry<String, ArrayList<CheetahTranscript.Word>> result = processAnnotatedTestAudio(cheetah, audioFile);
+        String resultText = result.getKey();
+        ArrayList<CheetahTranscript.Word> resultWords = result.getValue();
+        cheetah.delete();
+
+        String transcript = expectedTranscript;
+        for (String punctuation : punctuations) {
+            transcript = transcript.replace(punctuation, "");
+        }
+
+        boolean useCER = language.equals("ja");
+        assertTrue(getWordErrorRate(resultText, transcript, useCER) < errorRate);
+
+        assertTrue(resultWords.size() > 0);
+
+        float currentTime = 0.0f;
+        for (CheetahTranscript.Word word : resultWords) {
+            assertTrue(word.getWord().length() > 0);
+            assertTrue(word.getStartSec() >= currentTime);
+            assertTrue(word.getEndSec() >= word.getStartSec());
+            assertTrue(word.getConfidence() >= 0.0f);
+            assertTrue(word.getConfidence() <= 1.0f);
+            currentTime = word.getEndSec();
+        }
     }
 }

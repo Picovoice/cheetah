@@ -97,7 +97,7 @@ void print_error_message(char **message_stack, int32_t message_stack_depth) {
 
 void print_usage(const char *program_name) {
     fprintf(stderr,
-            "Usage : %s -a ACCESS_KEY -l LIBRARY_PATH -m MODEL_PATH [-y DEVICE] [-p] [-n] [-d DEVICE_INDEX] [-e ENDPOINT_DURATION] \n"
+            "Usage : %s -a ACCESS_KEY -l LIBRARY_PATH -m MODEL_PATH [-y DEVICE] [-p] [-n] [-v] [-d DEVICE_INDEX] [-e ENDPOINT_DURATION] \n"
             "        %s [-i SHOW_INFERENCE_DEVICES]\n"
             "        %s [-s SHOW_AUDIO_DEVICES]\n",
             program_name,
@@ -211,9 +211,11 @@ int picovoice_main(int argc, char *argv[]) {
     bool enable_text_normalization = true;
     int32_t device_index = -1;
     bool show_inference_devices = false;
+    bool verbose = false;
+    bool showed_headers = false;
 
     int opt;
-    while ((opt = getopt(argc, argv, "a:m:l:e:y:pnd:s:i")) != -1) {
+    while ((opt = getopt(argc, argv, "a:m:l:e:y:pnd:siv")) != -1) {
         switch (opt) {
             case 'a':
                 access_key = optarg;
@@ -241,6 +243,9 @@ int picovoice_main(int argc, char *argv[]) {
                 break;
             case 'n':
                 enable_text_normalization = false;
+                break;
+            case 'v':
+                verbose = true;
                 break;
             case 'd':
                 device_index = (int32_t) strtol(optarg, NULL, 10);
@@ -313,14 +318,14 @@ int picovoice_main(int argc, char *argv[]) {
         exit(1);
     }
 
-    pv_status_t (*pv_cheetah_process_func)(pv_cheetah_t *, const int16_t *, char **, bool *) =
+    pv_status_t (*pv_cheetah_process_func)(pv_cheetah_t *, const int16_t *, char **, int32_t *, pv_word_t **, bool *) =
             load_symbol(dl_handle, "pv_cheetah_process");
     if (!pv_cheetah_process_func) {
         print_dl_error("failed to load `pv_cheetah_process`");
         exit(1);
     }
 
-    pv_status_t (*pv_cheetah_flush_func)(pv_cheetah_t *, char **) = load_symbol(dl_handle, "pv_cheetah_flush");
+    pv_status_t (*pv_cheetah_flush_func)(pv_cheetah_t *, char **, int32_t *, pv_word_t **) = load_symbol(dl_handle, "pv_cheetah_flush");
     if (!pv_cheetah_flush_func) {
         print_dl_error("failed to load `pv_cheetah_flush`");
         exit(1);
@@ -342,6 +347,12 @@ int picovoice_main(int argc, char *argv[]) {
             load_symbol(dl_handle, "pv_cheetah_transcript_delete");
     if (!pv_cheetah_transcript_delete_func) {
         print_dl_error("failed to load `pv_cheetah_transcript_delete`");
+        exit(1);
+    }
+
+    pv_status_t (*pv_cheetah_words_delete_func)(int32_t , pv_word_t *) = load_symbol(dl_handle, "pv_cheetah_words_delete");
+    if (!pv_cheetah_words_delete_func) {
+        print_dl_error("failed to load `pv_cheetah_words_delete`");
         exit(1);
     }
 
@@ -429,8 +440,10 @@ int picovoice_main(int argc, char *argv[]) {
         }
 
         char *partial_transcript = NULL;
+        int32_t partial_num_words = 0;
+        pv_word_t *partial_words = NULL;
         bool is_endpoint = false;
-        status = pv_cheetah_process_func(cheetah, pcm, &partial_transcript, &is_endpoint);
+        status = pv_cheetah_process_func(cheetah, pcm, &partial_transcript, &partial_num_words, &partial_words, &is_endpoint);
         if (status != PV_STATUS_SUCCESS) {
             fprintf(
                 stderr,
@@ -455,12 +468,35 @@ int picovoice_main(int argc, char *argv[]) {
             pv_free_error_stack_func(message_stack);
             exit(1);
         }
-        fprintf(stdout, "%s", partial_transcript);
-        fflush(stdout);
+        if (verbose) {
+            if (!showed_headers) {
+                fprintf(stdout, "%-15s %10s %10s %12s\n", "word", "start_sec", "end_sec", "confidence");
+                fprintf(stdout, "%-15s %10s %10s %12s\n",
+                        "---------------", "----------", "----------", "------------");
+                fflush(stdout);
+                showed_headers = true;
+            }
+            for (int i = 0; i < partial_num_words; i++) {
+                fprintf(stdout, "%-15s %10.2f %10.2f %12.2f\n",
+                    (partial_words)[i].word,
+                    (partial_words)[i].start_sec,
+                    (partial_words)[i].end_sec,
+                    (partial_words)[i].confidence);
+                fflush(stdout);
+            }
+        }
+        else {
+            fprintf(stdout, "%s", partial_transcript);
+            fflush(stdout);
+        }
         pv_cheetah_transcript_delete_func(partial_transcript);
+        pv_cheetah_words_delete_func(partial_num_words, partial_words);
+
         if (is_endpoint) {
             char *final_transcript = NULL;
-            status = pv_cheetah_flush_func(cheetah, &final_transcript);
+            int32_t final_num_words = 0;
+            pv_word_t *final_words = NULL;
+            status = pv_cheetah_flush_func(cheetah, &final_transcript, &final_num_words, &final_words);
             if (status != PV_STATUS_SUCCESS) {
                 fprintf(
                     stderr,
@@ -485,8 +521,28 @@ int picovoice_main(int argc, char *argv[]) {
                 pv_free_error_stack_func(message_stack);
                 exit(1);
             }
-            fprintf(stdout, "%s\n", final_transcript);
+            if (verbose) {
+                if (!showed_headers) {
+                    fprintf(stdout, "%-15s %10s %10s %12s\n", "word", "start_sec", "end_sec", "confidence");
+                    fprintf(stdout, "%-15s %10s %10s %12s\n",
+                            "---------------", "----------", "----------", "------------");
+                    fflush(stdout);
+                    showed_headers = true;
+                }
+                for (int i = 0; i < final_num_words; i++) {
+                    fprintf(stdout, "%-15s %10.2f %10.2f %12.2f\n",
+                        (final_words)[i].word,
+                        (final_words)[i].start_sec,
+                        (final_words)[i].end_sec,
+                        (final_words)[i].confidence);
+                }
+            }
+            else {
+                fprintf(stdout, "%s", final_transcript);
+                fflush(stdout);
+            }
             pv_cheetah_transcript_delete_func(final_transcript);
+            pv_cheetah_words_delete_func(final_num_words, final_words);
         }
     }
     fprintf(stdout, "\n");

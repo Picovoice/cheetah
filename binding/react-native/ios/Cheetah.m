@@ -36,6 +36,15 @@ RCT_EXTERN_METHOD(flush: (NSString *)handle
                   resolver: (RCTPromiseResolveBlock)resolve
                   rejecter: (RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(processAnnotated: (NSString *)handle
+                  pcm: (NSArray<NSNumber>)pcm
+                  resolver: (RCTPromiseResolveBlock)resolve
+                  rejecter: (RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(flushAnnotated: (NSString *)handle
+                  resolver: (RCTPromiseResolveBlock)resolve
+                  rejecter: (RCTPromiseRejectBlock)reject)
+
 + (BOOL)requiresMainQueueSetup
 {
     return YES;

@@ -20,3 +20,16 @@ export type CheetahInputOptions = {
 };
 
 export type CheetahOptions = CheetahInitOptions & CheetahInputOptions;
+
+export type CheetahWord = {
+  word: string;
+  startSeconds: number;
+  endSeconds: number;
+  confidence: number;
+};
+
+export type CheetahTranscriptAnnotated = {
+  transcript: string;
+  words: CheetahWord[];
+  isEndpoint: boolean;
+};

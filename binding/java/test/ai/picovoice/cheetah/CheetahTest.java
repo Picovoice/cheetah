@@ -270,6 +270,84 @@ public class CheetahTest {
         assertTrue(getErrorRate(transcript.toString(), normalizedTranscript) <= targetErrorRate);
     }
 
+    @ParameterizedTest(name = "test process data for ''{1}'' with punctuation ''{5}'' and normalization ''{6}''")
+    @MethodSource("processTestProvider")
+    void processAnnotated(
+            String language,
+            String modelFile,
+            String testAudioFile,
+            String referenceTranscript,
+            String[] punctuations,
+            boolean enableAutomaticPunctuation,
+            boolean enableTextNormalization,
+            float targetErrorRate) throws Exception {
+        String modelPath = Paths.get(System.getProperty("user.dir"))
+                .resolve(String.format("../../lib/common/%s", modelFile))
+                .toString();
+
+        Cheetah cheetah = new Cheetah.Builder()
+                .setAccessKey(accessKey)
+                .setModelPath(modelPath)
+                .setDevice(device)
+                .setEnableAutomaticPunctuation(enableAutomaticPunctuation)
+                .setEnableTextNormalization(enableTextNormalization)
+                .build();
+
+        int frameLen = cheetah.getFrameLength();
+        String audioFilePath = Paths.get(System.getProperty("user.dir"))
+                .resolve(String.format("../../resources/audio_samples/%s", testAudioFile))
+                .toString();
+        File testAudioPath = new File(audioFilePath);
+
+        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(testAudioPath);
+        assertEquals(16000, audioInputStream.getFormat().getFrameRate());
+
+        int byteDepth = audioInputStream.getFormat().getFrameSize();
+        byte[] pcm = new byte[frameLen * byteDepth];
+        short[] cheetahFrame = new short[frameLen];
+
+        StringBuilder transcript = new StringBuilder();
+        ArrayList<CheetahTranscript.Word> words = new ArrayList<>();
+        int numBytesRead = 0;
+        while ((numBytesRead = audioInputStream.read(pcm)) != -1) {
+            if (numBytesRead / byteDepth == frameLen) {
+                ByteBuffer.wrap(pcm).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(cheetahFrame);
+                CheetahTranscriptAnnotated transcriptObj = cheetah.processAnnotated(cheetahFrame);
+                transcript.append(transcriptObj.getTranscript());
+                for (CheetahTranscript.Word word : transcriptObj.getWordArray()) {
+                    words.add(word);
+                }
+            }
+        }
+        CheetahTranscriptAnnotated finalTranscriptObj = cheetah.flushAnnotated();
+        transcript.append(finalTranscriptObj.getTranscript());
+        for (CheetahTranscript.Word word : finalTranscriptObj.getWordArray()) {
+            words.add(word);
+        }
+
+        cheetah.delete();
+
+        String normalizedTranscript = referenceTranscript;
+        if (!enableAutomaticPunctuation) {
+            for (String punctuation : punctuations) {
+                normalizedTranscript = normalizedTranscript.replace(punctuation, "");
+            }
+        }
+
+        assertTrue(getErrorRate(transcript.toString(), normalizedTranscript) <= targetErrorRate);
+        assertTrue(words.size() > 0);
+
+        float currentTime = 0.0f;
+        for (CheetahTranscript.Word word : words) {
+            assertTrue(word.getWord().length() > 0);
+            assertTrue(word.getStartSec() >= currentTime);
+            assertTrue(word.getEndSec() >= word.getStartSec());
+            assertTrue(word.getConfidence() >= 0.0f);
+            assertTrue(word.getConfidence() <= 1.0f);
+            currentTime = word.getEndSec();
+        }
+    }
+
     private static class ProcessTestData {
         public final String language;
         public final String[] models;
