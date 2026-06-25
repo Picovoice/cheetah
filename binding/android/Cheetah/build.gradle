@@ -9,9 +9,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.2.2"
-        classpath "com.squareup.okhttp3:okhttp:4.12.0"
-        classpath "org.yaml:snakeyaml:2.6"
+        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.squareup.okhttp3:okhttp:5.4.0'
+        classpath 'org.yaml:snakeyaml:2.6'
     }
 }
 

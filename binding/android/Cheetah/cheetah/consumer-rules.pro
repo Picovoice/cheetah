@@ -1,2 +1,3 @@
 -keep class ai.picovoice.cheetah.*Exception { <init>(...); }
 -keep class ai.picovoice.cheetah.CheetahTranscript { <init>(...); }
+-keep class ai.picovoice.cheetah.CheetahTranscriptAnnotated { <init>(...); }
