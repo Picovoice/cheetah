@@ -97,6 +97,32 @@ cheetah = pvcheetah.create(
     model_path='${MODEL_FILE_PATH}')
 ```
 
+## Train Models over API
+
+You can train models over API without going to the console:
+
+```python
+train_model_from_words(
+        "${ACCESS_KEY}",                                                   # AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+        "${OUTPUT_PATH}",                                                  # Path to save the newly trained model.
+        "${LANGUAGE}",                                                     # Two-character language code.
+        {"${NEW_WORD}": set(["${PRONUNCIATION1}", "${PRONUNCIATION2}"])},  # New words with optional custom pronunciation to add to the model.
+        set(["${BOOST_WORD1}", "${BOOST_WORD2}"]))                         # Boost words.
+```
+
+(or)
+
+```python
+train_model_from_yaml(
+        "${ACCESS_KEY}",   # AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+        "${OUTPUT_PATH}",  # Path to save the newly trained model.
+        "${LANGUAGE}",     # Two-character language code.
+        "${YAML_PATH}")    # Path to YAML configuration file.
+```
+
+Check [Cheetah Model API](https://picovoice.ai/docs/model-api/cheetah/) docs for a list of supported languages.
+
+
 ## Demos
 
 [pvcheetahdemo](https://pypi.org/project/pvcheetahdemo/) provides command-line utilities for processing audio using

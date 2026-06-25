@@ -9,10 +9,17 @@
 # specific language governing permissions and limitations under the License.
 #
 
+import os
+from io import StringIO
 from typing import (
+    Dict,
     Optional,
-    Sequence
+    Sequence,
+    Set
 )
+
+from ruamel.yaml import YAML
+from ruamel.yaml.error import YAMLError
 
 from ._cheetah import (
     Cheetah,
@@ -20,7 +27,8 @@ from ._cheetah import (
 )
 from ._util import (
     default_library_path,
-    default_model_path
+    default_model_path,
+    pv_train_model,
 )
 
 
@@ -88,7 +96,87 @@ def available_devices(library_path: Optional[str] = None) -> Sequence[str]:
     return list_hardware_devices(library_path=library_path)
 
 
+def train_model_from_yaml(
+        access_key: str,
+        output_path: str,
+        language: str,
+        yaml_path: str):
+    """
+    Trains a model using a Cat content (.yml) file.
+
+    :param access_key: AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+    :param output_path: Absolute path to file where the trained model will be saved.
+    :param language: Two character language code for the model (i.e 'en', 'fr').
+    Check https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
+    :param yaml_path: Absolute path to the YAML configuration file.
+    """
+
+    if not os.path.exists(yaml_path):
+        raise IOError("Couldn't find yaml file at '%s'." % yaml_path)
+
+    with open(yaml_path) as f:
+        yaml_content = f.read()
+
+    pv_train_model(
+        access_key=access_key,
+        output_path=output_path,
+        language=language,
+        yaml_content=yaml_content)
+
+
+def train_model_from_words(
+        access_key: str,
+        output_path: str,
+        language: str,
+        new_words: Dict[str, Set[str]],
+        boost_words: Set[str]):
+    """
+    Trains a model using the specified `new_words` and `boost_words` arguments.
+
+    :param access_key: AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+    :param output_path: Absolute path to file where the trained model will be saved.
+    :param language: Two character language code for the model (i.e 'en', 'fr').
+    Check https://picovoice.ai/docs/model-api/cheetah/ for supported languages.
+    :param new_words: A dictionary of words to pronunciations to add to the new model. Keys should be
+    the word string. Values are a Set of pronunciations for the given word, each pronunciation
+    is a string of space separated IPA phonemes. An empty Set will result in the training
+    generating a default pronunciation.
+    :param boost_words: A Set of words to "boost". The engine will be more likely to select the boosted words.
+    """
+
+    yaml = YAML()
+    stream = StringIO()
+
+    new_words_content = dict()
+    for key, value in new_words.items():
+        new_words_content[key] = list(value)
+    boost_words_content = list(boost_words)
+
+    content = {
+        'new': new_words_content,
+        'boost': boost_words_content
+    }
+    try:
+        yaml.dump(content, stream)
+    except YAMLError as e:
+        if hasattr(e, "problem_mark"):
+            raise ValueError(f"YAML error at line {e.problem_mark.line + 1}: {e.problem}") from e
+        else:
+            raise ValueError("Failed to parse yaml content") from e
+
+    yaml_content = stream.getvalue()
+    stream.close()
+
+    pv_train_model(
+        access_key=access_key,
+        output_path=output_path,
+        language=language,
+        yaml_content=yaml_content)
+
+
 __all__ = [
     'available_devices',
     'create',
+    'train_model_from_yaml',
+    'train_model_from_words',
 ]

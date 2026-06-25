@@ -1,5 +1,5 @@
 #
-# Copyright 2022-2024 Picovoice Inc.
+# Copyright 2022-2026 Picovoice Inc.
 #
 # You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
 # file accompanying this source.
@@ -12,6 +12,13 @@
 import os
 import platform
 import subprocess
+
+from typing import Sequence, Set
+
+import requests
+
+from ruamel.yaml import YAML
+from ruamel.yaml.error import YAMLError
 
 
 def _is_64bit():
@@ -82,4 +89,74 @@ def default_model_path(relative):
     return os.path.join(os.path.dirname(__file__), relative, 'lib/common/cheetah_params.pv')
 
 
-__all__ = ['default_library_path', 'default_model_path']
+VALID_LANGUAGES = ('de', 'en', 'es', 'fr', 'it', 'pt')
+PV_API_URL = "https://rest.picovoice.ai/"
+
+
+def pv_train_model(
+        access_key: str,
+        output_path: str,
+        language: str,
+        yaml_content: str):
+
+    if language not in VALID_LANGUAGES:
+        raise ValueError("Invalid language ('%s')" % language)
+
+    try:
+        yaml = YAML()
+        content = yaml.load(yaml_content)
+    except YAMLError as e:
+        if hasattr(e, "problem_mark"):
+            raise ValueError(f"YAML error at line {e.problem_mark.line + 1}: {e.problem}") from e
+        else:
+            raise ValueError("Failed to parse yaml content") from e
+
+    if 'new' not in content:
+        raise ValueError("YAML must contain `new` field")
+    if 'boost' not in content:
+        raise ValueError("YAML must contain `boost` field")
+
+    if not isinstance(content['boost'], Sequence):
+        raise ValueError("`boost` field should be of type `Sequence`")
+    if not all([isinstance(b, str) for b in content['boost']]):
+        raise ValueError("`boost` words should be of type `str`")
+
+    for n in content['new']:
+        if not isinstance(n, str):
+            raise ValueError(f"`{n}` words should be of type `str`")
+        pronunciations = content['new'][n]
+        if not isinstance(pronunciations, Sequence):
+            raise ValueError(f"`{n}` pronunciations should be of type `Sequence`")
+        for p in pronunciations:
+            if not isinstance(p, str):
+                raise ValueError(f"Each of `{n}` pronunciations should be of type `str`")
+
+    payload = {
+        "engine": "cheetah",
+        "model_type": "default",
+        "yaml_content": yaml_content
+    }
+
+    headers = {
+        "x-api-key": access_key
+    }
+
+    url = f"{PV_API_URL}{language}/api/cat"
+
+    try:
+        response = requests.post(url, json=payload, headers=headers, allow_redirects=True)
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        raise RuntimeError(f"HTTP {e.response.status_code}: {e.response.text}") from e
+    except requests.exceptions.RequestException as e:
+        raise RuntimeError(f"Request failed: {e}") from e
+
+    with open(output_path, 'wb') as f:
+        f.write(response.content)
+
+
+__all__ = [
+    'default_library_path',
+    'default_model_path',
+    'pv_train_model',
+]
