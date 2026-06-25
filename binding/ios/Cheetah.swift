@@ -356,8 +356,8 @@ public class Cheetah {
         let boostWordsContent: [String] = Array(boostWords)
 
         let root: [String: Any] = [
-            "new": newWords,
-            "boost": boostWords
+            "new": newWordsContent,
+            "boost": boostWordsContent
         ]
 
         let newYaml: String
