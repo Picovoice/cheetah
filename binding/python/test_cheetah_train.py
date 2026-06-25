@@ -31,8 +31,8 @@ class CheetahTrainTestCase(unittest.TestCase):
             access_key=self.ACCESS_KEY,
             output_path=output_path,
             language="en",
-            new_words={'picovoice': ["t l k dʒ ɛ dʒ"]},
-            boost_words=['computer'])
+            new_words={'picovoice': set(["t l k dʒ ɛ dʒ"])},
+            boost_words=set(['computer']))
 
         self.assertTrue(os.path.exists(output_path))
 
@@ -53,8 +53,8 @@ class CheetahTrainTestCase(unittest.TestCase):
                 access_key=self.ACCESS_KEY,
                 output_path=output_path,
                 language="en",
-                new_words={'picovoice': [], 1234: []},
-                boost_words=['computer', 1256])
+                new_words={'picovoice': set([]), 1234: set([])},
+                boost_words=set(['computer', 1256]))
 
 
 if __name__ == '__main__':

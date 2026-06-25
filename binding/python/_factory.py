@@ -147,9 +147,14 @@ def train_model_from_words(
     yaml = YAML()
     stream = StringIO()
 
+    new_words_content = dict()
+    for key, value in new_words.items():
+        new_words_content[key] = list(value)
+    boost_words_content = list(boost_words)
+
     content = {
-        'new': new_words,
-        'boost': boost_words
+        'new': new_words_content,
+        'boost': boost_words_content
     }
     try:
         yaml.dump(content, stream)

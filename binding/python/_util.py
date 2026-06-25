@@ -13,7 +13,7 @@ import os
 import platform
 import subprocess
 
-from typing import Sequence
+from typing import Sequence, Set
 
 import requests
 
