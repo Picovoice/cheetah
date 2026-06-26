@@ -41,7 +41,7 @@ jobs:
         with:
           python-version: '3.10'
       - run:
-          pip3 install requests
+          pip3 install requests boto3
 
       - name: Make build dir
         run: mkdir ddp
@@ -101,4 +101,4 @@ jobs:
           --aws_secret "${{secrets.AWS_DEVICE_FARM_ACCESS_KEY_SECRET}}"
           --project_arn "${{secrets.AWS_DEVICE_FARM_PROJECT_ARN}}"
           --test_spec_arn "${{secrets.AWS_DEVICE_FARM_IOS_TEST_SPEC_ARN}}"
-          --device_pool_arn "${{secrets.AWS_DEVICE_FARM_IOS_PERF_DEVICE_POOL_ARN}}
+          --device_pool_arn "${{secrets.AWS_DEVICE_FARM_IOS_PERF_DEVICE_POOL_ARN}}"
