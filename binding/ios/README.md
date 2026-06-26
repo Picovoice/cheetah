@@ -104,6 +104,34 @@ let cheetah = Cheetah(accessKey: accessKey, modelPath: "${MODEL_FILE_PATH")
 let cheetah = Cheetah(accessKey: accessKey, modelURL: "${MODEL_FILE_URL}")
 ```
 
+## Train Models over API
+
+You can train models over API without going to the console:
+
+```swift
+Cheetah.trainModelFromWords(
+        "${ACCESS_KEY}",                                              // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+        "${OUTPUT_PATH}",                                             // Path to save the newly trained model.
+        "${LANGUAGE}",                                                // Two-character language code.
+        ["${NEW_WORD}": ["${PRONUNCIATION1}", "${PRONUNCIATION2}"]],  // New words with optional custom pronunciation to add to the model.
+        ["${BOOST_WORD1}", "${BOOST_WORD2}"]                          // Boost words.
+)
+```
+
+(or)
+
+```swift
+Cheetah.trainModelFromYaml(
+        "${ACCESS_KEY}",     // AccessKey obtained from Picovoice Console (https://console.picovoice.ai/).
+        "${OUTPUT_PATH}",    // Path to save the newly trained model.
+        "${LANGUAGE}",       // Two-character language code.
+        "${YAML_CONTENT}"    // YAML configuration as string.
+)
+```
+
+Check [Cheetah Model API](https://picovoice.ai/docs/model-api/cheetah/) docs for a list of supported languages.
+
+
 ## Running Unit Tests
 
 Copy your `AccessKey` into the `accessKey` variable in [`CheetahAppTestUITests.swift`](CheetahAppTest/CheetahAppTestUITests/CheetahAppTestUITests.swift). Open [`CheetahAppTest.xcodeproj`](CheetahAppTest/CheetahAppTest.xcodeproj) with XCode and run the tests with `Product > Test`.
