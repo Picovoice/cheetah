@@ -9,6 +9,7 @@
   specific language governing permissions and limitations under the License.
 */
 
+/// <reference no-default-lib="false"/>
 /// <reference lib="webworker" />
 
 import { Cheetah } from './cheetah';

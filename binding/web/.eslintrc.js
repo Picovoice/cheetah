@@ -18,6 +18,7 @@ module.exports = {
       files: ['src/**/*.ts'],
       extends: ['plugin:@typescript-eslint/recommended'],
       rules: {
+        '@typescript-eslint/no-parameter-properties': 2,
         '@typescript-eslint/no-explicit-any': 0,
         '@typescript-eslint/no-var-requires': 2,
         '@typescript-eslint/no-non-null-assertion': 2,
