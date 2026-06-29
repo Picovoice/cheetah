@@ -17,15 +17,15 @@
   "author": "Picovoice Inc",
   "license": "Apache-2.0",
   "dependencies": {
-    "@picovoice/cheetah-web": "4.1.1",
-    "@picovoice/web-voice-processor": "~4.0.8",
-    "mime-types": "^2.1.35"
+    "@picovoice/cheetah-web": "../../binding/web",
+    "@picovoice/web-voice-processor": "~4.0.10",
+    "mime-types": "^3.0.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.22.0",
-    "eslint": "^9.22.0",
-    "globals": "^16.0.0",
-    "http-server": "^14.0.0",
-    "prettier": "3.5.1"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.6.0",
+    "globals": "^17.7.0",
+    "http-server": "^14.1.1",
+    "prettier": "3.9.3"
   }
 }
