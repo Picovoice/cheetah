@@ -387,7 +387,7 @@ describe("Cheetah Binding", function () {
     for (const testParam of testData.tests.language_tests) {
       for (const modelFile of testParam.models) {
         it(`should be able to process (${testParam.language}) (default model) (norm ${testParam.normalization}) (${instanceString})`, () => cy.getFramesFromFile(
-            `audio_samples/${testParam.audio_file}`
+          `audio_samples/${testParam.audio_file}`
         ).then(
           async (pcm: Int16Array) => {
             await runProcTest(
@@ -409,7 +409,7 @@ describe("Cheetah Binding", function () {
         ));
 
         it(`should be able to process with punctuation (${testParam.language}) (default model) (norm ${testParam.normalization}) (${instanceString})`, () => cy.getFramesFromFile(
-            `audio_samples/${testParam.audio_file}`
+          `audio_samples/${testParam.audio_file}`
         ).then(
           async (pcm: Int16Array) => await runProcTest(
             instance,
@@ -429,7 +429,7 @@ describe("Cheetah Binding", function () {
         ));
 
         it(`should be able to processAnnotated (${testParam.language}) (default model) (norm ${testParam.normalization}) (${instanceString})`, () => cy.getFramesFromFile(
-            `audio_samples/${testParam.audio_file}`
+          `audio_samples/${testParam.audio_file}`
         ).then(
           async (pcm: Int16Array) => {
             await runProcAnnotatedTest(
