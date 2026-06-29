@@ -169,8 +169,8 @@ class CheetahDemoUITests: XCTestCase {
                             enableAutomaticPunctuation: false,
                             enableTextNormalization: testCase.normalization)
                 }
-                
-                // Prevent iOS from killing the application for overusage
+
+                // Prevent iOS from killing the application for over usage
                 sleep(8)
             }
         }
@@ -273,8 +273,8 @@ class CheetahDemoUITests: XCTestCase {
                             enableAutomaticPunctuation: false,
                             enableTextNormalization: testCase.normalization)
                 }
-                
-                // Prevent iOS from killing the application for overusage
+
+                // Prevent iOS from killing the application for over usage
                 sleep(8)
             }
         }
@@ -311,8 +311,8 @@ class CheetahDemoUITests: XCTestCase {
                             enableAutomaticPunctuation: true,
                             enableTextNormalization: testCase.normalization)
                 }
-                
-                // Prevent iOS from killing the application for overusage
+
+                // Prevent iOS from killing the application for over usage
                 sleep(8)
             }
         }
