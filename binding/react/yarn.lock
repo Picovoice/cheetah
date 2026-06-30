@@ -1265,12 +1265,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@picovoice/cheetah-web@4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-4.1.0.tgz#4cdb9d4e80ac3009349852c398999c153421417d"
-  integrity sha512-B0r7pSl+zITjs2kIOf+Cs3yVp9kP/nK7Z3GKEQOI3VdJey+g7n4VrtN1l7PUE2dOA1PT9VUQFtOqe03E/dqjWA==
+"@picovoice/cheetah-web@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-4.1.2.tgz#e823b3d7fef37c2dc180ef029eff8a3d792b611d"
+  integrity sha512-QVliEEh8MsZW/H8R1ewR9S0jlyfwRft2nEThAUgAMl8u0eQ0QryDhDrw7f9VDCoBOPjmu5oztkdnPMmBU3eNuA==
   dependencies:
-    "@picovoice/web-utils" "=1.4.3"
+    "@picovoice/web-utils" "=1.4.8"
+    yaml "^2.9.0"
 
 "@picovoice/web-utils@=1.3.1":
   version "1.3.1"
@@ -1279,10 +1280,10 @@
   dependencies:
     commander "^9.2.0"
 
-"@picovoice/web-utils@=1.4.3":
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/@picovoice/web-utils/-/web-utils-1.4.3.tgz#1de0b20d6080c18d295c6df37c09d88bf7c4f555"
-  integrity sha512-7JN3YYsSD9Gtce6YKG3XqpX49dkeu7jTdbox7rHQA/X/Q3zxopXA9zlCKSq6EIjFbiX2iuzDKUx1XrFa3d8c0w==
+"@picovoice/web-utils@=1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@picovoice/web-utils/-/web-utils-1.4.8.tgz#a6bc79d44675cc69fc57d888e541431f9f677ece"
+  integrity sha512-251nUTlx4yeJAx6vtJj5h/JJ49S2RD97mHDjMTnu+6z7sNhiJQHa4aJu/7YZY1R/G8MSy4oz+zaVOrsRwepXLw==
   dependencies:
     commander "^10.0.1"
 
@@ -4678,6 +4679,11 @@ yallist@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
+
+yaml@^2.9.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.9.0.tgz#78274afd93598a1dfdd6130df6a566defcbf9aa4"
+  integrity sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==
 
 yauzl@^2.10.0:
   version "2.10.0"
