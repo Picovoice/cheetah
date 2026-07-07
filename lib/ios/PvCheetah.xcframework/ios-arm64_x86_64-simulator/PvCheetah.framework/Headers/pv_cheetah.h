@@ -117,6 +117,7 @@ PV_API pv_status_t pv_cheetah_process(
         int32_t *num_words,
         pv_word_t **words,
         bool *is_endpoint);
+
 /**
  * Marks the end of the audio stream, flushes internal state of the object, and returns any remaining transcript and
  * word-level information. The caller is responsible for freeing the transcription buffer by calling
@@ -137,12 +138,14 @@ PV_API pv_status_t pv_cheetah_flush(
         char **transcript,
         int32_t *num_words,
         pv_word_t **words);
+
 /**
  * Deletes transcript returned from `pv_cheetah_process()` or `pv_cheetah_flush()`
  *
  * @param transcript transcription string returned from `pv_cheetah_process()` or `pv_cheetah_flush()`
  */
 PV_API void pv_cheetah_transcript_delete(char *transcript);
+
 /**
  * Deletes word-level information returned from `pv_cheetah_process()` or `pv_cheetah_flush()`.
  *
@@ -190,6 +193,7 @@ PV_API void pv_cheetah_free_hardware_devices(
         int32_t num_hardware_devices);
 
 #ifdef __cplusplus
+
 }
 
 #endif
