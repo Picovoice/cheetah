@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,6 +16,7 @@
 		079B98C72FBFA92300B44EC7 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 079B98C62FBFA92300B44EC7 /* Cheetah */; };
 		07B4E8462FB39288005F31B0 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 07B4E8452FB39288005F31B0 /* Cheetah */; };
 		07B4E84F2FB39EE5005F31B0 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 07B4E84E2FB39EE5005F31B0 /* Cheetah */; };
+		07B9F3042FFDC19300E23A27 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 07B9F3032FFDC19300E23A27 /* Cheetah */; };
 		07BB210F2F8D8F41009A69FF /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 07BB210E2F8D8F41009A69FF /* Cheetah */; };
 		1E00655827CFF7EB006FF6E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E00655727CFF7EB006FF6E9 /* AppDelegate.swift */; };
 		1E00655C27CFF7EB006FF6E9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E00655B27CFF7EB006FF6E9 /* ViewController.swift */; };
@@ -100,6 +101,7 @@
 				07B4E84F2FB39EE5005F31B0 /* Cheetah in Frameworks */,
 				0789F18D2FE5EAD3006EEA53 /* Cheetah in Frameworks */,
 				07B4E8462FB39288005F31B0 /* Cheetah in Frameworks */,
+				07B9F3042FFDC19300E23A27 /* Cheetah in Frameworks */,
 				5A1C386D2EE8DA7900FEF522 /* Cheetah in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -324,7 +326,7 @@
 			);
 			mainGroup = 1E00654B27CFF7EB006FF6E9;
 			packageReferences = (
-				07151E4B2FEDCD7D001AD81E /* XCRemoteSwiftPackageReference "cheetah" */,
+				07B9F3022FFDC19200E23A27 /* XCLocalSwiftPackageReference "../../../../cheetah" */,
 			);
 			productRefGroup = 1E00655527CFF7EB006FF6E9 /* Products */;
 			projectDirPath = "";
@@ -734,6 +736,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		07B9F3022FFDC19200E23A27 /* XCLocalSwiftPackageReference "../../../../cheetah" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../../../cheetah;
+		};
 		E1E0C7FE2CF11FD9001D6D84 /* XCLocalSwiftPackageReference "../../../../cheetah" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../../../cheetah;
@@ -814,6 +820,10 @@
 		07B4E84E2FB39EE5005F31B0 /* Cheetah */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 07B4E84D2FB39EE5005F31B0 /* XCRemoteSwiftPackageReference "cheetah" */;
+			productName = Cheetah;
+		};
+		07B9F3032FFDC19300E23A27 /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
 			productName = Cheetah;
 		};
 		07BB210E2F8D8F41009A69FF /* Cheetah */ = {
