@@ -17,6 +17,9 @@ on:
       - '.github/workflows/android-perf.yml'
       - 'binding/android/CheetahTestApp/**'
 
+env:
+  PV_WORKFLOW_MODE: staging
+
 defaults:
   run:
     working-directory: binding/android/CheetahTestApp
@@ -49,6 +52,11 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+
+    - name: Build binding
+      if: ${{ env.PV_WORKFLOW_MODE == 'staging' }}
+      run: ./gradlew assembleRelease --info
+      working-directory: binding/android/Cheetah
 
     - name: Copy test_resources
       run: ./copy_test_resources.sh
