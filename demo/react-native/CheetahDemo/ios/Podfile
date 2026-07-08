@@ -14,6 +14,22 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
+# Bumpt fmt version to 12.1.0 to avoid build failure with Xcode 26.4+
+# Patch both fmt.podspec and RCT-Folly.podspec before CocoaPods resolves dependencies
+# TODO: remove after updating RN to 84+
+fmt_podspec_path = File.join(__dir__, '..', 'node_modules', 'react-native', 'third-party-podspecs', 'fmt.podspec')
+folly_podspec_path = File.join(__dir__, '..', 'node_modules', 'react-native', 'third-party-podspecs', 'RCT-Folly.podspec')
+if File.exist?(fmt_podspec_path)
+  fmt_content = File.read(fmt_podspec_path)
+  fmt_content.gsub!('"11.0.2"', '"12.1.0"')
+  File.write(fmt_podspec_path, fmt_content)
+end
+if File.exist?(folly_podspec_path)
+  folly_content = File.read(folly_podspec_path)
+  folly_content.gsub!('spec.dependency "fmt", "11.0.2"', 'spec.dependency "fmt", "12.1.0"')
+  File.write(folly_podspec_path, folly_content)
+end
+
 target 'CheetahDemo' do
   config = use_native_modules!
 
