@@ -1,6 +1,6 @@
 {
   "name": "cheetah-web-demo",
-  "version": "4.1.2",
+  "version": "4.1.3",
   "description": "A basic demo to show how to use Cheetah for web browsers, using the IIFE version of the library",
   "main": "index.js",
   "private": true,
@@ -17,7 +17,7 @@
   "author": "Picovoice Inc",
   "license": "Apache-2.0",
   "dependencies": {
-    "@picovoice/cheetah-web": "4.1.2",
+    "@picovoice/cheetah-web": "4.1.3",
     "@picovoice/web-voice-processor": "~4.0.8",
     "mime-types": "^2.1.35"
   },
