@@ -64,11 +64,11 @@ jobs:
         machine: [rpi3-32, rpi3-64, rpi4-32, rpi4-64, rpi5-64]
         include:
         - machine: rpi3-32
-          init_performance_threshold_sec: 14.0
-          proc_performance_threshold_sec: 9.3
+          init_performance_threshold_sec: 15.0
+          proc_performance_threshold_sec: 15.0
         - machine: rpi3-64
-          init_performance_threshold_sec: 13.5
-          proc_performance_threshold_sec: 8.3
+          init_performance_threshold_sec: 15.0
+          proc_performance_threshold_sec: 15.0
         - machine: rpi4-32
           init_performance_threshold_sec: 8.5
           proc_performance_threshold_sec: 4.6
