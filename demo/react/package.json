@@ -1,10 +1,10 @@
 {
   "name": "cheetah-react-demo",
-  "version": "4.1.0",
+  "version": "4.1.2",
   "private": true,
   "description": "Cheetah React demo (made with Create React App)",
   "dependencies": {
-    "@picovoice/cheetah-react": "4.1.0",
+    "@picovoice/cheetah-react": "4.1.2",
     "@picovoice/web-voice-processor": "~4.0.10",
     "@types/node": "^18.11.9",
     "@types/react": "^19.0.0",

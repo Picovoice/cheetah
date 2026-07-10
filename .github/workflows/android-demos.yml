@@ -15,6 +15,9 @@ on:
       - 'demo/android/**'
       - '!demo/android/CheetahDemo/README.md'
 
+env:
+  PV_WORKFLOW_MODE: release
+
 jobs:
   build-cheetah-demo:
     runs-on: ubuntu-latest
@@ -38,6 +41,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Set up Java 11
+      if: ${{ env.PV_WORKFLOW_MODE == 'staging' }}
+      uses: actions/setup-java@v3
+      with:
+        java-version: 11
+        distribution: 'temurin'
+
+    - name: Build binding
+      if: ${{ env.PV_WORKFLOW_MODE == 'staging' }}
+      run: ./gradlew assembleRelease --info
+      working-directory: binding/android/Cheetah
 
     - name: Override gradle settings
       run: sed -i "s/com.android.tools.build:gradle:[0-9]*\.[0-9]*\.[0-9]*/com.android.tools.build:gradle:${{ matrix.agp-version }}/g" build.gradle

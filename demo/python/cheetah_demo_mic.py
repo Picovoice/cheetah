@@ -126,7 +126,7 @@ def main():
                                 flush=True,
                             )
                     else:
-                        print(final_output.transcript, end='', flush=True)
+                        print(final_output.transcript, flush=True)
 
         finally:
             recorder.stop()

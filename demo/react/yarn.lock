@@ -1656,19 +1656,20 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@picovoice/cheetah-react@4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-react/-/cheetah-react-4.1.0.tgz#b3f414617fce1194f676593ac827a4d00a3e3ffc"
-  integrity sha512-X9e8GIgZFFj+rfhPzv2qklI+zikCHvkj268f4I532E6NopI4CEPbhQspdONm7RvHY9MJ62r4Q62ZCxW9AUCnjQ==
+"@picovoice/cheetah-react@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-react/-/cheetah-react-4.1.2.tgz#ac2fd41d4541bac6e00d1ccd2190366b8db8c782"
+  integrity sha512-7NzK8YYr6latmZlYF/Gua/rWtwthIgx9y8QCDpF+t/xgzVZwi5IEXEAKnfZgce3pa22ibURaZ54lcXpLqxZVpA==
   dependencies:
-    "@picovoice/cheetah-web" "4.1.0"
+    "@picovoice/cheetah-web" "4.1.4"
 
-"@picovoice/cheetah-web@4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-4.1.0.tgz#4cdb9d4e80ac3009349852c398999c153421417d"
-  integrity sha512-B0r7pSl+zITjs2kIOf+Cs3yVp9kP/nK7Z3GKEQOI3VdJey+g7n4VrtN1l7PUE2dOA1PT9VUQFtOqe03E/dqjWA==
+"@picovoice/cheetah-web@4.1.4":
+  version "4.1.4"
+  resolved "https://registry.yarnpkg.com/@picovoice/cheetah-web/-/cheetah-web-4.1.4.tgz#5c3dc52f62dd58fe550cd2253e6230a2552abdbb"
+  integrity sha512-/8PZH6XdPi6CAjYBCPCUJheX9fE6QnBKYzYr2dvSA9YL5Xpi5rKAXhrXtrJjekqSS6T9D1ooAlurR/YIM/hDpQ==
   dependencies:
-    "@picovoice/web-utils" "=1.4.3"
+    "@picovoice/web-utils" "=1.4.8"
+    yaml "^2.9.0"
 
 "@picovoice/web-utils@=1.3.1":
   version "1.3.1"
@@ -1677,10 +1678,10 @@
   dependencies:
     commander "^9.2.0"
 
-"@picovoice/web-utils@=1.4.3":
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/@picovoice/web-utils/-/web-utils-1.4.3.tgz#1de0b20d6080c18d295c6df37c09d88bf7c4f555"
-  integrity sha512-7JN3YYsSD9Gtce6YKG3XqpX49dkeu7jTdbox7rHQA/X/Q3zxopXA9zlCKSq6EIjFbiX2iuzDKUx1XrFa3d8c0w==
+"@picovoice/web-utils@=1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@picovoice/web-utils/-/web-utils-1.4.8.tgz#a6bc79d44675cc69fc57d888e541431f9f677ece"
+  integrity sha512-251nUTlx4yeJAx6vtJj5h/JJ49S2RD97mHDjMTnu+6z7sNhiJQHa4aJu/7YZY1R/G8MSy4oz+zaVOrsRwepXLw==
   dependencies:
     commander "^10.0.1"
 
@@ -9881,6 +9882,11 @@ yaml@^2.3.4:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.8.0.tgz#15f8c9866211bdc2d3781a0890e44d4fa1a5fff6"
   integrity sha512-4lLa/EcQCB0cJkyts+FpIRx5G/llPxfP6VQU5KByHEhLxY3IJCH0f0Hy1MHI8sClTvsIb8qwRJ6R/ZdlDJ/leQ==
+
+yaml@^2.9.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.9.0.tgz#78274afd93598a1dfdd6130df6a566defcbf9aa4"
+  integrity sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==
 
 yargs-parser@^20.2.2:
   version "20.2.9"
