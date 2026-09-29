@@ -1,5 +1,5 @@
 /*
-    Copyright 2022-2025 Picovoice Inc.
+    Copyright 2022-2026 Picovoice Inc.
 
     You may not use this file except in compliance with the license. A copy of the license is
     located in the "LICENSE" file accompanying this source.
@@ -72,6 +72,13 @@ public class CheetahTest {
         int distance = levenshteinDistance(transcriptWords, referenceWords);
 
         return (float) distance / (float) referenceWords.length;
+    }
+
+    private static float getCharacterErrorRate(String transcript, String reference) {
+        String[] transcriptChars = transcript.replaceAll("\\s+", "").split("");
+        String[] referenceChars = reference.replaceAll("\\s+", "").split("");
+        int distance = levenshteinDistance(transcriptChars, referenceChars);
+        return (float) distance / referenceChars.length;
     }
 
     private static ProcessTestData[] loadProcessTestData() throws IOException {
@@ -267,7 +274,10 @@ public class CheetahTest {
             }
         }
 
-        assertTrue(getErrorRate(transcript.toString(), normalizedTranscript) <= targetErrorRate);
+        float errorRate = (language.equals("ko") || language.equals("ja")) ?
+            getCharacterErrorRate(transcript.toString(), normalizedTranscript) :
+            getErrorRate(transcript.toString(), normalizedTranscript);
+        assertTrue(errorRate <= targetErrorRate);
     }
 
     @ParameterizedTest(name = "test process data for ''{1}'' with punctuation ''{5}'' and normalization ''{6}''")
@@ -334,7 +344,10 @@ public class CheetahTest {
             }
         }
 
-        assertTrue(getErrorRate(transcript.toString(), normalizedTranscript) <= targetErrorRate);
+        float errorRate = (language.equals("ko") || language.equals("ja")) ?
+            getCharacterErrorRate(transcript.toString(), normalizedTranscript) :
+            getErrorRate(transcript.toString(), normalizedTranscript);
+        assertTrue(errorRate <= targetErrorRate);
         assertTrue(words.size() > 0);
 
         float currentTime = 0.0f;
