@@ -1,9 +1,9 @@
 PODS:
   - boost (1.84.0)
-  - Cheetah-iOS (4.1.2):
+  - Cheetah-iOS (4.2.0):
     - Yams (~> 5.0.6)
   - cheetah-react-native (4.1.1):
-    - Cheetah-iOS (~> 4.1.2)
+    - Cheetah-iOS (~> 4.2.0)
     - React
   - DoubleConversion (1.1.6)
   - fast_float (8.0.0)

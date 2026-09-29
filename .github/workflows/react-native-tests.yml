@@ -112,7 +112,7 @@ jobs:
       run: yarn remove @picovoice/cheetah-react-native
 
     - name: Add new local package
-      run: yarn add ../../pkg/picovoice-cheetah-react-native-4.0.0.tgz
+      run: yarn add ../../pkg/picovoice-cheetah-react-native-4.2.0.tgz
 # ************** REMOVE AFTER RELEASE ********************
 
     - name: Pre-build dependencies
