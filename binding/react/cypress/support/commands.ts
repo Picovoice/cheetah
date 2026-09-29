@@ -2,6 +2,7 @@ import { WebVoiceProcessor } from '@picovoice/web-voice-processor';
 import { act } from '@testing-library/react-hooks/dom';
 
 const WAV_HEADER_SIZE = 44;
+const FRAME_LENGTH = 512;
 
 Cypress.Commands.add('wrapHook', (fn: () => Promise<any>) =>
   cy.wrap(null).then(async () => {
@@ -24,8 +25,8 @@ Cypress.Commands.add('mockRecording', (path: string, delayMs = 2000) => {
     .then(async blob => {
       let data = new Int16Array(await blob.arrayBuffer());
       data = data.slice(WAV_HEADER_SIZE / Int16Array.BYTES_PER_ELEMENT);
-      for (let i = 0; i < data.length; i += 512) {
-        instance.recorderCallback(data.slice(i, i + 512));
+      for (let i = 0; i < data.length; i += FRAME_LENGTH) {
+        instance.recorderCallback(data.slice(i, i + FRAME_LENGTH));
       }
     })
     .wait(delayMs);

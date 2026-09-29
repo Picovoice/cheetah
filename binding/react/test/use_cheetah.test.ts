@@ -314,7 +314,8 @@ describe('Cheetah binding', () => {
                 publicPath: `${CYPRESS_BASE_URI}/test/${modelFile}`,
                 forceWrite: true,
               },
-              enablePunctuation: false
+              enablePunctuation: false,
+              useCER: (testParam.language == "ko" || testParam.language == "ja"),
             }
           );
         });
@@ -333,7 +334,8 @@ describe('Cheetah binding', () => {
                 publicPath: `${CYPRESS_BASE_URI}/test/${modelFile}`,
                 forceWrite: true,
               },
-              enablePunctuation: true
+              enablePunctuation: true,
+              useCER: (testParam.language == "ko" || testParam.language == "ja"),
             }
           );
         });
@@ -352,7 +354,8 @@ describe('Cheetah binding', () => {
                 publicPath: `${CYPRESS_BASE_URI}/test/${modelFile}`,
                 forceWrite: true,
               },
-              enablePunctuation: false
+              enablePunctuation: false,
+              useCER: (testParam.language == "ko" || testParam.language == "ja"),
             }
           );
         });
