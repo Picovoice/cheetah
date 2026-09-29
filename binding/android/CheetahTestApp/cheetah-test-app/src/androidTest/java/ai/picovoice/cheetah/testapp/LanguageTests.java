@@ -128,7 +128,7 @@ public class LanguageTests extends BaseTest {
             transcript = transcript.replace(punctuation, "");
         }
 
-        boolean useCER = language.equals("ja");
+        boolean useCER = language.equals("ko") || language.equals("ja");
         assertTrue(getWordErrorRate(result, transcript, useCER) < errorRate);
     }
 
@@ -147,7 +147,7 @@ public class LanguageTests extends BaseTest {
         String result = processTestAudio(cheetah, audioFile);
         cheetah.delete();
 
-        boolean useCER = language.equals("ja");
+        boolean useCER = language.equals("ko") || language.equals("ja");
         assertTrue(getWordErrorRate(result, expectedTranscript, useCER) < errorRate);
     }
 
@@ -172,7 +172,7 @@ public class LanguageTests extends BaseTest {
             transcript = transcript.replace(punctuation, "");
         }
 
-        boolean useCER = language.equals("ja");
+        boolean useCER = language.equals("ko") || language.equals("ja");
         assertTrue(getWordErrorRate(resultText, transcript, useCER) < errorRate);
 
         assertTrue(resultWords.size() > 0);

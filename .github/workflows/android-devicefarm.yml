@@ -16,7 +16,7 @@ on:
       - 'script/automation/devicefarm.py'
 
 env:
-  PV_WORKFLOW_MODE: release
+  PV_WORKFLOW_MODE: staging
 
 defaults:
   run:
