@@ -15,8 +15,9 @@ import struct
 import wave
 from typing import *
 
+CER_LANGUAGES = ["ko", "ja"]
 
-def separate_words(text: str, punctuation: set[str] = {"."}) -> list[str]:
+def separate_words(text: str, punctuation: set[str] = {"."}, split_on_characters: bool = False) -> list[str]:
     result = []
     for chunk in text.split():
         current = ""
@@ -25,6 +26,8 @@ def separate_words(text: str, punctuation: set[str] = {"."}) -> list[str]:
                 if current:
                     result.append(current)
                     current = ""
+                result.append(char)
+            elif split_on_characters:
                 result.append(char)
             else:
                 current += char
@@ -42,17 +45,23 @@ def load_test_data() -> List[Tuple[str, str, str, str, List[str], List[str], boo
     language_tests = list()
     for t in test_data['language_tests']:
         for model_file in t['models']:
+            language = t['language']
             language_tests.append(
                 (
-                    t['language'],
+                    language,
                     model_file,
                     t['audio_file'],
                     t['transcript'],
-                    separate_words(t['transcript']),
+                    separate_words(
+                        t['transcript'],
+                        punctuation=t['punctuations'],
+                        split_on_characters=language == "ja"
+                    ),
                     t['punctuations'],
                     t['normalization'],
                     t['error_rate'],
-                    2
+                    t['mismatched_words'],
+                    language in CER_LANGUAGES,
                 )
             )
 
