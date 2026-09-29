@@ -50,6 +50,7 @@ function getModelSize(modelFile: string): number {
 }
 
 export function getLanguageTestParameters(): [
+  string,
   string[],
   string,
   string,
@@ -65,6 +66,7 @@ export function getLanguageTestParameters(): [
     });
   }
   return parametersJson.map((x: any) => [
+    x.language,
     x.models,
     x.audio_file,
     x.transcript,
