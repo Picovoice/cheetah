@@ -240,7 +240,7 @@ namespace CheetahTest
                     normalizedTranscript = normalizedTranscript.Replace(punctuation, "");
                 }
 
-                double errorRate = (language == "ko" || language == "ja") ? 
+                double errorRate = (language == "ko" || language == "ja") ?
                     GetCharacterErrorRate(transcript, normalizedTranscript) :
                     GetErrorRate(transcript, normalizedTranscript);
                 Assert.IsTrue(errorRate <= targetErrorRate);
@@ -300,7 +300,7 @@ namespace CheetahTest
                     normalizedTranscript = normalizedTranscript.Replace(punctuation, "");
                 }
 
-                double errorRate = (language == "ko" || language == "ja") ? 
+                double errorRate = (language == "ko" || language == "ja") ?
                     GetCharacterErrorRate(transcript, normalizedTranscript) :
                     GetErrorRate(transcript, normalizedTranscript);
                 Assert.IsTrue(errorRate <= targetErrorRate);
@@ -357,7 +357,7 @@ namespace CheetahTest
                 CheetahTranscript finalTranscriptObj = cheetah.Flush();
                 transcript += finalTranscriptObj.Transcript;
 
-                double errorRate = (language == "ko" || language == "ja") ? 
+                double errorRate = (language == "ko" || language == "ja") ?
                     GetCharacterErrorRate(transcript, referenceTranscript) :
                     GetErrorRate(transcript, referenceTranscript);
                 Assert.IsTrue(errorRate <= targetErrorRate);
