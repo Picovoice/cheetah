@@ -80,6 +80,7 @@ namespace CheetahTest
                 TestDataJson testData = LoadJsonTestData();
                 return testData.tests.language_tests
                     .SelectMany(x => x.models.Select(model => new object[] {
+                        x.language,
                         model,
                         x.audio_file,
                         x.transcript,
@@ -123,6 +124,13 @@ namespace CheetahTest
 
             int editDistance = LevenshteinDistance(transcriptWords, referenceTranscriptWords);
             return (double)editDistance / referenceTranscriptWords.Length;
+        }
+
+        private static double GetCharacterErrorRate(string transcript, string referenceTranscript)
+        {
+            string[] a = transcript.Replace(" ", "").Select(c => c.ToString()).ToArray();
+            string[] b = referenceTranscript.Replace(" ", "").Select(c => c.ToString()).ToArray();
+            return b.Length == 0 ? 0.0 : (double)LevenshteinDistance(a, b) / b.Length;
         }
 
         private static string GetModelPath(string modelFile)
@@ -191,6 +199,7 @@ namespace CheetahTest
         [TestMethod]
         [DynamicData(nameof(LanguageTestParameters))]
         public void TestProcess(
+            string language,
             string modelFile,
             string testAudioFile,
             string referenceTranscript,
@@ -231,13 +240,17 @@ namespace CheetahTest
                     normalizedTranscript = normalizedTranscript.Replace(punctuation, "");
                 }
 
-                Assert.IsTrue(GetErrorRate(transcript, normalizedTranscript) <= targetErrorRate);
+                double errorRate = (language == "ko" || language == "ja") ?
+                    GetCharacterErrorRate(transcript, normalizedTranscript) :
+                    GetErrorRate(transcript, normalizedTranscript);
+                Assert.IsTrue(errorRate <= targetErrorRate);
             }
         }
 
         [TestMethod]
         [DynamicData(nameof(LanguageTestParameters))]
         public void TestProcessAnnotated(
+            string language,
             string modelFile,
             string testAudioFile,
             string referenceTranscript,
@@ -287,7 +300,10 @@ namespace CheetahTest
                     normalizedTranscript = normalizedTranscript.Replace(punctuation, "");
                 }
 
-                Assert.IsTrue(GetErrorRate(transcript, normalizedTranscript) <= targetErrorRate);
+                double errorRate = (language == "ko" || language == "ja") ?
+                    GetCharacterErrorRate(transcript, normalizedTranscript) :
+                    GetErrorRate(transcript, normalizedTranscript);
+                Assert.IsTrue(errorRate <= targetErrorRate);
                 Assert.IsTrue(words.Count > 0);
 
                 float currentTime = 0.0f;
@@ -306,6 +322,7 @@ namespace CheetahTest
         [TestMethod]
         [DynamicData(nameof(LanguageTestParameters))]
         public void TestProcessWithPunctuation(
+            string language,
             string modelFile,
             string testAudioFile,
             string referenceTranscript,
@@ -340,7 +357,10 @@ namespace CheetahTest
                 CheetahTranscript finalTranscriptObj = cheetah.Flush();
                 transcript += finalTranscriptObj.Transcript;
 
-                Assert.IsTrue(GetErrorRate(transcript, referenceTranscript) <= targetErrorRate);
+                double errorRate = (language == "ko" || language == "ja") ?
+                    GetCharacterErrorRate(transcript, referenceTranscript) :
+                    GetErrorRate(transcript, referenceTranscript);
+                Assert.IsTrue(errorRate <= targetErrorRate);
             }
         }
 
