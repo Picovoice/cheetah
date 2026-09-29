@@ -63,6 +63,9 @@ async function startCheetah(accessKey) {
         }
       }
     };
+    window.WebVoiceProcessor.WebVoiceProcessor.setOptions({
+      frameLength: cheetah.frameLength
+    });
     await window.WebVoiceProcessor.WebVoiceProcessor.subscribe(processAnnotatedEngine);
     writeMessage("WebVoiceProcessor ready and listening!");
   } catch (err) {
