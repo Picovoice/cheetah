@@ -45,6 +45,11 @@ const wordErrorRate = (reference: string, hypothesis: string): number => {
   return ed / reference.split(' ').length;
 };
 
+const characterErrorRate = (reference: string, hypothesis: string): number => {
+  const ed = levenshteinDistance(reference.split(''), hypothesis.split(''));
+  return ed / reference.split('').length;
+};
+
 function logResult(result: Result) {
   if (result.success) {
     console.info(result);
@@ -152,6 +157,7 @@ async function runInitTestCase(
 }
 
 async function runProcTestCase(
+  language: string,
   modelFile: string,
   audioFile: string,
   expectedTranscript: string,
@@ -214,9 +220,12 @@ async function runProcTestCase(
       }
     }
 
-    const wer = wordErrorRate(transcript, normalizedTranscript);
-    if (wer > errorRate) {
-      result.errorString = `Expected WER '${wer}' to be less than '${errorRate}'`;
+    const useCER = language === "ko" || language === "ja";
+    const err = useCER ?
+        characterErrorRate(transcript, normalizedTranscript) :
+        wordErrorRate(transcript, normalizedTranscript);
+    if (err > errorRate) {
+      result.errorString = `Expected error '${err}' to be less than '${errorRate}'`;
       return result;
     }
 
@@ -288,6 +297,7 @@ async function processTests(annotated: boolean): Promise<Result[]> {
   for (const testParam of testData.tests.language_tests) {
     for (const modelFile of testParam.models) {
       const result = await runProcTestCase(
+        testParam.language,
         modelFile,
         testParam.audio_file,
         testParam.transcript,
@@ -306,6 +316,7 @@ async function processTests(annotated: boolean): Promise<Result[]> {
   for (const testParam of testData.tests.language_tests) {
     for (const modelFile of testParam.models) {
       const result = await runProcTestCase(
+        testParam.language,
         modelFile,
         testParam.audio_file,
         testParam.transcript,
