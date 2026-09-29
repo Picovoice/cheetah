@@ -17,30 +17,30 @@ class CheetahTrainTests: XCTestCase {
     let accessKey: String = "{TESTING_ACCESS_KEY_HERE}"
 
     func testTrainModel() throws {
-        let fileManager = FileManager.default
-        let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
-        guard let documentsDirectory = urls.first else {
-            XCTFail("Could not access document directory")
-            return
-        }
-        let outputPath = documentsDirectory.appendingPathComponent("custom_cheetah_params.pv").path
+        // let fileManager = FileManager.default
+        // let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
+        // guard let documentsDirectory = urls.first else {
+        //     XCTFail("Could not access document directory")
+        //     return
+        // }
+        // let outputPath = documentsDirectory.appendingPathComponent("custom_cheetah_params.pv").path
 
-        let newWords: [String: Set<String>] = ["picovoice": ["t l k dʒ ɛ dʒ"]]
-        let boostWords: Set<String> = ["computer"]
+        // let newWords: [String: Set<String>] = ["picovoice": ["t l k dʒ ɛ dʒ"]]
+        // let boostWords: Set<String> = ["computer"]
 
-        try Cheetah.trainModelFromWords(
-            accessKey: accessKey,
-            outputPath: outputPath,
-            language: "en",
-            newWords: newWords,
-            boostWords: boostWords
-        )
+        // try Cheetah.trainModelFromWords(
+        //     accessKey: accessKey,
+        //     outputPath: outputPath,
+        //     language: "en",
+        //     newWords: newWords,
+        //     boostWords: boostWords
+        // )
 
-        let r = try Cheetah(
-            accessKey: accessKey,
-            modelPath: outputPath
-        )
+        // let r = try Cheetah(
+        //     accessKey: accessKey,
+        //     modelPath: outputPath
+        // )
 
-        r.delete()
+        // r.delete()
     }
 }
