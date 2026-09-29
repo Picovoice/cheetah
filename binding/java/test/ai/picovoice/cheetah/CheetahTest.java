@@ -275,8 +275,8 @@ public class CheetahTest {
         }
 
         float errorRate = (language.equals("ko") || language.equals("ja")) ?
-            getCharacterErrorRate(transcript.toString(), normalizedTranscript) :
-            getErrorRate(transcript.toString(), normalizedTranscript);
+                getCharacterErrorRate(transcript.toString(), normalizedTranscript) :
+                getErrorRate(transcript.toString(), normalizedTranscript);
         assertTrue(errorRate <= targetErrorRate);
     }
 
@@ -345,8 +345,8 @@ public class CheetahTest {
         }
 
         float errorRate = (language.equals("ko") || language.equals("ja")) ?
-            getCharacterErrorRate(transcript.toString(), normalizedTranscript) :
-            getErrorRate(transcript.toString(), normalizedTranscript);
+                getCharacterErrorRate(transcript.toString(), normalizedTranscript) :
+                getErrorRate(transcript.toString(), normalizedTranscript);
         assertTrue(errorRate <= targetErrorRate);
         assertTrue(words.size() > 0);
 
