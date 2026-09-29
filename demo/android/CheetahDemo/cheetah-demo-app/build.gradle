@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
         applicationId "ai.picovoice.cheetahdemo"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion defaultTargetSdkVersion
         versionCode 1
         versionName "1.0"
