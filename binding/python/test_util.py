@@ -17,6 +17,7 @@ from typing import *
 
 CER_LANGUAGES = ["ko", "ja"]
 
+
 def separate_words(text: str, punctuation: set[str] = {"."}, split_on_characters: bool = False) -> list[str]:
     result = []
     for chunk in text.split():
