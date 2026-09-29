@@ -56,7 +56,6 @@ async function startCheetah(accessKey) {
     const processAnnotatedEngine = {
       worker: {
         postMessage: e => {
-          console.log(e);
           if (e.command && e.command === "process") {
             e.command = "process_annotated";
           }

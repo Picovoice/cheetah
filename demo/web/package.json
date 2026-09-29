@@ -18,7 +18,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@picovoice/cheetah-web": "file:../../binding/web",
-    "@picovoice/web-voice-processor": "~4.0.8",
+    "@picovoice/web-voice-processor": "~4.0.10",
     "mime-types": "^2.1.35"
   },
   "devDependencies": {
