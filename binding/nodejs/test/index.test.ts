@@ -60,6 +60,18 @@ const levenshteinDistance = (words1: string[], words2: string[]) => {
   return res[words1.length][words2.length];
 };
 
+const wordErrorRate = (
+  transcript: string,
+  expectedTranscript: string
+): number => {
+  const ed = levenshteinDistance(
+    transcript.trim().split(/\s+/),
+    expectedTranscript.trim().split(/\s+/)
+  );
+
+  return ed / expectedTranscript.trim().split(/\s+/).length;
+};
+
 const characterErrorRate = (
   transcript: string,
   expectedTranscript: string
@@ -125,6 +137,7 @@ const cheetahProcessAnnotatedWaveFile = (
 };
 
 const testCheetahProcess = (
+  language: string,
   modelFile: string,
   audioFile: string,
   referenceTranscript: string,
@@ -132,7 +145,7 @@ const testCheetahProcess = (
   enableAutomaticPunctuation: boolean,
   enableTextNormalization: boolean,
   enableAnnotated: boolean,
-  errorRate: number,
+  targetErrorRate: number,
 ) => {
   const modelPath = getModelPath(modelFile);
 
@@ -158,9 +171,12 @@ const testCheetahProcess = (
       normalizedTranscript = normalizedTranscript.replace(punctuation, "");
     }
   }
-  expect(
-    characterErrorRate(transcript, normalizedTranscript) < errorRate
-  ).toBeTruthy();
+
+  const errorRate = (language == "ko" || language == "ja") ?
+    characterErrorRate(transcript, normalizedTranscript) :
+    wordErrorRate(transcript, normalizedTranscript);
+
+  expect(errorRate < targetErrorRate).toBeTruthy();
 
   if (enableAnnotated) {
     expect(words.length).not.toEqual(0);
@@ -179,6 +195,7 @@ const testCheetahProcess = (
 
 describe('successful processes', () => {
   for (const [
+    language,
     models,
     audioFile,
     transcript,
@@ -189,6 +206,7 @@ describe('successful processes', () => {
     for (const modelFile of models) {
       it(`testing process: ${modelFile}`, () => {
         testCheetahProcess(
+          language,
           modelFile,
           audioFile,
           transcript,
@@ -202,6 +220,7 @@ describe('successful processes', () => {
 
       it(`testing process with punctuation: ${modelFile}`, () => {
         testCheetahProcess(
+          language,
           modelFile,
           audioFile,
           transcript,
@@ -215,6 +234,7 @@ describe('successful processes', () => {
 
       it(`testing processAnnotated: ${modelFile}`, () => {
         testCheetahProcess(
+          language,
           modelFile,
           audioFile,
           transcript,
