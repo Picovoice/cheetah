@@ -55,3 +55,7 @@
 
 ## [4.1.1] - 2026-07-08
 * Bug fixes
+
+## [4.2.0] - 2026-10-01
+* Added language support for Korean and Japanese
+* Improved engine performance
