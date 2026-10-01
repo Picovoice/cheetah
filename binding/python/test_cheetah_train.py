@@ -19,9 +19,6 @@ from ._util import *
 from .test_util import *
 
 
-# ************** REMOVE AFTER RELEASE ********************
-@unittest.skip("")
-# ********************************************************
 class CheetahTrainTestCase(unittest.TestCase):
 
     ACCESS_KEY = sys.argv[1]
