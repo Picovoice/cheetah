@@ -2457,7 +2457,6 @@ PODS:
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
-  - Cheetah-iOS (from `https://raw.githubusercontent.com/Picovoice/cheetah/v4.2-react-native/binding/ios/Cheetah-iOS.podspec`)
   - "cheetah-react-native (from `../node_modules/@picovoice/cheetah-react-native`)"
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
@@ -2539,6 +2538,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Cheetah-iOS
     - ios-voice-processor
     - React-Codegen
     - SocketRocket
@@ -2547,8 +2547,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
-  Cheetah-iOS:
-    :podspec: https://raw.githubusercontent.com/Picovoice/cheetah/v4.2-react-native/binding/ios/Cheetah-iOS.podspec
   cheetah-react-native:
     :path: "../node_modules/@picovoice/cheetah-react-native"
   DoubleConversion:
@@ -2703,14 +2701,9 @@ EXTERNAL SOURCES:
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
-CHECKOUT OPTIONS:
-  Cheetah-iOS:
-    :commit: 71b4ace99636899da7bf2b380a2a1a3542ae0ed0
-    :git: https://github.com/Picovoice/cheetah.git
-
 SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
-  Cheetah-iOS: 8f7d25923fdd87ec7acc104e45c8fa0fb5478778
+  Cheetah-iOS: 8b50be482bbcc6bb80c9d5e378280562c7f0fade
   cheetah-react-native: b926788de9ecd67547c42e6cfab85990fa921682
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   fast_float: b32c788ed9c6a8c584d114d0047beda9664e7cc6
@@ -2792,6 +2785,6 @@ SPEC CHECKSUMS:
   Yams: e10dae147f517ed57ecae37c5e8681bdf8fcab65
   Yoga: edeb9900b9e5bb5b27b9a6a2d5914e4fe4033c1b
 
-PODFILE CHECKSUM: db41034dcf624019dfd0432345e855807d947458
+PODFILE CHECKSUM: 5b705a8028cb475cb108ca5ac1d68d609cc01e56
 
 COCOAPODS: 1.16.2
