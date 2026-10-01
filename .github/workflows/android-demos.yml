@@ -16,7 +16,7 @@ on:
       - '!demo/android/CheetahDemo/README.md'
 
 env:
-  PV_WORKFLOW_MODE: staging
+  PV_WORKFLOW_MODE: release
 
 jobs:
   build-cheetah-demo:
