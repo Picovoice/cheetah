@@ -56,7 +56,6 @@ async function startCheetah(accessKey) {
     const processAnnotatedEngine = {
       worker: {
         postMessage: e => {
-          console.log(e);
           if (e.command && e.command === "process") {
             e.command = "process_annotated";
           }
@@ -64,6 +63,9 @@ async function startCheetah(accessKey) {
         }
       }
     };
+    window.WebVoiceProcessor.WebVoiceProcessor.setOptions({
+      frameLength: cheetah.frameLength
+    });
     await window.WebVoiceProcessor.WebVoiceProcessor.subscribe(processAnnotatedEngine);
     writeMessage("WebVoiceProcessor ready and listening!");
   } catch (err) {

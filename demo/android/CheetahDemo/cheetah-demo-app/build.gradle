@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
         applicationId "ai.picovoice.cheetahdemo"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion defaultTargetSdkVersion
         versionCode 1
         versionName "1.0"
@@ -121,7 +121,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'ai.picovoice:android-voice-processor:1.0.2'
-    implementation 'ai.picovoice:cheetah-android:4.1.4'
+    implementation 'ai.picovoice:cheetah-android:4.2.0'
 }
 
 afterEvaluate {

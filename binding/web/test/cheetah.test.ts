@@ -403,6 +403,7 @@ describe("Cheetah Binding", function () {
                   forceWrite: true,
                 },
                 enablePunctuation: false,
+                useCER: (testParam.language == "ko" || testParam.language == "ja"),
               }
             );
           }
@@ -424,6 +425,7 @@ describe("Cheetah Binding", function () {
                 forceWrite: true,
               },
               enablePunctuation: true,
+              useCER: (testParam.language == "ko" || testParam.language == "ja"),
             }
           )
         ));
@@ -445,6 +447,7 @@ describe("Cheetah Binding", function () {
                   forceWrite: true,
                 },
                 enablePunctuation: false,
+                useCER: (testParam.language == "ko" || testParam.language == "ja"),
               }
             );
           }

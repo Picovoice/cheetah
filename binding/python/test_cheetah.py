@@ -58,7 +58,8 @@ class CheetahTestCase(unittest.TestCase):
             punctuations: List[str],
             normalization: bool,
             error_rate: float,
-            mismatch_count_threshold: int):
+            mismatch_count_threshold: int,
+            use_cer: bool):
         o = None
 
         try:
@@ -86,7 +87,7 @@ class CheetahTestCase(unittest.TestCase):
                 normalized_transcript = normalized_transcript.replace(punctuation, "")
 
             self.assertLessEqual(
-                get_word_error_rate(transcript, normalized_transcript),
+                get_word_error_rate(transcript, normalized_transcript, use_cer=use_cer),
                 error_rate)
 
         finally:
@@ -104,7 +105,8 @@ class CheetahTestCase(unittest.TestCase):
             punctuations: List[str],
             normalization: bool,
             error_rate: float,
-            mismatch_count_threshold: int):
+            mismatch_count_threshold: int,
+            use_cer: bool):
         o = None
 
         try:
@@ -136,7 +138,7 @@ class CheetahTestCase(unittest.TestCase):
                 normalized_transcript = normalized_transcript.replace(punctuation, "")
 
             self.assertLessEqual(
-                get_word_error_rate(transcript, normalized_transcript),
+                get_word_error_rate(transcript, normalized_transcript, use_cer=use_cer),
                 error_rate)
             self.assertLessEqual(
                 get_mismatch_count(
@@ -165,7 +167,8 @@ class CheetahTestCase(unittest.TestCase):
             punctuations: List[str],
             normalization: bool,
             error_rate: float,
-            mismatch_count_threshold: int):
+            mismatch_count_threshold: int,
+            use_cer: bool):
         o = None
 
         try:
@@ -189,7 +192,7 @@ class CheetahTestCase(unittest.TestCase):
             transcript += final_transcript
 
             self.assertLessEqual(
-                get_word_error_rate(transcript, expected_transcript),
+                get_word_error_rate(transcript, expected_transcript, use_cer=use_cer),
                 error_rate)
         finally:
             if o is not None:
@@ -206,7 +209,8 @@ class CheetahTestCase(unittest.TestCase):
             punctuations: List[str],
             normalization: bool,
             error_rate: float,
-            mismatch_count_threshold: int):
+            mismatch_count_threshold: int,
+            use_cer: bool):
         o = None
 
         try:
@@ -233,7 +237,7 @@ class CheetahTestCase(unittest.TestCase):
             words.extend(final_output.words)
 
             self.assertLessEqual(
-                get_word_error_rate(transcript, expected_transcript),
+                get_word_error_rate(transcript, expected_transcript, use_cer=use_cer),
                 error_rate)
             self.assertLessEqual(
                 get_mismatch_count(

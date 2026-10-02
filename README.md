@@ -756,6 +756,11 @@ function App(props) {
 
 ## Releases
 
+### v4.2.0 - Oct 2nd, 2026
+
+- Added language support for Korean and Japanese
+- Improved engine performance
+
 ### v4.1.0 - June 24th, 2026
 
 - Added annotated transcriptions that include word timestamps and confidences

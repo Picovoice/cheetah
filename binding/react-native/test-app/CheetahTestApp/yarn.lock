@@ -1451,7 +1451,7 @@
     fastq "^1.6.0"
 
 "@picovoice/cheetah-react-native@file:../..":
-  version "4.1.1"
+  version "4.2.0"
 
 "@react-native-community/cli-clean@20.0.0":
   version "20.0.0"

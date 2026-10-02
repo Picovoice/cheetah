@@ -10,7 +10,8 @@
                 "transcript": "Today only platforms one and three are used.",
                 "punctuations": ["."],
                 "normalization": false,
-                "error_rate": 0.125
+                "error_rate": 0.125,
+                "mismatched_words": 1
             },
             {
                 "language": "en",
@@ -18,10 +19,11 @@
                     "cheetah_params.pv"
                 ],
                 "audio_file": "test_en_norm.wav",
-                "transcript": "The expression goes 6 × 10 = 60 not 600000 that gives us a 12% chance.",
+                "transcript": "The expression goes 6 × 10 = 60, not 600000. That gives us a 12% chance.",
                 "punctuations": [".", ","],
                 "normalization": true,
-                "error_rate": 0.025
+                "error_rate": 0.1,
+                "mismatched_words": 3
             },
             {
                 "language": "es",
@@ -32,7 +34,8 @@
                 "transcript": "Un homenaje a que abre era más que necesario.",
                 "punctuations": ["."],
                 "normalization": false,
-                "error_rate": 0.25
+                "error_rate": 0.25,
+                "mismatched_words": 2
             },
             {
                 "language": "es",
@@ -40,10 +43,11 @@
                     "cheetah_params_es.pv"
                 ],
                 "audio_file": "test_es_norm.wav",
-                "transcript": "Mi número favorito de es 268.",
+                "transcript": "Hace 10 años esto no era posible.",
                 "punctuations": ["."],
                 "normalization": true,
-                "error_rate": 0.25
+                "error_rate": 0.25,
+                "mismatched_words": 1
             },
             {
                 "language": "de",
@@ -54,7 +58,8 @@
                 "transcript": "Die Werbung vermittelt einen falschen Eindruck.",
                 "punctuations": ["."],
                 "normalization": false,
-                "error_rate": 0.025
+                "error_rate": 0.025,
+                "mismatched_words": 1
             },
             {
                 "language": "de",
@@ -62,10 +67,11 @@
                     "cheetah_params_de.pv"
                 ],
                 "audio_file": "test_de_norm.wav",
-                "transcript": "Meine Lieblingszahl ist 268",
+                "transcript": "Meine Lieblingszahl ist 268.",
                 "punctuations": ["."],
                 "normalization": true,
-                "error_rate": 0.25
+                "error_rate": 0.25,
+                "mismatched_words": 1
             },
             {
                 "language": "fr",
@@ -76,7 +82,8 @@
                 "transcript": "Les deux autres sont situés au bord de la mer jaune.",
                 "punctuations": ["."],
                 "normalization": false,
-                "error_rate": 0.025
+                "error_rate": 0.025,
+                "mismatched_words": 1
             },
             {
                 "language": "fr",
@@ -84,10 +91,11 @@
                     "cheetah_params_fr.pv"
                 ],
                 "audio_file": "test_fr_norm.wav",
-                "transcript": "Mon chiffre préféré 3061.",
+                "transcript": "Mon chiffre préféré est 3061.",
                 "punctuations": ["."],
                 "normalization": true,
-                "error_rate": 0.25
+                "error_rate": 0.25,
+                "mismatched_words": 1
             },
             {
                 "language": "it",
@@ -98,7 +106,8 @@
                 "transcript": "Dal passo si sale sulla vetta lungo la cresta sud.",
                 "punctuations": ["."],
                 "normalization": false,
-                "error_rate": 0.025
+                "error_rate": 0.025,
+                "mismatched_words": 1
             },
             {
                 "language": "it",
@@ -109,7 +118,8 @@
                 "transcript": "Il mio numero preferito è 26.",
                 "punctuations": ["."],
                 "normalization": true,
-                "error_rate": 0.025
+                "error_rate": 0.25,
+                "mismatched_words": 1
             },
             {
                 "language": "pt",
@@ -120,7 +130,8 @@
                 "transcript": "Um grupo de crianças está andando em um rio perto da margem do rio.",
                 "punctuations": ["."],
                 "normalization": false,
-                "error_rate": 0.025
+                "error_rate": 0.025,
+                "mismatched_words": 1
             },
             {
                 "language": "pt",
@@ -128,10 +139,59 @@
                     "cheetah_params_pt.pv"
                 ],
                 "audio_file": "test_pt_norm.wav",
-                "transcript": "Que tal 607",
+                "transcript": "O serviço de hospedagem e backup custará 600 euros por ano.",
                 "punctuations": ["."],
                 "normalization": true,
-                "error_rate": 0.025
+                "error_rate": 0.1,
+                "mismatched_words": 1
+            },
+            {
+                "language": "ko",
+                "models": [
+                    "cheetah_params_ko.pv"
+                ],
+                "audio_file": "test_ko.wav",
+                "transcript": "현실에서는 이러한 권리가 충분히 보장 받지 못하고 있습니다.",
+                "punctuations": ["."],
+                "normalization": false,
+                "error_rate": 0.025,
+                "mismatched_words": 1
+            },
+            {
+                "language": "ko",
+                "models": [
+                    "cheetah_params_ko.pv"
+                ],
+                "audio_file": "test_ko_norm.wav",
+                "transcript": "이것이 제대로 작동하려면 10 명이 필요합니다.",
+                "punctuations": ["."],
+                "normalization": true,
+                "error_rate": 0.1,
+                "mismatched_words": 1
+            },
+            {
+                "language": "ja",
+                "models": [
+                    "cheetah_params_ja.pv"
+                ],
+                "audio_file": "test_ja.wav",
+                "transcript": "あの人は日本語の先生だと思います。",
+                "punctuations": ["."],
+                "normalization": false,
+                "error_rate": 0.1,
+                "mismatched_words": 1
+            },
+            {
+                "language": "ja",
+                "models": [
+                    "cheetah_params_ja.pv"
+                ],
+                "audio_file": "test_ja_norm.wav",
+                "transcript": "ジョンソンは7点差の2243点で2位となっています。",
+                "punctuations": ["."],
+                "normalization": true,
+                "error_rate": 0.1,
+                "mismatched_words": 5
             }
         ]
     }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2023 Picovoice Inc.
+  Copyright 2023-2026 Picovoice Inc.
 
   You may not use this file except in compliance with the license. A copy of the license is located in the "LICENSE"
   file accompanying this source.
@@ -21,6 +21,47 @@ import {
   CheetahWorker,
 } from '@picovoice/cheetah-web';
 
+const createEngine = (
+  frameLength: number,
+  cheetahRef: CheetahWorker,
+  isAnnotated: boolean,
+) => {
+  const buffer = new Int16Array(frameLength);
+  let bufferLength = 0;
+
+  return {
+    onmessage: (e: MessageEvent) => {
+      if (e.data.command !== "process") {
+        return;
+      }
+
+      const input = e.data.inputFrame as Int16Array;
+      let offset = 0;
+
+      while (offset < input.length) {
+        const length = Math.min(
+          frameLength - bufferLength,
+          input.length - offset
+        );
+
+        buffer.set(input.subarray(offset, offset + length), bufferLength);
+
+        bufferLength += length;
+        offset += length;
+
+        if (bufferLength === frameLength) {
+          if (isAnnotated) {
+            cheetahRef.processAnnotated(buffer);
+          } else {
+            cheetahRef.process(buffer);
+          }
+          bufferLength = 0;
+        }
+      }
+    },
+  };
+};
+
 export const useCheetah = (): {
   result: {
     transcript: string;
@@ -40,11 +81,8 @@ export const useCheetah = (): {
   stop: () => Promise<void>;
   release: () => Promise<void>;
 } => {
-  type WvpMessageEvent = { command: string; };
   type PvEngine = {
-    worker: {
-      postMessage: (e: WvpMessageEvent) => void;
-    },
+    onmessage: (e: MessageEvent) => void;
   };
   type PvEngineKind = {
     isAnnotated: boolean,
@@ -136,7 +174,8 @@ export const useCheetah = (): {
         return;
       }
 
-      engineRef.current = { engine: cheetahRef.current, isAnnotated: false };
+      const engine = createEngine(cheetahRef.current.frameLength, cheetahRef.current, false);
+      engineRef.current = { engine: engine, isAnnotated: false };
       await WebVoiceProcessor.subscribe(engineRef.current.engine);
       setError(null);
       setIsListening(true);
@@ -160,21 +199,8 @@ export const useCheetah = (): {
         return;
       }
 
-      const processAnnotatedEngine = {
-        worker: {
-          postMessage: (e: WvpMessageEvent): void => {
-            if (!cheetahRef.current) {
-              return;
-            }
-
-            if (e.command && e.command === "process") {
-              e.command = "process_annotated";
-            }
-            cheetahRef.current.worker.postMessage(e);
-          }
-        }
-      };
-      engineRef.current = { engine: processAnnotatedEngine, isAnnotated: true };
+      const engine = createEngine(cheetahRef.current.frameLength, cheetahRef.current, true);
+      engineRef.current = { engine: engine, isAnnotated: true };
       await WebVoiceProcessor.subscribe(engineRef.current.engine);
       setError(null);
       setIsListening(true);

@@ -90,6 +90,15 @@ PV_API pv_status_t pv_cheetah_init(
 PV_API void pv_cheetah_delete(pv_cheetah_t *object);
 
 /**
+ * Reset the cheetah object and its internal states.
+ *
+ * @param object Cheetah object.
+ * @return Status code. Returns `PV_STATUS_INVALID_ARGUMENT`, `PV_STATUS_OUT_OF_MEMORY`,
+ * or `PV_STATUS_RUNTIME_ERROR` on failure.
+ */
+PV_API pv_status_t pv_cheetah_reset(pv_cheetah_t *object);
+
+/**
  * Processes a frame of audio and returns newly-transcribed text, word-level information, and a flag indicating if an
  * endpoint has been detected. Upon detection of an endpoint, the client may invoke `pv_cheetah_flush()` to retrieve any
  * remaining transcription and word-level information. The caller is responsible for freeing the transcription buffer by
