@@ -176,7 +176,7 @@
                 ],
                 "audio_file": "test_ja.wav",
                 "transcript": "あの人は日本語の先生だと思います。",
-                "punctuations": ["."],
+                "punctuations": ["。"],
                 "normalization": false,
                 "error_rate": 0.1,
                 "mismatched_words": 1
@@ -188,10 +188,34 @@
                 ],
                 "audio_file": "test_ja_norm.wav",
                 "transcript": "ジョンソンは7点差の2243点で2位となっています。",
-                "punctuations": ["."],
+                "punctuations": ["。"],
                 "normalization": true,
                 "error_rate": 0.1,
                 "mismatched_words": 5
+            },
+            {
+                "language": "zh",
+                "models": [
+                    "cheetah_params_zh.pv"
+                ],
+                "audio_file": "test_zh.wav",
+                "transcript": "中华民国与拉脱维亚关系是指中华民国与拉脱维亚共和国之间的关系。",
+                "punctuations": ["。"],
+                "normalization": false,
+                "error_rate": 0.1,
+                "mismatched_words": 1
+            },
+            {
+                "language": "zh",
+                "models": [
+                    "cheetah_params_zh.pv"
+                ],
+                "audio_file": "test_zh_norm.wav",
+                "transcript": "我一天算20块给你好不好？",
+                "punctuations": ["？"],
+                "normalization": true,
+                "error_rate": 0.1,
+                "mismatched_words": 3
             }
         ]
     }
