@@ -41,6 +41,8 @@ public class CheetahTest {
     private final String accessKey = System.getProperty("pvTestingAccessKey");
     private final String device = System.getProperty("pvTestingDevice");
 
+    private static final String[] CER_LANGUAGES = { "ko", "ja", "zh" };
+
     private static int levenshteinDistance(String[] transcript, String[] reference) {
         int m = transcript.length;
         int n = reference.length;
@@ -274,7 +276,7 @@ public class CheetahTest {
             }
         }
 
-        float errorRate = (language.equals("ko") || language.equals("ja")) ?
+        float errorRate = (CER_LANGUAGES.contains(language)) ?
                 getCharacterErrorRate(transcript.toString(), normalizedTranscript) :
                 getErrorRate(transcript.toString(), normalizedTranscript);
         assertTrue(errorRate <= targetErrorRate);
@@ -344,7 +346,7 @@ public class CheetahTest {
             }
         }
 
-        float errorRate = (language.equals("ko") || language.equals("ja")) ?
+        float errorRate = (CER_LANGUAGES.contains(language)) ?
                 getCharacterErrorRate(transcript.toString(), normalizedTranscript) :
                 getErrorRate(transcript.toString(), normalizedTranscript);
         assertTrue(errorRate <= targetErrorRate);
