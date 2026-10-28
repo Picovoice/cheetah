@@ -242,7 +242,7 @@ namespace CheetahTest
                     normalizedTranscript = normalizedTranscript.Replace(punctuation, "");
                 }
 
-                double errorRate = (CER_LANGUAGES.contains(language)) ?
+                double errorRate = (CER_LANGUAGES.Contains(language)) ?
                     GetCharacterErrorRate(transcript, normalizedTranscript) :
                     GetErrorRate(transcript, normalizedTranscript);
                 Assert.IsTrue(errorRate <= targetErrorRate);
@@ -302,7 +302,7 @@ namespace CheetahTest
                     normalizedTranscript = normalizedTranscript.Replace(punctuation, "");
                 }
 
-                double errorRate = (CER_LANGUAGES.contains(language)) ?
+                double errorRate = (CER_LANGUAGES.Contains(language)) ?
                     GetCharacterErrorRate(transcript, normalizedTranscript) :
                     GetErrorRate(transcript, normalizedTranscript);
                 Assert.IsTrue(errorRate <= targetErrorRate);
@@ -359,7 +359,7 @@ namespace CheetahTest
                 CheetahTranscript finalTranscriptObj = cheetah.Flush();
                 transcript += finalTranscriptObj.Transcript;
 
-                double errorRate = (CER_LANGUAGES.contains(language)) ?
+                double errorRate = (CER_LANGUAGES.Contains(language)) ?
                     GetCharacterErrorRate(transcript, referenceTranscript) :
                     GetErrorRate(transcript, referenceTranscript);
                 Assert.IsTrue(errorRate <= targetErrorRate);
