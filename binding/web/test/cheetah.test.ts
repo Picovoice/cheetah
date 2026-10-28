@@ -5,9 +5,11 @@ import testData from './test_data.json';
 // @ts-ignore
 import cheetahParams from "./cheetah_params";
 import { PvModel } from '@picovoice/web-utils';
-import {CheetahWord} from "../src/types";
+import { CheetahWord } from "../src/types";
 
 const ACCESS_KEY: string = Cypress.env('ACCESS_KEY');
+
+const CER_LANGUAGES = ["ko", "ja", "zh"]
 
 const levenshteinDistance = (words1: string[], words2: string[]) => {
   const res = Array.from(Array(words1.length + 1), () => new Array(words2.length + 1));
@@ -403,7 +405,7 @@ describe("Cheetah Binding", function () {
                   forceWrite: true,
                 },
                 enablePunctuation: false,
-                useCER: (testParam.language == "ko" || testParam.language == "ja"),
+                useCER: CER_LANGUAGES.includes(testParam.language),
               }
             );
           }
@@ -425,7 +427,7 @@ describe("Cheetah Binding", function () {
                 forceWrite: true,
               },
               enablePunctuation: true,
-              useCER: (testParam.language == "ko" || testParam.language == "ja"),
+              useCER: CER_LANGUAGES.includes(testParam.language),
             }
           )
         ));
@@ -447,7 +449,7 @@ describe("Cheetah Binding", function () {
                   forceWrite: true,
                 },
                 enablePunctuation: false,
-                useCER: (testParam.language == "ko" || testParam.language == "ja"),
+                useCER: CER_LANGUAGES.includes(testParam.language),
               }
             );
           }
