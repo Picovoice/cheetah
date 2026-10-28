@@ -41,7 +41,11 @@ public class CheetahTest {
     private final String accessKey = System.getProperty("pvTestingAccessKey");
     private final String device = System.getProperty("pvTestingDevice");
 
-    private static final String[] CER_LANGUAGES = { "ko", "ja", "zh" };
+    private static final List<String> CER_LANGUAGES = new ArrayList<>(Arrays.asList(
+        "ko",
+        "ja",
+        "zh"
+    ));
 
     private static int levenshteinDistance(String[] transcript, String[] reference) {
         int m = transcript.length;
