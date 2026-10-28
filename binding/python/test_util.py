@@ -15,7 +15,7 @@ import struct
 import wave
 from typing import *
 
-CER_LANGUAGES = ["ko", "ja"]
+CER_LANGUAGES = ["ko", "ja", "zh"]
 
 
 def separate_words(text: str, punctuation: set[str] = {"."}, split_on_characters: bool = False) -> list[str]:
@@ -56,7 +56,7 @@ def load_test_data() -> List[Tuple[str, str, str, str, List[str], List[str], boo
                     separate_words(
                         t['transcript'],
                         punctuation=t['punctuations'],
-                        split_on_characters=language == "ja"
+                        split_on_characters=language in ("ja", "zh")
                     ),
                     t['punctuations'],
                     t['normalization'],
