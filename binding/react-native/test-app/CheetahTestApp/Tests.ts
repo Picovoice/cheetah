@@ -9,6 +9,7 @@ const platform = Platform.OS;
 
 const TEST_ACCESS_KEY: string = '{TESTING_ACCESS_KEY_HERE}';
 const DEVICE: string = '{TESTING_DEVICE_HERE}';
+const CER_LANGUAGES = ["ko", "ja", "zh"];
 
 export type Result = {
   testName: string;
@@ -220,7 +221,7 @@ async function runProcTestCase(
       }
     }
 
-    const useCER = language === "ko" || language === "ja";
+    const useCER = CER_LANGUAGES.includes(language);
     const err = useCER ?
         characterErrorRate(transcript, normalizedTranscript) :
         wordErrorRate(transcript, normalizedTranscript);
