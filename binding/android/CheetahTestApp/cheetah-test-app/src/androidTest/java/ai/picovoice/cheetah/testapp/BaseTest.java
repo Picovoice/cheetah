@@ -52,7 +52,7 @@ public class BaseTest {
     String accessKey;
     String device;
 
-    final List<String> CER_LANGUAGES = new ArrayList<>(Arrays.asList(
+    final List<String> cerLanguages = new ArrayList<>(Arrays.asList(
             "ko",
             "ja",
             "zh"
