@@ -52,6 +52,12 @@ public class BaseTest {
     String accessKey;
     String device;
 
+    final List<String> CER_LANGUAGES = new ArrayList<>(Arrays.asList(
+            "ko",
+            "ja",
+            "zh"
+    ));
+
     @Before
     public void Setup() throws IOException {
         extractedFiles = new HashSet<>();
