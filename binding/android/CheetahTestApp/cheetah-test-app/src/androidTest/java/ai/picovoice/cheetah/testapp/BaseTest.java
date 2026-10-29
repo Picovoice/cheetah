@@ -32,9 +32,11 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -51,6 +53,12 @@ public class BaseTest {
     String defaultModelPath;
     String accessKey;
     String device;
+
+    final List<String> cerLanguages = new ArrayList<>(Arrays.asList(
+            "ko",
+            "ja",
+            "zh"
+    ));
 
     @Before
     public void Setup() throws IOException {

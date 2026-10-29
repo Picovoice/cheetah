@@ -14,7 +14,7 @@ on:
       - 'demo/android/CheetahDemo/**/build.gradle'
 
 env:
-  PV_WORKFLOW_MODE: release
+  PV_WORKFLOW_MODE: staging
 
 defaults:
   run:
@@ -44,6 +44,14 @@ jobs:
       with:
         java-version: 17
         distribution: 'temurin'
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.3'
+
+    - name: Install Fastlane
+      run: gem install fastlane
 
     - name: Set up service json
       run: echo ${{secrets.GOOGLE_PLAY_SERVICE_JSON}} | base64 -d > ./service-account.json
