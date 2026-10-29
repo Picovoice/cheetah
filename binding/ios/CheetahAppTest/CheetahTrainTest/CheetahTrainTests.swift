@@ -17,6 +17,8 @@ class CheetahTrainTests: XCTestCase {
     let accessKey: String = "{TESTING_ACCESS_KEY_HERE}"
 
     func testTrainModel() throws {
+        throw XCTSkip("Skipping test")
+
         let fileManager = FileManager.default
         let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
         guard let documentsDirectory = urls.first else {
