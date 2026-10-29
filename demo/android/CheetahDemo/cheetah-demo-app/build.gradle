@@ -20,6 +20,8 @@ if (rootProject.file("local.properties").exists()) {
 }
 
 android {
+    namespace "ai.picovoice.cheetahdemo"
+
     def agpVersion = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION
     compileSdkVersion defaultTargetSdkVersion
 
