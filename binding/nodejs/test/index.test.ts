@@ -36,6 +36,8 @@ const DEVICE = process.argv
   .filter(x => x.startsWith('--device='))[0]
   .split('--device=')[1] ?? 'best';
 
+const CER_LANGUAGES = ["ko", "ja", "zh"]
+
 const levenshteinDistance = (words1: string[], words2: string[]) => {
   const res = Array.from(
     Array(words1.length + 1),
@@ -172,7 +174,7 @@ const testCheetahProcess = (
     }
   }
 
-  const errorRate = (language == "ko" || language == "ja") ?
+  const errorRate = (CER_LANGUAGES.includes(language)) ?
     characterErrorRate(transcript, normalizedTranscript) :
     wordErrorRate(transcript, normalizedTranscript);
 
