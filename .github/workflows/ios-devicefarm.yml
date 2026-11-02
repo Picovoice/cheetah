@@ -20,7 +20,7 @@ defaults:
 jobs:
   build:
     name: Run iOS Tests on AWS Device Farm
-    runs-on: macos-14
+    runs-on: macos-15
 
     steps:
       - name: Checkout
