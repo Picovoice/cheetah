@@ -14,7 +14,7 @@ on:
       - 'demo/android/CheetahDemo/**/build.gradle'
 
 env:
-  PV_WORKFLOW_MODE: staging
+  PV_WORKFLOW_MODE: release
 
 defaults:
   run:

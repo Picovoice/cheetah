@@ -18,7 +18,7 @@ on:
       - 'binding/android/CheetahTestApp/**'
 
 env:
-  PV_WORKFLOW_MODE: staging
+  PV_WORKFLOW_MODE: release
 
 defaults:
   run:
