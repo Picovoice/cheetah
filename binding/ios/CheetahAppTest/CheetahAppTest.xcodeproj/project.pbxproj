@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -30,12 +30,11 @@
 		1E5B7B382800F7AA00F8BDDB /* cheetah_params.pv in Resources */ = {isa = PBXBuildFile; fileRef = 1E5B7B372800F7AA00F8BDDB /* cheetah_params.pv */; };
 		1E73C2012FABE54600504D6C /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 1E73C2002FABE54600504D6C /* Cheetah */; };
 		1EC530713093F3950041724C /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 1EC530703093F3950041724C /* Cheetah */; };
-		5A0637312F6230890037D526 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 5A0637302F6230890037D526 /* Cheetah */; };
+		1EC53077309A5B810041724C /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 1EC53076309A5B810041724C /* Cheetah */; };
+		1EC53079309A5B890041724C /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 1EC53078309A5B890041724C /* Cheetah */; };
+		1EC5307B309A5B900041724C /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 1EC5307A309A5B900041724C /* Cheetah */; };
 		5A1C386D2EE8DA7900FEF522 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = 5A1C386C2EE8DA7900FEF522 /* Cheetah */; };
 		D23A4B5C0E110877F4A85325 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
-		E10D9F852E5FE4CC00CA78F8 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E10D9F842E5FE4CC00CA78F8 /* Cheetah */; };
-		E1E0C8032CF120B7001D6D84 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E1E0C8022CF120B7001D6D84 /* Cheetah */; };
-		E1E0C8052CF120BE001D6D84 /* Cheetah in Frameworks */ = {isa = PBXBuildFile; productRef = E1E0C8042CF120BE001D6D84 /* Cheetah */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +100,7 @@
 				07151E4D2FEDCD7D001AD81E /* Cheetah in Frameworks */,
 				076CC4842E15FB93004995F2 /* Cheetah in Frameworks */,
 				1E73C2012FABE54600504D6C /* Cheetah in Frameworks */,
+				1EC53077309A5B810041724C /* Cheetah in Frameworks */,
 				07B4E84F2FB39EE5005F31B0 /* Cheetah in Frameworks */,
 				0789F18D2FE5EAD3006EEA53 /* Cheetah in Frameworks */,
 				07B4E8462FB39288005F31B0 /* Cheetah in Frameworks */,
@@ -114,10 +114,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E10D9F852E5FE4CC00CA78F8 /* Cheetah in Frameworks */,
 				D23A4B5C0E110877F4A85325 /* (null) in Frameworks */,
-				5A0637312F6230890037D526 /* Cheetah in Frameworks */,
-				E1E0C8032CF120B7001D6D84 /* Cheetah in Frameworks */,
+				1EC53079309A5B890041724C /* Cheetah in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,7 +123,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1E0C8052CF120BE001D6D84 /* Cheetah in Frameworks */,
+				1EC5307B309A5B900041724C /* Cheetah in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,7 +328,7 @@
 			);
 			mainGroup = 1E00654B27CFF7EB006FF6E9;
 			packageReferences = (
-				1EC5306F3093F3950041724C /* XCLocalSwiftPackageReference "../../../../cheetah" */,
+				1EC53075309A5B810041724C /* XCRemoteSwiftPackageReference "cheetah" */,
 			);
 			productRefGroup = 1E00655527CFF7EB006FF6E9 /* Products */;
 			projectDirPath = "";
@@ -739,17 +737,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		1EC5306F3093F3950041724C /* XCLocalSwiftPackageReference "../../../../cheetah" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../../../cheetah;
-		};
-		E1E0C7FE2CF11FD9001D6D84 /* XCLocalSwiftPackageReference "../../../../cheetah" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../../../cheetah;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
 		07151E4B2FEDCD7D001AD81E /* XCRemoteSwiftPackageReference "cheetah" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -797,6 +784,14 @@
 			requirement = {
 				kind = exactVersion;
 				version = 4.0.2;
+			};
+		};
+		1EC53075309A5B810041724C /* XCRemoteSwiftPackageReference "cheetah" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Picovoice/cheetah";
+			requirement = {
+				kind = exactVersion;
+				version = 4.3.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -857,26 +852,23 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Cheetah;
 		};
-		5A0637302F6230890037D526 /* Cheetah */ = {
+		1EC53076309A5B810041724C /* Cheetah */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 1EC53075309A5B810041724C /* XCRemoteSwiftPackageReference "cheetah" */;
+			productName = Cheetah;
+		};
+		1EC53078309A5B890041724C /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1EC53075309A5B810041724C /* XCRemoteSwiftPackageReference "cheetah" */;
+			productName = Cheetah;
+		};
+		1EC5307A309A5B900041724C /* Cheetah */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1EC53075309A5B810041724C /* XCRemoteSwiftPackageReference "cheetah" */;
 			productName = Cheetah;
 		};
 		5A1C386C2EE8DA7900FEF522 /* Cheetah */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Cheetah;
-		};
-		E10D9F842E5FE4CC00CA78F8 /* Cheetah */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Cheetah;
-		};
-		E1E0C8022CF120B7001D6D84 /* Cheetah */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1E0C7FE2CF11FD9001D6D84 /* XCLocalSwiftPackageReference "../../../../cheetah" */;
-			productName = Cheetah;
-		};
-		E1E0C8042CF120BE001D6D84 /* Cheetah */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1E0C7FE2CF11FD9001D6D84 /* XCLocalSwiftPackageReference "../../../../cheetah" */;
 			productName = Cheetah;
 		};
 /* End XCSwiftPackageProductDependency section */
