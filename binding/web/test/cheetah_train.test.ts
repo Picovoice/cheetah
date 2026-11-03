@@ -50,7 +50,7 @@ const runInitTest = async (
 };
 
 describe("Cheetah Train", function () {
-  it.skip(`should be able to train model`, () => {
+  it(`should be able to train model`, () => {
     const writePath = "new_cheetah_params.pv";
 
     cy.wrap(null).then(async () => {
