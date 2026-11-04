@@ -12,16 +12,18 @@
 import os.path
 import subprocess
 import sys
-from typing import Sequence
 import unittest
+from typing import Sequence
 
-from jiwer import wer
+from jiwer import (
+    cer,
+    wer
+)
 from parameterized import parameterized
-
 from test_util import *
 
 language_tests = load_languages_test_data()
-
+CER_LANGUAGES = ("ja", "ko", "zh")
 
 class CheetahCTestCase(unittest.TestCase):
 
@@ -100,7 +102,10 @@ class CheetahCTestCase(unittest.TestCase):
             transcript = transcript.replace(punctuation, "")
             ground_truth = ground_truth.replace(punctuation, "")
 
-        error = wer(ground_truth, transcript)
+        if language in CER_LANGUAGES:
+            error = cer(ground_truth, transcript)
+        else:
+            error = wer(ground_truth.upper(), transcript.upper())
         self.assertLessEqual(error, error_rate)
 
     @parameterized.expand(language_tests)
@@ -132,7 +137,10 @@ class CheetahCTestCase(unittest.TestCase):
         self.assertEqual(stderr.decode('utf-8'), '')
 
         transcript = stdout.decode('utf-8').strip().split('\n')[-2]
-        error = wer(ground_truth, transcript)
+        if language in CER_LANGUAGES:
+            error = cer(ground_truth, transcript)
+        else:
+            error = wer(ground_truth.upper(), transcript.upper())
         self.assertLessEqual(error, error_rate)
     
     @parameterized.expand(language_tests)
@@ -202,7 +210,7 @@ class CheetahCTestCase(unittest.TestCase):
             self._get_mismatch_count(words, normalized_words),
             mismatch_count_threshold
         )
-    
+
     @parameterized.expand(language_tests)
     def test_cheetah_process_verbose_punctuation(
             self,
