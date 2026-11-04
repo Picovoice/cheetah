@@ -14,7 +14,6 @@ package ai.picovoice.cheetah.testapp;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,7 +32,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 public class TrainTests extends BaseTest {
 
-    @Ignore
     @Test
     public void testTrainModel() throws CheetahException, IOException {
         String outputPath = appContext.getFileStreamPath("custom_cheetah_params.pv").getAbsolutePath();
