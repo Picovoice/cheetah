@@ -756,6 +756,10 @@ function App(props) {
 
 ## Releases
 
+### v4.3.0 - Nov 4th, 2026
+
+- Added language support for Mandarin
+
 ### v4.2.0 - Oct 2nd, 2026
 
 - Added language support for Korean and Japanese
