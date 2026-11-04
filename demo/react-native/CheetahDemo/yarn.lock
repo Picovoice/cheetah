@@ -1402,7 +1402,7 @@
 
 "@picovoice/cheetah-react-native@../../../binding/react-native/pkg/picovoice-cheetah-react-native-4.3.0.tgz":
   version "4.3.0"
-  resolved "../../../binding/react-native/pkg/picovoice-cheetah-react-native-4.3.0.tgz#48db5c8d0503c57dc26f4432fb160db406ce586a"
+  resolved "../../../binding/react-native/pkg/picovoice-cheetah-react-native-4.3.0.tgz#2ad6f2365046d2d5b7f1175d63d50435feb40b43"
 
 "@picovoice/react-native-voice-processor@1.2.3":
   version "1.2.3"
