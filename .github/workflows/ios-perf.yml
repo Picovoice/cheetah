@@ -8,12 +8,14 @@ on:
       - 'lib/ios/**'
       - 'lib/common/**'
       - '.github/workflows/ios-perf.yml'
+      - 'binding/ios/CheetahAppTest/**'
   pull_request:
     branches: [ master, 'v[0-9]+.[0-9]+*' ]
     paths:
       - 'lib/ios/**'
       - 'lib/common/**'
       - '.github/workflows/ios-perf.yml'
+      - 'binding/ios/CheetahAppTest/**'
 
 defaults:
   run:

@@ -5,14 +5,14 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'binding/java/**/CheetahPerformanceTest.java'
+      - 'binding/java/**'
       - 'lib/common/**'
       - 'lib/java/**'
       - '.github/workflows/java-perf.yml'
   pull_request:
     branches: [ master, 'v[0-9]+.[0-9]+*' ]
     paths:
-      - 'binding/java/**/CheetahPerformanceTest.java'
+      - 'binding/java/**'
       - 'lib/common/**'
       - 'lib/java/**'
       - '.github/workflows/java-perf.yml'
