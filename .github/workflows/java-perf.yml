@@ -6,6 +6,7 @@ on:
     branches: [ master ]
     paths:
       - 'binding/java/**'
+      - '!binding/java/README.md'
       - 'lib/common/**'
       - 'lib/java/**'
       - '.github/workflows/java-perf.yml'
@@ -13,6 +14,7 @@ on:
     branches: [ master, 'v[0-9]+.[0-9]+*' ]
     paths:
       - 'binding/java/**'
+      - '!binding/java/README.md'
       - 'lib/common/**'
       - 'lib/java/**'
       - '.github/workflows/java-perf.yml'
