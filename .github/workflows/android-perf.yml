@@ -98,7 +98,7 @@ jobs:
     - name: Run tests on AWS Device Farm
       run: python3 ../../../script/automation/devicefarm.py
         --type android
-        --run_name cobra-android-perf
+        --run_name cheetah-android-perf
         --app_path "cheetah-test-app/build/outputs/apk/en/debug/cheetah-test-app-en-debug.apk"
         --test_path "cheetah-test-app/build/outputs/apk/androidTest/en/debug/cheetah-test-app-en-debug-androidTest.apk"
         --aws_id "${{secrets.AWS_DEVICE_FARM_ACCESS_KEY_ID}}"

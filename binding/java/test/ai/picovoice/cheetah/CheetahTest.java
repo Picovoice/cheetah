@@ -28,6 +28,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 
@@ -40,6 +42,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class CheetahTest {
     private final String accessKey = System.getProperty("pvTestingAccessKey");
     private final String device = System.getProperty("pvTestingDevice");
+
+    private static final List<String> CER_LANGUAGES = new ArrayList<>(Arrays.asList(
+            "ko",
+            "ja",
+            "zh"
+    ));
 
     private static int levenshteinDistance(String[] transcript, String[] reference) {
         int m = transcript.length;
@@ -274,7 +282,7 @@ public class CheetahTest {
             }
         }
 
-        float errorRate = (language.equals("ko") || language.equals("ja")) ?
+        float errorRate = (CER_LANGUAGES.contains(language)) ?
                 getCharacterErrorRate(transcript.toString(), normalizedTranscript) :
                 getErrorRate(transcript.toString(), normalizedTranscript);
         assertTrue(errorRate <= targetErrorRate);
@@ -344,7 +352,7 @@ public class CheetahTest {
             }
         }
 
-        float errorRate = (language.equals("ko") || language.equals("ja")) ?
+        float errorRate = (CER_LANGUAGES.contains(language)) ?
                 getCharacterErrorRate(transcript.toString(), normalizedTranscript) :
                 getErrorRate(transcript.toString(), normalizedTranscript);
         assertTrue(errorRate <= targetErrorRate);

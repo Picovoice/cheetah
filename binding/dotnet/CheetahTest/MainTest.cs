@@ -30,6 +30,8 @@ namespace CheetahTest
         private static string _device;
         private static readonly string ROOT_DIR = Path.Combine(AppContext.BaseDirectory, "../../../../../..");
 
+        private static readonly string[] CER_LANGUAGES = { "ko", "ja", "zh" };
+
         [ClassInitialize]
         public static void ClassInitialize(TestContext _)
         {
@@ -240,7 +242,7 @@ namespace CheetahTest
                     normalizedTranscript = normalizedTranscript.Replace(punctuation, "");
                 }
 
-                double errorRate = (language == "ko" || language == "ja") ?
+                double errorRate = (CER_LANGUAGES.Contains(language)) ?
                     GetCharacterErrorRate(transcript, normalizedTranscript) :
                     GetErrorRate(transcript, normalizedTranscript);
                 Assert.IsTrue(errorRate <= targetErrorRate);
@@ -300,7 +302,7 @@ namespace CheetahTest
                     normalizedTranscript = normalizedTranscript.Replace(punctuation, "");
                 }
 
-                double errorRate = (language == "ko" || language == "ja") ?
+                double errorRate = (CER_LANGUAGES.Contains(language)) ?
                     GetCharacterErrorRate(transcript, normalizedTranscript) :
                     GetErrorRate(transcript, normalizedTranscript);
                 Assert.IsTrue(errorRate <= targetErrorRate);
@@ -357,7 +359,7 @@ namespace CheetahTest
                 CheetahTranscript finalTranscriptObj = cheetah.Flush();
                 transcript += finalTranscriptObj.Transcript;
 
-                double errorRate = (language == "ko" || language == "ja") ?
+                double errorRate = (CER_LANGUAGES.Contains(language)) ?
                     GetCharacterErrorRate(transcript, referenceTranscript) :
                     GetErrorRate(transcript, referenceTranscript);
                 Assert.IsTrue(errorRate <= targetErrorRate);

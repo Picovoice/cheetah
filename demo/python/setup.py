@@ -31,7 +31,7 @@ with open(os.path.join(os.path.dirname(__file__), "requirements.txt"), "r") as f
 
 setuptools.setup(
     name="pvcheetahdemo",
-    version="4.2.0",
+    version="4.3.0",
     author="Picovoice",
     author_email="hello@picovoice.ai",
     description="Cheetah speech-to-text engine demos",
@@ -55,6 +55,6 @@ setuptools.setup(
             'cheetah_demo_mic=pvcheetahdemo.cheetah_demo_mic:main',
         ],
     ),
-    python_requires='>=3.9',
+    python_requires='>=3.10',
     keywords="Speech-to-Text, ASR, Speech Recognition, Voice Recognition, Automatic Speech Recognition",
 )

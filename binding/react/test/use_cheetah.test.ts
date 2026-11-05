@@ -14,6 +14,7 @@ import testData from './test_data.json';
 
 const ACCESS_KEY = Cypress.env('ACCESS_KEY');
 const DEVICE = Cypress.env('DEVICE');
+const CER_LANGUAGES = ["ko", "ja", "zh"]
 
 const CYPRESS_BASE_URI = "/__cypress/src";
 
@@ -315,7 +316,7 @@ describe('Cheetah binding', () => {
                 forceWrite: true,
               },
               enablePunctuation: false,
-              useCER: (testParam.language == "ko" || testParam.language == "ja"),
+              useCER: CER_LANGUAGES.includes(testParam.language),
             }
           );
         });
@@ -335,7 +336,7 @@ describe('Cheetah binding', () => {
                 forceWrite: true,
               },
               enablePunctuation: true,
-              useCER: (testParam.language == "ko" || testParam.language == "ja"),
+              useCER: CER_LANGUAGES.includes(testParam.language),
             }
           );
         });
@@ -355,7 +356,7 @@ describe('Cheetah binding', () => {
                 forceWrite: true,
               },
               enablePunctuation: false,
-              useCER: (testParam.language == "ko" || testParam.language == "ja"),
+              useCER: CER_LANGUAGES.includes(testParam.language),
             }
           );
         });

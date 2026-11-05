@@ -59,3 +59,6 @@
 ## [4.2.0] - 2026-10-01
 * Added language support for Korean and Japanese
 * Improved engine performance
+
+## [4.3.0] - 2026-11-04
+* Added language support for Chinese

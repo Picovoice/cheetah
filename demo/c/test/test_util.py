@@ -29,7 +29,7 @@ def append_language(s: str, language: str) -> str:
     return "%s_%s" % (s, language)
 
 
-def separate_words(text: str, punctuation: set[str] = {"."}) -> list[str]:
+def separate_words(text: str, punctuation: set[str] = {"."}, split_on_characters: bool = False) -> list[str]:
     result = []
     for chunk in text.split():
         current = ""
@@ -38,6 +38,8 @@ def separate_words(text: str, punctuation: set[str] = {"."}) -> list[str]:
                 if current:
                     result.append(current)
                     current = ""
+                result.append(char)
+            elif split_on_characters:
                 result.append(char)
             else:
                 current += char
@@ -61,11 +63,15 @@ def load_languages_test_data() -> List[Tuple[str, str, str, str, List[str], List
                     model_file,
                     t['audio_file'],
                     t['transcript'],
-                    separate_words(t['transcript']),
+                    separate_words(
+                        t['transcript'],
+                        punctuation=t['punctuations'],
+                        split_on_characters=t['language'] in ("ja", "zh")
+                    ),
                     t['punctuations'],
                     t['normalization'],
                     t['error_rate'],
-                    2
+                    t['mismatched_words'],
                 )
             )
 
