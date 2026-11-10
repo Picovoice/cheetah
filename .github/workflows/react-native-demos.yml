@@ -25,7 +25,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [24.x]
+        node-version: [20.x, 22.x, 24.x]
 
     steps:
     - uses: actions/checkout@v3
@@ -54,36 +54,36 @@ jobs:
       run: ./gradlew assembleDebug
       working-directory: demo/react-native/CheetahDemo/android
 
-  # build-ios:
-  #   runs-on: macos-latest
+  build-ios:
+    runs-on: macos-latest
 
-  #   strategy:
-  #     matrix:
-  #       node-version: [20.x, 22.x, 24.x]
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x, 24.x]
 
-  #   steps:
-  #   - uses: actions/checkout@v3
+    steps:
+    - uses: actions/checkout@v3
 
-  #   - name: Use Node.js ${{ matrix.node-version }}
-  #     uses: actions/setup-node@v3
-  #     with:
-  #       node-version: ${{ matrix.node-version }}
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
 
-  #   - name: Pre-build dependencies
-  #     run: npm install -g yarn
+    - name: Pre-build dependencies
+      run: npm install -g yarn
 
-  #   - name: Install dependencies
-  #     run: yarn ios-install
+    - name: Install dependencies
+      run: yarn ios-install
 
-  #   - name: Build bundle
-  #     run: yarn ios-bundle es
+    - name: Build bundle
+      run: yarn ios-bundle es
 
-  #   - name: Build
-  #     run: xcrun xcodebuild build
-  #       -configuration Debug
-  #       -workspace CheetahDemo.xcworkspace
-  #       -sdk iphoneos
-  #       -scheme CheetahDemo
-  #       -derivedDataPath ddp
-  #       CODE_SIGNING_ALLOWED=NO
-  #     working-directory: demo/react-native/CheetahDemo/ios
+    - name: Build
+      run: xcrun xcodebuild build
+        -configuration Debug
+        -workspace CheetahDemo.xcworkspace
+        -sdk iphoneos
+        -scheme CheetahDemo
+        -derivedDataPath ddp
+        CODE_SIGNING_ALLOWED=NO
+      working-directory: demo/react-native/CheetahDemo/ios
