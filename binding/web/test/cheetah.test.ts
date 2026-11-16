@@ -458,3 +458,35 @@ describe("Cheetah Binding", function () {
     }
   }
 });
+
+
+describe('Cheetah processing completion', () => {
+  for (const method of ['process', 'processAnnotated'] as const) {
+    it(`${method} waits for the pending frame`, async () => {
+      // No model is needed: pause processing before any WASM access.
+      const cheetah = Object.create(Cheetah.prototype);
+      let finishFrame!: () => void;
+      const frame = new Promise<boolean>(resolve => {
+        finishFrame = () => resolve(false);
+      });
+      cheetah._module = {};
+      cheetah._processMutex = {
+        runExclusive: (callback: () => Promise<void>) => callback(),
+      };
+      cheetah.processInternal = () => frame;
+
+      let completed = false;
+      const processing = cheetah[method](new Int16Array(512)).then(() => {
+        completed = true;
+      });
+      await Promise.resolve();
+      await Promise.resolve();
+      const completedBeforeFrame = completed;
+      finishFrame();
+      await processing;
+
+      expect(completedBeforeFrame).to.eq(false);
+      expect(completed).to.eq(true);
+    });
+  }
+});

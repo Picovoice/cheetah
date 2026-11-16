@@ -558,7 +558,7 @@ export class Cheetah {
       }
     }
 
-    this._processMutex
+    return this._processMutex
       .runExclusive(async () => {
         if (this._module === undefined) {
           throw new CheetahErrors.CheetahInvalidStateError('Attempted to call Cheetah process after release.');
@@ -611,7 +611,7 @@ export class Cheetah {
       }
     }
 
-    this._processMutex
+    return this._processMutex
       .runExclusive(async () => {
         if (this._module === undefined) {
           throw new CheetahErrors.CheetahInvalidStateError('Attempted to call Cheetah processAnnotated after release.');
